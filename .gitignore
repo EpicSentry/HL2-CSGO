@@ -51,3 +51,6 @@ generated_proto/
 # shader files
 *.tmp
 
+*.db
+src/hl2_game.VC.db
+src/hl2_game.VC.db

@@ -17,7 +17,7 @@
 #include "weapon_parse.h"
 #include "baseviewmodel_shared.h"
 #include "weapon_proficiency.h"
-#include "econ/econ_entity.h"
+//#include "econ/econ_entity.h"
 
 #if defined( CLIENT_DLL )
 #undef CBaseCombatWeapon

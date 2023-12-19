@@ -23,7 +23,7 @@
 #undef TYPE_BOOL
 #endif
 
-#include "cstrike15_usermessages.pb.h"
+//#include "cstrike15_usermessages.pb.h" this might be a problem? csgo uses protobuf for its usermessages it seems like and its all csgo exclusive shit in that file
 
 //-----------------------------------------------------------------------------
 class IUserMessageBinder;

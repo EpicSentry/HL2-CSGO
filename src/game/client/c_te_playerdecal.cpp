@@ -19,15 +19,15 @@
 #include "functionproxy.h"
 #include "imaterialproxydict.h"
 #include "precache_register.h"
-#include "econ/econ_item_schema.h"
+//#include "econ/econ_item_schema.h"
 #include "tier0/vprof.h"
-#include "playerdecals_signature.h"
+//#include "playerdecals_signature.h"
 #include "tier1/callqueue.h"
 #include "engine/decal_flags.h"
 #if defined( INCLUDE_SCALEFORM )
 #include "cstrike15/Scaleform/HUD/sfhud_rosettaselector.h"
 #endif
-#include "c_cs_player.h"
+//#include "c_cs_player.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
