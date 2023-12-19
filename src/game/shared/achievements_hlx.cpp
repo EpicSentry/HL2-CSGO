@@ -18,6 +18,7 @@
 #include "basegrenade_shared.h"
 #include "basehlcombatweapon_shared.h"
 #include "ammodef.h"
+#include "../../common/hl2orange.spa.h"
 
 // NOTE: This has to be the last file included!
 #include "tier0/memdbgon.h"

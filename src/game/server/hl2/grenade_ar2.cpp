@@ -94,7 +94,7 @@ void CGrenadeAR2::Spawn( void )
 	// -------------
 	// Smoke trail.
 	// -------------
-	if( g_CV_SmokeTrail.GetInt() && !IsXbox() )
+	if( g_CV_SmokeTrail.GetInt()  )
 	{
 		m_hSmokeTrail = SmokeTrail::CreateSmokeTrail();
 		

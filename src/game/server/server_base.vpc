@@ -854,8 +854,7 @@ $Project
 			$File	"$SRVSRCDIR\te_worlddecal.cpp"			
 		}
 		
-		
-				
+						
 		$Folder "Nav Mesh"
 		{
 			$File	"$SRVSRCDIR\nav.h"

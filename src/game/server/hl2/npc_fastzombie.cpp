@@ -1496,15 +1496,7 @@ void CFastZombie::ClimbTouch( CBaseEntity *pOther )
 		Vector vecDir = pOther->WorldSpaceCenter() - WorldSpaceCenter();
 		vecDir.z = 0.0; // planar
 		VectorNormalize( vecDir );
-
-		if( IsXbox() )
-		{
-			vecDir *= 400.0f;
-		}
-		else
-		{
-			vecDir *= 200.0f;
-		}
+		vecDir *= 200.0f;
 
 		pOther->VelocityPunch( vecDir );
 

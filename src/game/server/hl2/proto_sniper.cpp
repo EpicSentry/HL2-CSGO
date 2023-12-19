@@ -82,7 +82,7 @@ extern ConVar sk_dmg_sniper_penetrate_npc;
 #define	SNIPER_DEFAULT_PAINT_NPC_TIME_NOISE		0.75f
 #endif
 
-#define SNIPER_SUBSEQUENT_PAINT_TIME	( ( IsXbox() ) ? 1.0f : 0.4f )
+#define SNIPER_SUBSEQUENT_PAINT_TIME	0.4f
 
 #define SNIPER_FOG_PAINT_ENEMY_TIME	    0.25f
 #define SNIPER_PAINT_DECOY_TIME			2.0f
