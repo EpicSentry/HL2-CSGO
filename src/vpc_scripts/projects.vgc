@@ -1395,6 +1395,11 @@ $Project "vaudio_celt"
 	"engine/voice_codecs/celt/vaudio_celt.vpc" [$WINDOWS||$POSIX]
 }
 
+$Project "vaudio_minimp3"
+{
+	"engine\voice_codecs\minimp3\vaudio_minimp3.vpc" [$WIN32||$POSIX]
+}
+
 $Project "sqldb_mysql"
 {
 	"Tracker/sqldb_mysql/sqldb_mysql.vpc" [$WINDOWS]
