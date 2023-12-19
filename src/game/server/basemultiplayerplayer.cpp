@@ -190,19 +190,16 @@ void CBaseMultiplayerPlayer::Spawn( void )
 	BaseClass::Spawn();
 }
 
-void CBaseMultiplayerPlayer::AwardAchievement( int iAchievement, int iCount )
+void CBaseMultiplayerPlayer::AwardAchievement(int iAchievement, int iCount)
 {
-	Assert( iAchievement >= 0 && iAchievement < 0xFFFF );		// must fit in short
+	Assert(iAchievement >= 0 && iAchievement < 0xFFFF);		// must fit in short
 
-	CSingleUserRecipientFilter filter( this );
+	CSingleUserRecipientFilter filter(this);
 
-	int userID = GetPlayerInfo()->GetUserID();
-
-	CCSUsrMsg_AchievementEvent msg;
-	msg.set_achievement( iAchievement );
-	msg.set_count( iCount );
-	msg.set_user_id( userID );
-	SendUserMessage( filter, CS_UM_AchievementEvent, msg );
+	UserMessageBegin(filter, "AchievementEvent");
+	WRITE_SHORT(iAchievement);
+	WRITE_SHORT(iCount);
+	MessageEnd();
 }
 
 #ifdef _DEBUG

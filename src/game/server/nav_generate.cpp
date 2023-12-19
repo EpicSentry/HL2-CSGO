@@ -3562,7 +3562,7 @@ void ShowViewPortPanelToAll( const char * name, bool bShow, KeyValues *data )
 
 		subkey = data->GetFirstSubKey(); // reset 
 	}
-
+/*
 	CCSUsrMsg_VGUIMenu msg;
 
 	msg.set_name( name );
@@ -3579,7 +3579,7 @@ void ShowViewPortPanelToAll( const char * name, bool bShow, KeyValues *data )
 		subkey = subkey->GetNextKey();
 	}
 
-	SendUserMessage( filter, CS_UM_VGUIMenu, msg );
+	SendUserMessage( filter, CS_UM_VGUIMenu, msg );*/
 }
 
 

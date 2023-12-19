@@ -11,7 +11,7 @@
 #endif
 
 #if !defined (_GAMECONSOLE) && !defined( GC_DLL )
-	#include "econ_item_view.h"
+//	#include "econ_item_view.h"
 #endif
 
 #include "csgo_limits.h"

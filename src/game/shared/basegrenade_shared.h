@@ -25,7 +25,7 @@
 
 #endif
 
-#include "cs_shareddefs.h"
+//#include "cs_shareddefs.h"
 
 #define BASEGRENADE_EXPLOSION_VOLUME	1024
 
@@ -77,7 +77,7 @@ public:
 
 	virtual const char *GetParticleSystemName( int pointContents, surfacedata_t *pdata = NULL ) { return NULL; }
 
-	virtual GrenadeType_t GetGrenadeType( void ) { return GRENADE_TYPE_EXPLOSIVE; }
+	//virtual GrenadeType_t GetGrenadeType( void ) { return GRENADE_TYPE_EXPLOSIVE; }
 
 	// Damage accessors.
 	virtual float GetDamage()

@@ -147,9 +147,9 @@ void CEnvSoundscape::InputToggleEnabled( inputdata_t &inputdata )
 //-----------------------------------------------------------------------------
 // Purpose: Returns whether the laser is currently active.
 //-----------------------------------------------------------------------------
-bool CEnvSoundscape::IsEnabled( void ) const
+bool CEnvSoundscape::IsEnabled(void) const
 {
-	return !m_bDisabled && g_pGameRules->AllowSoundscapes();
+	return !m_bDisabled;
 }
 
 

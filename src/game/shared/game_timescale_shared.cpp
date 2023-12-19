@@ -78,9 +78,9 @@ void CGameTimescale::SetCurrentTimescale( float flTimescale )
 
 	// Pass the change info to the client so it can do prediction
 	CReliableBroadcastRecipientFilter filter;
-	CCSUsrMsg_CurrentTimescale msg;
-	msg.set_cur_timescale( m_flCurrentTimescale );
-	SendUserMessage( filter, CS_UM_CurrentTimescale, msg );
+//	CCSUsrMsg_CurrentTimescale msg;
+//	msg.set_cur_timescale( m_flCurrentTimescale );
+//	SendUserMessage( filter, CS_UM_CurrentTimescale, msg );
 #endif
 }
 
@@ -114,12 +114,12 @@ void CGameTimescale::SetDesiredTimescale( float flDesiredTimescale, float flDura
 #ifndef CLIENT_DLL
 	// Pass the change info to the client so it can do prediction
 	CReliableBroadcastRecipientFilter filter;
-	CCSUsrMsg_DesiredTimescale msg;
-	msg.set_desired_timescale( m_flDesiredTimescale );
-	msg.set_duration_realtime_sec( m_flDurationRealTimeSeconds );
-	msg.set_interpolator_type( m_nInterpolatorType );
-	msg.set_start_blend_time( m_flStartBlendTime );
-	SendUserMessage( filter, CS_UM_DesiredTimescale, msg );
+//	CCSUsrMsg_DesiredTimescale msg;
+//	msg.set_desired_timescale( m_flDesiredTimescale );
+//	msg.set_duration_realtime_sec( m_flDurationRealTimeSeconds );
+//	msg.set_interpolator_type( m_nInterpolatorType );
+//	msg.set_start_blend_time( m_flStartBlendTime );
+//	SendUserMessage( filter, CS_UM_DesiredTimescale, msg );
 #endif
 }
 

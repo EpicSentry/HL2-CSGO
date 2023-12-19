@@ -135,9 +135,9 @@ void CBaseCombatCharacter::RemoveAmmo( int iCount, int iAmmoIndex )
 	if ( iAmmoIndex < 0 )
 		return;
 
-	// Infinite ammo?
-	if ( GetAmmoDef()->CanCarryInfiniteAmmo( iAmmoIndex ) )
-		return;
+	// Infinite ammo? Not in HL2 i think
+//	if ( GetAmmoDef()->CanCarryInfiniteAmmo( iAmmoIndex ) )
+//		return;
 
 	extern ConVar sv_infinite_ammo;
 	if ( sv_infinite_ammo.GetInt() == 2 ) // infinite total ammo but magazine reloads are still required.
@@ -186,9 +186,9 @@ int CBaseCombatCharacter::GetAmmoCount( int iAmmoIndex ) const
 	if ( iAmmoIndex == -1 )
 		return 0;
 
-	// Infinite ammo?
-	if ( GetAmmoDef()->CanCarryInfiniteAmmo( iAmmoIndex ) )
-		return 999;
+	// Infinite ammo? Not in HL2 i think
+//	if ( GetAmmoDef()->CanCarryInfiniteAmmo( iAmmoIndex ) )
+	//	return 999;
 
 	return m_iAmmo[ iAmmoIndex ];
 }

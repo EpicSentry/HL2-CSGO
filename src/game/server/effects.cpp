@@ -2475,10 +2475,10 @@ void CEnvGunfire::FireBullet(
 	const char *pszTracerName
 	)
 {
-	CCSPlayer *pPlayer = NULL;
+	CBasePlayer *pPlayer = NULL;
 	for ( int i = 1; i <= MAX_PLAYERS; i++ )
 	{
-		pPlayer = ToCSPlayer( UTIL_PlayerByIndex( i ) );
+		pPlayer = ToBasePlayer( UTIL_PlayerByIndex( i ) );
 		if ( pPlayer )
 			break;
 	}

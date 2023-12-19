@@ -373,11 +373,11 @@ void CBasePlayer::ItemPostFrame()
 		{
 			int iPrimaryAmmoType = pWeapon->GetPrimaryAmmoType();
 			if ( iPrimaryAmmoType >= 0 )
-				SetAmmoCount( GetAmmoDef()->MaxCarry( iPrimaryAmmoType, this ), iPrimaryAmmoType );
+				SetAmmoCount( GetAmmoDef()->MaxCarry( iPrimaryAmmoType), iPrimaryAmmoType );
 
 			int iSecondaryAmmoType = pWeapon->GetSecondaryAmmoType();
 			if ( iSecondaryAmmoType >= 0 )
-				SetAmmoCount( GetAmmoDef()->MaxCarry( iSecondaryAmmoType, this ), iSecondaryAmmoType );
+				SetAmmoCount( GetAmmoDef()->MaxCarry( iSecondaryAmmoType), iSecondaryAmmoType );
 		}
 		else
 		{
@@ -925,36 +925,6 @@ void CBasePlayer::PlayStepSound( Vector &vecOrigin, surfacedata_t *psurface, flo
 	ep.m_nSoundEntryVersion = params.m_nSoundEntryVersion;
 
 	EmitSound( filter, entindex(), ep );
-
-	// Step Suit
-	if (CCSPlayer *pThisCsPlayer = dynamic_cast<CCSPlayer *>(this))
-	{
-		if (pThisCsPlayer->IsBot() && pThisCsPlayer->HasHeavyArmor())
-		{
-			extern ISoundEmitterSystemBase *soundemitterbase;
-			static const char * const k_HeavyStepSoundName = "Heavy.Step";
-			static HSOUNDSCRIPTHASH const k_HeavyStepSoundHash = soundemitterbase->HashSoundName( k_HeavyStepSoundName );
-			ep.m_pSoundName = k_HeavyStepSoundName;
-			ep.m_hSoundScriptHash = k_HeavyStepSoundHash;
-			EmitSound(filter, entindex(), ep);
-		}
-	}
-	CSoundParameters paramsSuitSound;
-	if (!CBaseEntity::GetParametersForSound((GetTeamNumber() == TEAM_CT) ? "CT_Default.Suit" : "T_Default.Suit", paramsSuitSound, NULL))
-		return;
-
-	EmitSound_t epSuitSound;
-	epSuitSound.m_nChannel = CHAN_AUTO;
-	epSuitSound.m_pSoundName = paramsSuitSound.soundname;
-	epSuitSound.m_flVolume = fvol;
-	epSuitSound.m_SoundLevel = paramsSuitSound.soundlevel;
-	epSuitSound.m_nFlags = 0;
-	epSuitSound.m_nPitch = paramsSuitSound.pitch;
-	epSuitSound.m_pOrigin = &vecOrigin;
-	epSuitSound.m_hSoundScriptHash = paramsSuitSound.m_hSoundScriptHash;
-	epSuitSound.m_nSoundEntryVersion = paramsSuitSound.m_nSoundEntryVersion;
-
-	EmitSound(filter, entindex(), epSuitSound);
 
 }
 
@@ -2404,46 +2374,41 @@ void CBasePlayer::MakeTracer( const Vector &vecTracerSrc, const trace_t &tr, int
 
 void CBasePlayer::SharedSpawn()
 {
-	SetMoveType( MOVETYPE_WALK );
-	SetSolid( SOLID_BBOX );
-	AddSolidFlags( FSOLID_NOT_STANDABLE );
-	SetFriction( 1.0f );
+	SetMoveType(MOVETYPE_WALK);
+	SetSolid(SOLID_BBOX);
+	AddSolidFlags(FSOLID_NOT_STANDABLE);
+	SetFriction(1.0f);
 
-	pl.deadflag	= false;
-	m_lifeState	= LIFE_ALIVE;
+	pl.deadflag = false;
+	m_lifeState = LIFE_ALIVE;
 	m_iHealth = 100;
-	m_takedamage		= DAMAGE_YES;
+	m_takedamage = DAMAGE_YES;
 
 	m_Local.m_bDrawViewmodel = true;
 	m_Local.m_flStepSize = sv_stepsize.GetFloat();
 	m_Local.m_bAllowAutoMovement = true;
 
-	SetRenderFX( kRenderFxNone );
-	m_flNextAttack	= gpGlobals->curtime;
-	m_flMaxspeed		= 0.0f;
+	m_nRenderFX = kRenderFxNone;
+	m_flNextAttack = gpGlobals->curtime;
+	m_flMaxspeed = 0.0f;
 
 	MDLCACHE_CRITICAL_SECTION();
-	int iIdleSequence = SelectWeightedSequence( ACT_IDLE );
-	if( iIdleSequence < 0 )
-	{
-		iIdleSequence = 0;
-	}
-	SetSequence( iIdleSequence );
+	SetSequence(SelectWeightedSequence(ACT_IDLE));
 
-	if ( GetFlags() & FL_DUCKING ) 
-		SetCollisionBounds( VEC_DUCK_HULL_MIN, VEC_DUCK_HULL_MAX );
+	if (GetFlags() & FL_DUCKING)
+		SetCollisionBounds(VEC_DUCK_HULL_MIN, VEC_DUCK_HULL_MAX);
 	else
-		SetCollisionBounds( VEC_HULL_MIN, VEC_HULL_MAX );
+		SetCollisionBounds(VEC_HULL_MIN, VEC_HULL_MAX);
 
 	// dont let uninitialized value here hurt the player
 	m_Local.m_flFallVelocity = 0;
 
-	SetBloodColor( BLOOD_COLOR_RED );
-
-	m_hUseEntity = NULL;
-
-	m_flDuckAmount = 0;
-	m_flDuckSpeed = CS_PLAYER_DUCK_SPEED_IDEAL;
+	SetBloodColor(BLOOD_COLOR_RED);
+	// NVNT inform haptic dll we have just spawned local player
+#ifdef CLIENT_DLL
+	if (IsLocalPlayer() && haptics)
+		haptics->LocalPlayerReset();
+#endif
 }
 
 

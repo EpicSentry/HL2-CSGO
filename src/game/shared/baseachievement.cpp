@@ -748,8 +748,8 @@ void CBaseAchievement::SetAssetAward( const char* assetAwardName )
 //-----------------------------------------------------------------------------
 bool CBaseAchievement::CheckAchievementsEnabled( void )
 {
-	if ( g_pGameRules && !g_pGameRules->CheckAchievementsEnabled( GetAchievementID() ) )
-		return false;
+//	if ( g_pGameRules && !g_pGameRules->CheckAchievementsEnabled( GetAchievementID() ) )
+//		return false;
 
 	return m_pAchievementMgr->CheckAchievementsEnabled();
 }

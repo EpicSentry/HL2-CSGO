@@ -11,6 +11,7 @@
 
 #include "achievementmgr.h"
 #include "baseachievement.h"
+#include "../../common/hl2orange.spa.h"
 
 CAchievementMgr g_AchievementMgrHL2;	// global achievement mgr for HL2
 

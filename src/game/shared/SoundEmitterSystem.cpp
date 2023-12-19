@@ -1115,6 +1115,7 @@ public:
 			{
 				if ( g_CaptionRepeats.CanEmitCaption( hash ) )
 				{
+					/*
 					if ( bForceSubtitle )
 					{
 						CCSUsrMsg_CloseCaptionDirect msg;
@@ -1135,6 +1136,7 @@ public:
 						// Send caption and duration hint down to client						
 						SendUserMessage( filterCopy, CS_UM_CloseCaption, msg );
 					}
+					*/
 				}
 			}
 #else
