@@ -2063,7 +2063,7 @@ bool CServerGameDLL::IsValveDS()
 {
 	return IsValveDedicated();
 }
-
+/*
 KeyValues*	CServerGameDLL::GetExtendedServerInfoForNewClient()
 {
 	static KeyValues *s_pExtendedServerInfo = NULL;
@@ -2164,7 +2164,7 @@ void CServerGameDLL::GetMatchmakingTags( char *buf, size_t bufSize )
 		Q_strncat( buf, ",sv_load_test", bufSize);
 	}
 }
-
+*/
 void CServerGameDLL::ServerHibernationUpdate( bool bHibernating )
 {
 	m_bIsHibernating = bHibernating;

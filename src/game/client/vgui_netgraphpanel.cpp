@@ -1196,18 +1196,14 @@ void CNetGraphPanel::DrawServerType( int xright, int y )
 		bool bP2P = ( netadr_t( pInfo ? pInfo->GetAddress() : "127.0.0.1" ).GetPort() == 1 );
 		if ( engine->IsHLTV() )
 		{
-			if ( CSGameRules() && CSGameRules()->IsValveDS() )
-				psz = bLiveBroadcast ? "Official GOTV+" : "Official GOTV";
-			else if ( bP2P )
-				psz = bLiveBroadcast ? "P2P GOTV+" : "P2P GOTV";
+			if ( bP2P )
+				psz = bLiveBroadcast ? "P2P SourceTV+" : "P2P SourceTV";
 			else
-				psz = bLiveBroadcast ? "GOTV+" : "GOTV";
+				psz = bLiveBroadcast ? "SourceTV+" : "SourceTV";
 		}
 		else
 		{
-			if ( CSGameRules() && CSGameRules()->IsValveDS() )
-				psz = "Official DS";
-			else if ( bP2P )
+			if ( bP2P )
 				psz = "P2P";
 			else
 				psz = "online";

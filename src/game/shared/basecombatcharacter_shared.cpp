@@ -249,6 +249,7 @@ CBaseCombatWeapon *CBaseCombatCharacter::Weapon_GetSlot( int slot ) const
 // Purpose: Returns the weapon (if any) in the requested loadout position
 // Input  : position - which slot to poll
 //-----------------------------------------------------------------------------
+/*
 CBaseCombatWeapon *CBaseCombatCharacter::Weapon_GetPosition( int position ) const
 {
 	// Check for that slot being occupied already
@@ -270,7 +271,7 @@ CBaseCombatWeapon *CBaseCombatCharacter::Weapon_GetPosition( int position ) cons
 
 	return NULL;
 }
-
+*/
 
 
 

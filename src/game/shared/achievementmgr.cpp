@@ -18,7 +18,7 @@
 #ifdef CLIENT_DLL
 #include "achievement_notification_panel.h"
 #include "c_playerresource.h"
-#include "c_cs_player.h"
+//#include "c_cs_player.h"
 #ifdef TF_CLIENT_DLL
 #include "item_inventory.h"
 #endif //TF_CLIENT_DLL
@@ -31,7 +31,7 @@
 #include "steam/isteamfriends.h"
 #include "steam/isteamutils.h"
 #endif
-#include "cs_gamerules.h"
+//#include "cs_gamerules.h"
 #include "tier3/tier3.h"
 #include "vgui/ILocalize.h"
 
@@ -52,10 +52,10 @@
 #include "ienginevgui.h"
 #endif  // _GAMECONSOLE
 
-#include "matchmaking/imatchframework.h"
+//#include "matchmaking/imatchframework.h"
 #include "tier0/vprof.h"
-#include "cs_weapon_parse.h"
-#include "achievements_cs.h"
+//#include "cs_weapon_parse.h"
+//#include "achievements_cs.h"
 
 // NOTE: This has to be the last file included!
 #include "tier0/memdbgon.h"
@@ -820,74 +820,7 @@ void CAchievementMgr::SaveGlobalStateIfDirty( )
 
 bool CAchievementMgr::IsAchievementAllowedInGame( int iAchievementID )
 {
-	// Offline modes with trivial bots disable ALL achievements
-	if ( CSGameRules() && !CSGameRules()->IsAwardsProgressAllowedForBotDifficulty() )
-		return false;
-
-	bool isGunGameAchievement = false;
-
-	switch( iAchievementID )
-	{
-		// a list of gun game achievements
-		//case CSFastRoundWin:
-		case CSGunGameKillKnifer:
-		case CSWinEveryGGMap:
-		case CSGunGameProgressiveRampage:
-		case CSGunGameFirstKill:
-		case CSFirstBulletKills:
-		case CSGunGameConservationist:
-		case CSWinMatchAR_SHOOTS:
-		case CSWinMatchAR_BAGGAGE:
-		case CSPlantBombsTRLow:
-		case CSDefuseBombsTRLow:
-		case CSKillEnemyTerrTeamBeforeBombPlant:
-		case CSKillEnemyCTTeamBeforeBombPlant:
-		case CSWinMatchDE_LAKE:
-		case CSWinMatchDE_SAFEHOUSE:   
-		case CSWinMatchDE_SUGARCANE:
-		case CSWinMatchDE_STMARC:
-		case CSWinMatchDE_BANK:
-		case CSWinMatchDE_EMBASSY:
-		case CSWinMatchDE_DEPOT:
-		case CSWinMatchDE_SHORTTRAIN:
-		//case CSHipShot:
-		case CSBornReady:
-		case CSSpawnCamper:
-		case CSGunGameKnifeKillKnifer:
-		case CSGunGameSMGKillKnifer:
-		case CSStillAlive:
-		case CSGGWinRoundsLow:
-		case CSGGWinRoundsMed:
-		case CSGGWinRoundsHigh:
-		case CSGGWinRoundsExtreme:
-		case CSGGWinRoundsUltimate:
-		case CSGGRoundsLow:
-		case CSGGRoundsMed:
-		case CSGGRoundsHigh:
-		case CSPlayEveryGGMap:
-		case CSDominationsLow:
-		case CSDominationsHigh:
-		case CSRevengesLow:
-		case CSRevengesHigh:
-		case CSDominationOverkillsLow:
-		case CSDominationOverkillsHigh:
-		case CSDominationOverkillsMatch:
-		case CSExtendedDomination:
-		case CSConcurrentDominations:
-		//case CSAvengeFriend:
-			isGunGameAchievement = true;
-	};
-
-	// Only unlock gungame achievements in gun game modes
-	if( isGunGameAchievement ) 
-	{
-		return CSGameRules()->IsPlayingGunGame();
-	}
-	else
-	{
-		// Other achievements are valid for all game types.
 		return true;
-	}
 }
 
 //-----------------------------------------------------------------------------

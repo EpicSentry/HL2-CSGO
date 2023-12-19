@@ -150,7 +150,7 @@
 #include "engine/iblackbox.h"
 #include "c_rumble.h"
 #include "viewpostprocess.h"
-#include "cstrike15_gcmessages.pb.h"
+//#include "cstrike15_gcmessages.pb.h"
 
 #include "achievements_and_stats_interface.h"
 
@@ -2402,6 +2402,8 @@ void ConfigureCurrentSystemLevel()
 	char szModName[32] = "ep2";
 #elif defined ( CSTRIKE15 )
 	char szModName[32] = "csgo";
+#elif defined ( HL2_CLIENT_DLL )
+	char szModName[32] = "hl2";
 #endif
 
 	bool bVGUIIsSplitscreen = VGui_IsSplitScreen();
@@ -4301,7 +4303,7 @@ void CHLClient::DetermineSubscriptionKvToAdvertise( KeyValues *kvLocalPlayer )
 {
 	/* Removed for partner depot */
 }
-
+/*
 class CHLClientAutoRichPresenceUpdateOnConnect
 {
 public:
@@ -4695,7 +4697,7 @@ char const * CHLClient::GetRichPresenceStatusString()
 
 	return sRichPresence.Get();
 }
-
+*/
 int CHLClient::GetInEyeEntity() const
 {
 	C_CSPlayer* player = GetLocalOrInEyeCSPlayer();
@@ -4733,7 +4735,7 @@ IScaleformSlotInitController * CHLClient::GetScaleformSlotInitController()
 
 bool CHLClient::IsConnectedUserInfoChangeAllowed( IConVar *pCvar )
 {
-	return CSGameRules() ? CSGameRules()->IsConnectedUserInfoChangeAllowed( NULL ) : true;
+	return true;
 }
 
 void CHLClient::OnCommandDuringPlayback( char const *cmd )
@@ -4768,22 +4770,6 @@ void CHLClient::OnTickPre( int tickcount )
 	g_pFatDemoRecorder->OnTickPre( tickcount );
 #endif
 }
-
-class ClientJob_EMsgGCCStrike15_GotvSyncPacket : public GCSDK::CGCClientJob
-{
-public:
-	explicit ClientJob_EMsgGCCStrike15_GotvSyncPacket( GCSDK::CGCClient *pGCClient ) : GCSDK::CGCClientJob( pGCClient )
-	{
-	}
-
-	virtual bool BYieldingRunJobFromMsg( GCSDK::IMsgNetPacket *pNetPacket )
-	{
-		GCSDK::CProtoBufMsg<CMsgGCCStrike15_GotvSyncPacket> msg( pNetPacket );
-		return engine->EngineGotvSyncPacket( &msg.Body().data() );
-	}
-};
-GC_REG_CLIENT_JOB( ClientJob_EMsgGCCStrike15_GotvSyncPacket, k_EMsgGCCStrike15_v2_GotvSyncPacket );
-
 
 
 //-----------------------------------------------------------------------------

@@ -1243,7 +1243,7 @@ void Panel::PaintTraverse( bool repaint, bool allowForce )
 			PaintBorder();
 			surface()->PopMakeCurrent( vpanel );
 		}
-
+		/*
 #ifdef _DEBUG
 		// IsBuildGroupEnabled recurses up all the parents and ends up being very expensive as it wanders all over memory
 		if ( GetBuildModeDialogCount() && IsBuildGroupEnabled() ) //&& HasFocus() )
@@ -1261,7 +1261,7 @@ void Panel::PaintTraverse( bool repaint, bool allowForce )
 			_buildGroup->DrawRulers();						
 		}
 #endif
-
+*/
 		// All of our children have painted, etc, now allow painting in top of them
 		if ( _flags.IsFlagSet( POST_CHILD_PAINT_ENABLED ) )
 		{

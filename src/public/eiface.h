@@ -654,7 +654,7 @@ public:
 	virtual void			ApplyGameSettings( KeyValues *pKV ) = 0;
 
 	// 
-	virtual void			GetMatchmakingTags( char *buf, size_t bufSize ) = 0;
+	//virtual void			GetMatchmakingTags( char *buf, size_t bufSize ) = 0;
 
 	virtual void			ServerHibernationUpdate( bool bHibernating ) = 0;
 
@@ -662,15 +662,15 @@ public:
 
 	// Added for CS:GO - 
 	// In Competetive mode we do not want to allow direct-connect to Valve servers
-	virtual bool			ShouldAllowDirectConnect() = 0;
-	virtual bool			FriendsReqdForDirectConnect() = 0;
-	virtual bool			IsLoadTestServer() = 0;
+	//virtual bool			ShouldAllowDirectConnect() = 0;
+	//virtual bool			FriendsReqdForDirectConnect() = 0;
+	//virtual bool			IsLoadTestServer() = 0;
 
 	// Is this an Official dedicated server for ranked matchmaking?
 	virtual bool			IsValveDS() = 0;
 
 	// Builds extended server info for new connecting client
-	virtual KeyValues*		GetExtendedServerInfoForNewClient() = 0;
+	//virtual KeyValues*		GetExtendedServerInfoForNewClient() = 0;
 
 	// Updates GC information for this server
 	virtual void UpdateGCInformation() = 0;

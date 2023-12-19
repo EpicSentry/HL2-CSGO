@@ -870,7 +870,7 @@ bool CBaseClient::SendServerInfo( void )
 		printMsg.set_text( devtext );
 		printMsg.WriteToBuffer( msg );
 	}
-
+	/*
 	// write additional server payload
 	if ( KeyValues *kvExtendedServerInfo = serverGameDLL->GetExtendedServerInfoForNewClient() )
 	{
@@ -884,7 +884,7 @@ bool CBaseClient::SendServerInfo( void )
 		CmdKeyValuesHelper::SVCMsg_SetKeyValues( cmdExtendedServerInfo, kvExtendedServerInfo );
 		cmdExtendedServerInfo.WriteToBuffer( msg );
 	}
-
+	*/
 	CSVCMsg_ServerInfo_t serverinfo;	// create serverinfo message
 
 	serverinfo.set_player_slot( m_nClientSlot ); // own slot number

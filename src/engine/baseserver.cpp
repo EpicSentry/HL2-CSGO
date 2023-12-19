@@ -1699,8 +1699,6 @@ void CBaseServer::ReplyChallenge( const ns_address &adr, bf_read &inmsg )
 		}
 
 		bool bAllowDC = !serverGameDLL->IsValveDS();	// Official DS direct connect disabled
-		if ( bAllowDC )
-			bAllowDC = serverGameDLL->ShouldAllowDirectConnect();	// let the ongoing game overrule direct connect
 
 		if ( bAllowDC )
 		{
@@ -4286,16 +4284,6 @@ void CBaseServer::UpdateGameType()
 	ClearTagStrings();
 
 	CUtlString tags;
-
-	if ( serverGameDLL )
-	{
-		char szMatchMakingTags[ 1024 ] = { 0 };
-		serverGameDLL->GetMatchmakingTags( szMatchMakingTags, sizeof( szMatchMakingTags ) );
-		if ( szMatchMakingTags[ 0 ] )
-		{
-			AddTagString( m_GameType, szMatchMakingTags );
-		}
-	}
 
 	bool bHaveAnyClients = GetNumHumanPlayers() > 0;
 	if ( !bHaveAnyClients )
