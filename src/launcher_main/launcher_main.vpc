@@ -106,27 +106,6 @@ $Configuration
 									"call $SRCDIR\vpc_scripts\valve_xbcp_wrapper.cmd $(TargetDir)$(TargetName).xex xE:\$VPCGAME$DEMOSUFFIX\default.xex" "\n"
 	}
 
-	$PostBuildEvent	[$WINDOWS]
-	{
-		// override with specific behavior
-		$CommandLine				"call $SRCDIR\vpc_scripts\valve_p4_edit.cmd $OUTBINDIR\$OUTBINNAME.exe $SRCDIR" "\n" \
-							"call $SRCDIR\vpc_scripts\valve_p4_edit.cmd $OUTBINDIR\$OUTBINNAME.pdb $SRCDIR" "\n" \
-									"copy $(TargetPath) $OUTBINDIR\$OUTBINNAME.exe" "\n"					\
-									"if ERRORLEVEL 1 goto BuildEventFailed" "\n" \
-									"if exist $(TargetDir)$(TargetName).map copy $(TargetDir)$(TargetName).map $OUTBINDIR\$OUTBINNAME.map" "\n" \
-									"if exist $(TargetDir)$(TargetName).pdb copy $(TargetDir)$(TargetName).pdb $OUTBINDIR\$OUTBINNAME.pdb" "\n" \
-									"call $SRCDIR\vpc_scripts\valve_p4_edit.cmd $OUTBINDIR\$OUTBINNAME.dat $SRCDIR" "\n"								\
-									"$OUTBINDIR\bin\newdat $OUTBINDIR\$OUTBINNAME.exe" "\n"					\
-									"goto BuildEventOK" "\n" \
-									":BuildEventFailed" "\n" \
-									"echo *** ERROR! PostBuildStep FAILED for $(ProjectName)! EXE or DLL is probably running. ***" "\n" \
-									"del /q $(TargetPath)" "\n" \
-									"exit 1" "\n" \
-									":BuildEventOK" "\n"
-		$Description		"Publishing to $OUTBINDIR"
-		$ExcludedFromBuild	"No"
-	}
-
 	$Linker [$PS3]
 	{
 		$AdditionalDependencies			"$BASE &quot;$(SN_PS3_PATH)/ppu/lib/sn/libsn.a&quot; &quot;$(SN_PS3_PATH)/ppu/lib/sn/libsntuner.a&quot;"
