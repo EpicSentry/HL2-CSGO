@@ -121,7 +121,11 @@ namespace vgui2
 // Purpose: Base weapon class, shared on client and server
 //-----------------------------------------------------------------------------
 
+#if defined USES_ECON_ITEMS
 #define BASECOMBATWEAPON_DERIVED_FROM		CEconEntity
+#else 
+#define BASECOMBATWEAPON_DERIVED_FROM		CBaseAnimating
+#endif 
 
 // temp states for modular weapon body groups
 #define MODULAR_BODYGROUPS_DEFAULT_NONE_SET		0
@@ -228,9 +232,6 @@ public:
 	// FIXMEL4DTOMAINMERGE
 	// We might have to disable this code in main until we refactor all weapons to use this system, as it's a pretty good perf boost
 	virtual int GetWeaponID( void ) const		{ return 0; }
-
-	const CEconItemView*	GetEconItemView( void ) const;
-	CEconItemView*			GetEconItemView( void );
 
 	virtual bool			IsBaseCombatWeapon( void ) const { return true; }
 	virtual CBaseCombatWeapon *MyCombatWeaponPointer( void ) { return this; }
@@ -405,10 +406,10 @@ public:
 	virtual const char		*GetWorldModel( void ) const;
 	virtual const char		*GetWorldDroppedModel( void ) const;
 	virtual const char		*GetAnimPrefix( void ) const;
-	virtual int				GetMaxClip1( void ) const { return GetWpnData().GetPrimaryClipSize( GetEconItemView() ); }
-	virtual int				GetMaxClip2( void ) const { return GetWpnData().GetSecondaryClipSize( GetEconItemView() ); }
-	virtual int				GetDefaultClip1( void ) const { return GetWpnData().GetDefaultPrimaryClipSize( GetEconItemView() ); }
-	virtual int				GetDefaultClip2( void ) const { return GetWpnData().GetDefaultSecondaryClipSize( GetEconItemView() ); }
+	virtual int				GetMaxClip1( void ) const;
+	virtual int				GetMaxClip2( void ) const;
+	virtual int				GetDefaultClip1( void ) const;
+	virtual int				GetDefaultClip2( void ) const;
 	virtual int				GetReserveAmmoMax( AmmoPosition_t nAmmoPos ) const;
 	virtual int				GetWeight( void ) const;
 	virtual bool			AllowsAutoSwitchTo( void ) const;
@@ -526,7 +527,13 @@ public:
 	virtual void			UpdateVisibility( void );
 
 	virtual void			BoneMergeFastCullBloat( Vector &localMins, Vector &localMaxs, const Vector &thisEntityMins, const Vector &thisEntityMaxs  ) const;
-	virtual bool			OnFireEvent( C_BaseViewModel *pViewModel, const Vector& origin, const QAngle& angles, int event, const char *options ) { return BaseClass::OnFireEvent( pViewModel, origin, angles, event, options ); }
+	virtual bool			OnFireEvent( C_BaseViewModel *pViewModel, const Vector& origin, const QAngle& angles, int event, const char *options ) {
+#if defined USES_ECON_ITEMS
+		return BaseClass::OnFireEvent( pViewModel, origin, angles, event, options );
+#else
+		return false;
+#endif
+	}
 
 	// Should this object cast shadows?
 	virtual ShadowType_t	ShadowCastType();

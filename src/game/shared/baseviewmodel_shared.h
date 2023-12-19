@@ -115,7 +115,7 @@ public:
 	}
 
 	Vector					m_vecLastFacing;
-
+	/*
 	virtual bool			IsViewModel() const { return true; }
 	virtual bool			IsViewModelOrAttachment() const { return true; }
 
@@ -137,7 +137,7 @@ public:
 
 	CNetworkVar(bool, m_bShouldIgnoreOffsetAndAccuracy );
 	virtual void			SetShouldIgnoreOffsetAndAccuracy( bool bIgnore ) { m_bShouldIgnoreOffsetAndAccuracy = bIgnore; }
-
+	*/
 #if !defined( CLIENT_DLL )
 	virtual int				UpdateTransmitState( void );
 	virtual int				ShouldTransmit( const CCheckTransmitInfo *pInfo );

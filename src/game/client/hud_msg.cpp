@@ -21,10 +21,9 @@
 
 /// USER-DEFINED SERVER MESSAGE HANDLERS
 
-bool CHud::MsgFunc_ResetHUD( const CCSUsrMsg_ResetHud& msg )
+void CHud::MsgFunc_ResetHUD( bf_read& msg )
 {
 	ResetHUD();
-	return true;
 }
 
 void CHud::ResetHUD()
@@ -54,9 +53,11 @@ void CHud::ResetHUD()
 // Purpose: 
 //-----------------------------------------------------------------------------
 
-bool CHud::MsgFunc_SendAudio(const CCSUsrMsg_SendAudio& msg )
+void CHud::MsgFunc_SendAudio( bf_read& msg )
 {
+	char szString[2048];
+	msg.ReadString( szString, sizeof( szString ) );
+
 	CLocalPlayerFilter filter;
-	C_BaseEntity::EmitSound( filter, SOUND_FROM_LOCAL_PLAYER, msg.radio_sound().c_str() );
-	return true;
+	C_BaseEntity::EmitSound( filter, SOUND_FROM_LOCAL_PLAYER, szString );
 }

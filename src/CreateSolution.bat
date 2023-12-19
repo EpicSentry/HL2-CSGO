@@ -1,2 +1,2 @@
-devtools\bin\vpc.exe /csgo +csgo_partner /mksln csgo_partner.sln
+devtools\bin\vpc.exe /hl2 +csgo_partner /mksln csgo_partner.sln
 pause
