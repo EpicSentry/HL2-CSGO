@@ -26,6 +26,8 @@ ipch
 .vs/
 Release*/
 Debug*/
+*.db
+*.VC.db
 
 *.vpc.sentinel
 *.vpc_cache
