@@ -1,4 +1,4 @@
-//========= Copyright © 1996-2005, Valve Corporation, All rights reserved. ============//
+//========= Copyright Valve Corporation, All rights reserved. ============//
 //
 // Purpose: 
 //
@@ -17,10 +17,7 @@ public:
 	DECLARE_CLIENTCLASS();
 	DECLARE_CLASS( C_WaterBullet, C_BaseAnimating );
 
-	C_WaterBullet( void ) 
-	{
-		AddToEntityList(ENTITY_LIST_SIMULATE);
-	};
+	C_WaterBullet( void ) {};
 	~C_WaterBullet( void ) {};
 
 	void OnDataChanged( DataUpdateType_t updateType )
@@ -38,7 +35,7 @@ public:
 
 #define	BUBBLES_PER_INCH	0.2
 
-	bool Simulate( void )
+	void AddEntity( void )
 	{
 		Vector	direction = GetAbsOrigin() - m_vecLastOrigin;
 		float	flDist = VectorNormalize( direction );
@@ -88,7 +85,7 @@ public:
 				sParticle->m_flDieTime		= 0.2f;
 
 				sParticle->m_flRoll			= random->RandomInt( 0, 360 );
-				sParticle->m_flRollDelta	= random->RandomInt( -4, 4 );;
+				sParticle->m_flRollDelta	= random->RandomInt( -4, 4 );
 
 				unsigned char color = random->RandomInt( 200, 255 );
 
@@ -107,8 +104,7 @@ public:
 		// Save our last position
 		m_vecLastOrigin = GetAbsOrigin();
 
-		BaseClass::Simulate();
-		return true;
+		BaseClass::AddEntity();
 	}
 
 	bool ShouldDraw( void ) { return true; }

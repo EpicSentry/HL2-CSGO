@@ -1,4 +1,4 @@
-//========= Copyright © 1996-2005, Valve Corporation, All rights reserved. ============//
+//========= Copyright Valve Corporation, All rights reserved. ============//
 //
 // Purpose: 
 //
@@ -19,7 +19,13 @@
 class CBaseHLCombatWeapon : public CBaseCombatWeapon
 {
 #if !defined( CLIENT_DLL )
+#ifndef _XBOX
 	DECLARE_DATADESC();
+#else
+protected:
+	DECLARE_DATADESC();
+private:
+#endif
 #endif
 
 	DECLARE_CLASS( CBaseHLCombatWeapon, CBaseCombatWeapon );
@@ -35,7 +41,6 @@ public:
 	virtual bool	Deploy( void );
 	virtual bool	Holster( CBaseCombatWeapon *pSwitchingTo );
 	virtual void	WeaponIdle( void );
-	virtual bool	SendWeaponAnim( int iActivity );
 
 	virtual void	AddViewmodelBob( CBaseViewModel *viewmodel, Vector &origin, QAngle &angles );
 	virtual	float	CalcViewmodelBob( void );
@@ -47,7 +52,6 @@ public:
 	static const	WeaponProficiencyInfo_t *GetDefaultProficiencyValues();
 
 	virtual void	ItemHolsterFrame( void );
-	virtual bool	IsSpecialSuitAbility( void );	// Weapon can be used as a suit ability
 
 	int				m_iPrimaryAttacks;		// # of primary attacks performed with this weapon
 	int				m_iSecondaryAttacks;	// # of secondary attacks performed with this weapon

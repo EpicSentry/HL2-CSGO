@@ -18,6 +18,7 @@ $Games
 //	"PORTAL2"
 //	"SWARM"
 //	"DOTA"
+	"HL2"
 }
 
 $Include "vpc_scripts\projects.vgc"

@@ -176,6 +176,7 @@ $Project "classcheck"
 $Project "client"
 {
 //	"game/client/client_episodic.vpc"	[($WINDOWS) && $EPISODIC]
+	"game/client/client_hl2.vpc"		[($WINDOWS) && $HL2]
 //	"game/client/client_tf.vpc"			[($WINDOWS) && $TF]
 //	"game/client/client_portal2.vpc"	[($WINDOWS || $X360 || $PS3 || $POSIX) && $PORTAL2]
 //	"game/client/client_swarm.vpc"		[($WINDOWS || $X360) && $SWARM]
@@ -1229,13 +1230,14 @@ $Project "SDKLauncher"
 $Project "server"
 {
 //	"game/server/server_episodic.vpc"	[($WINDOWS) && $EPISODIC]
+	"game/server/server_hl2.vpc"		[($WINDOWS) && $HL2]
 //	"game/server/server_tf.vpc"			[($WINDOWS || $DEDICATED) && $TF]
 //	"game/server/server_portal2.vpc"	[($WINDOWS || $X360 || $PS3|| $POSIX) && $PORTAL2]
 //	"game/server/server_swarm.vpc"		[($WINDOWS || $X360) && $SWARM]
 //	"game/server/server_dota.vpc"		[($WINDOWS) && $DOTA]
 //	"game/server/server_sob.vpc"		[($WINDOWS) && $SOB]
 //	"game/server/server_cstrike.vpc"	[($WINDOWS) && $CSTRIKE]
-	"game/server/server_cstrike15.vpc"	[($DEDICATED || $WINDOWS || $X360 || $PS3 || $OSXALL ||$POSIX)) && $CSGO]
+//	"game/server/server_cstrike15.vpc"	[($DEDICATED || $WINDOWS || $X360 || $PS3 || $OSXALL ||$POSIX)) && $CSGO]
 }
 
 $Project "server_valve"

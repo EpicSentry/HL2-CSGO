@@ -30,6 +30,7 @@ Debug*/
 *.vpc.sentinel
 *.vpc_cache
 *.vcxproj.*
+*.opendb
 
 # OSX/Linux build products
 *.mak
