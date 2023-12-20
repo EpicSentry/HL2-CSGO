@@ -43,7 +43,7 @@ public:
 
 	virtual void			PlayerDecalShoot( IMaterial *material, void *userdata, int entity, const model_t *model, 
 		const Vector& model_origin, const QAngle& model_angles, 
-		const Vector& position, const Vector *saxis, int flags, const color32 &rgbaColor, int nAdditionalDecalFlags ) = 0;
+		const Vector& position, const Vector *saxis, int flags, const color32 &rgbaColor/*, int nAdditionalDecalFlags*/) = 0;
 
 	// Allocate a dynamic world light ( key is the entity to whom it is associated )
 	virtual	dlight_t	*CL_AllocDlight			( int key ) = 0;

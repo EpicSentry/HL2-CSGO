@@ -38,7 +38,7 @@ public:
 	bool ShouldDraw( void );
 	virtual void	ApplySchemeSettings( vgui::IScheme *scheme );
 	virtual void	Paint( void );
-	bool MsgFunc_Geiger(const CCSUsrMsg_Geiger &msg);
+	bool MsgFunc_Geiger( bf_read& msg );
 
 	CUserMessageBinder m_UMCMsgGeiger;
 	
@@ -91,10 +91,10 @@ void CHudGeiger::VidInit(void)
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-bool CHudGeiger::MsgFunc_Geiger( const CCSUsrMsg_Geiger &msg )
+bool CHudGeiger::MsgFunc_Geiger( bf_read& msg )
 {
 	// update geiger data
-	m_iGeigerRange = msg.range();
+	m_iGeigerRange = msg.ReadByte();
 	m_iGeigerRange = m_iGeigerRange << 2;
 	return true;
 }

@@ -497,7 +497,7 @@ int C_BaseCombatWeapon::DrawModel( int flags, const RenderableInstance_t &instan
 
 	return BaseClass::DrawModel( flags, instance );
 }
-
+/* conn - comment out stupid csgo bullshit that for some reason is in base class?
 #ifdef _DEBUG
 	ConVar stickers_enabled_thirdperson( "stickers_enabled_thirdperson", "1", FCVAR_DEVELOPMENTONLY, "Enable work-in-progress stickers on worldmodels." );
 
@@ -648,7 +648,7 @@ void C_BaseCombatWeapon::ApplyThirdPersonStickers( C_BaseAnimating *pWeaponModel
 	//Msg( "Applied stickers to: %s\n", this->GetName() );
 	
 }
-
+*/
 //-----------------------------------------------------------------------------
 // tool recording
 //-----------------------------------------------------------------------------

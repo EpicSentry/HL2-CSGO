@@ -110,12 +110,6 @@ void RecvProxy_WeaponWorldmodel( const CRecvProxyData *pData, void *pStruct, voi
 void RecvProxy_WeaponWorldmodelCosmetics( const CRecvProxyData *pData, void *pStruct, void *pOut )
 {
 	RecvProxy_IntToEHandle( pData, pStruct, pOut );
-	
-	CBaseWeaponWorldModel *pWeaponWorldModel = (CBaseWeaponWorldModel *) pStruct;
-	if ( pWeaponWorldModel )
-	{
-		pWeaponWorldModel->ApplyCustomMaterialsAndStickers();
-	}
 }
 
 int CBaseWeaponWorldModel::DrawModel( int flags, const RenderableInstance_t &instance )
@@ -128,28 +122,6 @@ int CBaseWeaponWorldModel::DrawModel( int flags, const RenderableInstance_t &ins
 
 void CBaseWeaponWorldModel::OnDataChanged( DataUpdateType_t type )
 {
-	// make sure world model custom materials and stickers are up-to-date
-	CBaseCombatWeapon *pWeaponParent = m_hCombatWeaponParent->Get();
-	if ( pWeaponParent )
-	{
-		if ( IsVisible() && GetCustomMaterialCount() != pWeaponParent->GetCustomMaterialCount() )
-		{
-			ApplyCustomMaterialsAndStickers();
-		}
-
-		// extra sticker application check
-		if ( IsVisible() && ShouldDraw() && !m_bStickersApplied && pWeaponParent )
-		{
-			m_bStickersApplied = true;
-			pWeaponParent->ApplyThirdPersonStickers( this );
-		}
-
-		if ( !pWeaponParent->GetOwner() )
-		{
-			pWeaponParent->ApplyThirdPersonStickers( pWeaponParent );
-		}
-	}
-
 	if ( type == DATA_UPDATE_CREATED )
 	{
 		ResetCachedBoneIndices();
@@ -437,27 +409,6 @@ bool CBaseWeaponWorldModel::ShouldDraw( void )
 	}
 	
 	return true;
-}
-
-void CBaseWeaponWorldModel::ApplyCustomMaterialsAndStickers( void )
-{
-	CBaseCombatWeapon *pWeaponParent = m_hCombatWeaponParent->Get();
-	if ( !pWeaponParent )
-		return;
-
-	// inherit custom materials
-	if ( pWeaponParent->GetCustomMaterialCount() != GetCustomMaterialCount() )
-	{
-		ClearCustomMaterials();
-		for ( int i = 0; i < pWeaponParent->GetCustomMaterialCount(); i++ )
-		{
-			SetCustomMaterial( pWeaponParent->GetCustomMaterial( i ), i );
-		}
-		SetAllowFastPath( false );
-	}
-
-	// apply stickers
-	pWeaponParent->ApplyThirdPersonStickers( this );
 }
 
 #else

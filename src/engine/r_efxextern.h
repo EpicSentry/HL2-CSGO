@@ -20,7 +20,7 @@ int			Draw_DecalIndexFromName		( char *name, bool *found );
 void		R_DecalShoot				( int textureIndex, int entity, const model_t *model, 
 										  const Vector& position, const Vector *saxis, int flags, const color32 &rgbaColor, const Vector *pNormal, int nAdditionalDecalFlags );
 void		R_PlayerDecalShoot			( IMaterial *material, void *userdata, int entity, const model_t *model, 
-										  const Vector& position, const Vector *saxis, int flags, const color32 &rgbaColor, int nAdditionalDecalFlags );
+										  const Vector& position, const Vector *saxis, int flags, const color32 &rgbaColor/*, int nAdditionalDecalFlags*/);
 dlight_t	*CL_AllocDlight				( int key );
 dlight_t	*CL_AllocElight				( int key );
 

@@ -52,8 +52,6 @@ public:
 	// for shared code, use the same function name
 	virtual int		GetNumPlayers( void ) { return Get_Number_Players(); }
 
-	virtual int		GetGGLeader( int nTeam );
-
 	int		GetTeamNumber() const;
 
 	void	RemoveAllPlayers();

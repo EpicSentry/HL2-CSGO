@@ -35,6 +35,8 @@ public:
   	bool			HasCrosshair( void ) { return ( m_pCrosshair != NULL ); }
 	bool			ShouldDraw();
 
+	// any UI element that wants to be at the aim point can use this to figure out where to draw
+	static void	GetDrawPosition( float* pX, float* pY, bool* pbBehindCamera, QAngle angleCrosshairOffset = vec3_angle );
 protected:
 	virtual void	ApplySchemeSettings( vgui::IScheme *scheme );
 	virtual void	Paint();

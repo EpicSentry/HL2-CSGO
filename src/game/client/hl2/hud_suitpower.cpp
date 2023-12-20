@@ -29,7 +29,7 @@ DECLARE_HUDELEMENT( CHudSuitPower );
 //-----------------------------------------------------------------------------
 CHudSuitPower::CHudSuitPower( const char *pElementName ) : CHudElement( pElementName ), BaseClass( NULL, "HudSuitPower" )
 {
-	vgui::Panel *pParent = g_pClientMode->GetViewport();
+	vgui::Panel *pParent = GetClientMode()->GetViewport();
 	SetParent( pParent );
 
 	SetHiddenBits( HIDEHUD_HEALTH | HIDEHUD_PLAYERDEAD | HIDEHUD_NEEDSUIT );
@@ -91,12 +91,12 @@ void CHudSuitPower::OnThink( void )
 	if ( flCurrentPower >= 100.0f && m_flSuitPower < 100.0f )
 	{
 		// we've reached max power
-		g_pClientMode->GetViewportAnimationController()->StartAnimationSequence("SuitAuxPowerMax");
+		GetClientMode()->GetViewportAnimationController()->StartAnimationSequence("SuitAuxPowerMax");
 	}
 	else if ( flCurrentPower < 100.0f && (m_flSuitPower >= 100.0f || m_flSuitPower == SUITPOWER_INIT) )
 	{
 		// we've lost power
-		g_pClientMode->GetViewportAnimationController()->StartAnimationSequence("SuitAuxPowerNotMax");
+		GetClientMode()->GetViewportAnimationController()->StartAnimationSequence("SuitAuxPowerNotMax");
 	}
 
 	bool flashlightActive = pPlayer->IsFlashlightActive();

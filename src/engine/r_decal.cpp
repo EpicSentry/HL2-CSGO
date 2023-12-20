@@ -1391,13 +1391,13 @@ void R_DecalShoot( int textureIndex, int entity, const model_t *model, const Vec
 //-----------------------------------------------------------------------------
 
 void R_PlayerDecalShoot( IMaterial *material, void *userdata, int entity, const model_t *model, 
-	const Vector& position, const Vector *saxis, int flags, const color32 &rgbaColor, int nAdditionalDecalFlags )
+	const Vector& position, const Vector *saxis, int flags, const color32 &rgbaColor /*, int nAdditionalDecalFlags*/)
 {
 	// The userdata that is passed in is actually the sticker kit ID
-	// it cannot be zero
+	// it canno	t be zero
 	Assert( userdata != 0 );
 
-#if 0 // <vitaliy>: decals are implemented differently in CS:GO and time out by game rules
+#ifndef CSTRIKE15 // <vitaliy>: decals are implemented differently in CS:GO and time out by game rules
 	//
 	// Linear search through decal pool to retire any other decals this
 	// player has sprayed.  It appears that multiple decals can be
@@ -1430,7 +1430,7 @@ void R_PlayerDecalShoot( IMaterial *material, void *userdata, int entity, const 
 
 	// set this to be a player spray so it is timed out appropriately.
 	flags |= FDECAL_PLAYERSPRAY;
-	flags |= R_ConvertToPrivateDecalFlags( nAdditionalDecalFlags );
+	// flags |= R_ConvertToPrivateDecalFlags( nAdditionalDecalFlags );
 
 	R_DecalShoot_( material, entity, model, position, saxis, flags, rgbaColor, NULL, userdata );
 }

@@ -338,9 +338,6 @@ END_RECV_TABLE()
 		RecvPropEHandle		( RECVINFO( m_hViewEntity ) ),		// L4D: send view entity to everyone for first-person spectating
 		RecvPropBool		( RECVINFO( m_bShouldDrawPlayerWhileUsingViewEntity ) ),
 
-		RecvPropFloat	(RECVINFO(m_flDuckAmount)),
-		RecvPropFloat	(RECVINFO(m_flDuckSpeed)),
-
 	END_RECV_TABLE()
 
 BEGIN_PREDICTION_DATA_NO_BASE( CPlayerState )
@@ -467,9 +464,6 @@ BEGIN_PREDICTION_DATA( C_BasePlayer )
 	DEFINE_PRED_FIELD( m_Debug_LinearAccel, FIELD_VECTOR, FTYPEDESC_INSENDTABLE ),
 #endif
 
-	DEFINE_PRED_FIELD( m_flDuckAmount, FIELD_FLOAT, FTYPEDESC_INSENDTABLE ),
-	DEFINE_PRED_FIELD( m_flDuckSpeed, FIELD_FLOAT, FTYPEDESC_INSENDTABLE ),
-
 END_PREDICTION_DATA()
 
 #if !defined( PORTAL2 )
@@ -561,10 +555,6 @@ C_BasePlayer::C_BasePlayer() : m_iv_vecViewOffset( "C_BasePlayer::m_iv_vecViewOf
 	m_EyeAngleOffset.Init();
 	m_AimDirection.Init();
 
-	m_flDuckAmount = 0.0f;
-	m_flDuckSpeed = CS_PLAYER_DUCK_SPEED_IDEAL;
-	m_vecLastPositionAtFullCrouchSpeed = vec2_origin;
-
 	m_bHasWalkMovedSinceLastJump = false;
 }
 
@@ -599,30 +589,11 @@ C_BasePlayer::~C_BasePlayer()
 	}
 }
 
-bool MsgFunc_SendLastKillerDamageToClient( const CCSUsrMsg_SendLastKillerDamageToClient &msg )
-{
-	int nNumHitsGiven = msg.num_hits_given();
-	int nDamageGiven = msg.damage_given();
-	int nNumHitsTaken = msg.num_hits_taken();
-	int nDamageTaken = msg.damage_taken();
-
-	C_BasePlayer *pPlayer = C_BasePlayer::GetLocalPlayer();
-	if ( pPlayer )
-	{
-		pPlayer->SetLastKillerDamageAndFreezeframe( nDamageTaken, nNumHitsTaken, nDamageGiven, nNumHitsGiven );
-	}
-
-	return true;
-}
-
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
 void C_BasePlayer::Spawn( void )
 {
-	m_UMCMsg_SendLastKillerDamageToClient.Bind< CS_UM_SendLastKillerDamageToClient, CCSUsrMsg_SendLastKillerDamageToClient >
-		( UtlMakeDelegate( MsgFunc_SendLastKillerDamageToClient ));
-
 	// Clear all flags except for FL_FULLEDICT
 	ClearFlags();
 	AddFlag( FL_CLIENT );
@@ -976,77 +947,6 @@ void C_BasePlayer::CheckForLocalPlayer( int nSplitScreenSlot )
 		UpdateVisibilityAllEntities();
 	}
 }
-
-
-
-
-
-void C_BasePlayer::ClientThink()
-{
-	//////////////////////////////////////////////
-	//  spec_lock_to_accountid
-	//
-	//	Lock observer target to the specified account id
-	////////////////////////////////////////////////////////
-
-	static float flNextCheck = Plat_FloatTime( ) + 5;
-
-	if ( Plat_FloatTime( ) >= flNextCheck &&
-		spec_lock_to_accountid.GetString( ) &&
-		spec_lock_to_accountid.GetString( )[0] &&
-		IsObserver( ) && 
-		IsLocalPlayer( this ) )
-	{
-		bool bSwitchTargets = true;
-
-		if ( GetObserverTarget( ) && ( GetObserverMode( ) == OBS_MODE_IN_EYE || GetObserverMode( ) == OBS_MODE_CHASE ) )
-		{
-			C_CSPlayer *pPlayer = dynamic_cast< C_CSPlayer* >( GetObserverTarget( ) );
-
-			if ( pPlayer )
-			{
-				CSteamID SteamID;
-				pPlayer->GetSteamID( &SteamID );
-
-				if ( SteamID.GetAccountID( ) == CSteamID( spec_lock_to_accountid.GetString( ) ).GetAccountID() )
-				{
-					bSwitchTargets = false;
-				}
-			}
-		}
-
-		if ( bSwitchTargets )
-		{
-			DevMsg( "spec_lock_to_accountid: Attempting to switch spec target to %s. Clear out the convar spec_lock_to_accountid to stop.\n", spec_lock_to_accountid.GetString( ) );
-
- 			if ( g_bEngineIsHLTV )
-			{
-				// we can only switch primary spectator targets if PVS isnt locked by auto-director
-				if ( !HLTVCamera( )->IsPVSLocked( ) )
-				{
-					HLTVCamera( )->SpecPlayerByAccountID( spec_lock_to_accountid.GetString( ) );
-
-					HLTVCamera( )->SetMode( OBS_MODE_IN_EYE );
-						
-					//HLTVCamera()->SetAutoDirector( C_HLTVCamera::AUTODIRECTOR_PAUSED );
-					HLTVCamera( )->SetAutoDirector( C_HLTVCamera::AUTODIRECTOR_OFF );
-				}
-			}
-			else
-			{
-				char szCmd[ 64 ];
-				Q_snprintf( szCmd, sizeof( szCmd ), "spec_player_by_accountid %s\n", spec_lock_to_accountid.GetString() );
-				engine->ServerCmd( szCmd );
-
-				Q_snprintf( szCmd, sizeof( szCmd ), "spec_mode %i\n", OBS_MODE_IN_EYE );
-				engine->ServerCmd( szCmd );
-			}			
-		}
-
-		flNextCheck = Plat_FloatTime( ) + 5;
-	}
-}
-
 
 void C_BasePlayer::SetAsLocalPlayer()
 {
@@ -2116,10 +2016,6 @@ void C_BasePlayer::CalcChaseCamView(Vector& eyeOrigin, QAngle& eyeAngles, float&
 	{
 		// if this is a train, we want to be back a little further so we can see more of it
 		flMaxDistance *= 2.5f;
-	}
-	else if ( pGrenade )
-	{
-		flMaxDistance = 64.0f;
 	}
 	m_flObserverChaseDistance = clamp( m_flObserverChaseDistance, 16, flMaxDistance );
 	
@@ -3763,23 +3659,6 @@ bool C_BasePlayer::GetSteamID( CSteamID *pID )
 #endif //!defined( NO_STEAM ) && !defined( NO_STEAM_GAMECOORDINATOR )
 
 	return false;
-}
-
-void C_BasePlayer::OnTimeJumpAllPlayers()
-{
-	for ( int i = 1; i <= MAX_PLAYERS; i++ )
-	{
-		C_CSPlayer *pPlayer = ToCSPlayer( UTIL_PlayerByIndex( i ) );
-		if ( pPlayer )
-		{
-			pPlayer->OnTimeJump();
-		}
-	}
-}
-
-
-void C_BasePlayer::OnTimeJump()
-{
 }
 
 void CC_DumpClientSoundscapeData( const CCommand& args )

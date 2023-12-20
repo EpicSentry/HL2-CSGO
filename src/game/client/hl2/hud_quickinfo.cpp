@@ -94,7 +94,7 @@ DECLARE_HUDELEMENT( CHUDQuickInfo );
 CHUDQuickInfo::CHUDQuickInfo( const char *pElementName ) :
 	CHudElement( pElementName ), BaseClass( NULL, "HUDQuickInfo" )
 {
-	vgui::Panel *pParent = g_pClientMode->GetViewport();
+	vgui::Panel *pParent = GetClientMode()->GetViewport();
 	SetParent( pParent );
 
 	SetHiddenBits( HIDEHUD_CROSSHAIR );
@@ -130,13 +130,13 @@ void CHUDQuickInfo::VidInit( void )
 {
 	Init();
 
-	m_icon_c = gHUD.GetIcon( "crosshair" );
-	m_icon_rb = gHUD.GetIcon( "crosshair_right_full" );
-	m_icon_lb = gHUD.GetIcon( "crosshair_left_full" );
-	m_icon_rbe = gHUD.GetIcon( "crosshair_right_empty" );
-	m_icon_lbe = gHUD.GetIcon( "crosshair_left_empty" );
-	m_icon_rbn = gHUD.GetIcon( "crosshair_right" );
-	m_icon_lbn = gHUD.GetIcon( "crosshair_left" );
+	m_icon_c = GetHud().GetIcon( "crosshair" );
+	m_icon_rb = GetHud().GetIcon( "crosshair_right_full" );
+	m_icon_lb = GetHud().GetIcon( "crosshair_left_full" );
+	m_icon_rbe = GetHud().GetIcon( "crosshair_right_empty" );
+	m_icon_lbe = GetHud().GetIcon( "crosshair_left_empty" );
+	m_icon_rbn = GetHud().GetIcon( "crosshair_right" );
+	m_icon_lbn = GetHud().GetIcon( "crosshair_left" );
 }
 
 
@@ -161,7 +161,7 @@ void CHUDQuickInfo::DrawWarning( int x, int y, CHudTexture *icon, float &time )
 	
 	// Update our time
 	time -= (gpGlobals->frametime * 200.0f);
-	Color caution = gHUD.m_clrCaution;
+	Color caution = GetHud().m_clrCaution;
 	caution[3] = scale * 255;
 
 	icon->DrawSelf( x, y, caution );
@@ -210,11 +210,11 @@ void CHUDQuickInfo::OnThink()
 
 		if ( bFadeOut )
 		{
-			g_pClientMode->GetViewportAnimationController()->RunAnimationCommand( this, "Alpha", 0.0f, 0.0f, 0.25f, vgui::AnimationController::INTERPOLATOR_LINEAR );
+			GetClientMode()->GetViewportAnimationController()->RunAnimationCommand( this, "Alpha", 0.0f, 0.0f, 0.25f, vgui::AnimationController::INTERPOLATOR_LINEAR );
 		}
 		else
 		{
-			g_pClientMode->GetViewportAnimationController()->RunAnimationCommand( this, "Alpha", QUICKINFO_BRIGHTNESS_FULL, 0.0f, QUICKINFO_FADE_IN_TIME, vgui::AnimationController::INTERPOLATOR_LINEAR );
+			GetClientMode()->GetViewportAnimationController()->RunAnimationCommand( this, "Alpha", QUICKINFO_BRIGHTNESS_FULL, 0.0f, QUICKINFO_FADE_IN_TIME, vgui::AnimationController::INTERPOLATOR_LINEAR );
 		}
 	}
 	else if ( !m_bFadedOut )
@@ -225,14 +225,14 @@ void CHUDQuickInfo::OnThink()
 			if ( !m_bDimmed )
 			{
 				m_bDimmed = true;
-				g_pClientMode->GetViewportAnimationController()->RunAnimationCommand( this, "Alpha", QUICKINFO_BRIGHTNESS_DIM, 0.0f, QUICKINFO_FADE_OUT_TIME, vgui::AnimationController::INTERPOLATOR_LINEAR );
+				GetClientMode()->GetViewportAnimationController()->RunAnimationCommand( this, "Alpha", QUICKINFO_BRIGHTNESS_DIM, 0.0f, QUICKINFO_FADE_OUT_TIME, vgui::AnimationController::INTERPOLATOR_LINEAR );
 			}
 		}
 		else if ( m_bDimmed )
 		{
 			// Fade back up, we're active
 			m_bDimmed = false;
-			g_pClientMode->GetViewportAnimationController()->RunAnimationCommand( this, "Alpha", QUICKINFO_BRIGHTNESS_FULL, 0.0f, QUICKINFO_FADE_IN_TIME, vgui::AnimationController::INTERPOLATOR_LINEAR );
+			GetClientMode()->GetViewportAnimationController()->RunAnimationCommand(this, "Alpha", QUICKINFO_BRIGHTNESS_FULL, 0.0f, QUICKINFO_FADE_IN_TIME, vgui::AnimationController::INTERPOLATOR_LINEAR);
 		}
 	}
 }
@@ -312,7 +312,7 @@ void CHUDQuickInfo::Paint()
 		}
 	}
 
-	Color clrNormal = gHUD.m_clrNormal;
+	Color clrNormal = GetHud().m_clrNormal;
 	clrNormal[3] = 255 * scalar;
 	m_icon_c->DrawSelf( xCenter, yCenter, clrNormal );
 
@@ -338,7 +338,7 @@ void CHUDQuickInfo::Paint()
 		float healthPerc = (float) health / 100.0f;
 		healthPerc = clamp( healthPerc, 0.0f, 1.0f );
 
-		Color healthColor = m_warnHealth ? gHUD.m_clrCaution : gHUD.m_clrNormal;
+		Color healthColor = m_warnHealth ? GetHud().m_clrCaution : GetHud().m_clrNormal;
 		
 		if ( m_warnHealth )
 		{
@@ -349,7 +349,7 @@ void CHUDQuickInfo::Paint()
 			healthColor[3] = 255 * scalar;
 		}
 		
-		gHUD.DrawIconProgressBar( xCenter - (m_icon_lb->Width() * 2), yCenter, m_icon_lb, m_icon_lbe, ( 1.0f - healthPerc ), healthColor, CHud::HUDPB_VERTICAL );
+		GetHud().DrawIconProgressBar(xCenter - (m_icon_lb->Width() * 2), yCenter, m_icon_lb, m_icon_lbe, (1.0f - healthPerc), healthColor, CHud::HUDPB_VERTICAL);
 	}
 
 	// Update our ammo

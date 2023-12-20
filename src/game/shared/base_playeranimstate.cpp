@@ -577,7 +577,7 @@ void CBasePlayerAnimState::EstimateYaw()
 // Purpose: Override for backpeddling
 // Input  : dt - 
 //-----------------------------------------------------------------------------
-void CBasePlayerAnimState::ComputePoseParam_MoveYaw( CStudioHdr *pStudioHdr )
+void CBasePlayerAnimState::ComputePoseParam_MoveYaw( CStudioHdr* pStudioHdr )
 {
 	VPROF( "CBasePlayerAnimState::ComputePoseParam_MoveYaw" );
 
@@ -596,7 +596,7 @@ void CBasePlayerAnimState::ComputePoseParam_MoveYaw( CStudioHdr *pStudioHdr )
 		return;
 
 	// view direction relative to movement
-	float flYaw;	 
+	float flYaw;
 
 	EstimateYaw();
 
@@ -616,23 +616,22 @@ void CBasePlayerAnimState::ComputePoseParam_MoveYaw( CStudioHdr *pStudioHdr )
 	flYaw = -flYaw;
 	flYaw = flYaw - (int)(flYaw / 360) * 360;
 
-	if (flYaw < -180)
+	if ( flYaw < -180 )
 	{
 		flYaw = flYaw + 360;
 	}
-	else if (flYaw > 180)
+	else if ( flYaw > 180 )
 	{
 		flYaw = flYaw - 360;
 	}
 
-	
+
 	if ( m_AnimConfig.m_LegAnimType == LEGANIM_9WAY )
 	{
+#ifndef CLIENT_DLL
 		//Adrian: Make the model's angle match the legs so the hitboxes match on both sides.
-		//[msmith]: Since bounding box code uses the entities local angle, we need the local angle to match
-		//			the render angle on both the server AND the client.  The server for hit tests, the client
-		//			for proper visibility culling.
 		GetOuter()->SetLocalAngles( QAngle( 0, m_flCurrentFeetYaw, 0 ) );
+#endif
 
 		int iMoveX = GetOuter()->LookupPoseParameter( pStudioHdr, "move_x" );
 		int iMoveY = GetOuter()->LookupPoseParameter( pStudioHdr, "move_y" );
@@ -642,92 +641,14 @@ void CBasePlayerAnimState::ComputePoseParam_MoveYaw( CStudioHdr *pStudioHdr )
 		bool bIsMoving;
 		float flPlaybackRate = CalcMovementPlaybackRate( &bIsMoving );
 
-#ifdef CLIENT_DLL
-		Vector vel;
-		GetOuterAbsVelocity( vel );
-		bIsMoving = ( vel.Length2D() > 0 );
-#endif
-
 		// Setup the 9-way blend parameters based on our speed and direction.
 		Vector2D vCurMovePose( 0, 0 );
 
-		m_flPoseParamTargetDampenedScaleIdeal = Approach( flPlaybackRate, m_flPoseParamTargetDampenedScaleIdeal, gpGlobals->frametime * POSE_PARAM_DELTA_DAMPEN );
-
 		if ( bIsMoving )
 		{
-			vCurMovePose.x = cos( DEG2RAD( flYaw ) );
-			vCurMovePose.y = -sin( DEG2RAD( flYaw ) );
-			// movement pose parameters on the diagonals are encoded at 1 instead of 0.707 (cos 45)
-			// scale to the outside of a box instead of the outside of a circle.
-			float scale = fabs( vCurMovePose.x );
-			float scale2 = fabs( vCurMovePose.y );
-			if ( scale2 > scale ) scale = scale2;
-			if ( scale > 0.01f )
-			{
-				scale = 1.0f / scale;
-				vCurMovePose.x *= scale;
-				vCurMovePose.y *= scale;
-			}
-
-#ifdef CLIENT_DLL
-			// find the max speed the animation will move in the current direction
-
-			//If these aren't applied here, the legs stutter. Even though they're re-applied in a sec
-			GetOuter()->SetPoseParameter( pStudioHdr, iMoveX, vCurMovePose.x );
-			GetOuter()->SetPoseParameter( pStudioHdr, iMoveY, vCurMovePose.y );
-
-			Vector vecAnimatedVel;
-			GetOuter()->GetBlendedLinearVelocity( &vecAnimatedVel );
-			float flAnimatedSpeed = vecAnimatedVel.Length2D();
-
-			// find how to scale the current animation down to the desired speed
-			Vector vel;
-			GetOuterAbsVelocity( vel );
-			float flMovementSpeed = vel.Length2D();
-
-			if ( flAnimatedSpeed > CS_PLAYER_SPEED_RUN )
-				flAnimatedSpeed = flMovementSpeed;
-
-			if ( flAnimatedSpeed < MOVEMENT_MINIMUM_ANIMATED_SPEED )
-			{
-				// we're moving so slowly (either just starting or just stopping) that current playback rate is almost nothing.
-				flPlaybackRate = flMovementSpeed / ( MOVEMENT_MINIMUM_ANIMATED_SPEED * 2.0f );
-			}
-			else
-			{
-				
-				flPlaybackRate = flMovementSpeed / flAnimatedSpeed;
-			}
-
-			// player is moving less than what's animated, scale pose parameters back towards 0,0
-			if ( flPlaybackRate < 1.0f )
-			{
-				if ( flPlaybackRate > 0.08f )
-				{
-					vCurMovePose.x *= flPlaybackRate;
-					vCurMovePose.y *= flPlaybackRate;
-					GetOuter()->SetPlaybackRate( flPlaybackRate );
-				}
-				else
-				{
-					vCurMovePose.x *= 0.08f;
-					vCurMovePose.y *= 0.08f;
-					GetOuter()->SetPlaybackRate( 1.0f );
-				}
-			}
-			else
-			{
-				// speed up the animation to match the needed motion, but only so far
-				flPlaybackRate = clamp( flPlaybackRate, 1.0f, MOVEMENT_MAXIMUM_PLAYBACK_RATE );
-				GetOuter()->SetPlaybackRate( flPlaybackRate );
-			}
-#endif
-			vCurMovePose.x *= m_flPoseParamTargetDampenedScaleIdeal;
-			vCurMovePose.y *= m_flPoseParamTargetDampenedScaleIdeal;
-
+			vCurMovePose.x = cos( DEG2RAD( flYaw ) ) * flPlaybackRate;
+			vCurMovePose.y = -sin( DEG2RAD( flYaw ) ) * flPlaybackRate;
 		}
-
-
 
 		GetOuter()->SetPoseParameter( pStudioHdr, iMoveX, vCurMovePose.x );
 		GetOuter()->SetPoseParameter( pStudioHdr, iMoveY, vCurMovePose.y );
@@ -746,37 +667,35 @@ void CBasePlayerAnimState::ComputePoseParam_MoveYaw( CStudioHdr *pStudioHdr )
 			// This makes the 8-way blend act like a 9-way blend by blending to 
 			// an idle sequence as he slows down.
 #if defined(CLIENT_DLL)
-#ifndef INFESTED_DLL
 			bool bIsMoving;
-			CAnimationLayer *pLayer = m_pOuter->GetAnimOverlay( MAIN_IDLE_SEQUENCE_LAYER );
-			
-			pLayer->SetWeight( 1 - CalcMovementPlaybackRate( &bIsMoving ) );
+			CAnimationLayer* pLayer = m_pOuter->GetAnimOverlay( MAIN_IDLE_SEQUENCE_LAYER );
+
+			pLayer->m_flWeight = 1 - CalcMovementPlaybackRate( &bIsMoving );
 			if ( !bIsMoving )
 			{
-				pLayer->SetWeight( 1 );
+				pLayer->m_flWeight = 1;
 			}
 
 			if ( ShouldChangeSequences() )
 			{
 				// Whenever this layer stops blending, we can choose a new idle sequence to blend to, so he 
 				// doesn't always use the same idle.
-				if ( pLayer->GetWeight() < 0.02f || m_iCurrent8WayIdleSequence == -1 )
+				if ( pLayer->m_flWeight < 0.02f || m_iCurrent8WayIdleSequence == -1 )
 				{
 					m_iCurrent8WayIdleSequence = m_pOuter->SelectWeightedSequence( ACT_IDLE );
 					m_iCurrent8WayCrouchIdleSequence = m_pOuter->SelectWeightedSequence( ACT_CROUCHIDLE );
 				}
 
 				if ( m_eCurrentMainSequenceActivity == ACT_CROUCHIDLE || m_eCurrentMainSequenceActivity == ACT_RUN_CROUCH )
-					pLayer->SetSequence( m_iCurrent8WayCrouchIdleSequence );
+					pLayer->m_nSequence = m_iCurrent8WayCrouchIdleSequence;
 				else
-					pLayer->SetSequence( m_iCurrent8WayIdleSequence );
+					pLayer->m_nSequence = m_iCurrent8WayIdleSequence;
 			}
-			
-			pLayer->SetPlaybackRate( 1 );
-			pLayer->SetCycle( pLayer->GetCycle() + m_pOuter->GetSequenceCycleRate( pStudioHdr, pLayer->GetSequence() ) * gpGlobals->frametime );
-			pLayer->SetCycle( fmod( pLayer->GetCycle(), 1 ) );
-			pLayer->SetOrder( MAIN_IDLE_SEQUENCE_LAYER );
-#endif
+
+			pLayer->m_flPlaybackRate = 1;
+			pLayer->m_flCycle += m_pOuter->GetSequenceCycleRate( pStudioHdr, pLayer->m_nSequence ) * gpGlobals->frametime;
+			pLayer->m_flCycle = fmod( pLayer->m_flCycle, 1 );
+			pLayer->m_nOrder = MAIN_IDLE_SEQUENCE_LAYER;
 #endif
 		}
 	}

@@ -1558,6 +1558,7 @@ float CInput::HandleMotionControllerInputSmoothing( float flDeadZonePct, float v
 //-----------------------------------------------------------------------------
 void CInput::MotionControllerMove( float frametime, CUserCmd *cmd )
 {
+	// conn - this probably aint worth it
 	int nSlot = GET_ACTIVE_SPLITSCREEN_SLOT();
 
 	C_CSPlayer* pPlayer = C_CSPlayer::GetLocalCSPlayer();

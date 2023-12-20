@@ -190,7 +190,6 @@ public:
 	bool HoldsPlayerAnimations( void );
 
 #ifdef CLIENT_DLL
-	void ApplyCustomMaterialsAndStickers( void );
 	virtual void	FireEvent( const Vector& origin, const QAngle& angles, int event, const char *options );
 	virtual bool	ShouldDraw( void ) OVERRIDE;
 	virtual void	OnDataChanged( DataUpdateType_t updateType );
@@ -611,9 +610,6 @@ public:
 	virtual IClientModelRenderable*	GetClientModelRenderable();
 
 	static CUtlLinkedList< CBaseCombatWeapon * >& GetWeaponList( void );
-
-
-	void					ApplyThirdPersonStickers( C_BaseAnimating *pWeaponModelTargetOverride = NULL );
 
 #endif // End client-only methods
 

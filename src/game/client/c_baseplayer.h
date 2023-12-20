@@ -94,10 +94,6 @@ public:
 
 	virtual void	PreDataUpdate( DataUpdateType_t updateType );
 	virtual void	PostDataUpdate( DataUpdateType_t updateType );
-	virtual void	OnTimeJump();
-	static void OnTimeJumpAllPlayers();
-	
-	virtual void	ClientThink( ) OVERRIDE;
 
 	virtual void	ReceiveMessage( int classID, bf_read &msg );
 
@@ -556,10 +552,6 @@ public:
 
 public:
 	int m_StuckLast;
-
-	CNetworkVar( float, m_flDuckAmount );
-	CNetworkVar( float, m_flDuckSpeed );
-	Vector2D m_vecLastPositionAtFullCrouchSpeed;
 
 	// Data for only the local player
 	CNetworkVarEmbedded( CPlayerLocalData, m_Local );

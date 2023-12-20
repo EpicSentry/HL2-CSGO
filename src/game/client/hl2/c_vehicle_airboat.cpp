@@ -243,7 +243,7 @@ void C_PropAirboat::DrawHudElements( )
 
 	MDLCACHE_CRITICAL_SECTION();
 
-	CHudTexture *pIcon = gHUD.GetIcon( IsX360() ? "crosshair_default" : "plushair" );
+	CHudTexture *pIcon = GetHud().GetIcon(IsX360() ? "crosshair_default" : "plushair");
 	if ( pIcon != NULL )
 	{
 		float x, y;
@@ -276,7 +276,7 @@ void C_PropAirboat::DrawHudElements( )
 		x -= pIcon->Width() / 2; 
 		y -= pIcon->Height() / 2; 
 		
-		pIcon->DrawSelf( x, y, gHUD.m_clrNormal );
+		pIcon->DrawSelf( x, y, GetHud().m_clrNormal );
 	}
 }
 

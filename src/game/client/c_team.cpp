@@ -242,16 +242,6 @@ void C_Team::ClientThink()
 {
 }
 
-int C_Team::GetGGLeader( int nTeam )
-{
-	if ( nTeam == TEAM_CT )
-		return m_nGGLeaderEntIndex_CT;
-	else if ( nTeam == TEAM_TERRORIST )
-		return m_nGGLeaderEntIndex_T;
-
-	return -1;
-}
-
 //=================================================================================================
 // GLOBAL CLIENT TEAM HANDLING
 //=================================================================================================

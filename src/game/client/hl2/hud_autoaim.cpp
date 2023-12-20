@@ -452,7 +452,7 @@ void CHUDAutoAim::Paint()
 		vert[3].Init( Vector2D( xCenter + xMod, yCenter - yMod ), uv22 );
 
 		Color	clr;
-		clr = gHUD.m_clrNormal;
+		clr = GetHud().m_clrNormal;
 		int r,g,b,a;
 		clr.GetColor( r,g,b,a );
 
