@@ -383,7 +383,7 @@ void FileWeaponInfo_t::Parse( KeyValues *pKeyValuesData, const char *szWeaponNam
 		}
 	}
 }
-
+/*
 const char* FileWeaponInfo_t::GetWorldModel( const CEconItemView* pWepView, int iTeam ) const
 {
 	if ( pWepView && pWepView->IsValid() )
@@ -469,7 +469,7 @@ int FileWeaponInfo_t::GetPrimaryAmmoType( const CEconItemView* pWepView ) const
 	return iAmmoType;
 }
 
-
+*/
 static int WeaponInfoLookupCompare( WeaponInfoLookup * const * src1, WeaponInfoLookup * const * src2 )
 {
 	if ( ( *src1 )->m_iszAttribClassName.Get() == ( *src2 )->m_iszAttribClassName.Get() )
@@ -515,6 +515,71 @@ CON_COMMAND_F ( weapon_reload_database, "Reload the weapon database", FCVAR_CHEA
 	}
 }
 #endif
+
+//-----------------------------------------------------------------------------
+// Purpose: Read data on weapon from script file
+// Output:  true  - if data2 successfully read
+//			false - if data load fails
+//-----------------------------------------------------------------------------
+
+bool ReadWeaponDataFromFileForSlot(IFileSystem* pFilesystem, const char *szWeaponName, WEAPON_FILE_INFO_HANDLE *phandle, const unsigned char *pICEKey)
+{
+	if (!phandle)
+	{
+		Assert(0);
+		return false;
+	}
+
+	*phandle = FindWeaponInfoSlot(szWeaponName);
+	FileWeaponInfo_t *pFileInfo = GetFileWeaponInfoFromHandle(*phandle);
+	Assert(pFileInfo);
+
+	if (pFileInfo->bParsedScript)
+		return true;
+
+	char sz[128];
+	Q_snprintf(sz, sizeof(sz), "scripts/%s", szWeaponName);
+
+	KeyValues *pKV = ReadEncryptedKVFile(pFilesystem, sz, pICEKey,
+#if defined( DOD_DLL )
+		true			// Only read .ctx files!
+#else
+		false
+#endif
+	);
+
+	if (!pKV)
+		return false;
+
+	pFileInfo->Parse(pKV, szWeaponName);
+
+	pKV->deleteThis();
+
+	return true;
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+// Input  : *name - 
+// Output : FileWeaponInfo_t
+//-----------------------------------------------------------------------------
+static CUtlDict< FileWeaponInfo_t*, unsigned short > m_WeaponInfoDatabase;
+static WEAPON_FILE_INFO_HANDLE FindWeaponInfoSlot(const char *name)
+{
+	// Complain about duplicately defined metaclass names...
+	unsigned short lookup = m_WeaponInfoDatabase.Find(name);
+	if (lookup != m_WeaponInfoDatabase.InvalidIndex())
+	{
+		return lookup;
+	}
+
+	FileWeaponInfo_t *insert = CreateWeaponInfo();
+
+	lookup = m_WeaponInfoDatabase.Insert(name, insert);
+	Assert(lookup != m_WeaponInfoDatabase.InvalidIndex());
+	return lookup;
+}
+
 
 
 CWeaponDatabase::CWeaponDatabase() : m_bPreCached( false )

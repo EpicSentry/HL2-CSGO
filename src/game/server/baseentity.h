@@ -26,6 +26,7 @@
 #include "bittools.h"
 
 class CDamageModifier;
+class CDmgAccumulator; // Forward declaration
 
 struct CSoundParameters;
 class CStudioHdr;
@@ -894,7 +895,7 @@ public:
 
 
 protected:
-	virtual void	TraceAttack( const CTakeDamageInfo &info, const Vector &vecDir, trace_t *ptr );
+	virtual void	TraceAttack(const CTakeDamageInfo &info, const Vector &vecDir, trace_t *ptr, CDmgAccumulator *pAccumulator = NULL);
 
 public:
 

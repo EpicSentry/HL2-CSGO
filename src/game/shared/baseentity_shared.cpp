@@ -19,6 +19,7 @@
 #include "debugoverlay_shared.h"
 #include "coordsize.h"
 #include "vphysics/performance.h"
+#include "basecombatweapon_shared.h"
 
 #ifdef CLIENT_DLL
 	#include "c_te_effect_dispatch.h"
@@ -2338,24 +2339,32 @@ void CBaseEntity::DispatchTraceAttack( const CTakeDamageInfo &info, const Vector
 	TraceAttack( info, vecDir, ptr );
 }
 
-void CBaseEntity::TraceAttack( const CTakeDamageInfo &info, const Vector &vecDir, trace_t *ptr )
+void CBaseEntity::TraceAttack(const CTakeDamageInfo &info, const Vector &vecDir, trace_t *ptr, CDmgAccumulator *pAccumulator)
 {
 	Vector vecOrigin = ptr->endpos - vecDir * 4;
 
-	if ( m_takedamage )
+	if (m_takedamage)
 	{
-		AddMultiDamage( info, this );
+#ifdef GAME_DLL
+		if (pAccumulator)
+		{
+			pAccumulator->AccumulateMultiDamage(info, this);
+		}
+		else
+#endif // GAME_DLL
+		{
+			AddMultiDamage(info, this);
+		}
 
 		int blood = BloodColor();
-		
-		if ( blood != DONT_BLEED )
+
+		if (blood != DONT_BLEED)
 		{
-			SpawnBlood( vecOrigin, vecDir, blood, info.GetDamage() );// a little surface blood.
-			TraceBleed( info.GetDamage(), vecDir, ptr, info.GetDamageType() );
+			SpawnBlood(vecOrigin, vecDir, blood, info.GetDamage());// a little surface blood.
+			TraceBleed(info.GetDamage(), vecDir, ptr, info.GetDamageType());
 		}
 	}
 }
-
 
 //-----------------------------------------------------------------------------
 // Allows the shooter to change the impact effect of his bullets

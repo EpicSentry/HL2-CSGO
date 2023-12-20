@@ -360,6 +360,7 @@ bool CBaseWeaponWorldModel::HoldsPlayerAnimations( void )
 }
 
 #ifndef CLIENT_DLL
+/*
 void CBaseWeaponWorldModel::HandleAnimEvent( animevent_t *pEvent )
 {
 	int nEvent = pEvent->Event();
@@ -373,6 +374,7 @@ void CBaseWeaponWorldModel::HandleAnimEvent( animevent_t *pEvent )
 		SetBodygroupPreset( "show_mag" );
 	}
 }
+*/
 #endif
 
 #ifdef CLIENT_DLL
@@ -749,88 +751,77 @@ const unsigned char *CBaseCombatWeapon::GetEncryptionKey( void )
 //-----------------------------------------------------------------------------
 // Purpose:
 //-----------------------------------------------------------------------------
-void CBaseCombatWeapon::Precache( void )
+void CBaseCombatWeapon::Precache(void)
 {
 #if defined( CLIENT_DLL )
-	Assert( Q_strlen( GetClassname() ) > 0 );
+	Assert(Q_strlen(GetClassname()) > 0);
 	// Msg( "Client got %s\n", GetClassname() );
 #endif
-
 	m_iPrimaryAmmoType = m_iSecondaryAmmoType = -1;
 
 	// Add this weapon to the weapon registry, and get our index into it
 	// Get weapon data from script file
-	m_hWeaponFileInfo = LookupWeaponInfoSlot( GetClassname() );
-	if ( m_hWeaponFileInfo != GetInvalidWeaponInfoHandle() )
+	if (ReadWeaponDataFromFileForSlot(filesystem, GetClassname(), &m_hWeaponFileInfo, GetEncryptionKey()))
 	{
 		// Get the ammo indexes for the ammo's specified in the data file
-		if ( GetWpnData().GetPrimaryAmmo()
+		if (GetWpnData().szAmmo1[0])
 		{
-			m_iPrimaryAmmoType = GetAmmoDef()->Index( GetWpnData().GetPrimaryAmmo( GetEconItemView() ) );
+			m_iPrimaryAmmoType = GetAmmoDef()->Index(GetWpnData().szAmmo1);
 			if (m_iPrimaryAmmoType == -1)
 			{
-				Msg("ERROR: Weapon (%s) using undefined primary ammo type (%s)\n",GetClassname(), GetWpnData().GetPrimaryAmmo( GetEconItemView() ) );
+				Msg("ERROR: Weapon (%s) using undefined primary ammo type (%s)\n", GetClassname(), GetWpnData().szAmmo1);
 			}
+#if defined ( TF_DLL ) || defined ( TF_CLIENT_DLL )
+			// Ammo override
+			int iModUseMetalOverride = 0;
+			CALL_ATTRIB_HOOK_INT(iModUseMetalOverride, mod_use_metal_ammo_type);
+			if (iModUseMetalOverride)
+			{
+				m_iPrimaryAmmoType = (int)TF_AMMO_METAL;
+			}
+#endif
 		}
-		if ( GetWpnData().szAmmo2[0] )
+		if (GetWpnData().szAmmo2[0])
 		{
-			m_iSecondaryAmmoType = GetAmmoDef()->Index( GetWpnData().szAmmo2 );
+			m_iSecondaryAmmoType = GetAmmoDef()->Index(GetWpnData().szAmmo2);
 			if (m_iSecondaryAmmoType == -1)
 			{
-				Msg("ERROR: Weapon (%s) using undefined secondary ammo type (%s)\n",GetClassname(),GetWpnData().szAmmo2);
+				Msg("ERROR: Weapon (%s) using undefined secondary ammo type (%s)\n", GetClassname(), GetWpnData().szAmmo2);
 			}
 
 		}
 #if defined( CLIENT_DLL )
-		gWR.LoadWeaponSprites( GetWeaponFileInfoHandle() );
+		gWR.LoadWeaponSprites(GetWeaponFileInfoHandle());
 #endif
 		// Precache models (preload to avoid hitch)
 		m_iViewModelIndex = 0;
 		m_iWorldModelIndex = 0;
-		m_iWorldDroppedModelIndex = 0;
-		m_iWeaponModule = MODULAR_BODYGROUPS_DEFAULT_NONE_SET;
-		if ( GetViewModel() && GetViewModel()[0] )
+		if (GetViewModel() && GetViewModel()[0])
 		{
-			g_pMDLCache->DisableVCollideLoad();
-			m_iViewModelIndex = CBaseEntity::PrecacheModel( GetViewModel() );
-			g_pMDLCache->EnableVCollideLoad();
+			m_iViewModelIndex = CBaseEntity::PrecacheModel(GetViewModel());
 		}
-		if ( GetWorldModel() && GetWorldModel()[0] )
+		if (GetWorldModel() && GetWorldModel()[0])
 		{
-			m_iWorldModelIndex = CBaseEntity::PrecacheModel( GetWorldModel() );
-		}
-		if ( GetWorldDroppedModel() && GetWorldDroppedModel()[0] )
-		{
-			m_iWorldDroppedModelIndex = CBaseEntity::PrecacheModel( GetWorldDroppedModel() );
+			m_iWorldModelIndex = CBaseEntity::PrecacheModel(GetWorldModel());
 		}
 
 		// Precache sounds, too
-		for ( int i = 0; i < NUM_SHOOT_SOUND_TYPES; ++i )
+		for (int i = 0; i < NUM_SHOOT_SOUND_TYPES; ++i)
 		{
-			const char *shootsound = GetShootSound( i );
-			if ( shootsound && shootsound[0] )
+			const char *shootsound = GetShootSound(i);
+			if (shootsound && shootsound[0])
 			{
-				CBaseEntity::PrecacheScriptSound( shootsound );
+				CBaseEntity::PrecacheScriptSound(shootsound);
 			}
 		}
 	}
 	else
 	{
 		// Couldn't read data file, remove myself
-		Warning( "Error reading weapon data file for: %s\n", GetClassname() );
-	//	Remove( );	//don't remove, this gets released soon!
+		Warning("Error reading weapon data file for: %s\n", GetClassname());
+		//	Remove( );	//don't remove, this gets released soon!
 	}
-
-	const char *pszTracerName = GetTracerType();
-	if ( pszTracerName && pszTracerName[0] )
-	{
-		PrecacheEffect( pszTracerName );
-	}
-
-	PrecacheEffect( "ParticleTracer" );
-	PrecacheParticleSystem( "weapon_tracers" );
 }
-
 
 //-----------------------------------------------------------------------------
 // Purpose: Get my data in the file weapon info array
@@ -839,11 +830,11 @@ const FileWeaponInfo_t &CBaseCombatWeapon::GetWpnData( void ) const
 {
 	return *GetFileWeaponInfoFromHandle( m_hWeaponFileInfo );
 }
-
+/*
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-const char *CBaseCombatWeapon::GetViewModel( int /*viewmodelindex = 0 -- this is ignored in the base class here*/ ) const
+const char *CBaseCombatWeapon::GetViewModel( int /*viewmodelindex = 0 -- this is ignored in the base class here*//* ) const
 {
 	return GetWpnData().GetViewModel( GetEconItemView(), (
 		( GetOwner() != NULL && GetOwner()->IsPlayer() ) ? GetOwner()->GetTeamNumber() : 0
@@ -877,7 +868,7 @@ const char *CBaseCombatWeapon::GetWorldDroppedModel( void ) const
 
 	return GetWorldModel();
 }
-
+*/
 
 //-----------------------------------------------------------------------------
 // Purpose: 
@@ -886,7 +877,7 @@ const char *CBaseCombatWeapon::GetAnimPrefix( void ) const
 {
 	return GetWpnData().szAnimationPrefix;
 }
-
+/*
 //-----------------------------------------------------------------------------
 // Purpose: 
 // Output : char const
@@ -898,7 +889,7 @@ const char *CBaseCombatWeapon::GetPrintName( void ) const
 	else
 		return GetWpnData().szPrintName;
 }
-
+*/
 
 //-----------------------------------------------------------------------------
 // Purpose: 
@@ -1755,12 +1746,14 @@ void CBaseCombatWeapon::SetViewModel()
 // Purpose: Set the desired activity for the weapon and its viewmodel counterpart
 // Input  : iActivity - activity to play
 //-----------------------------------------------------------------------------
+/*
 bool CBaseCombatWeapon::SendWeaponAnim( int iActivity )
 {
     iActivity = TranslateViewmodelHandActivity( (Activity)iActivity );
 	//For now, just set the ideal activity and be done with it
 	return SetIdealActivity( (Activity) iActivity );
 }
+*/
 
 //====================================================================================
 // WEAPON SELECTION
@@ -3462,7 +3455,7 @@ END_NETWORK_TABLE()
 // {
 // 	return GetWpnData().GetAttributeBool( szAttribClassName, GetEconItemView() );
 // }
-
+/*
 const CEconItemView* CBaseCombatWeapon::GetEconItemView( void ) const
 {
 	return BaseClass::GetEconItemView();
@@ -3472,7 +3465,7 @@ CEconItemView* CBaseCombatWeapon::GetEconItemView( void )
 {
 	return (CEconItemView*)BaseClass::GetEconItemView();
 }
-
+*/
 int CBaseCombatWeapon::GetReserveAmmoCount( AmmoPosition_t nAmmoPosition, CBaseCombatCharacter * pForcedOwner/* = NULL*/  )
 {
 	// LEGACY SUPPORT HERE 
@@ -3531,7 +3524,7 @@ int CBaseCombatWeapon::SetReserveAmmoCount( AmmoPosition_t nAmmoPosition, int nC
 			// use player ammo if a player entity was passed in or if there already is ammo in this position
 			if ( pPlayer->GetAmmoCount( nAmmoType ) || bForceSetAmmoOnPlayer )
 			{
-				int iMax = GetAmmoDef()->MaxCarry( nAmmoType, pPlayer );
+				int iMax = GetAmmoDef()->MaxCarry( nAmmoType );
 				iAdd = MIN( nCount, iMax - pPlayer->GetAmmoCount( nAmmoType ) );
 				int iTotal = MIN( nCount, iMax );
 
@@ -3595,15 +3588,15 @@ int CBaseCombatWeapon::GetReserveAmmoMax( AmmoPosition_t nAmmoPosition ) const
 			// use player ammo if there already is ammo in this position
 			if ( pPlayer->GetAmmoCount( nAmmoType ) )
 			{
-				return GetAmmoDef()->MaxCarry( nAmmoType, pPlayer );
+				return GetAmmoDef()->MaxCarry( nAmmoType );
 			}
 		}
 	}
 
 	switch( nAmmoPosition )
 	{
-	case AMMO_POSITION_PRIMARY: return GetWpnData().GetPrimaryReserveAmmoMax( GetEconItemView() );
-	case AMMO_POSITION_SECONDARY: return GetWpnData().GetSecondaryReserveAmmoMax( GetEconItemView() );
+	case AMMO_POSITION_PRIMARY: return GetWpnData().GetPrimaryReserveAmmoMax();
+	case AMMO_POSITION_SECONDARY: return GetWpnData().GetSecondaryReserveAmmoMax();
 	default: Assert(0); return 0;
 	}
 }

@@ -122,8 +122,8 @@ public:
 
 	int GetIndexofAttribute( string_t iszAttribClassName ) const;
 	static CUtlSortVector< WeaponInfoLookup*, CWeaponInfoLookupListLess > ms_vecWeaponInfoLookup;
-
-protected:
+	//Might fix the "x is protected"?
+public:
 	char					szViewModel[MAX_WEAPON_STRING];			// View model of this weapon
 	char					szWorldModel[MAX_WEAPON_STRING];		// Model of this weapon seen carried by the player
 	char					szAmmo1[MAX_WEAPON_AMMO_NAME];			// "primary" ammo type
@@ -200,6 +200,10 @@ public:
 // SERVER DLL
 
 };
+
+// The weapon parse function
+bool ReadWeaponDataFromFileForSlot(IFileSystem* filesystem, const char *szWeaponName,
+	WEAPON_FILE_INFO_HANDLE *phandle, const unsigned char *pICEKey = NULL);
 
 WEAPON_FILE_INFO_HANDLE LookupWeaponInfoSlot( const char *name );
 FileWeaponInfo_t *GetFileWeaponInfoFromHandle( WEAPON_FILE_INFO_HANDLE handle );
