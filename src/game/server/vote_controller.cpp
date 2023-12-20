@@ -10,7 +10,7 @@
 #include "eiface.h"
 #include "team.h"
 #include "gameinterface.h"
-#include "cs_gamerules.h"
+//#include "cs_gamerules.h"
 #include "usermessages.h"
 
 #ifdef TF_DLL
@@ -260,7 +260,6 @@ bool CVoteController::SetupVote( int iEntIndex )
 		CSingleUserRecipientFilter filter( pVoteCaller );
 		filter.MakeReliable();
 		
-		CCSUsrMsg_VoteSetup msg;
 		
 		for( int iIndex = 0; iIndex < m_potentialIssues.Count(); ++iIndex )
 		{

@@ -1164,6 +1164,8 @@ private:
 	int						m_iUpdateTime;		// stores the number of frame ticks before sending HUD update messages
 	int						m_iClientBattery;	// the Battery currently known by the client.  If this changes, send a new
 
+	int						m_lastx, m_lasty;	// These are the previous update's crosshair angles, DON"T SAVE/RESTORE
+
 	// Autoaim data
 	QAngle					m_vecAutoAim;
 
@@ -1347,6 +1349,11 @@ public:
 
 	void	DumpPerfToRecipient( CBasePlayer *pRecipient, int nMaxRecords );
 
+	// NVNT returns true if user has a haptic device
+	virtual bool HasHaptics() { return m_bhasHaptics; }
+	// NVNT sets weather a user should receive haptic device messages.
+	virtual void SetHaptics(bool has) { m_bhasHaptics = has; }
+
 	// picker debug utility functions
 	virtual CBaseEntity*	FindEntityClassForward( char *classname );
 	virtual CBaseEntity*	FindEntityForward( bool fHull );
@@ -1389,6 +1396,9 @@ private:
 	// How much of a movement time buffer can we process from this user?
 	float				m_flMovementTimeForUserCmdProcessingRemaining;
 
+	// NVNT member variable holding if this user is using a haptic device.
+	bool m_bhasHaptics;
+
 public:
 	float				GetInitialSpawnTime() const { return m_flInitialSpawnTime; }
 private:
@@ -1407,6 +1417,8 @@ private:
 
 	CUtlLinkedList< CPlayerSimInfo >  m_vecPlayerSimInfo;
 	CUtlLinkedList< CPlayerCmdInfo >  m_vecPlayerCmdInfo;
+
+	IntervalTimer m_weaponFiredTimer;
 
 	friend class CMoveHelperServer;
 	Vector m_movementCollisionNormal;

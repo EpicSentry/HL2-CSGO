@@ -13,8 +13,8 @@
 #include "datacache/imdlcache.h"
 #include "tier0/vprof.h"
 #include "collisionutils.h"
-#include "econ_entity.h"
-#include "econ_item_view.h"
+//#include "econ_entity.h"
+//#include "econ_item_view.h"
 
 #if !defined( CLIENT_DLL )
 
@@ -764,7 +764,7 @@ void CBaseCombatWeapon::Precache( void )
 	if ( m_hWeaponFileInfo != GetInvalidWeaponInfoHandle() )
 	{
 		// Get the ammo indexes for the ammo's specified in the data file
-		if ( GetWpnData().GetPrimaryAmmo( GetEconItemView() )[0] )
+		if ( GetWpnData().GetPrimaryAmmo()
 		{
 			m_iPrimaryAmmoType = GetAmmoDef()->Index( GetWpnData().GetPrimaryAmmo( GetEconItemView() ) );
 			if (m_iPrimaryAmmoType == -1)
@@ -2580,6 +2580,82 @@ char *CBaseCombatWeapon::GetDeathNoticeName( void )
 	return "GetDeathNoticeName not implemented on client yet";
 #endif
 }
+
+//-----------------------------------------------------------------------------
+// Purpose:
+//-----------------------------------------------------------------------------
+CDmgAccumulator::CDmgAccumulator(void)
+{
+#ifdef GAME_DLL
+	SetDefLessFunc(m_TargetsDmgInfo);
+#endif // GAME_DLL
+
+	m_bActive = false;
+}
+
+//-----------------------------------------------------------------------------
+// Purpose:
+//-----------------------------------------------------------------------------
+CDmgAccumulator::~CDmgAccumulator()
+{
+	// Did a weapon get deleted while aggregating CTakeDamageInfo events?
+	Assert(!m_bActive);
+}
+
+#ifdef GAME_DLL
+//-----------------------------------------------------------------------------
+// Collect trace attacks for weapons that fire multiple bullets per attack that also penetrate
+//-----------------------------------------------------------------------------
+void CDmgAccumulator::AccumulateMultiDamage(const CTakeDamageInfo &info, CBaseEntity *pEntity)
+{
+	if (!pEntity)
+		return;
+
+	Assert(m_bActive);
+
+#if defined( GAME_DLL )
+	int iIndex = m_TargetsDmgInfo.Find(pEntity->entindex());
+	if (iIndex == m_TargetsDmgInfo.InvalidIndex())
+	{
+		m_TargetsDmgInfo.Insert(pEntity->entindex(), info);
+	}
+	else
+	{
+		CTakeDamageInfo *pInfo = &m_TargetsDmgInfo[iIndex];
+		if (pInfo)
+		{
+			// Update
+			m_TargetsDmgInfo[iIndex].AddDamageType(info.GetDamageType());
+			m_TargetsDmgInfo[iIndex].SetDamage(pInfo->GetDamage() + info.GetDamage());
+			m_TargetsDmgInfo[iIndex].SetDamageForce(pInfo->GetDamageForce() + info.GetDamageForce());
+			m_TargetsDmgInfo[iIndex].SetDamagePosition(info.GetDamagePosition());
+			m_TargetsDmgInfo[iIndex].SetReportedPosition(info.GetReportedPosition());
+			m_TargetsDmgInfo[iIndex].SetMaxDamage(MAX(pInfo->GetMaxDamage(), info.GetDamage()));
+			m_TargetsDmgInfo[iIndex].SetAmmoType(info.GetAmmoType());
+		}
+
+	}
+#endif	// GAME_DLL
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: Send aggregate info
+//-----------------------------------------------------------------------------
+void CDmgAccumulator::Process(void)
+{
+	FOR_EACH_MAP(m_TargetsDmgInfo, i)
+	{
+		CBaseEntity *pEntity = UTIL_EntityByIndex(m_TargetsDmgInfo.Key(i));
+		if (pEntity)
+		{
+			AddMultiDamage(m_TargetsDmgInfo[i], pEntity);
+		}
+	}
+
+	m_bActive = false;
+	m_TargetsDmgInfo.Purge();
+}
+#endif // GAME_DLL
 
 //====================================================================================
 // WEAPON RELOAD TYPES

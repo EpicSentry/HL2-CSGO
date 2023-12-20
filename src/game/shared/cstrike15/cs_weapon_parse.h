@@ -16,7 +16,7 @@
 #endif
 
 #include "weapon_parse.h"
-#include "econ_item_constants.h"
+//#include "econ_item_constants.h"
 
 
 class CWeaponCSBase;

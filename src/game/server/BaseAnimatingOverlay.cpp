@@ -20,7 +20,7 @@
 
 #include "toolframework/itoolframework.h"
 
-#include "cs_player.h"
+//#include "cs_player.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -617,7 +617,7 @@ void CBaseAnimatingOverlay::GetSkeleton( CStudioHdr *pStudioHdr, BoneVector pos[
 
 	if ( this->IsPlayer() )
 	{
-		CCSPlayer *pPlayer = ToCSPlayer(this);
+		CBasePlayer *pPlayer = ToBasePlayer(this);
 		if ( pPlayer && pPlayer->m_bUseNewAnimstate )
 		{
 			pWeapon = pPlayer->GetActiveWeapon();

@@ -12,7 +12,7 @@
 #include "ammodef.h"
 #include "util_shared.h"
 #include "weapon_parse.h"
-#include "econ_item_view.h"
+//#include "econ_item_view.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"

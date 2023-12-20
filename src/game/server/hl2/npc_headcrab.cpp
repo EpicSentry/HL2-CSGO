@@ -260,7 +260,7 @@ void CBaseHeadcrab::Spawn( void )
 	{
 		m_bHidden = true;
 		AddSolidFlags( FSOLID_NOT_SOLID );
-		SetRenderColorA( 0 );
+		//SetRenderColorA( 0 );
 		m_nRenderMode = kRenderTransTexture;
 		AddEffects( EF_NODRAW );
 	}
@@ -518,7 +518,7 @@ void CBaseHeadcrab::JumpAttack( bool bRandomJump, const Vector &vecPos, bool bTh
 	Vector vecJumpVel;
 	if ( !bRandomJump )
 	{
-		float gravity = GetCurrentGravity();
+		float gravity = 800;
 		if ( gravity <= 1 )
 		{
 			gravity = 1;
@@ -1065,6 +1065,8 @@ void CBaseHeadcrab::PrescheduleThink( void )
 	BaseClass::PrescheduleThink();
 	
 	// Are we fading in after being hidden?
+	//HL2 doesnt seem to have alpha stuff?
+	/*
 	if ( !m_bHidden && (m_nRenderMode != kRenderNormal) )
 	{
 		int iNewAlpha = MIN( 255, GetRenderColor().a + 120 );
@@ -1078,6 +1080,7 @@ void CBaseHeadcrab::PrescheduleThink( void )
 			SetRenderColorA( iNewAlpha );
 		}
 	}
+	*/
 
 	//
 	// Make the crab coo a little bit in combat state.
@@ -2037,7 +2040,7 @@ void CBaseHeadcrab::TraceAttack( const CTakeDamageInfo &info, const Vector &vecD
 		ApplyAbsVelocityImpulse( puntDir );
 	}
 
-	BaseClass::TraceAttack( newInfo, vecDir, ptr, pAccumulator );
+	BaseClass::TraceAttack( newInfo, vecDir, ptr );
 }
 
 

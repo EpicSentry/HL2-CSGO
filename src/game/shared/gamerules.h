@@ -111,7 +111,7 @@ private:
 };
 
 
-abstract_class CGameRules : public CAutoGameSystemPerFrame
+class CGameRules : public CAutoGameSystemPerFrame
 {
 public:
 	DECLARE_CLASS_GAMEROOT(CGameRules, CAutoGameSystemPerFrame);
@@ -168,6 +168,10 @@ public:
 
 	// Functions to verify the single/multiplayer status of a game
 	virtual bool IsMultiplayer(void) = 0;// is this a multiplayer game? (either coop or deathmatch)
+	bool IsTopDown()
+	{
+		return false;
+	};
 
 	virtual const unsigned char *GetEncryptionKey() { return NULL; }
 

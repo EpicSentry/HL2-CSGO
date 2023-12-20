@@ -810,6 +810,10 @@ public:
 
 	int				m_nLastThinkTick;
 
+	void IncrementInterpolationFrame(); // Call this to cause a discontinuity (teleport)
+
+	CNetworkVar(int, m_ubInterpolationFrame);
+
 #if !defined( NO_ENTITY_PREDICTION ) && defined( USE_PREDICTABLEID )
 	// Certain entities (projectiles) can be created on the client and thus need a matching id number
 	CNetworkVar( CPredictableId, m_PredictableID );

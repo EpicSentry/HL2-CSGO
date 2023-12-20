@@ -12,6 +12,8 @@
 
 #include "convar.h"
 
+float GetCurrentGravity(void);
+
 extern ConVar sv_gravity;
 extern ConVar sv_stopspeed;
 extern ConVar sv_noclipaccelerate;

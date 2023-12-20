@@ -10,7 +10,7 @@
 #include "ammodef.h"
 
 #ifdef GAME_DLL
-#include "cs_player.h"
+//#include "cs_player.h"
 #endif
 
 // memdbgon must be the last include file in a .cpp file!!!
@@ -66,7 +66,7 @@ void CTakeDamageInfo::Init( CBaseEntity *pInflictor, CBaseEntity *pAttacker, CBa
 	m_iDamagedOtherPlayers = 0;
 	m_iObjectsPenetrated = iObjectsPenetrated;
 #ifdef GAME_DLL
-	m_uiBulletID = CCSPlayer::GetBulletGroup();
+	m_uiBulletID = CBasePlayer::GetBulletGroup();
 #else
 	m_uiBulletID = 0;
 #endif

@@ -527,7 +527,7 @@ void CWateryDeathLeech::Spawn( void )
 	SetAbsAngles( vAngle );
 
 	m_iFadeState = 1;
-	SetRenderColorA( 1 );
+//	SetRenderColorA( 1 );
 }
 
 void CWateryDeathLeech::LeechThink( void )
@@ -548,10 +548,10 @@ void CWateryDeathLeech::LeechThink( void )
 		m_nRenderMode = kRenderTransTexture;
 		int speed = MAX(1,256*dt); // fade out over 1 second
 
-		if ( m_iFadeState == -1 )
-			 SetRenderColorA( UTIL_Approach( 0, m_clrRender->a, speed ) );
-		else
-			 SetRenderColorA( UTIL_Approach( 255, m_clrRender->a, speed ) );
+//		if ( m_iFadeState == -1 )
+//			 SetRenderColorA( UTIL_Approach( 0, m_clrRender->a, speed ) );
+//		else
+//			 SetRenderColorA( UTIL_Approach( 255, m_clrRender->a, speed ) );
 
 		if ( m_clrRender->a == 0 )
 		{

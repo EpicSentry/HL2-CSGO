@@ -8,7 +8,7 @@
 #include "baseviewmodel_shared.h"
 #include "datacache/imdlcache.h"
 
-#include "cs_shareddefs.h"
+//#include "cs_shareddefs.h"
 
 #if defined( CLIENT_DLL )
 #include "iprediction.h"
@@ -82,7 +82,7 @@ CBaseViewModel::CBaseViewModel()
 
 	m_nAnimationParity	= 0;
 
-	m_bShouldIgnoreOffsetAndAccuracy = false;
+	//m_bShouldIgnoreOffsetAndAccuracy = false;
 }
 
 //-----------------------------------------------------------------------------
@@ -642,7 +642,7 @@ BEGIN_NETWORK_TABLE_NOBASE(CBaseViewModel, DT_BaseViewModel)
 	SendPropInt( SENDINFO( m_nResetEventsParity ), EF_PARITY_BITS, SPROP_UNSIGNED ),
 	SendPropInt( SENDINFO( m_nMuzzleFlashParity ), EF_MUZZLEFLASH_BITS, SPROP_UNSIGNED ),
 
-	SendPropBool( SENDINFO( m_bShouldIgnoreOffsetAndAccuracy ) ),
+	//SendPropBool( SENDINFO( m_bShouldIgnoreOffsetAndAccuracy ) ),
 #else
 	RecvPropInt		(RECVINFO(m_nModelIndex), 0, RecvProxy_Viewmodel ),
 	RecvPropEHandle (RECVINFO(m_hWeapon), RecvProxy_Weapon ),

@@ -70,7 +70,7 @@ CTeam *GetGlobalTeam(int iIndex)
 //-----------------------------------------------------------------------------
 int GetNumberOfTeams(void)
 {
-	return g_Teams.Size();
+	//return g_Teams.Size();
 }
 
 
@@ -179,6 +179,7 @@ void CTeam::AddSpawnpoint(CTeamSpawnPoint *pSpawnpoint)
 //-----------------------------------------------------------------------------
 void CTeam::RemoveSpawnpoint(CTeamSpawnPoint *pSpawnpoint)
 {
+	/*
 	for (int i = 0; i < m_aSpawnPoints.Size(); i++)
 	{
 		if (m_aSpawnPoints[i] == pSpawnpoint)
@@ -187,6 +188,7 @@ void CTeam::RemoveSpawnpoint(CTeamSpawnPoint *pSpawnpoint)
 			return;
 		}
 	}
+	*/
 }
 
 //-----------------------------------------------------------------------------
@@ -194,6 +196,7 @@ void CTeam::RemoveSpawnpoint(CTeamSpawnPoint *pSpawnpoint)
 //-----------------------------------------------------------------------------
 CBaseEntity *CTeam::SpawnPlayer(CBasePlayer *pPlayer)
 {
+	/*
 	if (m_aSpawnPoints.Size() == 0)
 		return NULL;
 
@@ -225,7 +228,7 @@ CBaseEntity *CTeam::SpawnPlayer(CBasePlayer *pPlayer)
 
 		iSpawn++;
 	} while (iSpawn != iStartingSpawn); // loop if we're not back to the start
-
+	*/
 	return NULL;
 }
 
@@ -261,7 +264,7 @@ void CTeam::RemovePlayer(CBasePlayer *pPlayer)
 //-----------------------------------------------------------------------------
 int CTeam::GetNumPlayers(void) const
 {
-	return m_aPlayers.Size();
+	//return m_aPlayers.Size();
 }
 
 //-----------------------------------------------------------------------------

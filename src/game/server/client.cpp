@@ -233,7 +233,7 @@ void Host_Say( edict_t *pEdict, const CCommand &args, bool teamonly )
 		}
 		else
 		{
-			if ( pPlayer && !g_pGameRules->PlayerCanHearChat( client, pPlayer, teamonly ) )
+			if ( pPlayer && !g_pGameRules->PlayerCanHearChat( client, pPlayer ) )
 				continue;
 
 			if ( pPlayer && !client->CanHearAndReadChatFrom( pPlayer ) )

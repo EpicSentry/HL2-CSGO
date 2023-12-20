@@ -18,6 +18,18 @@
 #define DEFAULT_GRAVITY_STRING	"800"
 #endif
 
+float GetCurrentGravity(void)
+{
+#if defined( TF_CLIENT_DLL ) || defined( TF_DLL )
+	if (TFGameRules())
+	{
+		return (sv_gravity.GetFloat() * TFGameRules()->GetGravityMultiplier());
+	}
+#endif 
+
+	return sv_gravity.GetFloat();
+}
+
 ConVar	sv_gravity		( "sv_gravity", DEFAULT_GRAVITY_STRING, FCVAR_NOTIFY | FCVAR_REPLICATED | FCVAR_RELEASE, "World gravity." );
 
 ConVar	sv_stopspeed	( "sv_stopspeed","80", FCVAR_NOTIFY | FCVAR_REPLICATED |  FCVAR_RELEASE, "Minimum stopping speed when on ground." );

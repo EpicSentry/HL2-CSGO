@@ -588,11 +588,12 @@ CBasePlayer *CBasePlayer::CreatePlayer( const char *className, edict_t *ed )
 // Input  : 
 // Output : 
 //-----------------------------------------------------------------------------
-CBasePlayer::CBasePlayer( )
+CBasePlayer::CBasePlayer()
 {
-	AddEFlags( EFL_NO_AUTO_EDICT_ATTACH );
+	AddEFlags(EFL_NO_AUTO_EDICT_ATTACH);
 
 #ifdef _DEBUG
+	m_vecAutoAim.Init();
 	m_vecAdditionalPVSOrigin.Init();
 	m_vecCameraPVSOrigin.Init();
 	m_DmgOrigin.Init();
@@ -602,31 +603,25 @@ CBasePlayer::CBasePlayer( )
 	m_vecSmoothedVelocity.Init();
 #endif
 
-	m_vecAutoAim.Init( 0.0f, 0.0f, 0.0f );
-
-	if ( s_PlayerEdict )
+	if (s_PlayerEdict)
 	{
 		// take the assigned edict_t and attach it
-		Assert( s_PlayerEdict != NULL );
-		NetworkProp()->AttachEdict( s_PlayerEdict );
+		Assert(s_PlayerEdict != NULL);
+		NetworkProp()->AttachEdict(s_PlayerEdict);
 		s_PlayerEdict = NULL;
 	}
 
 	m_flFlashTime = -1;
 	pl.fixangle = FIXANGLE_ABSOLUTE;
 	pl.hltv = false;
-#if defined( REPLAY_ENABLED )
 	pl.replay = false;
-#endif
 	pl.frags = 0;
-	pl.assists = 0;
 	pl.deaths = 0;
-	pl.score = 0;
 
 	m_szNetname[0] = '\0';
 
 	m_iHealth = 0;
-	Weapon_SetLast( NULL );
+	Weapon_SetLast(NULL);
 	m_bitsDamageType = 0;
 
 	m_bForceOrigin = false;
@@ -634,13 +629,13 @@ CBasePlayer::CBasePlayer( )
 	m_pCurrentCommand = NULL;
 	m_iLockViewanglesTickNumber = 0;
 	m_qangLockViewangles.Init();
-	
+
 	// Setup our default FOV
 	m_iDefaultFOV = g_pGameRules->DefaultFOV();
 
 	m_hZoomOwner = NULL;
 
-	m_nUpdateRate = 64;  // cl_updaterate default
+	m_nUpdateRate = 20;  // cl_updaterate defualt
 	m_fLerpTime = 0.1f; // cl_interp default
 	m_bPredictWeapons = true;
 	m_bLagCompensation = false;
@@ -648,14 +643,9 @@ CBasePlayer::CBasePlayer( )
 	m_StuckLast = 0;
 	m_impactEnergyScale = 1.0f;
 	m_fLastPlayerTalkTime = 0.0f;
-	m_PlayerInfo.SetParent( this );
+	m_PlayerInfo.SetParent(this);
 
 	ResetObserverMode();
-	m_bActiveCameraMan = false;
-	m_bCameraManXRay = false;
-	m_bCameraManOverview = false;
-	m_bCameraManScoreBoard = false;
-	m_uCameraManGraphs = 0;
 
 	m_surfaceProps = 0;
 	m_pSurfaceData = NULL;
@@ -673,10 +663,6 @@ CBasePlayer::CBasePlayer( )
 	m_nNumCrouches = 0;
 	m_bDuckToggled = false;
 	m_bPhysicsWasFrozen = false;
-	m_bDropEnabled = true;
-	m_bDuckEnabled = true;
-
-	m_movementCollisionNormal = Vector( 0, 0, 1 );
 
 	// Used to mask off buttons
 	m_afButtonDisabled = 0;
@@ -686,39 +672,12 @@ CBasePlayer::CBasePlayer( )
 	m_flForwardMove = 0;
 	m_flSideMove = 0;
 
-	m_bSplitScreenPlayer = false;
-	m_hSplitOwner = NULL;
+	// NVNT default to no haptics
+	m_bhasHaptics = false;
 
-	m_ClientPlatform = CROSSPLAYPLATFORM_THISPLATFORM;
-
-	m_hPostProcessCtrl.Set( NULL );
-	m_hColorCorrectionCtrl.Set( NULL );
-	
 	m_vecConstraintCenter = vec3_origin;
 
-	m_flTimeLastTouchedGround = 0.0f;
-	m_ignoreLadderJumpTime = 0.0f;
-
-	m_PlayerInputDevice = INPUT_DEVICE_NONE;
-	m_PlayerPlatform = INPUT_DEVICE_PLATFORM_NONE;
-	m_lastRequestedClientInfoTime = 0.0f;
-
-	// Init eye and angle offsets - used for TrackIR and motion controllers
-	m_vecEyeOffset.Init();
-	m_EyeAngleOffset.Init();
-	m_AimDirection.Init();
-
 	m_flMovementTimeForUserCmdProcessingRemaining = 0.0f;
-	m_flInitialSpawnTime = 0.0f;
-
-	m_iCoachingTeam = 0;
-
-	m_flDuckAmount = 0.0f;
-	m_flDuckSpeed = CS_PLAYER_DUCK_SPEED_IDEAL;
-	m_vecLastPositionAtFullCrouchSpeed = vec2_origin;
-	m_flNextDecalTime = 0.0f; // initialize to let this player spray
-	m_bNextDecalTimeExpedited = false;
-	m_bHasWalkMovedSinceLastJump = false;
 }
 
 CBasePlayer::~CBasePlayer( )
@@ -1042,13 +1001,6 @@ void CBasePlayer::TraceAttack( const CTakeDamageInfo &inputInfo, const Vector &v
 			CAI_BaseNPC *pNPC = info.GetAttacker()->MyNPCPointer();
 			if ( pNPC && (pNPC->CapabilitiesGet() & bits_CAP_NO_HIT_PLAYER) && pNPC->IRelationType( this ) != D_HT )
 				return;
-
-			// Prevent team damage here so blood doesn't appear
-			if ( info.GetAttacker()->IsPlayer() )
-			{
-				if ( !g_pGameRules->FPlayerCanTakeDamage( this, info.GetAttacker() ) )
-					return;
-			}
 		}
 
 		SetLastHitGroup( ptr->hitgroup );
@@ -5094,115 +5046,96 @@ void CBasePlayer::PostSpawnPointSelection( )
 //-----------------------------------------------------------------------------
 // Purpose: Called everytime the player respawns
 //-----------------------------------------------------------------------------
-void CBasePlayer::Spawn( void )
+void CBasePlayer::Spawn(void)
 {
-	VPROF( "CBasePlayer::Spawn" );
-
 	// Needs to be done before weapons are given
-	if ( Hints() )
+	if (Hints())
 	{
 		Hints()->ResetHints();
 	}
 
-	SetClassname( "player" );
+	SetClassname("player");
 
 	// Shared spawning code..
 	SharedSpawn();
-	
-	SetSimulatedEveryTick( true );
-	SetAnimatedEveryTick( true );
 
-	m_ArmorValue		= SpawnArmorValue();
-	SetBlocksLOS( false );
-	m_iMaxHealth		= m_iHealth;
+	SetSimulatedEveryTick(true);
+	SetAnimatedEveryTick(true);
+
+	m_ArmorValue = SpawnArmorValue();
+	SetBlocksLOS(false);
+	m_iMaxHealth = m_iHealth;
 
 	// Clear all flags except for FL_FULLEDICT
-	if ( GetFlags() & FL_FAKECLIENT )
+	if (GetFlags() & FL_FAKECLIENT)
 	{
 		ClearFlags();
-		AddFlag( FL_CLIENT | FL_FAKECLIENT );
+		AddFlag(FL_CLIENT | FL_FAKECLIENT);
 	}
 	else
 	{
 		ClearFlags();
-		AddFlag( FL_CLIENT );
+		AddFlag(FL_CLIENT);
 	}
 
-	AddFlag( FL_AIMTARGET );
+	AddFlag(FL_AIMTARGET);
 
-	m_AirFinished	= gpGlobals->curtime + AIRTIME;
-	m_nDrownDmgRate	= DROWNING_DAMAGE_INITIAL;
-	
- // only preserve the shadow flag
+	m_AirFinished = gpGlobals->curtime + AIRTIME;
+	m_nDrownDmgRate = DROWNING_DAMAGE_INITIAL;
+
+	// only preserve the shadow flag
 	int effects = GetEffects() & EF_NOSHADOW;
-	SetEffects( effects | EF_NOINTERP );
+	SetEffects(effects);
 
-	m_bClientSideRagdoll = false;
+	IncrementInterpolationFrame();
 
 	// Initialize the fog and postprocess controllers.
-	UpdateMapEntityPointers();
+	InitFogController();
 
-	m_DmgTake		= 0;
-	m_DmgSave		= 0;
-	m_bitsHUDDamage		= -1;
-	m_bitsDamageType	= 0;
-	m_afPhysicsFlags	= 0;
+	m_DmgTake = 0;
+	m_DmgSave = 0;
+	m_bitsHUDDamage = -1;
+	m_bitsDamageType = 0;
+	m_afPhysicsFlags = 0;
 
 	m_idrownrestored = m_idrowndmg;
 
-	SetFOV( this, 0 );
+	SetFOV(this, 0);
 
-	AllowImmediateDecalPainting(); // sprays are rate-limited regardless of rounds/respawns
+	m_flNextDecalTime = 0;// let this player decal as soon as he spawns.
 
 	m_flgeigerDelay = gpGlobals->curtime + 2.0;	// wait a few seconds until user-defined message registrations
 												// are recieved by all clients
-	
-	m_flFieldOfView		= 0.766;// some NPCs use this to determine whether or not the player is looking at them.
+
+	m_flFieldOfView = 0.766;// some NPCs use this to determine whether or not the player is looking at them.
 
 	m_vecAdditionalPVSOrigin = vec3_origin;
 	m_vecCameraPVSOrigin = vec3_origin;
 
-	m_bIsSpecLerping = false; 
+	if (!m_fGameHUDInitialized)
+		g_pGameRules->SetDefaultPlayerTeam(this);
 
-	if ( !m_fGameHUDInitialized )
-		g_pGameRules->SetDefaultPlayerTeam( this );
+	g_pGameRules->GetPlayerSpawnSpot(this);
 
-	g_pGameRules->GetPlayerSpawnSpot( this );
-	
-	// dkorus: Allow functions to run post-spawn
-	//		   for cstrike characters, this sets the position/rotation on controlled bots
-	PostSpawnPointSelection();
-	
-
-	m_bDuckEnabled = true;
-	m_bDropEnabled = true;
 	m_Local.m_bDucked = false;// This will persist over round restart if you hold duck otherwise. 
 	m_Local.m_bDucking = false;
-    SetViewOffset( VEC_VIEW );
-	VPROF_SCOPE_BEGIN( "precache" );
-	if ( IsPrecacheAllowed() )
-	{
-		Precache();
-	}
-	VPROF_SCOPE_END();
+	SetViewOffset(VEC_VIEW_SCALED(this));
+	Precache();
 
-	// Moved Spawn-related code from Precache into Spawn.
-	// in the event that the player JUST spawned, and the level node graph
-	// was loaded, fix all of the node graph pointers before the game starts.
-	
 	m_bitsDamageType = 0;
 	m_bitsHUDDamage = -1;
-	SetPlayerUnderwater( false );
+	SetPlayerUnderwater(false);
 
 	m_iTrain = TRAIN_NEW;
-	
-	m_HackedGunPos		= Vector( 0, 32, 0 );
 
-	m_iBonusChallenge = sv_bonus_challenge.GetInt();	
+	m_HackedGunPos = Vector(0, 32, 0);
 
-	if ( m_iPlayerSound == SOUNDLIST_EMPTY )
+	m_iBonusChallenge = sv_bonus_challenge.GetInt();
+	sv_bonus_challenge.SetValue(0);
+
+	if (m_iPlayerSound == SOUNDLIST_EMPTY)
 	{
-		Msg( "Couldn't alloc player sound slot!\n" );
+		Msg("Couldn't alloc player sound slot!\n");
 	}
 
 	SetThink(NULL);
@@ -5210,63 +5143,59 @@ void CBasePlayer::Spawn( void )
 	m_fWeapon = false;
 	m_iClientBattery = -1;
 
-	Q_strncpy( m_szLastPlaceName.GetForModify(), "", MAX_PLACE_NAME_LENGTH );
-	m_nTicksSinceLastPlaceUpdate = random->RandomInt( 0, 30 ); // start it off with a random value so players don't update their last place on the same tick every time
-	
-	CSingleUserRecipientFilter user( this );
-	enginesound->SetPlayerDSP( user, 0, false );
+	m_lastx = m_lasty = 0;
+
+	Q_strncpy(m_szLastPlaceName.GetForModify(), "", MAX_PLACE_NAME_LENGTH);
+
+	CSingleUserRecipientFilter user(this);
+	enginesound->SetPlayerDSP(user, 0, false);
 
 	CreateViewModel();
 
-	SetCollisionGroup( COLLISION_GROUP_PLAYER );
+	SetCollisionGroup(COLLISION_GROUP_PLAYER);
 
 	// if the player is locked, make sure he stays locked
-	if ( m_iPlayerLocked )
+	if (m_iPlayerLocked)
 	{
 		m_iPlayerLocked = false;
 		LockPlayerInPlace();
 	}
 
-	if ( GetTeamNumber() != TEAM_SPECTATOR )
+	if (GetTeamNumber() != TEAM_SPECTATOR)
 	{
 		StopObserverMode();
 	}
 	else
 	{
-		StartObserverMode( m_iObserverLastMode );
+		StartObserverMode(m_iObserverLastMode);
 	}
 
 	StopReplayMode();
 
 	// Clear any screenfade
-	color32 nothing = {0,0,0,255};
-	UTIL_ScreenFade( this, nothing, 0, 0, FFADE_IN | FFADE_PURGE );
+	color32 nothing = { 0,0,0,255 };
+	UTIL_ScreenFade(this, nothing, 0, 0, FFADE_IN | FFADE_PURGE);
 
-	VPROF_SCOPE_BEGIN( "PlayerSpawn" );
-	g_pGameRules->PlayerSpawn( this );
-	VPROF_SCOPE_END();
+	g_pGameRules->PlayerSpawn(this);
 
 	m_flLaggedMovementValue = 1.0f;
 	m_vecSmoothedVelocity = vec3_origin;
-	InitVCollision( GetAbsOrigin(), GetAbsVelocity() );
+	InitVCollision(GetAbsOrigin(), GetAbsVelocity());
 
-	EnsureValidSpawnLocation();
+#if !defined( TF_DLL )
+	IGameEvent *event = gameeventmanager->CreateEvent("player_spawn");
 
-	IGameEvent *event = gameeventmanager->CreateEvent( "player_spawn" );
-	
-	if ( event )
+	if (event)
 	{
-		event->SetInt("userid", GetUserID() );
-		event->SetInt("teamnum", GetTeamNumber() );
-		gameeventmanager->FireEvent( event );
+		event->SetInt("userid", GetUserID());
+		gameeventmanager->FireEvent(event);
 	}
+#endif
 
-	RumbleEffect( RUMBLE_STOP_ALL, 0, RUMBLE_FLAGS_NONE );
+	RumbleEffect(RUMBLE_STOP_ALL, 0, RUMBLE_FLAGS_NONE);
 
 	// Calculate this immediately
 	m_nVehicleViewSavedFrame = 0;
-
-	m_movementCollisionNormal = Vector( 0, 0, 1 );
 
 	// track where we are in the nav mesh
 	UpdateLastKnownArea();
@@ -5276,16 +5205,7 @@ void CBasePlayer::Spawn( void )
 	// track where we are in the nav mesh
 	UpdateLastKnownArea();
 
-	if ( !g_pGameRules->IsMultiplayer() && g_pScriptVM )
-	{
-		g_pScriptVM->SetValue( "player", GetScriptInstance() );
-	}
-
-	m_bKilledByHeadshot = false;
-	m_iDeathPostEffect = 0;
-
-	m_flDuckAmount = 0;
-	m_flDuckSpeed = CS_PLAYER_DUCK_SPEED_IDEAL;
+	m_weaponFiredTimer.Invalidate();
 }
 
 void CBasePlayer::UpdateMapEntityPointers( void )
@@ -5538,22 +5458,7 @@ void CBasePlayer::NotifyNearbyRadiationSource( float flRange )
 
 void CBasePlayer::AllowImmediateDecalPainting()
 {
-	// No decal expediting during warmup
-	if ( CSGameRules() )
-	{
-		if ( CSGameRules()->IsWarmupPeriod() )
-			return;
-		if ( !CSGameRules()->IsPlayingClassic() &&
-			!CSGameRules()->IsPlayingGunGameTRBomb() )
-			return;
-	}
-
-	// CS:GO ensures a minimal ratelimit
-	if ( !m_bNextDecalTimeExpedited && ( m_flNextDecalTime > 0 ) )
-	{
-		m_flNextDecalTime -= ( PLAYERDECALS_COOLDOWN_SECONDS - 3 );
-		m_bNextDecalTimeExpedited = true;
-	}
+	return;
 }
 
 void CBasePlayer::PushAwayDecalPaintingTime( float flTime )
@@ -7815,7 +7720,6 @@ void CBasePlayer::ChangeTeam( int iTeamNum, bool bAutoTeam, bool bSilent)
 		event->SetInt("oldteam", GetTeamNumber() );
 		event->SetInt("disconnect", IsDisconnecting());
 		event->SetInt("autoteam", bAutoTeam );
-		event->SetInt("silent", bSilent || ( g_pGameRules && g_pGameRules->IsTeamChangeSilent( this, iTeamNum, bAutoTeam, bSilent ) ) );
 		if ( GetTeamNumber() == TEAM_UNASSIGNED )
 		{
 			event->SetString( "name", GetPlayerName() );
@@ -9109,7 +9013,7 @@ float CBasePlayer::GetStickDist()
 //-----------------------------------------------------------------------------
 void CBasePlayer::HandleAnimEvent( animevent_t *pEvent )
 {
-	int nEvent = pEvent->Event();
+	int nEvent = pEvent->event();
 
 	if ((pEvent->type & AE_TYPE_NEWEVENTSYSTEM) && (pEvent->type & AE_TYPE_SERVER))
 	{
@@ -9605,6 +9509,7 @@ CrossPlayPlatform_t CBasePlayer::GetCrossPlayPlatform( void ) const
 
 bool CBasePlayer::EnsureSplitScreenTeam()
 {
+	/*
 	// If forcing all split screen users onto same team, and this is a split screen player, and the host player has chosen an actual game team, 
 	//  then force us onto his/her team, too!!!
 	if ( GameRules()->ForceSplitScreenPlayersOnToSameTeam() && 
@@ -9619,7 +9524,7 @@ bool CBasePlayer::EnsureSplitScreenTeam()
 			return true;
 		}
 	}
-
+	*/
 	return false;
 }
 class CUserMessageThrottleMgr
@@ -9802,13 +9707,6 @@ CVoteController* CBasePlayer::GetTeamVoteController()
 {
 	switch ( GetAssociatedTeamNumber( ) )
 	{
-	case TEAM_CT:
-		return g_voteControllerCT;
-
-	case TEAM_TERRORIST:
-		return g_voteControllerT;
-
-	// SPECTATOR or other
 	default:
 		return g_voteControllerGlobal;
 	}

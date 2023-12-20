@@ -821,6 +821,11 @@ CBaseEntity::~CBaseEntity( )
 	}
 }
 
+void CBaseEntity::IncrementInterpolationFrame()
+{
+	m_ubInterpolationFrame = (m_ubInterpolationFrame + 1) % NOINTERP_PARITY_MAX;
+}
+
 void CBaseEntity::PostConstructor( const char *szClassname )
 {
 	NetworkProp()->CacheServerClass();
@@ -5522,7 +5527,7 @@ void CBaseEntity::PrecacheModelComponents( int nModelIndex )
 				{
 					mstudioevent_t *pEvent = (mstudioevent_for_client_server_t*)seq.pEvent( j );
 					
-					int nEvent = pEvent->Event();
+					int nEvent = pEvent->event();
 
 					if ( !( pEvent->type & AE_TYPE_NEWEVENTSYSTEM ) || ( pEvent->type & AE_TYPE_CLIENT ) )
 					{

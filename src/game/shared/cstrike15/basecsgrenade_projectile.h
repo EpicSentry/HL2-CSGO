@@ -76,7 +76,7 @@ public:
 	virtual float GetShakeAmplitude( void ) { return 0.0f; }
 	virtual void Splash();
 
-	virtual GrenadeType_t GetGrenadeType( void ) { return GRENADE_TYPE_EXPLOSIVE; }
+//	virtual GrenadeType_t GetGrenadeType( void ) { return GRENADE_TYPE_EXPLOSIVE; }
 
 	// Specify what velocity we want the grenade to have on the client immediately.
 	// Without this, the entity wouldn't have an interpolation history initially, so it would
