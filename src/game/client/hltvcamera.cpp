@@ -22,14 +22,14 @@
 #include "view_shared.h"
 #include "view.h"
 #include "ivrenderview.h"
-#include "c_plantedc4.h"
-#include "basecsgrenade_projectile.h"
+//#include "c_plantedc4.h"
+//#include "basecsgrenade_projectile.h"
 #include "ivieweffects.h"
-#include "cs_hud_chat.h"
+//#include "cs_hud_chat.h"
 #include "in_buttons.h"
 #include <vgui/IInput.h>
 #include "vgui_controls/Controls.h"
-#include "hltvreplaysystem.h"
+//#include "hltvreplaysystem.h"
 
 #ifdef CSTRIKE_DLL
 	#include "c_cs_player.h"

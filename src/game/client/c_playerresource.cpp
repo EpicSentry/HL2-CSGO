@@ -8,7 +8,7 @@
 #include "c_playerresource.h"
 #include "c_team.h"
 #include "gamestringpool.h"
-#include "hltvreplaysystem.h"
+//#include "hltvreplaysystem.h"
 #include "fmtstr.h"
 #if !defined( _X360 )
 #include "xbox/xboxstubs.h"
@@ -371,11 +371,11 @@ bool C_PlayerResource::IsLocalPlayer(int index)
 
 	if ( !pPlayer )
 		return false;
-
+	/*
 	// HLTV replay will not set m_bLocalPlayer flag, in a sense there's no selected local player, we're observing everyone
 	if ( g_HltvReplaySystem.GetHltvReplayDelay() )
 		return false;
-
+	*/
 	return ( index == pPlayer->entindex() );
 }
 
@@ -384,11 +384,11 @@ bool C_PlayerResource::IsHLTV(int index)
 {
 	if ( !IsConnected( index ) )
 		return false;
-
+	/*
 	// HLTV replay will not set m_bLocalPlayer flag, in a sense there's no selected local player, we're observing everyone
 	if ( g_HltvReplaySystem.GetHltvReplayDelay() && C_BasePlayer::GetLocalPlayer()->index == index )
 		return true;  // local player is always HLTV in HLTV replay mode, even though the hltv property isn't set because we are in the past and replaying everything as it was (including no hltv flag set)
-
+	*/
 	player_info_t sPlayerInfo;
 	
 	if ( engine->GetPlayerInfo( index, &sPlayerInfo ) )

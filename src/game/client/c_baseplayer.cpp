@@ -33,7 +33,7 @@
 #include "particles_simple.h"
 #include "fx_water.h"
 #include "hltvcamera.h"
-#include "hltvreplaysystem.h"
+//#include "hltvreplaysystem.h"
 #include "netmessages.h"
 #if defined( REPLAY_ENABLED )
 #include "replaycamera.h"

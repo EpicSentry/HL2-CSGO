@@ -27,7 +27,7 @@
 #else
 
 #include "input.h"
-#include "hltvreplaysystem.h"
+//#include "hltvreplaysystem.h"
 #include "model_types.h"
 
 #endif
@@ -380,12 +380,7 @@ bool CBaseWeaponWorldModel::ShouldDraw( void )
 	// <sergiy> 2016/01/05 - there was a bug here, where (at least in replay, possibly in other spectator type situations) the weapon owner would substitute his active weapon with the active weapon of the observer target. 
 	//                       This is seemingly done to simplify the code that deals with local player's active weapon (e.g. ironsight and effects rendering): GetLocalPlayer()->GetActiveWeapon(), when in the In-Eye mode, will always return the weapon to use for local effects (the one in the hands of the observer target).
 	CBaseCombatWeapon *pParentWeaponPlayerPrimary;
-#if defined( CLIENT_DLL )
-	if ( g_HltvReplaySystem.GetHltvReplayDelay() )
-		pParentWeaponPlayerPrimary = pWeaponParentOwner->CBaseCombatCharacter::GetActiveWeapon(); // the ACTUAL active weapon, not a substitute from another player
-	else
-#endif
-		pParentWeaponPlayerPrimary = pWeaponParentOwner->GetActiveWeapon();
+	pParentWeaponPlayerPrimary = pWeaponParentOwner->GetActiveWeapon();
 
 	if ( !pParentWeaponPlayerPrimary || pParentWeaponPlayerPrimary != pWeaponParent )
 	{

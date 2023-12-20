@@ -33,7 +33,7 @@
 #include "Scaleform/HUD/sfhud_teamcounter.h"
 #include "Scaleform/mapoverview.h"
 #endif
-#include "hltvreplaysystem.h"
+//#include "hltvreplaysystem.h"
 #include "netmessages.h"
 #if defined( REPLAY_ENABLED )
 #include "replaycamera.h"
@@ -50,7 +50,7 @@
 #include "xbox/xbox_console.h"
 #endif
 #include "matchmaking/imatchframework.h"
-#include "clientmode_csnormal.h"
+//#include "clientmode_csnormal.h"
 
 
 #ifdef PORTAL2

@@ -1019,8 +1019,6 @@ public:
 	virtual void			OnDemoPlaybackStart( char const* pDemoBaseName ) = 0;
 	virtual void			OnDemoPlaybackRestart() = 0;
 	virtual void			OnDemoPlaybackStop() = 0;
-	virtual void			SetDemoPlaybackHighlightXuid( uint64 xuid, bool bLowlights ) = 0;
-	virtual void			ShowHighlightSkippingMessage( bool bState, int nCurrentTick = 0, int nTickStart = 0, int nTickStop = 0 ) = 0;
 
 	// Demo polish callbacks.
 	virtual void			RecordDemoPolishUserInput( int nCmdIndex ) = 0;

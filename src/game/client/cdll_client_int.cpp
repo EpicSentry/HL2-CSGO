@@ -87,7 +87,7 @@
 #include "ihudlcd.h"
 #include "toolframework_client.h"
 #include "hltvcamera.h"
-#include "hltvreplaysystem.h"
+//#include "hltvreplaysystem.h"
 #if defined( REPLAY_ENABLED )
 #include "replaycamera.h"
 #include "replay_ragdoll.h"
@@ -911,8 +911,6 @@ public:
 	virtual void			OnDemoPlaybackStart( char const* pDemoBaseName );
 	virtual void			OnDemoPlaybackRestart();
 	virtual void			OnDemoPlaybackStop();
-	virtual void			SetDemoPlaybackHighlightXuid( uint64 xuid, bool bLowlights );
-	virtual void			ShowHighlightSkippingMessage( bool bState, int nCurrentTick = 0, int nTickStart = 0, int nTickStop = 0 );
 
 	virtual void			RecordDemoPolishUserInput( int nCmdIndex );
 
@@ -1007,9 +1005,9 @@ public:
 	virtual float GetUGCFileDownloadProgress( PublishedFileId_t id );
 
 	virtual void RecordUIEvent( const char* szEvent );
-	virtual void OnHltvReplay( const CSVCMsg_HltvReplay  &msg ) OVERRIDE { g_HltvReplaySystem.OnHltvReplay( msg ); }
-	virtual void OnHltvReplayTick() OVERRIDE { g_HltvReplaySystem.OnHltvReplayTick(); }
-	virtual int GetHltvReplayDelay() OVERRIDE { return g_HltvReplaySystem.GetHltvReplayDelay(); }
+	//virtual void OnHltvReplay( const CSVCMsg_HltvReplay  &msg ) OVERRIDE { g_HltvReplaySystem.OnHltvReplay( msg ); }
+	//virtual void OnHltvReplayTick() OVERRIDE { g_HltvReplaySystem.OnHltvReplayTick(); }
+	//virtual int GetHltvReplayDelay() OVERRIDE { return g_HltvReplaySystem.GetHltvReplayDelay(); }
 	virtual void OnDemoPlaybackTimeJump();
 
 	// Inventory access
@@ -2441,7 +2439,7 @@ void CHLClient::LevelInitPreEntity( char const* pMapName )
 	engine->TickProgressBar();
 
 	// this is a "connected" state
-	g_HltvReplaySystem.StopHltvReplay( );
+	//g_HltvReplaySystem.StopHltvReplay( );
 
 	input->LevelInit();
 
@@ -2552,7 +2550,7 @@ void CHLClient::LevelInitPostEntity( )
 		GetCenterPrint()->Clear();
 	}
 
-	g_HltvReplaySystem.OnLevelInit();
+	//g_HltvReplaySystem.OnLevelInit();
 }
 
 //-----------------------------------------------------------------------------
@@ -2574,7 +2572,7 @@ void CHLClient::ResetStringTablePointers()
 //-----------------------------------------------------------------------------
 void CHLClient::LevelShutdown( void )
 {
-	g_HltvReplaySystem.OnLevelShutdown();
+	//g_HltvReplaySystem.OnLevelShutdown();
 
 	// HACK: Bogus, but the logic is too complicated in the engine
 	if (!g_bLevelInitialized)
@@ -2586,7 +2584,7 @@ void CHLClient::LevelShutdown( void )
 	g_bLevelInitialized = false;
 
 	// this is a "connected" state
-	g_HltvReplaySystem.StopHltvReplay();
+	//g_HltvReplaySystem.StopHltvReplay();
 
 	// Disable abs recomputations when everything is shutting down
 	CBaseEntity::EnableAbsRecomputations( false );
@@ -3448,12 +3446,14 @@ void CHLClient::FrameStageNotify( ClientFrameStage_t curStage )
 			SetBeamCreationAllowed( true );
 			C_BaseEntity::CheckCLInterpChanged();
 			engine->SetLocalPlayerIsResolvable( __FILE__, __LINE__, false );
+			/*
 			if ( !g_bEngineIsHLTV )
 			{
 				// if we stopped Hltv Replay abruptly for some reason (maybe an issue with the connection to the server) - just reset the Hltv Replay state
 				g_HltvReplaySystem.StopHltvReplay();
 			}
 			g_HltvReplaySystem.Update();
+			*/
 		}
 		break;
 	}
@@ -3669,7 +3669,7 @@ void CHLClient::OnDemoPlaybackStart( char const* pDemoBaseName )
 		engine->SetDemoImportantEventData( pImportantEvents );
 		pImportantEvents->deleteThis();
 	}
-	g_HltvReplaySystem.OnDemoPlayback( true );
+	//g_HltvReplaySystem.OnDemoPlayback( true );
 }
 
 void CHLClient::OnDemoPlaybackRestart()
@@ -3689,20 +3689,7 @@ void CHLClient::OnDemoPlaybackStop()
 #if defined( REPLAY_ENABLED )
 	CReplayRagdollCache::Instance().Shutdown();
 #endif
-	g_HltvReplaySystem.OnDemoPlayback( false );
-}
-
-
-void CHLClient::SetDemoPlaybackHighlightXuid( uint64 xuid, bool bLowlights )
-{
-	g_HltvReplaySystem.SetDemoPlaybackHighlightXuid( xuid, bLowlights );
-}
-
-
-void CHLClient::ShowHighlightSkippingMessage( bool bState, int nCurrentTick, int nTickStart, int nTickStop )
-{
-	loadingdisc->SetFastForwardVisible( bState, true );
-	g_HltvReplaySystem.SetDemoPlaybackFadeBrackets( nCurrentTick, nTickStart, nTickStop );
+	//g_HltvReplaySystem.OnDemoPlayback( false );
 }
 
 void CHLClient::RecordDemoPolishUserInput( int nCmdIndex )
