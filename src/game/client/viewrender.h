@@ -635,7 +635,7 @@ protected:
 	// Sets up the view parameters of map overview mode (cl_leveloverview)
 	void			SetUpOverView();
 	// renders the third person overview spectator mode
-	void			SetUpChaseOverview();
+	//void			SetUpChaseOverview();
 
 	// generates a low-res screenshot for save games
 	virtual void	WriteSaveGameScreenshotOfSize( const char *pFilename, int width, int height );

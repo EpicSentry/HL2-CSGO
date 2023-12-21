@@ -21,7 +21,7 @@
 
 /// USER-DEFINED SERVER MESSAGE HANDLERS
 
-void CHud::MsgFunc_ResetHUD( bf_read& msg )
+bool CHud::MsgFunc_ResetHUD(const CUsrMsg_ResetHud& msg)
 {
 	ResetHUD();
 }
@@ -53,7 +53,7 @@ void CHud::ResetHUD()
 // Purpose: 
 //-----------------------------------------------------------------------------
 
-void CHud::MsgFunc_SendAudio( bf_read& msg )
+bool CHud::MsgFunc_SendAudio(const CUsrMsg_SendAudio& msg)
 {
 	char szString[2048];
 	msg.ReadString( szString, sizeof( szString ) );

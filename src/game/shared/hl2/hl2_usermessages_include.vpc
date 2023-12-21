@@ -1,0 +1,24 @@
+$MacroRequired	PROTOBUF_BUILDER_INCLUDED
+
+$Project
+{
+	$Folder "Protobuf Files"
+	{
+		$File "$SRCDIR\game\shared\hl2\hl2_usermessages.proto"
+		$Folder "Generated Files"
+		{
+			$DynamicFile "$GENERATED_PROTO_DIR\hl2_usermessages.pb.h"
+			$DynamicFile "$GENERATED_PROTO_DIR\hl2_usermessages.pb.cc"
+			{
+				$Configuration
+				{
+					$Compiler [$WINDOWS]
+					{
+						$Create/UsePrecompiledHeader	"Not Using Precompiled Headers"
+					}
+				}
+			}
+		}
+	}
+
+}

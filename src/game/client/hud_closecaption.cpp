@@ -2731,7 +2731,7 @@ void CHudCloseCaption::_ProcessCaption( const wchar_t *caption, unsigned int has
 //			iSize - 
 //			*pbuf - 
 //-----------------------------------------------------------------------------
-bool CHudCloseCaption::MsgFunc_CloseCaption(const CCSUsrMsg_CloseCaption &msg)
+bool CHudCloseCaption::MsgFunc_CloseCaption(const CUsrMsg_CloseCaption &msg)
 {
 	unsigned int hash;
 	hash = msg.hash();
@@ -2749,7 +2749,7 @@ bool CHudCloseCaption::MsgFunc_CloseCaption(const CCSUsrMsg_CloseCaption &msg)
 //			iSize - 
 //			*pbuf - 
 //-----------------------------------------------------------------------------
-bool CHudCloseCaption::MsgFunc_CloseCaptionDirect(const CCSUsrMsg_CloseCaptionDirect &msg)
+bool CHudCloseCaption::MsgFunc_CloseCaptionDirect(const CUsrMsg_CloseCaptionDirect &msg)
 {
 	unsigned int hash;
 	hash = msg.hash();

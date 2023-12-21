@@ -274,9 +274,9 @@ public:
 	float					m_flHistoryFadeTime;
 	float					m_flHistoryIdleTime;
 
-	virtual bool			MsgFunc_SayText( const CCSUsrMsg_SayText &msg );
-	virtual bool			MsgFunc_SayText2( const CCSUsrMsg_SayText2 &msg );
-	virtual bool			MsgFunc_TextMsg( const CCSUsrMsg_TextMsg &msg );
+	virtual bool			MsgFunc_SayText( const CUsrMsg_SayText &msg );
+	virtual bool			MsgFunc_SayText2( const CUsrMsg_SayText2 &msg );
+	virtual bool			MsgFunc_TextMsg( const CUsrMsg_TextMsg &msg );
 	virtual void			MsgFunc_VoiceSubtitle( bf_read &msg );
 
 	

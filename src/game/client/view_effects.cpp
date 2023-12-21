@@ -212,7 +212,7 @@ static void ( *s_pfnFadeDoneCallback )( int parm1 );
 //			*pbuf - 
 // Output : static int
 //-----------------------------------------------------------------------------
-bool __MsgFunc_Shake( const CCSUsrMsg_Shake &msg )
+bool __MsgFunc_Shake( const CUsrMsg_Shake &msg )
 {
 	ScreenShake_t shake;
 
@@ -279,7 +279,7 @@ void __MsgFunc_Tilt( bf_read &msg )
 //			*pbuf - 
 // Output : static int
 //-----------------------------------------------------------------------------
-bool __MsgFunc_Fade( const CCSUsrMsg_Fade &msg )
+bool __MsgFunc_Fade( const CUsrMsg_Fade &msg )
 {
 	ScreenFade_t fade;
 

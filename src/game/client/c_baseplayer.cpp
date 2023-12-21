@@ -913,7 +913,7 @@ void C_BasePlayer::CheckForLocalPlayer( int nSplitScreenSlot )
 	if ( g_nKillCamMode )
 		iLocalPlayerIndex = g_nKillCamTarget1;
 
-	if ( iLocalPlayerIndex == index && !g_HltvReplaySystem.GetHltvReplayDelay() )
+	if ( iLocalPlayerIndex == index )
 	{
 		s_pLocalPlayer[ nSplitScreenSlot ] = this;
 		m_bIsLocalPlayer = true;
@@ -959,7 +959,7 @@ void C_BasePlayer::SetAsLocalPlayer()
 	m_nSplitScreenSlot = 0;
 	m_hSplitOwner = NULL;
 
-	if ( nSplitScreenSlot == 0 && !g_HltvReplaySystem.GetHltvReplayDelay() )
+	if ( nSplitScreenSlot == 0 )
 	{
 		// Reset our sound mixed in case we were in a freeze cam when we
 		// changed level, which would cause the snd_soundmixer to be left modified.
@@ -1125,7 +1125,7 @@ void C_BasePlayer::PostDataUpdate( DataUpdateType_t updateType )
 		}
 #endif
 		
-		if ( bHideFreezePanel && !g_HltvReplaySystem.GetHltvReplayDelay() && !g_HltvReplaySystem.IsDelayedReplayRequestPending() )
+		if ( bHideFreezePanel )
 		{
 			IGameEvent *pEvent = gameeventmanager->CreateEvent( "hide_freezepanel" );
 			if ( pEvent )
@@ -1152,7 +1152,7 @@ void C_BasePlayer::PostDataUpdate( DataUpdateType_t updateType )
 		m_bBonePolishSetup = false;
 	}
 #endif
-
+	/*
 	m_fLastUpdateServerTime = engine->GetLastTimeStamp();
 	m_nLastUpdateTickBase = m_nTickBase;
 	m_nLastUpdateServerTickCount = engine->GetServerTick();
@@ -1219,6 +1219,7 @@ void C_BasePlayer::PostDataUpdate( DataUpdateType_t updateType )
 				GetClientMode()->UpdateCameraManUIState( eventType, nOptionalParam, steamID.ConvertToUint64() );
 		}
 	}
+	*/
 }
 
 //-----------------------------------------------------------------------------
@@ -1278,10 +1279,8 @@ void C_BasePlayer::OnDataChanged( DataUpdateType_t updateType )
 
 	BaseClass::OnDataChanged( updateType );
 
-	bool bIsLocalOrHltvObserverPlayer = g_HltvReplaySystem.GetHltvReplayDelay() ? HLTVCamera()->GetCurrentTargetEntindex() == this->index : isLocalPlayer;
-
 	// Only care about this for local player
-	if ( bIsLocalOrHltvObserverPlayer )
+	if ( IsLocalPlayer() )
 	{
 		int nSlot = GetSplitScreenPlayerSlot();
 		// Reset engine areabits pointer, but only for main local player (not piggybacked split screen users)
@@ -1292,8 +1291,9 @@ void C_BasePlayer::OnDataChanged( DataUpdateType_t updateType )
 
 #if !defined( INCLUDE_SCALEFORM ) && !defined( CSTRIKE_DLL )
 		// Check for Ammo pickups.
-		int ammoTypes = GetAmmoDef()->NumAmmoTypes();
-		for ( int i = 0; i <= ammoTypes; i++ )
+		//int ammoTypes = GetAmmoDef()->NumAmmoTypes();
+		//for ( int i = 0; i <= ammoTypes; i++ )
+		for (int i = 0; i < MAX_AMMO_TYPES; i++)
 		{
 			if ( GetAmmoCount(i) > m_iOldAmmo[i] )
 			{
@@ -2142,13 +2142,7 @@ void C_BasePlayer::CalcFreezeCamView( Vector& eyeOrigin, QAngle& eyeAngles, floa
 	// Zoom towards our target
 	float flCurTime = (gpGlobals->curtime - m_flFreezeFrameStartTime);
 	float flBlendPerc = 0.0f;
-	
-	if ( !g_HltvReplaySystem.IsDelayedReplayRequestPending() ) // if we auto-start replay, we don't want to layer camera motion on top of fade on top of replay scene cut
-	{
-		clamp( flCurTime / spec_freeze_traveltime.GetFloat(), 0, 1 );
-		//Msg( "Freezecam @%.2f\n", flCurTime / spec_freeze_traveltime.GetFloat() ); // replayfade
-		flBlendPerc = SimpleSpline( flBlendPerc );
-	}
+	flBlendPerc = SimpleSpline( flBlendPerc );
 
 	Vector vecCamDesired = pTarget->GetObserverCamOrigin();	// Returns ragdoll origin if they're ragdolled
 	VectorAdd( vecCamDesired, GetChaseCamViewOffset( pTarget ), vecCamDesired );

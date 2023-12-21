@@ -225,6 +225,6 @@ int	CalcTeammateCount();
 extern ConVar	cc_achievement_debug;
 
 #ifdef CLIENT_DLL
-bool MsgFunc_AchievementEvent( const CCSUsrMsg_AchievementEvent &msg );
+bool MsgFunc_AchievementEvent( const CUsrMsg_AchievementEvent &msg );
 #endif // CLIENT_DLL
 #endif // ACHIEVEMENTMGR_H

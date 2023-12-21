@@ -17,7 +17,7 @@
 // instead of finding a place to run it.
 // It registers a function called __MsgFunc_<msgName>
 #define USER_MESSAGE_REGISTER( msgName ) \
-	static CUserMessageRegister< CS_UM_##msgName, CCSUsrMsg_##msgName > userMessageRegister_##msgName( __MsgFunc_##msgName );
+	static CUserMessageRegister< UM_##msgName, CUsrMsg_##msgName > userMessageRegister_##msgName( __MsgFunc_##msgName );
 
 class CUserMessageRegisterBase
 {

@@ -1,3 +1,4 @@
+// OBSOLETE!!!! USE PROTO FILE INSTEAD!!!!!11ONE
 //========= Copyright Valve Corporation, All rights reserved. ============//
 //
 // Purpose: 

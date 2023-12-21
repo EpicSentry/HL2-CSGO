@@ -701,7 +701,7 @@ void CViewRender::SetUpView()
 
 	if ( g_bEngineIsHLTV )
 	{
-		HLTVCamera()->CalcView( &view );
+		HLTVCamera()->CalcView( view.origin, view.angles, view.fov );
 	}
 #if defined( REPLAY_ENABLED )
 	else if ( engine->IsReplay() )
@@ -995,7 +995,7 @@ void CViewRender::SetUpOverView()
 
 	// render->DrawTopView( true );
 }
-
+/*
 void CViewRender::SetUpChaseOverview()
 {
 // 	C_BasePlayer *pPlayer = UTIL_PlayerByIndex( m_iTarget1 );
@@ -1035,7 +1035,7 @@ void CViewRender::SetUpChaseOverview()
 	CMatRenderContextPtr pRenderContext( materials );
 	pRenderContext->ClearColor4ub( 0, 255, 0, 255 );
 }
-
+*/
 //-----------------------------------------------------------------------------
 // Purpose: Render current view into specified rectangle
 // Input  : *rect - 
@@ -1132,13 +1132,9 @@ void CViewRender::Render( vrect_t *rect )
 			}
 		}
 
-		if ( cl_leveloverview.GetInt() != 0 || input->CAM_IsThirdPersonOverview() )
+		if ( cl_leveloverview.GetInt() != 0 )
 		{
-			if ( cl_leveloverview.GetInt() != 0 )
-				SetUpOverView();
-			else
-				SetUpChaseOverview();
-
+			SetUpOverView();
 			nClearFlags |= VIEW_CLEAR_COLOR;
 			drawViewModel = false;
 		}

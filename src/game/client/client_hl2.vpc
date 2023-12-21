@@ -9,6 +9,7 @@ $Macro GAMENAME 	"hl2" [!$SOURCESDK]
 $Macro GAMENAME 	"mod_hl2" [$SOURCESDK]
 
 $Include "$SRCDIR\game\client\client_base.vpc"
+$include "$SRCDIR\game\shared\hl2\hl2_usermessages_include.vpc"
 //$Include "$SRCDIR\game\protobuf_include.vpc"
 
 $Configuration
@@ -89,7 +90,7 @@ $Project "Client (HL2)"
 			$File	"$SRCDIR\game\shared\hl2\hl2_gamerules.cpp"
 			$File	"$SRCDIR\game\shared\hl2\hl2_gamerules.h"
 			$File	"$SRCDIR\game\shared\hl2\hl2_shareddefs.h"
-			$File	"$SRCDIR\game\shared\hl2\hl2_usermessages.cpp"
+			// $File	"$SRCDIR\game\shared\hl2\hl2_usermessages.cpp"
 			$File	"$SRCDIR\game\shared\hl2\hl_gamemovement.cpp"
 			$File	"$SRCDIR\game\shared\hl2\hl_gamemovement.h"
 			$File	"hl2\hl_in_main.cpp"

@@ -453,7 +453,7 @@ void CHudMenu::ShowMenu_KeyValueItems( KeyValues *pKV )
 //		string: menu string to display
 //  if this message is never received, then scores will simply be the combined totals of the players.
 //-----------------------------------------------------------------------------
-bool CHudMenu::MsgFunc_ShowMenu( const CCSUsrMsg_ShowMenu &msg)
+bool CHudMenu::MsgFunc_ShowMenu( const CUsrMsg_ShowMenu &msg)
 {
 	m_bitsValidSlots = msg.bits_valid_slots();
 	int DisplayTime = msg.display_time();

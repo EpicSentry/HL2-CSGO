@@ -71,8 +71,8 @@ public:
 	void	AddToHistory( int iType, int iId, int iCount = 0 );
 	void	AddToHistory( int iType, const char *szName, int iCount = 0 );
 	void	AddToHistory( C_BaseCombatWeapon *weapon );
-	bool	MsgFunc_ItemPickup( const CCSUsrMsg_ItemPickup &msg );
-	bool	MsgFunc_AmmoDenied( const CCSUsrMsg_AmmoDenied &msg );
+	bool	MsgFunc_ItemPickup( const CUsrMsg_ItemPickup &msg );
+	bool	MsgFunc_AmmoDenied( const CUsrMsg_AmmoDenied &msg );
 
 	CUserMessageBinder m_UMCMsgItemPickup;
 	CUserMessageBinder m_UMCMsgAmmoDenied;

@@ -22,11 +22,11 @@
 #include "dlight.h"
 #include "clientalphaproperty.h"
 #include "iinput.h"
-#include "cs_shareddefs.h"
-#include "c_cs_player.h"
+//#include "cs_shareddefs.h"
+//#include "c_cs_player.h"
 
-#include "weapon_csbase.h"
-#include "weapon_basecsgrenade.h"
+//#include "weapon_csbase.h"
+//#include "weapon_basecsgrenade.h"
 #include "iclientmode.h"
 
 #include "platforminputdevice.h"
@@ -133,7 +133,7 @@ void Precache( void )
 
 //	BaseClass::Precache();
 }
-
+#ifdef CSTRIKE15
 void C_BaseViewModel::UpdateStatTrakGlow( void )
 {
 	//approach the ideal in 2 seconds
@@ -234,13 +234,15 @@ void C_BaseViewModel::UpdateParticles( int nSlot )
 		}
 	}
 }
-
+#endif
 bool C_BaseViewModel::Simulate( void )
 {
 	int nSlot = GET_ACTIVE_SPLITSCREEN_SLOT();
 	ACTIVE_SPLITSCREEN_PLAYER_GUARD_ENT( GetOwner() );
+#ifdef CSTRIKE15
 	UpdateParticles( nSlot );
 	UpdateStatTrakGlow();
+#endif
 	BaseClass::Simulate();
 	return true;
 }
@@ -715,7 +717,7 @@ int C_BaseViewModel::DrawModel( int flags, const RenderableInstance_t &instance 
 		{
 			pWeapon->ViewModelDrawn( flags, this );
 		}
-
+		/*
 		if ( vm_debug.GetBool() )
 		{
 			MDLCACHE_CRITICAL_SECTION();
@@ -760,9 +762,10 @@ int C_BaseViewModel::DrawModel( int flags, const RenderableInstance_t &instance 
 				engine->Con_NPrintf( line++, "EF_NODRAW" );
 			}
 		}
+		*/
 	}
 
-
+#ifdef CSTRIKE15
 	if ( flags && vm_draw_addon.GetBool() 
 #ifdef IRONSIGHT
 		&& (GetScopeStencilMaskMode() == false) 
@@ -799,7 +802,7 @@ int C_BaseViewModel::DrawModel( int flags, const RenderableInstance_t &instance 
 			m_viewmodelUidAddon->DrawModel( flags | STUDIO_DONOTMODIFYSTENCILSTATE, instance );
 		}
 	}
-	
+#endif
 #ifdef IRONSIGHT
 	//Scope stencil mask mode is automatically turned off after rendering. It needs to be explicitly enabled before each draw.
 	if ( flags )
@@ -929,7 +932,7 @@ void C_BaseViewModel::GetBoneControllers(float controllers[MAXSTUDIOBONECTRLS])
 		pWeapon->GetViewmodelBoneControllers( this, controllers );
 	}
 }
-
+/*
 void C_BaseViewModel::UpdateAllViewmodelAddons( void )
 {
 	C_CSPlayer *pPlayer = ToCSPlayer( GetOwner() );
@@ -1038,7 +1041,7 @@ void C_BaseViewModel::UpdateAllViewmodelAddons( void )
 
 C_ViewmodelAttachmentModel* C_BaseViewModel::FindArmModelForLoadoutPosition( loadout_positions_t nPosition ) const
 {
-	/* Removed for partner depot */
+	/* Removed for partner depot *//*
 	return NULL;
 }
 
@@ -1173,7 +1176,7 @@ bool C_BaseViewModel::ViewmodelStickersAreValid( int nWeaponID )
 void C_BaseViewModel::AddViewmodelStickers( CEconItemView *pItem, int nWeaponID )
 {
 	/* Removed for partner depot */
-}
+/*}
 
 void C_BaseViewModel::RemoveViewmodelArmModels( void )
 {
@@ -1218,7 +1221,7 @@ void C_BaseViewModel::RemoveViewmodelStickers( void )
 	}
 	m_hStickerModelAddons.RemoveAll();
 }
-
+*/
 #if defined (_GAMECONSOLE)
 
 //C_ViewmodelAttachmentModel

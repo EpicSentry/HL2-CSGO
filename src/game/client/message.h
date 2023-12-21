@@ -78,9 +78,9 @@ public:
 	void VidInit( void );
 	bool ShouldDraw( void );
 	virtual void Paint();
-	bool MsgFunc_HudText(const CCSUsrMsg_HudText &msg);
-	bool MsgFunc_GameTitle(const CCSUsrMsg_GameTitle &msg);
-	bool MsgFunc_HudMsg(const CCSUsrMsg_HudMsg &msg);
+	bool MsgFunc_HudText(const CUsrMsg_HudText &msg);
+	bool MsgFunc_GameTitle(const CUsrMsg_GameTitle &msg);
+	bool MsgFunc_HudMsg(const CUsrMsg_HudMsg &msg);
 
 	float FadeBlend( float fadein, float fadeout, float hold, float localTime );
 	int	XPosition( float x, int width, int lineWidth );

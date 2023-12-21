@@ -689,7 +689,7 @@ void CHudMessage::MessageAdd( const char *pName )
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-bool CHudMessage::MsgFunc_HudText(const CCSUsrMsg_HudText &msg)
+bool CHudMessage::MsgFunc_HudText(const CUsrMsg_HudText &msg)
 {
 	MessageAdd( msg.text().c_str() );
 	return true;
@@ -701,7 +701,7 @@ bool CHudMessage::MsgFunc_HudText(const CCSUsrMsg_HudText &msg)
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-bool CHudMessage::MsgFunc_GameTitle(const CCSUsrMsg_GameTitle &msg)
+bool CHudMessage::MsgFunc_GameTitle(const CUsrMsg_GameTitle &msg)
 {
 	m_pGameTitle = TextMessageGet( "GAMETITLE" );
 	if ( m_pGameTitle != NULL )
@@ -735,7 +735,7 @@ bool CHudMessage::MsgFunc_GameTitle(const CCSUsrMsg_GameTitle &msg)
 }
 
 
-bool CHudMessage::MsgFunc_HudMsg(const CCSUsrMsg_HudMsg &msg)
+bool CHudMessage::MsgFunc_HudMsg(const CUsrMsg_HudMsg &msg)
 {
 // Position command $position x y 
 // x & y are from 0 to 1 to be screen resolution independent

@@ -52,8 +52,8 @@ public:
 
 	virtual void ApplySchemeSettings( vgui::IScheme *pScheme );
 	
-	bool MsgFunc_CloseCaption(const CCSUsrMsg_CloseCaption &msg);
-	bool MsgFunc_CloseCaptionDirect(const CCSUsrMsg_CloseCaptionDirect &msg);
+	bool MsgFunc_CloseCaption(const CUsrMsg_CloseCaption &msg);
+	bool MsgFunc_CloseCaptionDirect(const CUsrMsg_CloseCaptionDirect &msg);
 
 	// Clear all CC data
 	void			Reset( void );

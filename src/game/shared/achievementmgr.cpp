@@ -201,7 +201,7 @@ bool CAchievementMgr::Init()
 	for ( int hh = 0; hh < MAX_SPLITSCREEN_PLAYERS; ++hh )
 	{
 		ACTIVE_SPLITSCREEN_PLAYER_GUARD( hh );
-		m_UMCMsgAchievementEvent.Bind< CS_UM_AchievementEvent, CCSUsrMsg_AchievementEvent >( UtlMakeDelegate( MsgFunc_AchievementEvent ) );
+		m_UMCMsgAchievementEvent.Bind< UM_AchievementEvent, CUsrMsg_AchievementEvent >( UtlMakeDelegate( MsgFunc_AchievementEvent ) );
 	}
 	ListenForGameEvent( "read_game_titledata" );
 	ListenForGameEvent( "write_game_titledata" );
@@ -833,11 +833,12 @@ void CAchievementMgr::AwardAchievement( int iAchievementID, int nUserSlot )
 
 #ifdef CLIENT_DLL
 	C_BasePlayer *pPlayerLocal = C_BasePlayer::GetLocalPlayer();
+#ifdef CSTRIKE15
 	C_CSPlayer* pPlayer = ToCSPlayer(pPlayerLocal);
 
 	if( ( pPlayer && pPlayer->IsControllingBot() ) ) // if we're controlling a bot, no achievements for us!
 		return;
-
+#endif
 	CBaseAchievement *pAchievement = GetAchievementByID( iAchievementID, nUserSlot );
 	Assert( pAchievement );
 	if ( !pAchievement )
@@ -1462,7 +1463,7 @@ void CAchievementMgr::PrintAchievementStatus()
 		CFailableAchievement *pFailableAchievement = dynamic_cast<CFailableAchievement *>( pAchievement );
 		if ( pAchievement->IsAchieved() )
 		{
-			CCSBaseAchievement* pCSAchievement = dynamic_cast<CCSBaseAchievement*>(pAchievement);
+			CHL2BaseAchievement* pHL2Achievement = dynamic_cast<CHL2BaseAchievement*>(pAchievement);
 
 			// Assign the award date text
 			char dateBuffer[32] = "";
@@ -2085,7 +2086,7 @@ void CAchievementMgr::ResetAchievement_Internal( CBaseAchievement *pAchievement 
 
 #ifdef CLIENT_DLL
 
-bool MsgFunc_AchievementEvent( const CCSUsrMsg_AchievementEvent &msg )
+bool MsgFunc_AchievementEvent( const CUsrMsg_AchievementEvent &msg )
 {
 	int iAchievementID = (int) msg.achievement();
 	CAchievementMgr *pAchievementMgr = CAchievementMgr::GetInstance();

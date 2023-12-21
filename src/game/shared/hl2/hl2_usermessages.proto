@@ -1,0 +1,316 @@
+//====== Copyright (c) 2013, Valve Corporation, All rights reserved. ========//
+//
+// Redistribution and use in source and binary forms, with or without 
+// modification, are permitted provided that the following conditions are met:
+//
+// Redistributions of source code must retain the above copyright notice, this
+// list of conditions and the following disclaimer.
+// Redistributions in binary form must reproduce the above copyright notice, 
+// this list of conditions and the following disclaimer in the documentation 
+// and/or other materials provided with the distribution.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
+// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
+// ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE 
+// LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
+// CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF 
+// SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS 
+// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN 
+// CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
+// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF 
+// THE POSSIBILITY OF SUCH DAMAGE.
+//===========================================================================//
+//
+// Purpose: The file defines our Google Protocol Buffers which are used in over 
+// the wire messages for the Source engine.
+//
+//=============================================================================
+
+// We care more about speed than code size
+option optimize_for = SPEED;
+
+// We don't use the service generation functionality
+option cc_generic_services = false;
+
+
+// 
+// STYLE NOTES:
+//
+// Use CamelCase CMsgMyMessageName style names for messages.
+// 
+// Use lowercase _ delimited names like my_steam_id for field names, this is non-standard for Steam,
+// but plays nice with the Google formatted code generation.  
+// 
+// Try not to use required fields ever. Only do so if you are really really sure you'll never want them removed. 
+// Optional should be preffered as it will make versioning easier and cleaner in the future if someone refactors
+// your message and wants to remove or rename fields.
+//
+// Use fixed64 for JobId_t, GID_t, or SteamID.  This is appropriate for any field that is normally
+// going to be larger than 2^56.  Otherwise use int64 for 64 bit values that are frequently smaller
+// than 2^56 as it will safe space on the wire in those cases.
+//
+// Similar to fixed64, use fixed32 for RTime32 or other 32 bit values that are frequently larger than
+// 2^28.  It will safe space in those cases, otherwise use int32 which will safe space for smaller values.
+// An exception to this rule for RTime32 is if the value will frequently be zero rather than set to an actual 
+// time.
+//
+
+import "google/protobuf/descriptor.proto";
+
+// for CMsgVector, etc.
+import "netmessages.proto";
+//import "cstrike15_gcmessages.proto";
+
+//=============================================================================
+// HL2 User Messages
+//=============================================================================
+
+enum EHL2UserMessages
+{ 
+	UM_VGUIMenu		= 1;
+	UM_Geiger		= 2;
+	UM_Train			= 3;
+	UM_HudText		= 4;
+	UM_SayText		= 5;
+	UM_SayText2		= 6;
+	UM_TextMsg		= 7;
+	UM_HudMsg		= 8;
+	UM_ResetHud		= 9;
+	UM_GameTitle		= 10;
+	UM_Shake			= 11;
+	UM_Fade			= 12;			// fade HUD in/out
+	UM_Rumble		= 13;
+	UM_CloseCaption	= 14;
+	UM_CloseCaptionDirect = 15;
+	UM_SendAudio		= 16;
+	UM_RawAudio		= 17;
+	UM_VoiceMask		= 18;
+	UM_RequestState  = 19;
+	UM_Damage		= 20;
+	UM_RadioText		= 21;
+	UM_HintText		= 22;
+	UM_KeyHintText	= 23;
+	UM_Battery	= 24;
+	UM_SquadMemberDied	= 25;
+	UM_DesiredTimescale = 26;
+	UM_CurrentTimescale = 27;
+	UM_AchievementEvent = 28;
+	UM_ItemPickup = 29;
+	UM_ShowMenu = 30;					// show hud menu
+	UM_AmmoDenied = 31;
+	UM_CreditsMsg = 32;
+	UM_LogoTimeMsg = 33;
+	UM_UpdateJalopyRadar = 34;
+}
+
+//=============================================================================
+
+
+message CUsrMsg_VGUIMenu
+{
+	optional string name = 1;
+	optional bool show = 2;
+
+	message Subkey
+	{
+		optional string name = 1;
+		optional string str = 2;
+	}
+
+	repeated Subkey subkeys = 3;
+}
+
+message CUsrMsg_Geiger
+{
+	optional int32 range = 1;
+}
+
+message CUsrMsg_Train
+{
+	optional int32 train = 1;
+}
+
+message CUsrMsg_HudText
+{
+	optional string text = 1;
+}
+
+message CUsrMsg_SayText
+{
+	optional int32 ent_idx = 1;
+	optional string text = 2;
+	optional bool chat = 3;
+	optional bool textallchat = 4;
+}
+
+message CUsrMsg_SayText2
+{
+	optional int32 ent_idx = 1;
+	optional bool chat = 2;
+	optional string msg_name = 3;
+	repeated string params = 4;
+	optional bool textallchat = 5;
+}
+
+message CUsrMsg_TextMsg
+{
+	optional int32 msg_dst = 1;
+	repeated string params = 3;
+}
+
+message CUsrMsg_HudMsg
+{
+	optional int32 channel = 1;
+	optional CMsgVector2D pos = 2;
+	optional CMsgRGBA clr1 = 3;
+	optional CMsgRGBA clr2 = 4;
+	optional int32 effect = 5;
+	optional float fade_in_time = 6;
+	optional float fade_out_time = 7;
+	optional float hold_time = 9;
+	optional float fx_time = 10;
+	optional string text = 11; 
+}
+
+message CUsrMsg_Shake
+{
+	optional int32 command = 1;
+	optional float local_amplitude = 2;
+	optional float frequency = 3;
+	optional float duration = 4;
+}
+
+message CUsrMsg_Fade
+{
+	optional int32 duration = 1;
+	optional int32 hold_time = 2;
+	optional int32 flags = 3;		// fade type (in / out)
+	optional CMsgRGBA clr = 4;
+}
+
+message CUsrMsg_Rumble
+{
+	optional int32 index = 1;
+	optional int32 data = 2;
+	optional int32 flags = 3;
+}
+
+message CUsrMsg_CloseCaption
+{
+	optional uint32 hash = 1;
+	optional int32 duration = 2;
+	optional bool from_player = 3;
+}
+
+message CUsrMsg_CloseCaptionDirect
+{
+	optional uint32 hash = 1;
+	optional int32 duration = 2;
+	optional bool from_player = 3;
+}
+
+message CUsrMsg_SendAudio
+{
+	optional string radio_sound = 1;
+}
+
+message CUsrMsg_RawAudio
+{
+	optional int32 pitch = 1;
+	optional int32 entidx = 2;
+	optional float duration = 3;
+	optional string voice_filename = 4;
+}
+
+message CUsrMsg_VoiceMask
+{
+	message PlayerMask
+	{
+		optional int32 game_rules_mask = 1;
+		optional int32 ban_masks = 2;
+	}
+
+	repeated PlayerMask player_masks = 1;
+	optional bool player_mod_enable = 2;
+}
+
+message CUsrMsg_Damage
+{
+	optional int32 armor = 1;
+	optional int32 damageTaken = 2;
+	optional int32 bitsDamage = 3;
+}
+
+message CUsrMsg_HintText
+{
+	optional string text = 1;
+}
+
+message CUsrMsg_KeyHintText
+{
+	repeated string hints = 1;
+}
+
+message CUsrMsg_DesiredTimescale
+{
+	optional float desired_timescale = 1;
+	optional float duration_realtime_sec = 2;
+	optional int32 interpolator_type = 3;
+	optional float start_blend_time = 4;
+}
+
+message CUsrMsg_CurrentTimescale
+{
+	optional float cur_timescale = 1;
+}
+
+message CUsrMsg_AchievementEvent
+{
+	optional int32 achievement = 1;
+	optional int32 count = 2;
+	optional int32 user_id = 3;
+}
+
+message CUsrMsg_ItemPickup
+{
+	optional string item = 1;
+}
+
+message CUsrMsg_ShowMenu
+{
+	optional int32 bits_valid_slots = 1;
+	optional int32 display_time = 2;
+	optional string menu_string = 3;	
+}
+
+message CUsrMsg_AmmoDenied
+{
+	optional int32 ammoIdx = 1;
+}
+
+
+
+//=============================================================================
+// Messages where the data seems to be irrelevant
+//=============================================================================
+
+message CUsrMsg_ResetHud
+{
+	optional bool reset = 1;
+}
+
+message CUsrMsg_GameTitle
+{
+	optional int32 dummy = 1;
+}
+
+message CUsrMsg_RequestState
+{
+	optional int32 dummy = 1;
+}
+
+message CUsrMsg_SquadMemberDied
+{
+	optional int32 dummy = 1;
+}

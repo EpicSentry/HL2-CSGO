@@ -99,10 +99,10 @@ void CHintMessage::Send( CBasePlayer * client )
 	user.MakeReliable();
 
 	// client can handle 1 string only
-//	CCSUsrMsg_HintText msg;
-//	msg.set_text( m_hintString );
-//
-//	SendUserMessage( user, CS_UM_HintText, msg );
+	CUsrMsg_HintText msg;
+	msg.set_text( m_hintString );
+
+	SendUserMessage( user, UM_HintText, msg );
 	
 #endif
 }

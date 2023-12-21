@@ -129,7 +129,7 @@ CON_COMMAND_F( crash, "Crash the client. Optional parameter -- type of crash:\n 
 }
 #endif // _DEBUG
 
-static bool __MsgFunc_Rumble( const CCSUsrMsg_Rumble &msg )
+static bool __MsgFunc_Rumble( const CUsrMsg_Rumble &msg )
 {
 	unsigned char waveformIndex;
 	unsigned char rumbleData;
@@ -146,7 +146,7 @@ static bool __MsgFunc_Rumble( const CCSUsrMsg_Rumble &msg )
 	return true;
 }
 
-static bool __MsgFunc_VGUIMenu( const CCSUsrMsg_VGUIMenu &msg )
+static bool __MsgFunc_VGUIMenu( const CUsrMsg_VGUIMenu &msg )
 {
 	const char* pszPanelName = msg.name().c_str();
 	bool bShow = msg.show();
@@ -161,7 +161,7 @@ static bool __MsgFunc_VGUIMenu( const CCSUsrMsg_VGUIMenu &msg )
 
 		for (int i = 0; i < msg.subkeys_size(); i ++ )
 		{
-			const CCSUsrMsg_VGUIMenu::Subkey& subkey = msg.subkeys( i );
+			const CUsrMsg_VGUIMenu::Subkey& subkey = msg.subkeys( i );
 						
 			keys->SetString( subkey.name().c_str(), subkey.str().c_str() );
 		}
@@ -679,7 +679,7 @@ int ClientModeShared::HandleSpectatorKeyInput( int down, ButtonCode_t keynum, co
 	}
 	else if ( down && pszCurrentBinding && Q_strcmp( pszCurrentBinding, "+strafe" ) == 0 )
 	{
-		HLTVCamera()->SetAutoDirector( C_HLTVCamera::AUTODIRECTOR_ON );
+		HLTVCamera()->SetAutoDirector( true );
 #if defined( REPLAY_ENABLED )
 		ReplayCamera()->SetAutoDirector( true );
 #endif

@@ -31,10 +31,10 @@
 #include <vgui_controls/EditablePanel.h>
 #include "vgui_int.h"
 #include "cdll_client_int.h"
-#include "c_cs_playerresource.h"
-#include "c_cs_player.h"
-#include "cs_gamerules.h"
-#include "weapon_c4.h"
+//#include "c_cs_playerresource.h"
+//#include "c_cs_player.h"
+//#include "cs_gamerules.h"
+//#include "weapon_c4.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -1046,7 +1046,7 @@ unsigned char UTIL_ComputeEntityFade( C_BaseEntity *pEntity, float flMinDist, fl
 	unsigned char nAlpha = 255;
 
 	// If we're taking devshots, don't fade props at all
-	if ( g_MakingDevShots || cl_leveloverview.GetInt() != 0 || input->CAM_IsThirdPersonOverview() )
+	if ( g_MakingDevShots || cl_leveloverview.GetInt() != 0 )
 		return 255;
 
 #ifdef _DEBUG

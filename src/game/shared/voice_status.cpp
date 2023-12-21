@@ -119,7 +119,7 @@ void ClientVoiceMgr_LevelShutdown()
 
 static CVoiceStatus *g_pInternalVoiceStatus = NULL;
 
-bool __MsgFunc_VoiceMask(const CCSUsrMsg_VoiceMask &msg)
+bool __MsgFunc_VoiceMask(const CUsrMsg_VoiceMask &msg)
 {
 	if(g_pInternalVoiceStatus)
 		return g_pInternalVoiceStatus->HandleVoiceMaskMsg(msg);
@@ -127,7 +127,7 @@ bool __MsgFunc_VoiceMask(const CCSUsrMsg_VoiceMask &msg)
 	return true;
 }
 
-bool __MsgFunc_RequestState(const CCSUsrMsg_RequestState &msg)
+bool __MsgFunc_RequestState(const CUsrMsg_RequestState &msg)
 {
 	if(g_pInternalVoiceStatus)
 		return g_pInternalVoiceStatus->HandleReqStateMsg(msg);
@@ -631,7 +631,7 @@ void CVoiceStatus::UpdateServerState(bool bForce)
 	m_LastUpdateServerState = gpGlobals->curtime;
 }
 
-bool CVoiceStatus::HandleVoiceMaskMsg(const CCSUsrMsg_VoiceMask &msg)
+bool CVoiceStatus::HandleVoiceMaskMsg(const CUsrMsg_VoiceMask &msg)
 {
 	unsigned long dw;
 	for(dw=0; dw < VOICE_MAX_PLAYERS_DW; dw++)
@@ -652,7 +652,7 @@ bool CVoiceStatus::HandleVoiceMaskMsg(const CCSUsrMsg_VoiceMask &msg)
 	return true;
 }
 
-bool CVoiceStatus::HandleReqStateMsg(const CCSUsrMsg_RequestState &msg)
+bool CVoiceStatus::HandleReqStateMsg(const CUsrMsg_RequestState &msg)
 {
 	if( voice_clientdebug.GetInt() == 1 )
 	{

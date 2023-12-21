@@ -33,7 +33,7 @@ public:
 	bool ShouldDraw( void );
 	virtual void	ApplySchemeSettings( vgui::IScheme *scheme );
 	virtual void	Paint( void );
-	bool MsgFunc_Train(const CCSUsrMsg_Train &msg);
+	bool MsgFunc_Train(const CUsrMsg_Train &msg);
 
 	CUserMessageBinder m_UMCMsgTrain;
 
@@ -108,7 +108,7 @@ void CHudTrain::Paint()
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-bool CHudTrain::MsgFunc_Train( const CCSUsrMsg_Train &msg )
+bool CHudTrain::MsgFunc_Train( const CUsrMsg_Train &msg )
 {
 	// update Train data
 	m_iPos = msg.train();

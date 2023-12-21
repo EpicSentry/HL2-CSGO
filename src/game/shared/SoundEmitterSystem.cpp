@@ -1115,28 +1115,26 @@ public:
 			{
 				if ( g_CaptionRepeats.CanEmitCaption( hash ) )
 				{
-					/*
 					if ( bForceSubtitle )
 					{
-						CCSUsrMsg_CloseCaptionDirect msg;
+						CUsrMsg_CloseCaptionDirect msg;
 						msg.set_hash( hash );
 						msg.set_duration( clamp( (int)( duration * 10.0f ), 0, 65535 ) );
 						msg.set_from_player( fromplayer ? 1 : 0 );
 
 						// Send forced caption and duration hint down to client
-						SendUserMessage( filterCopy, CS_UM_CloseCaptionDirect, msg );						
+						SendUserMessage( filterCopy, UM_CloseCaptionDirect, msg );						
 					}
 					else
 					{
-						CCSUsrMsg_CloseCaption msg;
+						CUsrMsg_CloseCaption msg;
 						msg.set_hash( hash );
 						msg.set_duration( clamp( (int)( duration * 10.0f ), 0, 65535 ) );
 						msg.set_from_player( fromplayer ? 1 : 0 );
 
 						// Send caption and duration hint down to client						
-						SendUserMessage( filterCopy, CS_UM_CloseCaption, msg );
+						SendUserMessage( filterCopy, UM_CloseCaption, msg );
 					}
-					*/
 				}
 			}
 #else
