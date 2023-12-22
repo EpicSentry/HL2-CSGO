@@ -5512,33 +5512,31 @@ void CBaseEntity::PrecacheModelComponents( int nModelIndex )
 	// model anim event owned components
 	{
 		// Check animevents for particle events
-		CStudioHdr studioHdr( modelinfo->GetStudiomodel( pModel ), mdlcache ); 
-		if ( studioHdr.IsValid() )
+		CStudioHdr studioHdr(modelinfo->GetStudiomodel(pModel), mdlcache);
+		if (studioHdr.IsValid())
 		{
 			// force animation event resolution!!!
-			VerifySequenceIndex( &studioHdr );
+			VerifySequenceIndex(&studioHdr);
 
 			int nSeqCount = studioHdr.GetNumSeq();
-			for ( int i = 0; i < nSeqCount; ++i )
+			for (int i = 0; i < nSeqCount; ++i)
 			{
-				mstudioseqdesc_t &seq = studioHdr.pSeqdesc( i );
+				mstudioseqdesc_t &seq = studioHdr.pSeqdesc(i);
 				int nEventCount = seq.numevents;
-				for ( int j = 0; j < nEventCount; ++j )
+				for (int j = 0; j < nEventCount; ++j)
 				{
-					mstudioevent_t *pEvent = (mstudioevent_for_client_server_t*)seq.pEvent( j );
-					
-					int nEvent = pEvent->event();
+					mstudioevent_t *pEvent = seq.pEvent(j);
 
-					if ( !( pEvent->type & AE_TYPE_NEWEVENTSYSTEM ) || ( pEvent->type & AE_TYPE_CLIENT ) )
+					if (!(pEvent->type & AE_TYPE_NEWEVENTSYSTEM) || (pEvent->type & AE_TYPE_CLIENT))
 					{
-						if ( nEvent == AE_CL_CREATE_PARTICLE_EFFECT )
+						if (pEvent->event == AE_CL_CREATE_PARTICLE_EFFECT)
 						{
 							char token[256];
 							const char *pOptions = pEvent->pszOptions();
-							nexttoken( token, pOptions, ' ' );
-							if ( token ) 
+							nexttoken(token, pOptions, ' ');
+							if (token[0])
 							{
-								PrecacheParticleSystem( token );
+								PrecacheParticleSystem(token);
 							}
 							continue;
 						}
@@ -5548,61 +5546,61 @@ void CBaseEntity::PrecacheModelComponents( int nModelIndex )
 					// The disk based solution was not needed. Now at runtime partly due to already crawling the sequences
 					// for the particles and the expensive part was redundant PrecacheScriptSound(), which is now prevented
 					// by a local symbol table.
-					if ( IsGameConsole() )
+					if (IsX360())
 					{
-						switch ( nEvent )
+						switch (pEvent->event)
 						{
 						default:
+						{
+							if ((pEvent->type & AE_TYPE_NEWEVENTSYSTEM) && (pEvent->event == AE_SV_PLAYSOUND))
 							{
-								if ( ( pEvent->type & AE_TYPE_NEWEVENTSYSTEM ) && ( nEvent == AE_SV_PLAYSOUND ) )
-								{
-									PrecacheSoundHelper( pEvent->pszOptions() );
-								}
+								PrecacheSoundHelper(pEvent->pszOptions());
 							}
-							break;
+						}
+						break;
 						case CL_EVENT_FOOTSTEP_LEFT:
 						case CL_EVENT_FOOTSTEP_RIGHT:
+						{
+							char soundname[256];
+							char const *options = pEvent->pszOptions();
+							if (!options || !options[0])
 							{
-								char soundname[256];
-								char const *options = pEvent->pszOptions();
-								if ( !options || !options[0] )
-								{
-									options = "NPC_CombineS";
-								}
-
-								Q_snprintf( soundname, sizeof( soundname ), "%s.RunFootstepLeft", options );
-								PrecacheSoundHelper( soundname );
-								Q_snprintf( soundname, sizeof( soundname ), "%s.RunFootstepRight", options );
-								PrecacheSoundHelper( soundname );
-								Q_snprintf( soundname, sizeof( soundname ), "%s.FootstepLeft", options );
-								PrecacheSoundHelper( soundname );
-								Q_snprintf( soundname, sizeof( soundname ), "%s.FootstepRight", options );
-								PrecacheSoundHelper( soundname );
+								options = "NPC_CombineS";
 							}
-							break;
+
+							Q_snprintf(soundname, sizeof(soundname), "%s.RunFootstepLeft", options);
+							PrecacheSoundHelper(soundname);
+							Q_snprintf(soundname, sizeof(soundname), "%s.RunFootstepRight", options);
+							PrecacheSoundHelper(soundname);
+							Q_snprintf(soundname, sizeof(soundname), "%s.FootstepLeft", options);
+							PrecacheSoundHelper(soundname);
+							Q_snprintf(soundname, sizeof(soundname), "%s.FootstepRight", options);
+							PrecacheSoundHelper(soundname);
+						}
+						break;
 						case AE_CL_PLAYSOUND:
-							{
-								if ( !( pEvent->type & AE_TYPE_CLIENT ) )
-									break;
+						{
+							if (!(pEvent->type & AE_TYPE_CLIENT))
+								break;
 
-								if ( pEvent->pszOptions()[0] )
-								{
-									PrecacheSoundHelper( pEvent->pszOptions() );
-								}
-								else
-								{
-									Warning( "-- Error --:  empty soundname, .qc error on AE_CL_PLAYSOUND in model %s, sequence %s, animevent # %i\n", 
-										studioHdr.GetRenderHdr()->pszName(), seq.pszLabel(), j+1 );
-								}
+							if (pEvent->pszOptions()[0])
+							{
+								PrecacheSoundHelper(pEvent->pszOptions());
 							}
-							break;
+							else
+							{
+								Warning("-- Error --:  empty soundname, .qc error on AE_CL_PLAYSOUND in model %s, sequence %s, animevent # %i\n",
+									studioHdr.GetRenderHdr()->pszName(), seq.pszLabel(), j + 1);
+							}
+						}
+						break;
 						case CL_EVENT_SOUND:
 						case SCRIPT_EVENT_SOUND:
 						case SCRIPT_EVENT_SOUND_VOICE:
-							{
-								PrecacheSoundHelper( pEvent->pszOptions() );
-							}
-							break;
+						{
+							PrecacheSoundHelper(pEvent->pszOptions());
+						}
+						break;
 						}
 					}
 				}

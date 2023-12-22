@@ -478,58 +478,58 @@ void CBaseAnimatingOverlay::StudioFrameAdvance ()
 //=========================================================
 // DispatchAnimEvents
 //=========================================================
-void CBaseAnimatingOverlay::DispatchAnimEvents ( CBaseAnimating *eventHandler )
+void CBaseAnimatingOverlay::DispatchAnimEvents(CBaseAnimating *eventHandler)
 {
-	BaseClass::DispatchAnimEvents( eventHandler );
+	BaseClass::DispatchAnimEvents(eventHandler);
 
-	for ( int i = 0; i < m_AnimOverlay.Count(); i++ )
+	for (int i = 0; i < m_AnimOverlay.Count(); i++)
 	{
-		if (m_AnimOverlay[ i ].IsActive() && !m_AnimOverlay[ i ].NoEvents() )
+		if (m_AnimOverlay[i].IsActive())
 		{
-			m_AnimOverlay[ i ].DispatchAnimEvents( eventHandler, this );
+			m_AnimOverlay[i].DispatchAnimEvents(eventHandler, this);
 		}
 	}
 }
 
-void CAnimationLayer::DispatchAnimEvents( CBaseAnimating *eventHandler, CBaseAnimating *pOwner )
+void CAnimationLayer::DispatchAnimEvents(CBaseAnimating *eventHandler, CBaseAnimating *pOwner)
 {
-  	animevent_t	event;
+	animevent_t	event;
 
-	CStudioHdr *pstudiohdr = pOwner->GetModelPtr( );
+	CStudioHdr *pstudiohdr = pOwner->GetModelPtr();
 
-	if ( !pstudiohdr )
+	if (!pstudiohdr)
 	{
 		Assert(!"CBaseAnimating::DispatchAnimEvents: model missing");
 		return;
 	}
 
-	if ( !pstudiohdr->SequencesAvailable() )
+	if (!pstudiohdr->SequencesAvailable())
 	{
 		return;
 	}
 
-	if ( m_nSequence < 0 || m_nSequence >= pstudiohdr->GetNumSeq() )
+	if (m_nSequence >= pstudiohdr->GetNumSeq())
 		return;
-	
+
 	// don't fire if here are no events
-	if ( pstudiohdr->pSeqdesc( m_nSequence ).numevents == 0 )
+	if (pstudiohdr->pSeqdesc(m_nSequence).numevents == 0)
 	{
 		return;
 	}
 
 	// look from when it last checked to some short time in the future	
-	float flCycleRate = pOwner->GetSequenceCycleRate( m_nSequence ) * m_flPlaybackRate;
+	float flCycleRate = pOwner->GetSequenceCycleRate(m_nSequence) * m_flPlaybackRate;
 	float flStart = m_flLastEventCheck;
 	float flEnd = m_flCycle;
 
 	if (!m_bLooping)
 	{
 		// fire off events early
-		float flLastVisibleCycle = 1.0f - (pstudiohdr->pSeqdesc( m_nSequence ).fadeouttime) * flCycleRate;
-		if (flEnd >= flLastVisibleCycle || flEnd < 0.0) 
+		float flLastVisibleCycle = 1.0f - (pstudiohdr->pSeqdesc(m_nSequence).fadeouttime) * flCycleRate;
+		if (flEnd >= flLastVisibleCycle || flEnd < 0.0)
 		{
 			m_bSequenceFinished = true;
-			flEnd = 1.01f;
+			flEnd = 1.0f;
 		}
 	}
 	m_flLastEventCheck = flEnd;
@@ -537,13 +537,13 @@ void CAnimationLayer::DispatchAnimEvents( CBaseAnimating *eventHandler, CBaseAni
 	/*
 	if (pOwner->m_debugOverlays & OVERLAY_NPC_SELECTED_BIT)
 	{
-		Msg( "%s:%s : checking %.2f %.2f (%d)\n", STRING(pOwner->GetModelName()), pstudiohdr->pSeqdesc( m_nSequence ).pszLabel(), flStart, flEnd, m_bSequenceFinished );
+	Msg( "%s:%s : checking %.2f %.2f (%d)\n", STRING(pOwner->GetModelName()), pstudiohdr->pSeqdesc( m_nSequence ).pszLabel(), flStart, flEnd, m_bSequenceFinished );
 	}
 	*/
 
 	// FIXME: does not handle negative framerates!
 	int index = 0;
-	while ( (index = GetAnimationEvent( pstudiohdr, m_nSequence, &event, flStart, flEnd, index ) ) != 0 )
+	while ((index = GetAnimationEvent(pstudiohdr, m_nSequence, &event, flStart, flEnd, index)) != 0)
 	{
 		event.pSource = pOwner;
 		// calc when this event should happen
@@ -558,20 +558,14 @@ void CAnimationLayer::DispatchAnimEvents( CBaseAnimating *eventHandler, CBaseAni
 		}
 
 		// Msg( "dispatch %d (%d : %.2f)\n", index - 1, event.event, event.eventtime );
-		event.m_bHandledByScript = eventHandler->HandleScriptedAnimEvent( &event );
-		if ( eventHandler->HandleBehaviorAnimEvent( &event ) )
-		{
-			event.m_bHandledByScript = true;
-		}
-		eventHandler->HandleAnimEvent( &event );
+		eventHandler->HandleAnimEvent(&event);
 	}
 }
 
 
-
-void CBaseAnimatingOverlay::GetSkeleton( CStudioHdr *pStudioHdr, BoneVector pos[], BoneQuaternionAligned q[], int boneMask )
+void CBaseAnimatingOverlay::GetSkeleton(CStudioHdr *pStudioHdr, Vector pos[], Quaternion q[], int boneMask)
 {
-	if(!pStudioHdr)
+	if (!pStudioHdr)
 	{
 		Assert(!"CBaseAnimating::GetSkeleton() without a model");
 		return;
@@ -582,142 +576,50 @@ void CBaseAnimatingOverlay::GetSkeleton( CStudioHdr *pStudioHdr, BoneVector pos[
 		return;
 	}
 
-	IBoneSetup boneSetup( pStudioHdr, boneMask, GetPoseParameterArray() );
-	boneSetup.InitPose( pos, q );
+	IBoneSetup boneSetup(pStudioHdr, boneMask, GetPoseParameterArray());
+	boneSetup.InitPose(pos, q);
 
-	if ( !m_pIk )
-	{
-		EnableServerIK();
-		m_pIk->Init( pStudioHdr, GetAbsAngles(), GetAbsOrigin(), gpGlobals->curtime, 0, BONE_USED_BY_BONE_MERGE );
-	}
-
-	boneSetup.AccumulatePose( pos, q, GetSequence(), GetCycle(), 1.0, gpGlobals->curtime, m_pIk );
+	boneSetup.AccumulatePose(pos, q, GetSequence(), GetCycle(), 1.0, gpGlobals->curtime, m_pIk);
 
 	// sort the layers
 	int layer[MAX_OVERLAYS] = {};
-	for (int i = 0; i < m_AnimOverlay.Count(); i++)
+	int i;
+	for (i = 0; i < m_AnimOverlay.Count(); i++)
 	{
 		layer[i] = MAX_OVERLAYS;
 	}
-	for (int i = 0; i < m_AnimOverlay.Count(); i++)
+	for (i = 0; i < m_AnimOverlay.Count(); i++)
 	{
 		CAnimationLayer &pLayer = m_AnimOverlay[i];
-		if( (pLayer.m_flWeight > 0) && pLayer.IsActive() && pLayer.m_nOrder >= 0 && pLayer.m_nOrder < m_AnimOverlay.Count())
+		if ((pLayer.m_flWeight > 0) && pLayer.IsActive() && pLayer.m_nOrder >= 0 && pLayer.m_nOrder < m_AnimOverlay.Count())
 		{
 			layer[pLayer.m_nOrder] = i;
 		}
 	}
-
-	// check if this is a player with a valid weapon
-	// look for weapon, pull layer animations from it if/when they exist
-	CBaseCombatWeapon *pWeapon = NULL;
-	CBaseWeaponWorldModel *pWeaponWorldModel = NULL;
-
-	bool bDoWeaponSetup = false;
-
-	if ( this->IsPlayer() )
+	for (i = 0; i < m_AnimOverlay.Count(); i++)
 	{
-		CBasePlayer *pPlayer = ToBasePlayer(this);
-		if ( pPlayer && pPlayer->m_bUseNewAnimstate )
+		if (layer[i] >= 0 && layer[i] < m_AnimOverlay.Count())
 		{
-			pWeapon = pPlayer->GetActiveWeapon();
-			if ( pWeapon )
-			{
-				pWeaponWorldModel = pWeapon->m_hWeaponWorldModel.Get();
-				if ( pWeaponWorldModel && 
-					 pWeaponWorldModel->GetModelPtr() && 
-					 pWeaponWorldModel->HoldsPlayerAnimations() )
-				{
-
-					if ( !pWeaponWorldModel->m_pBoneMergeCache )
-					{
-						pWeaponWorldModel->m_pBoneMergeCache = new CBoneMergeCache;
-						pWeaponWorldModel->m_pBoneMergeCache->Init( pWeaponWorldModel );
-					}
-
-					if ( pWeaponWorldModel->m_pBoneMergeCache )
-						bDoWeaponSetup = true;
-				}
-			}
-		}
-	}
-	
-	if ( bDoWeaponSetup )
-	{
-		CStudioHdr *pWeaponStudioHdr = pWeaponWorldModel->GetModelPtr();
-
-		// copy matching player pose params to weapon pose params
-		pWeaponWorldModel->m_pBoneMergeCache->MergeMatchingPoseParams();
-		
-		// build a temporary setup for the weapon
-		CIKContext weaponIK;
-		weaponIK.Init( pWeaponStudioHdr, GetAbsAngles(), GetAbsOrigin(), gpGlobals->curtime, 0, BONE_USED_BY_BONE_MERGE );
-
-		IBoneSetup weaponSetup( pWeaponStudioHdr, BONE_USED_BY_BONE_MERGE, pWeaponWorldModel->GetPoseParameterArray() );
-		BoneVector weaponPos[MAXSTUDIOBONES];
-		BoneQuaternionAligned weaponQ[MAXSTUDIOBONES];
-
-		weaponSetup.InitPose( weaponPos, weaponQ );
-
-		for ( int i=0; i < GetNumAnimOverlays(); i++ )
-		{
-			CAnimationLayer *pLayer = GetAnimOverlay( i );
-			if ( pLayer->GetSequence() <= 1 || pLayer->GetWeight() <= 0.0f )
-				continue;
-
-			UpdateDispatchLayer( pLayer, pWeaponStudioHdr, pLayer->GetSequence() );
-
-			if ( pLayer->m_nDispatchedDst > 0 && pLayer->m_nDispatchedDst < pWeaponStudioHdr->GetNumSeq() )
-			{
-				// copy player bones to weapon setup bones
-				pWeaponWorldModel->m_pBoneMergeCache->CopyFromFollow( pos, q, BONE_USED_BY_BONE_MERGE, weaponPos, weaponQ );
-
-				// respect ik rules on archetypal sequence, even if we're not playing it
-				if ( m_pIk )
-				{
-					mstudioseqdesc_t &seqdesc = pStudioHdr->pSeqdesc( pLayer->GetSequence() );
-					m_pIk->AddDependencies( seqdesc, pLayer->GetSequence(), pLayer->GetCycle(), GetPoseParameterArray(), pLayer->GetWeight() );
-				}
-
-				weaponSetup.AccumulatePose( weaponPos, weaponQ, pLayer->m_nDispatchedDst, pLayer->GetCycle(), pLayer->GetWeight(), gpGlobals->curtime, &weaponIK );
-				pWeaponWorldModel->m_pBoneMergeCache->CopyToFollow( weaponPos, weaponQ, BONE_USED_BY_BONE_MERGE, pos, q );
-
-				weaponIK.CopyTo( m_pIk, pWeaponWorldModel->m_pBoneMergeCache->GetRawIndexMapping() );
-			}
-			else
-			{
-				boneSetup.AccumulatePose( pos, q, pLayer->GetSequence(), pLayer->GetCycle(), pLayer->GetWeight(), gpGlobals->curtime, m_pIk );
-			}
-		}
-	}
-	else
-	{
-		for (int i = 0; i < m_AnimOverlay.Count(); i++)
-		{
-			if (layer[i] >= 0 && layer[i] < m_AnimOverlay.Count())
-			{
-				CAnimationLayer &pLayer = m_AnimOverlay[layer[i]];
-				// UNDONE: Is it correct to use overlay weight for IK too?
-				boneSetup.AccumulatePose( pos, q, pLayer.m_nSequence, pLayer.m_flCycle, pLayer.m_flWeight, gpGlobals->curtime, m_pIk );
-			}
+			CAnimationLayer &pLayer = m_AnimOverlay[layer[i]];
+			// UNDONE: Is it correct to use overlay weight for IK too?
+			boneSetup.AccumulatePose(pos, q, pLayer.m_nSequence, pLayer.m_flCycle, pLayer.m_flWeight, gpGlobals->curtime, m_pIk);
 		}
 	}
 
-	if ( m_pIk )
+	if (m_pIk)
 	{
 		CIKContext auto_ik;
-		auto_ik.Init( pStudioHdr, GetAbsAngles(), GetAbsOrigin(), gpGlobals->curtime, 0, boneMask );
-		boneSetup.CalcAutoplaySequences( pos, q, gpGlobals->curtime, &auto_ik );
+		auto_ik.Init(pStudioHdr, GetAbsAngles(), GetAbsOrigin(), gpGlobals->curtime, 0, boneMask);
+		boneSetup.CalcAutoplaySequences(pos, q, gpGlobals->curtime, &auto_ik);
 	}
 	else
 	{
-		boneSetup.CalcAutoplaySequences( pos, q, gpGlobals->curtime, NULL );
+		boneSetup.CalcAutoplaySequences(pos, q, gpGlobals->curtime, NULL);
 	}
-	boneSetup.CalcBoneAdj( pos, q, GetEncodedControllerArray() );
-
-	// Do we care about local weapon bones on the server? They don't drive hitboxes... so I don't think we do.
-	//RegenerateDispatchedLayers( boneSetup, pos, q, gpGlobals->curtime );
+	boneSetup.CalcBoneAdj(pos, q, GetEncodedControllerArray());
 }
+
+
 
 
 
@@ -1406,7 +1308,7 @@ bool CBaseAnimatingOverlay::HasActiveLayer( void )
 
 	return false;
 }
-
+/*
 bool CBaseAnimatingOverlay::UpdateDispatchLayer( CAnimationLayer *pLayer, CStudioHdr *pWeaponStudioHdr, int iSequence )
 {
 	if ( !pWeaponStudioHdr || !pLayer )
@@ -1432,3 +1334,4 @@ bool CBaseAnimatingOverlay::UpdateDispatchLayer( CAnimationLayer *pLayer, CStudi
 	}
 	return (pLayer->m_nDispatchedDst != ACT_INVALID );
 }
+*/

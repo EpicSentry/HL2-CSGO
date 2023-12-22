@@ -79,7 +79,7 @@ public:
 	virtual int GetAchievementCount( bool bAssets = false ) = 0;
 	virtual void InitializeAchievements( ) = 0;
 	virtual void AwardAchievement( int nAchievementID, int nPlayerSlot ) = 0;
-	virtual void OnMapEvent( const char *pchEventName, int nPlayerSlot ) = 0;
+	virtual void OnMapEvent(const char *pchEventName) = 0;
 	virtual void SaveGlobalStateIfDirty( ) = 0;
 	virtual bool HasAchieved( const char *pchName, int nPlayerSlot ) = 0;
 	virtual const CUtlVector<int>& GetAchievedDuringCurrentGame( int nPlayerSlot ) = 0;

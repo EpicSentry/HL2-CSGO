@@ -284,75 +284,73 @@ void CEnvEffectsScript::SpriteEffectEvent( CEffectScriptElement *pEffect )
 	}
 }
 
-void CEnvEffectsScript::HandleAnimEvent ( animevent_t *pEvent ) 
+void CEnvEffectsScript::HandleAnimEvent(animevent_t *pEvent)
 {
-	int nEvent = pEvent->Event();
-
-	if ( nEvent == AE_START_SCRIPTED_EFFECT )
+	if (pEvent->event == AE_START_SCRIPTED_EFFECT)
 	{
-		CEffectScriptElement *pCurrent = GetScriptElementByName( pEvent->options );
+		CEffectScriptElement *pCurrent = GetScriptElementByName(pEvent->options);
 
-		if ( pCurrent )
+		if (pCurrent)
 		{
-			if ( pCurrent->m_iType == EFFECT_TYPE_TRAIL )
-				 TrailEffectEvent( pCurrent );
-			else if ( pCurrent->m_iType == EFFECT_TYPE_SPRITE )
-				 SpriteEffectEvent( pCurrent );
+			if (pCurrent->m_iType == EFFECT_TYPE_TRAIL)
+				TrailEffectEvent(pCurrent);
+			else if (pCurrent->m_iType == EFFECT_TYPE_SPRITE)
+				SpriteEffectEvent(pCurrent);
 		}
 
 		return;
 	}
 
-	if ( nEvent == AE_STOP_SCRIPTED_EFFECT )
+	if (pEvent->event == AE_STOP_SCRIPTED_EFFECT)
 	{
-		CEffectScriptElement *pCurrent = GetScriptElementByName( pEvent->options );
+		CEffectScriptElement *pCurrent = GetScriptElementByName(pEvent->options);
 
-		if ( pCurrent && pCurrent->IsActive() )
+		if (pCurrent && pCurrent->IsActive())
 		{
 			pCurrent->Deactivate();
 
-			if ( pCurrent->m_iType == EFFECT_TYPE_TRAIL )
+			if (pCurrent->m_iType == EFFECT_TYPE_TRAIL)
 			{
-				if ( pCurrent->m_bStopFollowOnKill == true )
+				if (pCurrent->m_bStopFollowOnKill == true)
 				{
 					Vector vOrigin;
-					GetAttachment( pCurrent->m_pTrail->m_nAttachment, vOrigin );
+					GetAttachment(pCurrent->m_pTrail->m_nAttachment, vOrigin);
 
 					pCurrent->m_pTrail->StopFollowingEntity();
 
 					pCurrent->m_pTrail->m_hAttachedToEntity = NULL;
 					pCurrent->m_pTrail->m_nAttachment = 0;
 
-					pCurrent->m_pTrail->SetAbsOrigin( vOrigin);
+					pCurrent->m_pTrail->SetAbsOrigin(vOrigin);
 				}
 
-				pCurrent->m_pTrail->FadeAndDie( pCurrent->m_flFadeTime );
+				pCurrent->m_pTrail->FadeAndDie(pCurrent->m_flFadeTime);
 				pCurrent->m_pTrail = NULL;
 			}
 
-			else if ( pCurrent->m_iType == EFFECT_TYPE_SPRITE )
+			else if (pCurrent->m_iType == EFFECT_TYPE_SPRITE)
 			{
-				if ( pCurrent->m_bStopFollowOnKill == true )
+				if (pCurrent->m_bStopFollowOnKill == true)
 				{
 					Vector vOrigin;
-					GetAttachment( pCurrent->m_pSprite->m_nAttachment, vOrigin );
+					GetAttachment(pCurrent->m_pSprite->m_nAttachment, vOrigin);
 
 					pCurrent->m_pSprite->StopFollowingEntity();
 
 					pCurrent->m_pSprite->m_hAttachedToEntity = NULL;
 					pCurrent->m_pSprite->m_nAttachment = 0;
 
-					pCurrent->m_pSprite->SetAbsOrigin( vOrigin);
+					pCurrent->m_pSprite->SetAbsOrigin(vOrigin);
 				}
 
-				pCurrent->m_pSprite->FadeAndDie( pCurrent->m_flFadeTime );
+				pCurrent->m_pSprite->FadeAndDie(pCurrent->m_flFadeTime);
 				pCurrent->m_pSprite = NULL;
 			}
 		}
 		return;
 	}
 
-	BaseClass::HandleAnimEvent( pEvent );
+	BaseClass::HandleAnimEvent(pEvent);
 }
 //-----------------------------------------------------------------------------
 // Purpose: Input that sets the sequence of the entity

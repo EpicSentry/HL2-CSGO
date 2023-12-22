@@ -4021,24 +4021,6 @@ private:
 	CUtlVector< AppSystemInfo_t >	m_Systems;
 };
 
-void UserMessageBegin(IRecipientFilter& filter, const char *messagename)
-{
-	Assert(!g_pMsgBuffer);
-
-	Assert(messagename);
-
-	int msg_type = usermessages->LookupUserMessage(messagename);
-
-	if (msg_type == -1)
-	{
-		Error("UserMessageBegin:  Unregistered message '%s'\n", messagename);
-	}
-
-	g_pMsgBuffer = engine->UserMessageBegin(&filter, msg_type);
-}
-
-
-
 EXPOSE_SINGLE_INTERFACE( CServerDLLSharedAppSystems, IServerDLLSharedAppSystems, SERVER_DLL_SHARED_APPSYSTEMS );
 
 

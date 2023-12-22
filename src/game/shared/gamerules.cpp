@@ -551,7 +551,6 @@ void CGameRules::RadiusDamage(const CTakeDamageInfo &info, const Vector &vecSrcI
 	}
 }
 
-
 bool CGameRules::ClientCommand(CBaseEntity *pEdict, const CCommand &args)
 {
 	if (pEdict->IsPlayer())

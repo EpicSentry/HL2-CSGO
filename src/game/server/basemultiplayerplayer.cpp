@@ -196,10 +196,10 @@ void CBaseMultiplayerPlayer::AwardAchievement(int iAchievement, int iCount)
 
 	CSingleUserRecipientFilter filter(this);
 
-	UserMessageBegin(filter, "AchievementEvent");
-	WRITE_SHORT(iAchievement);
-	WRITE_SHORT(iCount);
-	MessageEnd();
+//	UserMessageBegin(filter, "AchievementEvent");
+//	WRITE_SHORT(iAchievement);
+//	WRITE_SHORT(iCount);
+//	MessageEnd();
 }
 
 #ifdef _DEBUG

@@ -144,25 +144,23 @@ void CModelSoundsCache::BuildAnimationEventSoundList( CStudioHdr *hdr, CUtlSortV
 		mstudioseqdesc_t *pSeq = &hdr->pSeqdesc( iSeq );
 		
 		// Now read out all the sound events with their timing
-		for ( int iEvent=0; iEvent < (int)pSeq->numevents; iEvent++ )
+		for (int iEvent = 0; iEvent < (int)pSeq->numevents; iEvent++)
 		{
-			mstudioevent_t *pEvent = (mstudioevent_for_client_server_t*)pSeq->pEvent( iEvent );
-			
-			int nEvent = pEvent->Event();
-			
-			switch ( nEvent )
+			mstudioevent_t *pEvent = pSeq->pEvent(iEvent);
+
+			switch (pEvent->event)
 			{
 			default:
+			{
+				if (pEvent->type & AE_TYPE_NEWEVENTSYSTEM)
 				{
-					if ( pEvent->type & AE_TYPE_NEWEVENTSYSTEM )
+					if (pEvent->event == AE_SV_PLAYSOUND)
 					{
-						if ( nEvent == AE_SV_PLAYSOUND )
-						{
-							FindOrAddScriptSound( sounds, pEvent->pszOptions() );
-						}
+						FindOrAddScriptSound(sounds, pEvent->pszOptions());
 					}
 				}
-				break;
+			}
+			break;
 			// Old-style client .dll animation event
 			case CL_EVENT_SOUND:
 				{

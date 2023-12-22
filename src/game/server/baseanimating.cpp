@@ -735,6 +735,7 @@ int CBaseAnimating::LookupActivity( const char *label )
 
 //=========================================================
 //=========================================================
+/*
 float CBaseAnimating::GetFirstSequenceAnimTag( int sequence, int nDesiredTag, float flStart, float flEnd )
 {
 	Assert( GetModelPtr() );
@@ -746,6 +747,7 @@ float CBaseAnimating::GetAnySequenceAnimTag( int sequence, int nDesiredTag, floa
 	Assert( GetModelPtr() );
 	return ::GetAnySequenceAnimTag( GetModelPtr(), sequence, nDesiredTag, flDefault );
 }
+*/
 
 //=========================================================
 //=========================================================
@@ -1095,20 +1097,20 @@ float CBaseAnimating::GetIdealAccel( ) const
 // Input  : nSequence - sequence number to check
 //			nEvent - anim event number to look for
 //-----------------------------------------------------------------------------
-bool CBaseAnimating::HasAnimEvent( int nSequence, int nEvent )
+bool CBaseAnimating::HasAnimEvent(int nSequence, int nEvent)
 {
 	CStudioHdr *pstudiohdr = GetModelPtr();
-	if ( !pstudiohdr )
+	if (!pstudiohdr)
 	{
 		return false;
 	}
 
-  	animevent_t event;
+	animevent_t event;
 
 	int index = 0;
-	while ( ( index = GetAnimationEvent( pstudiohdr, nSequence, &event, 0.0f, 1.0f, index ) ) != 0 )
+	while ((index = GetAnimationEvent(pstudiohdr, nSequence, &event, 0.0f, 1.0f, index)) != 0)
 	{
-		if ( event.Event() == nEvent )
+		if (event.event == nEvent)
 		{
 			return true;
 		}
@@ -1121,35 +1123,35 @@ bool CBaseAnimating::HasAnimEvent( int nSequence, int nEvent )
 //=========================================================
 // DispatchAnimEvents
 //=========================================================
-void CBaseAnimating::DispatchAnimEvents ( CBaseAnimating *eventHandler )
+void CBaseAnimating::DispatchAnimEvents(CBaseAnimating *eventHandler)
 {
 	// don't fire events if the framerate is 0
-	if (GetPlaybackRate() == 0.0)
+	if (m_flPlaybackRate == 0.0)
 		return;
 
 	animevent_t	event;
 
-	CStudioHdr *pstudiohdr = GetModelPtr( );
+	CStudioHdr *pstudiohdr = GetModelPtr();
 
-	if ( !pstudiohdr )
+	if (!pstudiohdr)
 	{
 		Assert(!"CBaseAnimating::DispatchAnimEvents: model missing");
 		return;
 	}
 
-	if ( !pstudiohdr->SequencesAvailable() )
+	if (!pstudiohdr->SequencesAvailable())
 	{
 		return;
 	}
 
 	// skip this altogether if there are no events
-	if (pstudiohdr->pSeqdesc( GetSequence() ).numevents == 0)
+	if (pstudiohdr->pSeqdesc(GetSequence()).numevents == 0)
 	{
 		return;
 	}
 
 	// look from when it last checked to some short time in the future	
-	float flCycleRate = GetSequenceCycleRate( GetSequence() ) * GetPlaybackRate();
+	float flCycleRate = GetSequenceCycleRate(GetSequence()) * m_flPlaybackRate;
 	float flStart = m_flLastEventCheck;
 	float flEnd = GetCycle();
 
@@ -1162,13 +1164,13 @@ void CBaseAnimating::DispatchAnimEvents ( CBaseAnimating *eventHandler )
 	/*
 	if (m_debugOverlays & OVERLAY_NPC_SELECTED_BIT)
 	{
-		Msg( "%s:%s : checking %.2f %.2f (%d)\n", STRING(GetModelName()), pstudiohdr->pSeqdesc( GetSequence() ).pszLabel(), flStart, flEnd, m_bSequenceFinished );
+	Msg( "%s:%s : checking %.2f %.2f (%d)\n", STRING(GetModelName()), pstudiohdr->pSeqdesc( GetSequence() ).pszLabel(), flStart, flEnd, m_bSequenceFinished );
 	}
 	*/
 
 	// FIXME: does not handle negative framerates!
 	int index = 0;
-	while ( (index = GetAnimationEvent( pstudiohdr, GetSequence(), &event, flStart, flEnd, index ) ) != 0 )
+	while ((index = GetAnimationEvent(pstudiohdr, GetSequence(), &event, flStart, flEnd, index)) != 0)
 	{
 		event.pSource = this;
 		// calc when this event should happen
@@ -1185,22 +1187,15 @@ void CBaseAnimating::DispatchAnimEvents ( CBaseAnimating *eventHandler )
 		/*
 		if (m_debugOverlays & OVERLAY_NPC_SELECTED_BIT)
 		{
-			Msg( "dispatch %i (%i) cycle %f event cycle %f cyclerate %f\n", 
-				(int)(index - 1), 
-				(int)event.event, 
-				(float)GetCycle(), 
-				(float)event.cycle, 
-				(float)flCycleRate );
+		Msg( "dispatch %i (%i) cycle %f event cycle %f cyclerate %f\n",
+		(int)(index - 1),
+		(int)event.event,
+		(float)GetCycle(),
+		(float)event.cycle,
+		(float)flCycleRate );
 		}
 		*/
-
-		event.m_bHandledByScript = eventHandler->HandleScriptedAnimEvent( &event );
-		if ( eventHandler->HandleBehaviorAnimEvent( &event ) )
-		{
-			event.m_bHandledByScript = true;
-		}
-		eventHandler->HandleAnimEvent( &event );
-
+		eventHandler->HandleAnimEvent(&event);
 
 		// FAILSAFE:
 		// If HandleAnimEvent has somehow reset my internal pointer
@@ -1210,10 +1205,10 @@ void CBaseAnimating::DispatchAnimEvents ( CBaseAnimating *eventHandler )
 		// So, catch this case, complain vigorously, and bail out of
 		// the loop.
 		CStudioHdr *pNowStudioHdr = GetModelPtr();
-		if ( pNowStudioHdr != pstudiohdr )
+		if (pNowStudioHdr != pstudiohdr)
 		{
-			AssertMsg2(false, "%s has changed its model while processing AnimEvents on sequence %d. Aborting dispatch.\n", GetDebugName(), GetSequence() );
-			Warning( "%s has changed its model while processing AnimEvents on sequence %d. Aborting dispatch.\n", GetDebugName(), GetSequence() );
+			AssertMsg2(false, "%s has changed its model while processing AnimEvents on sequence %d. Aborting dispatch.\n", GetDebugName(), GetSequence());
+			Warning("%s has changed its model while processing AnimEvents on sequence %d. Aborting dispatch.\n", GetDebugName(), GetSequence());
 			break;
 		}
 	}
@@ -1222,36 +1217,34 @@ void CBaseAnimating::DispatchAnimEvents ( CBaseAnimating *eventHandler )
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-void CBaseAnimating::HandleAnimEvent( animevent_t *pEvent )
+void CBaseAnimating::HandleAnimEvent(animevent_t *pEvent)
 {
-	int nEvent = pEvent->Event();
-	
 	if ((pEvent->type & AE_TYPE_NEWEVENTSYSTEM) && (pEvent->type & AE_TYPE_SERVER))
 	{
-		if ( nEvent == AE_SV_PLAYSOUND )
+		if (pEvent->event == AE_SV_PLAYSOUND)
 		{
-			EmitSound( pEvent->options );
+			EmitSound(pEvent->options);
 			return;
 		}
-		else if ( nEvent == AE_RAGDOLL )
+		else if (pEvent->event == AE_RAGDOLL)
 		{
 			// Convert to ragdoll immediately
-			BecomeRagdollOnClient( vec3_origin );
+			BecomeRagdollOnClient(vec3_origin);
 			return;
 		}
 #ifdef HL2_EPISODIC
-		else if ( nEvent == AE_SV_DUSTTRAIL )
+		else if (pEvent->event == AE_SV_DUSTTRAIL)
 		{
 			char szAttachment[128];
 			float flDuration;
 			float flSize;
-			if (sscanf( pEvent->options, "%s %f %f", szAttachment, &flDuration, &flSize ) == 3)
+			if (sscanf(pEvent->options, "%s %f %f", szAttachment, &flDuration, &flSize) == 3)
 			{
 				CHandle<DustTrail>	hDustTrail;
 
 				hDustTrail = DustTrail::CreateDustTrail();
 
-				if( hDustTrail )
+				if (hDustTrail)
 				{
 					hDustTrail->m_SpawnRate = 4;    // Particles per second
 					hDustTrail->m_ParticleLifetime = 1.5;   // Lifetime of each particle, In seconds
@@ -1261,16 +1254,16 @@ void CBaseAnimating::HandleAnimEvent( animevent_t *pEvent )
 					hDustTrail->m_SpawnRadius = 3;    // Each particle randomly offset from the center up to this many units
 					hDustTrail->m_MinSpeed = 4;    // u/sec
 					hDustTrail->m_MaxSpeed = 10;    // u/sec
-					hDustTrail->m_Opacity = 0.5f;  
+					hDustTrail->m_Opacity = 0.5f;
 					hDustTrail->SetLifetime(flDuration);  // Lifetime of the spawner, in seconds
 					hDustTrail->m_StopEmitTime = gpGlobals->curtime + flDuration;
-					hDustTrail->SetParent( this, LookupAttachment( szAttachment ) );
-					hDustTrail->SetLocalOrigin( vec3_origin );
+					hDustTrail->SetParent(this, LookupAttachment(szAttachment));
+					hDustTrail->SetLocalOrigin(vec3_origin);
 				}
 			}
 			else
 			{
-				DevWarning( 1, "%s unable to parse AE_SV_DUSTTRAIL event \"%s\"\n", STRING( GetModelName() ), pEvent->options );
+				DevWarning(1, "%s unable to parse AE_SV_DUSTTRAIL event \"%s\"\n", STRING(GetModelName()), pEvent->options);
 			}
 
 			return;
@@ -1278,26 +1271,17 @@ void CBaseAnimating::HandleAnimEvent( animevent_t *pEvent )
 #endif
 	}
 
-	// New event, not meant for server.  Don't spam console.
-	if ((pEvent->type & AE_TYPE_NEWEVENTSYSTEM) && !(pEvent->type & AE_TYPE_SERVER))
-		return;
-
-	if ( pEvent->m_bHandledByScript == true )
-	{
-		return;
-	}
-
 	// Failed to find a handler
-	const char *pName = EventList_NameForIndex( nEvent );
-	if ( pName)
+	const char *pName = EventList_NameForIndex(pEvent->event);
+	if (pName)
 	{
-		DevWarning( 1, "Unhandled animation event %s for %s\n", pName, GetClassname() );
+		DevWarning(1, "Unhandled animation event %s for %s\n", pName, GetClassname());
 	}
 	else
 	{
-		DevWarning( 1, "Unhandled animation event %d for %s\n", nEvent, GetClassname() );
+		DevWarning(1, "Unhandled animation event %d for %s\n", pEvent->event, GetClassname());
 	}
-}
+	}
 
 // SetPoseParamater()
 
@@ -2308,7 +2292,7 @@ int CBaseAnimating::GetExitNode( int iSequence )
 
 //=========================================================
 //=========================================================
-
+/*
 void CBaseAnimating::SetBodygroupPreset( char const *szName )
 {
 	Assert( GetModelPtr() );
@@ -2317,6 +2301,7 @@ void CBaseAnimating::SetBodygroupPreset( char const *szName )
 	::SetBodygroupPreset( GetModelPtr( ), newBody, szName );
 	m_nBody = newBody;
 }
+*/
 
 void CBaseAnimating::SetBodygroup( int iGroup, int iValue )
 {
@@ -2340,13 +2325,14 @@ const char *CBaseAnimating::GetBodygroupName( int iGroup )
 
 	return ::GetBodygroupName( GetModelPtr( ), iGroup );
 }
-
+/*
 const char *CBaseAnimating::GetBodygroupPartName( int iGroup, int iPart )
 {
 	Assert( GetModelPtr() );
 
 	return ::GetBodygroupPartName( GetModelPtr( ), iGroup, iPart );
 }
+*/
 
 int CBaseAnimating::FindBodygroupByName( const char *name )
 {
@@ -2873,21 +2859,21 @@ void CBaseAnimating::SetModel( const char *szModelName )
 //-----------------------------------------------------------------------------
 void CBaseAnimating::LockStudioHdr()
 {
-	AUTO_LOCK( m_StudioHdrInitLock );
+	AUTO_LOCK(m_StudioHdrInitLock);
 	const model_t *mdl = GetModel();
 	if (mdl)
 	{
-		MDLHandle_t hStudioHdr = modelinfo->GetCacheHandle( mdl );
-		if ( hStudioHdr != MDLHANDLE_INVALID )
+		MDLHandle_t hStudioHdr = modelinfo->GetCacheHandle(mdl);
+		if (hStudioHdr != MDLHANDLE_INVALID)
 		{
-			const studiohdr_t *pStudioHdr = mdlcache->LockStudioHdr( hStudioHdr );
+			const studiohdr_t *pStudioHdr = mdlcache->LockStudioHdr(hStudioHdr);
 			CStudioHdr *pStudioHdrContainer = NULL;
-			if ( !m_pStudioHdr )
+			if (!m_pStudioHdr)
 			{
-				if ( pStudioHdr )
+				if (pStudioHdr)
 				{
 					pStudioHdrContainer = new CStudioHdr;
-					pStudioHdrContainer->Init( pStudioHdr, mdlcache );
+					pStudioHdrContainer->Init(pStudioHdr, mdlcache);
 				}
 			}
 			else
@@ -2895,12 +2881,12 @@ void CBaseAnimating::LockStudioHdr()
 				pStudioHdrContainer = m_pStudioHdr;
 			}
 
-			Assert( ( pStudioHdr == NULL && pStudioHdrContainer == NULL ) || pStudioHdrContainer->GetRenderHdr() == pStudioHdr );
+			Assert((pStudioHdr == NULL && pStudioHdrContainer == NULL) || pStudioHdrContainer->GetRenderHdr() == pStudioHdr);
 
-			if ( pStudioHdrContainer && pStudioHdrContainer->GetVirtualModel() )
+			if (pStudioHdrContainer && pStudioHdrContainer->GetVirtualModel())
 			{
-			 	MDLHandle_t hVirtualModel = VoidPtrToMDLHandle( pStudioHdrContainer->GetRenderHdr()->VirtualModel() );
-				mdlcache->LockStudioHdr( hVirtualModel );
+				MDLHandle_t hVirtualModel = (MDLHandle_t)(int)(pStudioHdrContainer->GetRenderHdr()->virtualModel) & 0xffff;
+				mdlcache->LockStudioHdr(hVirtualModel);
 			}
 			m_pStudioHdr = pStudioHdrContainer; // must be last to ensure virtual model correctly set up
 		}
@@ -2909,16 +2895,16 @@ void CBaseAnimating::LockStudioHdr()
 
 void CBaseAnimating::UnlockStudioHdr()
 {
-	if ( m_pStudioHdr )
+	if (m_pStudioHdr)
 	{
 		const model_t *mdl = GetModel();
 		if (mdl)
 		{
-			mdlcache->UnlockStudioHdr( modelinfo->GetCacheHandle( mdl ) );
-			if ( m_pStudioHdr->GetVirtualModel() )
+			mdlcache->UnlockStudioHdr(modelinfo->GetCacheHandle(mdl));
+			if (m_pStudioHdr->GetVirtualModel())
 			{
-				MDLHandle_t hVirtualModel = VoidPtrToMDLHandle( m_pStudioHdr->GetRenderHdr()->VirtualModel() );
-				mdlcache->UnlockStudioHdr( hVirtualModel );
+				MDLHandle_t hVirtualModel = (MDLHandle_t)(int)(m_pStudioHdr->GetRenderHdr()->virtualModel) & 0xffff;
+				mdlcache->UnlockStudioHdr(hVirtualModel);
 			}
 		}
 	}
@@ -3015,31 +3001,31 @@ bool CBaseAnimating::TestCollision( const Ray_t &ray, unsigned int fContentsMask
 	return false;
 }
 
-bool CBaseAnimating::TestHitboxes( const Ray_t &ray, unsigned int fContentsMask, trace_t& tr )
+bool CBaseAnimating::TestHitboxes(const Ray_t &ray, unsigned int fContentsMask, trace_t& tr)
 {
-	CStudioHdr *pStudioHdr = GetModelPtr( );
+	CStudioHdr *pStudioHdr = GetModelPtr();
 	if (!pStudioHdr)
 	{
 		Assert(!"CBaseAnimating::GetBonePosition: model missing");
 		return false;
 	}
 
-	mstudiohitboxset_t *set = pStudioHdr->pHitboxSet( m_nHitboxSet );
-	if ( !set || !set->numhitboxes )
+	mstudiohitboxset_t *set = pStudioHdr->pHitboxSet(m_nHitboxSet);
+	if (!set || !set->numhitboxes)
 		return false;
 
-	CBoneCache *pcache = GetBoneCache( );
+	CBoneCache *pcache = GetBoneCache();
 
 	matrix3x4_t *hitboxbones[MAXSTUDIOBONES];
-	pcache->ReadCachedBonePointers( hitboxbones, pStudioHdr->numbones() );
+	pcache->ReadCachedBonePointers(hitboxbones, pStudioHdr->numbones());
 
-	if ( TraceToStudioCsgoHitgroupsPriority( physprops, ray, pStudioHdr, set, hitboxbones, fContentsMask, GetAbsOrigin(), GetModelHierarchyScale(), tr ) )
+	if (TraceToStudio(physprops, ray, pStudioHdr, set, hitboxbones, fContentsMask, GetAbsOrigin(), GetModelScale(), tr))
 	{
-		mstudiobbox_t *pbox = set->pHitbox( tr.hitbox );
-		const mstudiobone_t *pBone = pStudioHdr->pBone(pbox->bone);
+		mstudiobbox_t *pbox = set->pHitbox(tr.hitbox);
+		mstudiobone_t *pBone = pStudioHdr->pBone(pbox->bone);
 		tr.surface.name = "**studio**";
 		tr.surface.flags = SURF_HITBOX;
-		tr.surface.surfaceProps = pBone->GetSurfaceProp();
+		tr.surface.surfaceProps = physprops->GetSurfaceIndex(pBone->pszSurfaceProp());
 	}
 	return true;
 }
@@ -3353,16 +3339,14 @@ static Vector	hullcolor[8] =
 //  r_drawentities 3 client side boxes ).
 // WARNING:  This uses a ton of bandwidth, only use on a listen server
 //-----------------------------------------------------------------------------
-void CBaseAnimating::DrawServerHitboxes( float duration /*= 0.0f*/, bool monocolor /*= false*/  )
+void CBaseAnimating::DrawServerHitboxes(float duration /*= 0.0f*/, bool monocolor /*= false*/)
 {
-	MDLCACHE_CRITICAL_SECTION();
-
 	CStudioHdr *pStudioHdr = GetModelPtr();
-	if ( !pStudioHdr )
+	if (!pStudioHdr)
 		return;
 
-	mstudiohitboxset_t *set =pStudioHdr->pHitboxSet( m_nHitboxSet );
-	if ( !set )
+	mstudiohitboxset_t *set = pStudioHdr->pHitboxSet(m_nHitboxSet);
+	if (!set)
 		return;
 
 	Vector position;
@@ -3372,38 +3356,24 @@ void CBaseAnimating::DrawServerHitboxes( float duration /*= 0.0f*/, bool monocol
 	int g = 0;
 	int b = 255;
 
-	for ( int i = 0; i < set->numhitboxes; i++ )
+	for (int i = 0; i < set->numhitboxes; i++)
 	{
-		mstudiobbox_t *pbox = set->pHitbox( i );
-		
-		if ( !monocolor )
+		mstudiobbox_t *pbox = set->pHitbox(i);
+
+		GetBonePosition(pbox->bone, position, angles);
+
+		if (!monocolor)
 		{
 			int j = (pbox->group % 8);
-			
-			r = ( int ) ( 255.0f * hullcolor[j][0] );
-			g = ( int ) ( 255.0f * hullcolor[j][1] );
-			b = ( int ) ( 255.0f * hullcolor[j][2] );
+
+			r = (int)(255.0f * hullcolor[j][0]);
+			g = (int)(255.0f * hullcolor[j][1]);
+			b = (int)(255.0f * hullcolor[j][2]);
 		}
 
-		if ( pbox->flCapsuleRadius > 0 )
-		{
-			matrix3x4_t temp;
-			GetHitboxBoneTransform( pbox->bone, pbox->angOffsetOrientation, temp );
-
-			Vector vecCapsuleCenters[ 2 ];
-			VectorTransform( pbox->bbmin, temp, vecCapsuleCenters[0] );
-			VectorTransform( pbox->bbmax, temp, vecCapsuleCenters[1] );
-			
-			NDebugOverlay::Capsule( vecCapsuleCenters[0], vecCapsuleCenters[1], pbox->flCapsuleRadius, r, g, b, 255, duration );
-		}
-		else
-		{
-			GetHitboxBonePosition( pbox->bone, position, angles, pbox->angOffsetOrientation );
-			NDebugOverlay::BoxAngles( position, pbox->bbmin*GetModelHierarchyScale(), pbox->bbmax*GetModelHierarchyScale(), angles, r, g, b, 0 ,duration );
-		}
+		NDebugOverlay::BoxAngles(position, pbox->bbmin * GetModelScale(), pbox->bbmax * GetModelScale(), angles, r, g, b, 0, duration);
 	}
 }
-
 
 void CBaseAnimating::DrawRawSkeleton( matrix3x4_t boneToWorld[], int boneMask, bool noDepthTest, float duration, bool monocolor )
 {

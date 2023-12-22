@@ -28,6 +28,9 @@ class KeyValues;
 typedef unsigned int HSOUNDSCRIPTHASH;
 #define SOUNDEMITTER_INVALID_HASH	(HSOUNDSCRIPTHASH)-1
 
+typedef short HSOUNDSCRIPTHANDLE;
+#define SOUNDEMITTER_INVALID_HANDLE	(HSOUNDSCRIPTHANDLE)-1
+
 
 //-----------------------------------------------------------------------------
 // Purpose: 

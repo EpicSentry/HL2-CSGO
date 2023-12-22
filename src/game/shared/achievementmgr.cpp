@@ -1768,32 +1768,33 @@ void CAchievementMgr::OnAchievementEvent( int iAchievementID, int nUserSlot )
 //-----------------------------------------------------------------------------
 // Purpose: called when a map-fired achievement event occurs
 //-----------------------------------------------------------------------------
-void CAchievementMgr::OnMapEvent( const char *pchEventName, int nUserSlot )
+void CAchievementMgr::OnMapEvent(const char *pchEventName)
 {
-	Assert( pchEventName && *pchEventName );
-	if ( !pchEventName || !*pchEventName ) 
+	Assert(pchEventName && *pchEventName);
+	if (!pchEventName || !*pchEventName)
 		return;
 
 	// see if this event matches the prefix for an achievement component
-	FOR_EACH_VEC( m_vecComponentListeners[nUserSlot], iAchievement )
+	FOR_EACH_VEC(m_vecComponentListeners, iAchievement)
 	{
-		CBaseAchievement *pAchievement = m_vecComponentListeners[nUserSlot][iAchievement];
-		Assert( pAchievement->m_pszComponentPrefix );
-		if ( 0 == Q_strncmp( pchEventName, pAchievement->m_pszComponentPrefix, pAchievement->m_iComponentPrefixLen ) )
+		CBaseAchievement *pAchievement = m_vecComponentListeners[iAchievement];
+		Assert(pAchievement->m_pszComponentPrefix);
+		if (0 == Q_strncmp(pchEventName, pAchievement->m_pszComponentPrefix, pAchievement->m_iComponentPrefixLen))
 		{
 			// prefix matches, tell the achievement a component was found
-			pAchievement->OnComponentEvent( pchEventName );
+			pAchievement->OnComponentEvent(pchEventName);
 			return;
 		}
 	}
 
 	// look through all the map event listeners
-	FOR_EACH_VEC( m_vecMapEventListeners[nUserSlot], iAchievement )
+	FOR_EACH_VEC(m_vecMapEventListeners, iAchievement)
 	{
-		CBaseAchievement *pAchievement = m_vecMapEventListeners[nUserSlot][iAchievement];
-		pAchievement->OnMapEvent( pchEventName );
+		CBaseAchievement *pAchievement = m_vecMapEventListeners[iAchievement];
+		pAchievement->OnMapEvent(pchEventName);
 	}
 }
+
 
 //-----------------------------------------------------------------------------
 // Purpose: Returns an achievement as it's abstract object. This interface is used by gameui.dll for getting achievement info.

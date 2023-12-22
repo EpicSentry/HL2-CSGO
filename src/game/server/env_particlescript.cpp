@@ -78,24 +78,24 @@ CEnvParticleScript::CEnvParticleScript()
 void CEnvParticleScript::PrecacheAnimationEventMaterials()
 {
 	CStudioHdr *hdr = GetModelPtr();
-	if ( hdr )
+	if (hdr)
 	{
 		int numseq = hdr->GetNumSeq();
-		for ( int i = 0; i < numseq; ++i )
+		for (int i = 0; i < numseq; ++i)
 		{
-			mstudioseqdesc_t& seqdesc = hdr->pSeqdesc( i );
+			mstudioseqdesc_t& seqdesc = hdr->pSeqdesc(i);
 			int ecount = seqdesc.numevents;
-			for ( int j = 0 ; j < ecount; ++j )
+			for (int j = 0; j < ecount; ++j)
 			{
-				const mstudioevent_t* event = (const mstudioevent_for_client_server_t*)seqdesc.pEvent( j );
-				if ( event->Event() == CL_EVENT_SPRITEGROUP_CREATE )
+				const mstudioevent_t* event = seqdesc.pEvent(j);
+				if (event->event == CL_EVENT_SPRITEGROUP_CREATE)
 				{
 					char pAttachmentName[256];
 					char pSpriteName[256];
-					int nArgs = sscanf( event->pszOptions(), "%255s %255s", pAttachmentName, pSpriteName );
-					if ( nArgs == 2 )
+					int nArgs = sscanf(event->pszOptions(), "%255s %255s", pAttachmentName, pSpriteName);
+					if (nArgs == 2)
 					{
-						PrecacheMaterial( pSpriteName );
+						PrecacheMaterial(pSpriteName);
 					}
 				}
 			}
