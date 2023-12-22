@@ -262,7 +262,7 @@ bool CParticleSystemQuery::IsPointInSolid( const Vector& vecPos, const int nCont
 #endif
 	if ( bDoTrace )
 	{
-		return ( UTIL_PointContents(vecPos, nContentsMask) & nContentsMask ) != 0;
+		return ( UTIL_PointContents(vecPos )) != 0;
 	}
 
 	return false;

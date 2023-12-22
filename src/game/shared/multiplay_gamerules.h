@@ -27,6 +27,7 @@ extern ConVar mp_waitingforplayers_cancel;
 extern ConVar mp_clan_readyrestart;
 extern ConVar mp_clan_ready_signal;
 extern ConVar nextlevel;
+extern INetworkStringTable *g_pStringTableServerMapCycle;
 
 #define VOICE_COMMAND_MAX_SUBTITLE_DIST	1900
 
@@ -110,6 +111,12 @@ public:
 	virtual int		Damage_GetShowOnHud( void );
 	virtual int		Damage_GetNoPhysicsForce( void );
 	virtual int		Damage_GetShouldNotBleed( void );
+	static void DetermineMapCycleFilename(char *pszResult, int nSizeResult, bool bForceSpew);
+	virtual void LoadMapCycleFileIntoVector(const char *pszMapCycleFile, CUtlVector<char *> &mapList);
+	static void FreeMapCycleFileVector(CUtlVector<char *> &mapList);
+	// LoadMapCycleFileIntoVector without the fixups inherited versions of gamerules may provide
+	static void RawLoadMapCycleFileIntoVector(const char *pszMapCycleFile, CUtlVector<char *> &mapList);
+	static void StripWhitespaceChars(char *szBuffer);
 
 	CMultiplayRules();
 	virtual ~CMultiplayRules() {}
@@ -239,6 +246,7 @@ protected:
 	static int m_nMapCycleindex;
 	static CUtlStringList m_MapList;
 	const char* m_szNextLevelName;
+	virtual void LoadMapCycleFile(void);
 	
 #else
 	

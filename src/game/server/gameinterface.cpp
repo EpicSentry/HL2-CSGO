@@ -1269,7 +1269,7 @@ bool CServerGameDLL::LevelInit( const char *pMapName, char const *pMapEntities, 
 	m_fAutoSaveDangerousMinHealthToCommit = 0.0f;
 
 	// ask for the latest game rules
-	GameRules()->UpdateGameplayStatsFromSteam();
+	//GameRules()->UpdateGameplayStatsFromSteam();
 
 	if ( gpGlobals->eLoadType == MapLoad_Transition )
 	{
@@ -1396,7 +1396,7 @@ void CServerGameDLL::GameFrame( bool simulating )
 	// are done before the engine has got the Steam API connected, so we have to wait until now to connect ourselves.
 	if ( Steam3Server().CheckInitialized() )
 	{
-		GameRules()->UpdateGameplayStatsFromSteam();
+		//GameRules()->UpdateGameplayStatsFromSteam();
 	}
 #endif
 
@@ -1591,16 +1591,20 @@ void CServerGameDLL::OnQueryCvarValueFinished( QueryCvarCookie_t iCookie, edict_
 }
 
 // Called when a level is shutdown (including changing levels)
-void CServerGameDLL::LevelShutdown( void )
+void CServerGameDLL::LevelShutdown(void)
 {
+#ifndef NO_STEAM
+	//IGameSystem::LevelShutdownPreClearSteamAPIContextAllSystems();
+
+	steamgameserverapicontext->Clear();
+#endif
+
 	MDLCACHE_CRITICAL_SECTION();
 	IGameSystem::LevelShutdownPreEntityAllSystems();
 
 	// YWB:
 	// This entity pointer is going away now and is corrupting memory on level transitions/restarts
 	CSoundEnt::ShutdownSoundEnt();
-
-	ClearDebugHistory();
 
 	gEntList.Clear();
 
@@ -1609,16 +1613,19 @@ void CServerGameDLL::LevelShutdown( void )
 	IGameSystem::LevelShutdownPostEntityAllSystems();
 
 	// In case we quit out during initial load
-	CBaseEntity::SetAllowPrecache( false );
+	CBaseEntity::SetAllowPrecache(false);
 
+	g_nCurrentChapterIndex = -1;
+
+#ifndef _XBOX
+#ifdef USE_NAV_MESH
 	// reset the Navigation Mesh
-	if ( TheNavMesh )
+	if (TheNavMesh)
 	{
 		TheNavMesh->Reset();
 	}
-
-	g_nCurrentChapterIndex = -1;
-	CStudioHdr::CActivityToSequenceMapping::ResetMappings();
+#endif
+#endif
 }
 
 //-----------------------------------------------------------------------------
@@ -2006,15 +2013,14 @@ bool CServerGameDLL::ShouldHideServer( void )
 void CServerGameDLL::InvalidateMdlCache()
 {
 	CBaseAnimating *pAnimating;
-	for ( CBaseEntity *pEntity = gEntList.FirstEnt(); pEntity != NULL; pEntity = gEntList.NextEnt(pEntity) )
+	for (CBaseEntity *pEntity = gEntList.FirstEnt(); pEntity != NULL; pEntity = gEntList.NextEnt(pEntity))
 	{
 		pAnimating = dynamic_cast<CBaseAnimating *>(pEntity);
-		if ( pAnimating )
+		if (pAnimating)
 		{
 			pAnimating->InvalidateMdlCache();
 		}
 	}
-	CStudioHdr::CActivityToSequenceMapping::ResetMappings();
 }
 
 static KeyValues * FindLaunchOptionByValue( KeyValues *pLaunchOptions, char const *szLaunchOption )
@@ -3653,7 +3659,7 @@ bool CServerGameClients::ClientReplayEvent( edict_t *pEdict, const ClientReplayE
 	CBasePlayer *pPlayer = ( CBasePlayer * )CBaseEntity::Instance( pEdict );
 	if ( pPlayer )
 	{
-		return pPlayer->StartHltvReplayEvent( params );
+//		return pPlayer->StartHltvReplayEvent( params ); fix me?
 	}
 	else
 	{
@@ -3752,15 +3758,6 @@ void CServerGameClients::ClientVoice( edict_t *pEdict )
 int CServerGameClients::GetMaxSplitscreenPlayers()
 {
 	return MAX_SPLITSCREEN_PLAYERS;
-}
-
-int CServerGameClients::GetMaxHumanPlayers()
-{
-	if ( g_pGameRules )
-	{
-		return g_pGameRules->GetMaxHumanPlayers();
-	}
-	return -1;
 }
 
 // The client has submitted a keyvalues command
