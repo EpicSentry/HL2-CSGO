@@ -325,8 +325,8 @@ bool CStatTrakDigitProxy::Init( IMaterial *pMaterial, KeyValues *pKeyValues )
 	return true;
 }
 
-#include "c_cs_player.h"
-#include "weapon_csbase.h"
+//#include "c_cs_player.h"
+//#include "weapon_csbase.h"
 #include "predicted_viewmodel.h"
 
 bool CStatTrakDigitProxy::HelperOnBindGetStatTrakScore( void *pC_BaseEntity, int *piScore )
@@ -344,7 +344,7 @@ bool CStatTrakDigitProxy::HelperOnBindGetStatTrakScore( void *pC_BaseEntity, int
 		C_BaseViewModel *pViewModel = dynamic_cast< C_BaseViewModel* >( pEntity->GetMoveParent() );
 		if ( pViewModel )
 		{
-			C_CSPlayer *pPlayer = ToCSPlayer( pViewModel->GetPredictionOwner() );
+			C_BasePlayer *pPlayer = ToBasePlayer( pViewModel->GetPredictionOwner() );
 			if ( pPlayer )
 			{
 				CWeaponCSBase *pWeap = pPlayer->GetActiveCSWeapon();

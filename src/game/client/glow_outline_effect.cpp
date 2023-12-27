@@ -10,7 +10,7 @@
 #include "shaderapi/ishaderapi.h"
 #include "materialsystem/imaterialvar.h"
 #include "view_shared.h"
-#include "c_cs_player.h"
+//#include "c_cs_player.h"
 #include "tier2/renderutils.h"
 
 #define FULL_FRAME_TEXTURE "_rt_FullFrameFB"

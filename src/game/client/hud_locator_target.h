@@ -135,7 +135,7 @@ public:
 	void SetOnscreenIconTextureName( const char *pszTexture );
 	void SetOffscreenIconTextureName( const char *pszTexture );
 	void SetBinding( const char *pszBinding );
-	void SetSteamControllerBindingToOrigin( EControllerActionOrigin *pOrigins, int nOriginalToken, const char *pszActionName );
+	//void SetSteamControllerBindingToOrigin( EControllerActionOrigin *pOrigins, int nOriginalToken, const char *pszActionName );
 	const char *UseBindingImage( char *pchIconTextureName, size_t bufSize );
 	void SetIconNoTarget( bool bIconNoTarget ) { m_bIconNoTarget = bIconNoTarget; }
 

@@ -190,7 +190,7 @@ using namespace vgui;
 //-----------------------------------------------------------------------------
 CHudWeaponSelection::CHudWeaponSelection( const char *pElementName ) : CBaseHudWeaponSelection(pElementName), BaseClass(NULL, "HudWeaponSelection")
 {
-	vgui::Panel *pParent = g_pClientMode->GetViewport();
+	vgui::Panel *pParent = GetClientMode()->GetViewport();
 	SetParent( pParent );
 	m_bFadingOut = false;
 }
@@ -227,7 +227,7 @@ void CHudWeaponSelection::OnThink( void )
 		if (!m_bFadingOut)
 		{
 			// start fading out
-			g_pClientMode->GetViewportAnimationController()->StartAnimationSequence( "FadeOutWeaponSelectionMenu" );
+			GetClientMode()->GetViewportAnimationController()->StartAnimationSequence( "FadeOutWeaponSelectionMenu" );
 			m_bFadingOut = true;
 		}
 		else if ( gpGlobals->curtime - m_flSelectionTime > flSelectionTimeout + flSelectionFadeoutTime )
@@ -239,7 +239,7 @@ void CHudWeaponSelection::OnThink( void )
 	else if (m_bFadingOut)
 	{
 		// stop us fading out, show the animation again
-		g_pClientMode->GetViewportAnimationController()->StartAnimationSequence( "OpenWeaponSelectionMenu" );
+		GetClientMode()->GetViewportAnimationController()->StartAnimationSequence( "OpenWeaponSelectionMenu" );
 		m_bFadingOut = false;
 	}
 }
@@ -375,11 +375,11 @@ void CHudWeaponSelection::ActivateFastswitchWeaponDisplay( C_BaseCombatWeapon *p
 			flTime *= 0.5f;
 	}
 	m_flHorizWeaponSelectOffsetPoint = flStart;
-	g_pClientMode->GetViewportAnimationController()->RunAnimationCommand( this, "WeaponBoxOffset", flStop, 0, flTime, AnimationController::INTERPOLATOR_LINEAR );
+	GetClientMode()->GetViewportAnimationController()->RunAnimationCommand( this, "WeaponBoxOffset", flStop, 0, flTime, AnimationController::INTERPOLATOR_LINEAR );
 
 	// start the highlight after the scroll completes
 	m_flBlur = 7.f;
-	g_pClientMode->GetViewportAnimationController()->RunAnimationCommand( this, "Blur", 0, flTime, 0.75f, AnimationController::INTERPOLATOR_DEACCEL );
+	GetClientMode()->GetViewportAnimationController()->RunAnimationCommand( this, "Blur", 0, flTime, 0.75f, AnimationController::INTERPOLATOR_DEACCEL );
 }
 
 //-----------------------------------------------------------------------------
@@ -399,7 +399,7 @@ void CHudWeaponSelection::ActivateWeaponHighlight( C_BaseCombatWeapon *pSelected
 		return;
 
 	// start the highlight after the scroll completes
-	g_pClientMode->GetViewportAnimationController()->StartAnimationSequence( "WeaponHighlight" );
+	GetClientMode()->GetViewportAnimationController()->StartAnimationSequence( "WeaponHighlight" );
 }
 
 //-----------------------------------------------------------------------------
@@ -1051,7 +1051,7 @@ void CHudWeaponSelection::OpenSelection( void )
 	Assert(!IsInSelectionMode());
 
 	CBaseHudWeaponSelection::OpenSelection();
-	g_pClientMode->GetViewportAnimationController()->StartAnimationSequence("OpenWeaponSelectionMenu");
+	GetClientMode()->GetViewportAnimationController()->StartAnimationSequence("OpenWeaponSelectionMenu");
 	m_iSelectedBoxPosition = 0;
 	m_iSelectedSlot = -1;
 }
@@ -1062,7 +1062,7 @@ void CHudWeaponSelection::OpenSelection( void )
 void CHudWeaponSelection::HideSelection( void )
 {
 	CBaseHudWeaponSelection::HideSelection();
-	g_pClientMode->GetViewportAnimationController()->StartAnimationSequence("CloseWeaponSelectionMenu");
+	GetClientMode()->GetViewportAnimationController()->StartAnimationSequence("CloseWeaponSelectionMenu");
 	m_bFadingOut = false;
 }
 

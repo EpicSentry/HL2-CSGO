@@ -173,7 +173,7 @@ DECLARE_HUD_MESSAGE( CHudCredits, LogoTimeMsg );
 //-----------------------------------------------------------------------------
 CHudCredits::CHudCredits( const char *pElementName ) : CHudElement( pElementName ), BaseClass( NULL, "HudCredits" )
 {
-	vgui::Panel *pParent = g_pClientMode->GetViewport();
+	vgui::Panel *pParent = GetClientMode()->GetViewport();
 	SetParent( pParent );
 }
 
@@ -309,7 +309,7 @@ void CHudCredits::DrawOutroCreditsName( void )
 					m_bLastOneInPlace = true;
 					
 					// 360 certification requires that we not hold a static image too long.
-					m_flFadeTime = gpGlobals->curtime + ( IsConsole() ? 2.0f : 10.0f );
+					m_flFadeTime = gpGlobals->curtime + ( IsGameConsole() ? 2.0f : 10.0f );
 				}
 			}
 			else
@@ -418,7 +418,7 @@ void CHudCredits::DrawLogo( void )
 
 	char szLogoFont[64];
 
-	if ( IsXbox() )
+	if ( IsX360() )
 	{
 		Q_snprintf( szLogoFont, sizeof( szLogoFont ), "WeaponIcons_Small" );
 	}

@@ -62,7 +62,7 @@ DECLARE_HUDELEMENT( CHudFlashlight );
 //-----------------------------------------------------------------------------
 CHudFlashlight::CHudFlashlight( const char *pElementName ) : CHudElement( pElementName ), BaseClass( NULL, "HudFlashlight" )
 {
-	vgui::Panel *pParent = g_pClientMode->GetViewport();
+	vgui::Panel *pParent = GetClientMode()->GetViewport();
 	SetParent( pParent );
 
 	SetHiddenBits( HIDEHUD_HEALTH | HIDEHUD_PLAYERDEAD | HIDEHUD_NEEDSUIT );
@@ -82,7 +82,7 @@ void CHudFlashlight::ApplySchemeSettings( vgui::IScheme *pScheme )
 //-----------------------------------------------------------------------------
 void CHudFlashlight::Reset( void )
 {
-	g_pClientMode->GetViewportAnimationController()->StartAnimationSequence( "SuitFlashlightOn" ); 
+	GetClientMode()->GetViewportAnimationController()->StartAnimationSequence( "SuitFlashlightOn" );
 }
 
 //-----------------------------------------------------------------------------

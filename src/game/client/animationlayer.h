@@ -68,7 +68,7 @@ public:
 	int		m_nDispatchedSrc;
 	int		m_nDispatchedDst;
 
-private:
+public:
 	int		m_nOrder;
 	CRangeCheckedVar<int, -1, 65535, 0>		m_nSequence;
 	CRangeCheckedVar<float, -2, 2, 0>		m_flPrevCycle;

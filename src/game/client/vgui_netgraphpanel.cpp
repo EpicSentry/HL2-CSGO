@@ -28,7 +28,7 @@
 #include "materialsystem/imaterial.h"
 #include "matchmaking/imatchframework.h"
 
-#include "cs_gamerules.h"
+//#include "cs_gamerules.h"
 
 #ifdef _PS3
 #include "ps3/ps3_core.h"

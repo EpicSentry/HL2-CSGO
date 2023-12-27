@@ -2560,6 +2560,10 @@ void C_BaseAnimating::CalculateIKLocks( float currentTime )
 	if ( targetCount == 0 )
 		return;
 
+	// FIXME: check number of slots?
+	float minHeight = FLT_MAX;
+	float maxHeight = -FLT_MAX;
+
 	// In TF, we might be attaching a player's view to a walking model that's using IK. If we are, it can
 	// get in here during the view setup code, and it's not normally supposed to be able to access the spatial
 	// partition that early in the rendering loop. So we allow access right here for that special case.

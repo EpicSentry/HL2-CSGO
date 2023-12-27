@@ -692,73 +692,29 @@ int ClientModeShared::HandleSpectatorKeyInput( int down, ButtonCode_t keynum, co
 //-----------------------------------------------------------------------------
 // Purpose: See if hud elements want key input. Return 0 if the key is swallowed
 //-----------------------------------------------------------------------------
-int ClientModeShared::HudElementKeyInput( int down, ButtonCode_t keynum, const char *pszCurrentBinding )
+int ClientModeShared::HudElementKeyInput(int down, ButtonCode_t keynum, const char *pszCurrentBinding)
 {
-	if ( CSGameRules() && CSGameRules()->IsEndMatchVotingForNextMap() )
+	if (m_pWeaponSelection)
 	{
-		// this looks messy, but essentially, if the convar is set to true, use the bindings, if not use the raw keys
-		if ( down && (( spec_usenumberkeys_nobinds.GetBool() == false && pszCurrentBinding &&
-			( ContainsBinding( pszCurrentBinding, "slot1" ) ||
-			ContainsBinding( pszCurrentBinding, "slot2" ) ||
-			ContainsBinding( pszCurrentBinding, "slot3" ) ||
-			ContainsBinding( pszCurrentBinding, "slot4" ) ||
-			ContainsBinding( pszCurrentBinding, "slot5" ) ||
-			ContainsBinding( pszCurrentBinding, "slot6" ) ||
-			ContainsBinding( pszCurrentBinding, "slot7" ) ||
-			ContainsBinding( pszCurrentBinding, "slot8" ) ||
-			ContainsBinding( pszCurrentBinding, "slot9" ) ||
-			ContainsBinding( pszCurrentBinding, "slot10" ) ) )
-			||
-			( spec_usenumberkeys_nobinds.GetBool() == true &&
-			( keynum == KEY_1 ||
-			keynum == KEY_2 ||
-			keynum == KEY_3 ||
-			keynum == KEY_4 ||
-			keynum == KEY_5 ||
-			keynum == KEY_6 ||
-			keynum == KEY_7 ||
-			keynum == KEY_8 ||
-			keynum == KEY_9 ||
-			keynum == KEY_0 ) ) ) )
+		if (!m_pWeaponSelection->KeyInput(down, keynum, pszCurrentBinding))
 		{
-			int slotnum = 0;
-			if ( spec_usenumberkeys_nobinds.GetBool() )
-			{
-				slotnum = ( keynum - KEY_0 ) - 1;
-			}
-			else
-			{
-				char* slotnumberchar = ( char * )pszCurrentBinding + strlen( pszCurrentBinding ) - 1;
-				slotnum = atoi( slotnumberchar ) - 1;
-			}
-
-			if ( slotnum < 0 )
-				slotnum = 10 + slotnum;
-
-			char commandBuffer[32];
-			V_snprintf( commandBuffer, sizeof( commandBuffer ), "endmatch_votenextmap %d", slotnum );
-			engine->ClientCmd( commandBuffer );
-
 			return 0;
 		}
 	}
 
-	if ( down && pszCurrentBinding && ContainsBinding( pszCurrentBinding, "radio1" ) )
+#if defined( REPLAY_ENABLED )
+	if (m_pReplayReminderPanel)
 	{
-		/* Removed for partner depot */
-		return 0;
-	}
-
-	if ( m_pWeaponSelection )
-	{
-		if ( !m_pWeaponSelection->KeyInput( down, keynum, pszCurrentBinding ) )
+		if (m_pReplayReminderPanel->HudElementKeyInput(down, keynum, pszCurrentBinding))
 		{
 			return 0;
 		}
-	}		
+	}
+#endif
 
 	return 1;
 }
+
 
 //-----------------------------------------------------------------------------
 // Purpose: 
@@ -1071,405 +1027,379 @@ bool PlayerNameNotSetYet( const char *pszName )
 	return false;
 }
 
-void ClientModeShared::FireGameEvent( IGameEvent *event )
+void ClientModeShared::FireGameEvent(IGameEvent *event)
 {
-	ACTIVE_SPLITSCREEN_PLAYER_GUARD( GetSplitScreenPlayerSlot() );
-
-	CBaseHudChat *hudChat = CBaseHudChat::GetHudChat();
+	CBaseHudChat *hudChat = (CBaseHudChat *)GET_HUDELEMENT(CHudChat);
 
 	const char *eventname = event->GetName();
 
-	if ( Q_strcmp( "player_connect", eventname ) == 0 )
+	if (Q_strcmp("player_connect_client", eventname) == 0)
 	{
-#ifdef PORTAL2
-		// dont show these message on the console at all
-		if ( IsGameConsole() )
+		if (!hudChat)
 			return;
-#endif
-		if ( !hudChat )
-			return;
-		if ( PlayerNameNotSetYet(event->GetString("name")) )
+		if (PlayerNameNotSetYet(event->GetString("name")))
 			return;
 
-		if ( !IsInCommentaryMode() )
+		if (!IsInCommentaryMode())
 		{
 			wchar_t wszLocalized[100];
 			wchar_t wszPlayerName[MAX_PLAYER_NAME_LENGTH];
-			g_pVGuiLocalize->ConvertANSIToUnicode( event->GetString("name"), wszPlayerName, sizeof(wszPlayerName) );
-			g_pVGuiLocalize->ConstructString( wszLocalized, sizeof( wszLocalized ), g_pVGuiLocalize->Find( "#game_player_connecting" ), 1, wszPlayerName );
+			g_pVGuiLocalize->ConvertANSIToUnicode(event->GetString("name"), wszPlayerName, sizeof(wszPlayerName));
+			g_pVGuiLocalize->ConstructString(wszLocalized, sizeof(wszLocalized), g_pVGuiLocalize->Find("#game_player_connecting"), 1, wszPlayerName);
 
 			char szLocalized[100];
-			g_pVGuiLocalize->ConvertUnicodeToANSI( wszLocalized, szLocalized, sizeof(szLocalized) );
+			g_pVGuiLocalize->ConvertUnicodeToANSI(wszLocalized, szLocalized, sizeof(szLocalized));
 
-			hudChat->Printf( CHAT_FILTER_JOINLEAVE, "%s", szLocalized );
+			hudChat->Printf(CHAT_FILTER_JOINLEAVE, "%s", szLocalized);
 		}
 	}
-	else if ( Q_strcmp( "player_connect_full", eventname ) == 0 )
+	else if (Q_strcmp("player_disconnect", eventname) == 0)
 	{
-		CLocalPlayerFilter filter;
-		C_BaseEntity::EmitSound( filter, SOUND_FROM_LOCAL_PLAYER, "Music.StopMenuMusic" );
-	}
-	else if ( Q_strcmp( "player_disconnect", eventname ) == 0 )
-	{
-#ifdef PORTAL2
-		// dont show these message on the console at all
-		if ( IsGameConsole() )
-			return;
-#endif
-		int userID = event->GetInt("userid");
-		C_BasePlayer *pPlayer = USERID2PLAYER( userID );
+		C_BasePlayer *pPlayer = USERID2PLAYER(event->GetInt("userid"));
 
-		// don't show disconnects for bots in coop
-		if ( CSGameRules() && CSGameRules()->IsPlayingCooperativeGametype() && (pPlayer && pPlayer->IsBot()) )
+		if (!hudChat || !pPlayer)
+			return;
+		if (PlayerNameNotSetYet(event->GetString("name")))
 			return;
 
-		if ( !hudChat || !pPlayer )
-			return;
-		if ( PlayerNameNotSetYet(event->GetString("name")) )
-			return;
-
-		if ( !IsInCommentaryMode() )
+		if (!IsInCommentaryMode())
 		{
-
-#ifdef CSTRIKE15
-			wchar_t wszPlayerName[MAX_DECORATED_PLAYER_NAME_LENGTH];
-			C_CS_PlayerResource *pCSPR = ( C_CS_PlayerResource* )GameResources();
-			pCSPR->GetDecoratedPlayerName( pPlayer->entindex(), wszPlayerName, sizeof( wszPlayerName ), ( EDecoratedPlayerNameFlag_t) ( k_EDecoratedPlayerNameFlag_DontUseNameOfControllingPlayer | k_EDecoratedPlayerNameFlag_DontUseAssassinationTargetName ) );
-#else
 			wchar_t wszPlayerName[MAX_PLAYER_NAME_LENGTH];
-			g_pVGuiLocalize->ConvertANSIToUnicode( pPlayer->GetPlayerName(), wszPlayerName, sizeof(wszPlayerName) );
-#endif
+			g_pVGuiLocalize->ConvertANSIToUnicode(pPlayer->GetPlayerName(), wszPlayerName, sizeof(wszPlayerName));
 
-			wchar_t wszReasonBuf[64];
-			wchar_t const *wszReason = wszReasonBuf;
-			char const *szReasonToken = event->GetString("reason");
-
-			static bool s_bPerfectWorld = !!CommandLine()->FindParm( "-perfectworld" ); // we don't localize reasons in Perfect World because they are supplied by server
-			if ( s_bPerfectWorld && !( szReasonToken && szReasonToken[0] == '#' ) )
-				wszReason = g_pVGuiLocalize->Find( "#SFUI_Disconnect_Title" );
+			wchar_t wszReason[64];
+			const char *pszReason = event->GetString("reason");
+			if (pszReason && (pszReason[0] == '#') && g_pVGuiLocalize->Find(pszReason))
+			{
+				V_wcsncpy(wszReason, g_pVGuiLocalize->Find(pszReason), sizeof(wszReason));
+		}
 			else
-				g_pVGuiLocalize->ConvertANSIToUnicode( event->GetString( "reason" ), wszReasonBuf, sizeof( wszReasonBuf ) );
+			{
+				g_pVGuiLocalize->ConvertANSIToUnicode(pszReason, wszReason, sizeof(wszReason));
+			}
 
 			wchar_t wszLocalized[100];
-			if ( IsPC() )
+			if (IsPC())
 			{
-				g_pVGuiLocalize->ConstructString( wszLocalized, sizeof( wszLocalized ), g_pVGuiLocalize->Find( "#game_player_left_game" ), 2, wszPlayerName, wszReason );
+				g_pVGuiLocalize->ConstructString(wszLocalized, sizeof(wszLocalized), g_pVGuiLocalize->Find("#game_player_left_game"), 2, wszPlayerName, wszReason);
 			}
 			else
 			{
-				g_pVGuiLocalize->ConstructString( wszLocalized, sizeof( wszLocalized ), g_pVGuiLocalize->Find( "#game_player_left_game" ), 1, wszPlayerName );
+				g_pVGuiLocalize->ConstructString(wszLocalized, sizeof(wszLocalized), g_pVGuiLocalize->Find("#game_player_left_game"), 1, wszPlayerName);
 			}
 
 			char szLocalized[100];
-			g_pVGuiLocalize->ConvertUnicodeToANSI( wszLocalized, szLocalized, sizeof(szLocalized) );
+			g_pVGuiLocalize->ConvertUnicodeToANSI(wszLocalized, szLocalized, sizeof(szLocalized));
 
-			hudChat->Printf( CHAT_FILTER_JOINLEAVE, "%s", szLocalized );
-		}
+			hudChat->Printf(CHAT_FILTER_JOINLEAVE, "%s", szLocalized);
 	}
-	else if ( Q_strcmp( "player_fullyjoined", eventname ) == 0 )
+}
+	else if (Q_strcmp("player_team", eventname) == 0)
 	{
-#ifdef PORTAL2
-		// dont show these message on the console at all
-		if ( IsGameConsole() )
-			return;
-#endif
-		if ( !hudChat )
-			return;
-		if ( PlayerNameNotSetYet(event->GetString("name")) )
-			return;
-
-		wchar_t wszLocalized[100];
-		wchar_t wszPlayerName[MAX_PLAYER_NAME_LENGTH];
-		g_pVGuiLocalize->ConvertANSIToUnicode( event->GetString("name"), wszPlayerName, sizeof(wszPlayerName) );
-		g_pVGuiLocalize->ConstructString( wszLocalized, sizeof( wszLocalized ), g_pVGuiLocalize->Find( "#game_player_joined_game" ), 1, wszPlayerName );
-
-		char szLocalized[100];
-		g_pVGuiLocalize->ConvertUnicodeToANSI( wszLocalized, szLocalized, sizeof(szLocalized) );
-
-		hudChat->Printf( CHAT_FILTER_JOINLEAVE, "%s", szLocalized );
-	}
-	else if ( Q_strcmp( "player_team", eventname ) == 0 )
-	{
-		C_BasePlayer *pPlayer = USERID2PLAYER( event->GetInt("userid") );
-		if ( !hudChat )
-			return;
-		if ( !pPlayer )
+		C_BasePlayer *pPlayer = USERID2PLAYER(event->GetInt("userid"));
+		if (!hudChat)
 			return;
 
 		bool bDisconnected = event->GetBool("disconnect");
 
-		if ( bDisconnected )
+		if (bDisconnected)
 			return;
 
-		int team = event->GetInt( "team" );
-		bool bAutoTeamed = event->GetBool( "autoteam", false );
-		bool bSilent = event->GetBool( "silent", false );
+		int team = event->GetInt("team");
+		bool bAutoTeamed = event->GetInt("autoteam", false);
+		bool bSilent = event->GetInt("silent", false);
 
-		const char *pszName = pPlayer->GetPlayerName();
-		if ( PlayerNameNotSetYet(pszName) )
+		const char *pszName = event->GetString("name");
+		if (PlayerNameNotSetYet(pszName))
 			return;
 
-		if ( !bSilent )
+		if (!bSilent)
 		{
 			wchar_t wszPlayerName[MAX_PLAYER_NAME_LENGTH];
-			g_pVGuiLocalize->ConvertANSIToUnicode( pszName, wszPlayerName, sizeof(wszPlayerName) );
+			g_pVGuiLocalize->ConvertANSIToUnicode(pszName, wszPlayerName, sizeof(wszPlayerName));
 
+			bool bUsingCustomTeamName = false;
+#ifdef TF_CLIENT_DLL
+			C_TFTeam *pTeam = GetGlobalTFTeam(team);
+			const wchar_t *wszTeam = pTeam ? pTeam->Get_Localized_Name() : L"";
+			bUsingCustomTeamName = pTeam ? pTeam->IsUsingCustomTeamName() : false;
+#else
 			wchar_t wszTeam[64];
-			C_Team *pTeam = GetGlobalTeam( team );
-			if ( pTeam )
+			C_Team *pTeam = GetGlobalTeam(team);
+			if (pTeam)
 			{
-				g_pVGuiLocalize->ConvertANSIToUnicode( pTeam->Get_Name(), wszTeam, sizeof(wszTeam) );
-			}
+				g_pVGuiLocalize->ConvertANSIToUnicode(pTeam->Get_Name(), wszTeam, sizeof(wszTeam));
+		}
 			else
 			{
-				Q_snwprintf ( wszTeam, sizeof( wszTeam ) / sizeof( wchar_t ), L"%d", team );
+				_snwprintf(wszTeam, sizeof(wszTeam) / sizeof(wchar_t), L"%d", team);
 			}
+#endif
 
-			if ( !IsInCommentaryMode() )
+			if (!IsInCommentaryMode())
 			{
 				wchar_t wszLocalized[100];
-				if ( bAutoTeamed )
+				if (bAutoTeamed)
 				{
-					g_pVGuiLocalize->ConstructString( wszLocalized, sizeof( wszLocalized ), g_pVGuiLocalize->Find( "#game_player_joined_autoteam" ), 2, wszPlayerName, wszTeam );
+					g_pVGuiLocalize->ConstructString(wszLocalized, sizeof(wszLocalized), g_pVGuiLocalize->Find("#game_player_joined_autoteam"), 2, wszPlayerName, wszTeam);
 				}
 				else
 				{
-					g_pVGuiLocalize->ConstructString( wszLocalized, sizeof( wszLocalized ), g_pVGuiLocalize->Find( "#game_player_joined_team" ), 2, wszPlayerName, wszTeam );
+					g_pVGuiLocalize->ConstructString(wszLocalized, sizeof(wszLocalized), g_pVGuiLocalize->Find("#game_player_joined_team"), 2, wszPlayerName, wszTeam);
 				}
 
 				char szLocalized[100];
-				g_pVGuiLocalize->ConvertUnicodeToANSI( wszLocalized, szLocalized, sizeof(szLocalized) );
+				g_pVGuiLocalize->ConvertUnicodeToANSI(wszLocalized, szLocalized, sizeof(szLocalized));
 
-				hudChat->Printf( CHAT_FILTER_TEAMCHANGE, "%s", szLocalized );
+				hudChat->Printf(CHAT_FILTER_TEAMCHANGE, "%s", szLocalized);
 			}
-		}
+	}
 
-		if ( C_BasePlayer::IsLocalPlayer( pPlayer ) )
+		if (pPlayer && pPlayer->IsLocalPlayer())
 		{
-			ACTIVE_SPLITSCREEN_PLAYER_GUARD_ENT( pPlayer );
-
 			// that's me
-			pPlayer->TeamChange( team );
+			pPlayer->TeamChange(team);
 		}
 	}
-	else if ( Q_strcmp( "player_changename", eventname ) == 0 )
+	else if (Q_strcmp("player_changename", eventname) == 0)
 	{
-		if ( !hudChat )
+		if (!hudChat)
 			return;
 
 		const char *pszOldName = event->GetString("oldname");
-		if ( PlayerNameNotSetYet(pszOldName) )
+		if (PlayerNameNotSetYet(pszOldName))
 			return;
 
 		wchar_t wszOldName[MAX_PLAYER_NAME_LENGTH];
-		g_pVGuiLocalize->ConvertANSIToUnicode( pszOldName, wszOldName, sizeof(wszOldName) );
+		g_pVGuiLocalize->ConvertANSIToUnicode(pszOldName, wszOldName, sizeof(wszOldName));
 
 		wchar_t wszNewName[MAX_PLAYER_NAME_LENGTH];
-		g_pVGuiLocalize->ConvertANSIToUnicode( event->GetString( "newname" ), wszNewName, sizeof(wszNewName) );
+		g_pVGuiLocalize->ConvertANSIToUnicode(event->GetString("newname"), wszNewName, sizeof(wszNewName));
 
 		wchar_t wszLocalized[100];
-		g_pVGuiLocalize->ConstructString( wszLocalized, sizeof( wszLocalized ), g_pVGuiLocalize->Find( "#game_player_changed_name" ), 2, wszOldName, wszNewName );
+		g_pVGuiLocalize->ConstructString(wszLocalized, sizeof(wszLocalized), g_pVGuiLocalize->Find("#game_player_changed_name"), 2, wszOldName, wszNewName);
 
 		char szLocalized[100];
-		g_pVGuiLocalize->ConvertUnicodeToANSI( wszLocalized, szLocalized, sizeof(szLocalized) );
+		g_pVGuiLocalize->ConvertUnicodeToANSI(wszLocalized, szLocalized, sizeof(szLocalized));
 
-		hudChat->Printf( CHAT_FILTER_NAMECHANGE, "%s", szLocalized );
+		hudChat->Printf(CHAT_FILTER_NAMECHANGE, "%s", szLocalized);
 	}
-	else if ( Q_strcmp( "teamplay_broadcast_audio", eventname ) == 0 )
+	else if (Q_strcmp("teamplay_broadcast_audio", eventname) == 0)
 	{
-		int team = event->GetInt( "team" );
+		int team = event->GetInt("team");
 
 		bool bValidTeam = false;
 
-		if ( (GetLocalTeam() && GetLocalTeam()->GetTeamNumber() == team) )
+		if ((GetLocalTeam() && GetLocalTeam()->GetTeamNumber() == team))
 		{
 			bValidTeam = true;
 		}
 
 		//If we're in the spectator team then we should be getting whatever messages the person I'm spectating gets.
-		if ( bValidTeam == false )
+		if (bValidTeam == false)
 		{
-			CBasePlayer *pSpectatorTarget = UTIL_PlayerByIndex( GetSpectatorTarget() );
+			CBasePlayer *pSpectatorTarget = UTIL_PlayerByIndex(GetSpectatorTarget());
 
-			if ( pSpectatorTarget && (GetSpectatorMode() == OBS_MODE_IN_EYE || GetSpectatorMode() == OBS_MODE_CHASE) )
+			if (pSpectatorTarget && (GetSpectatorMode() == OBS_MODE_IN_EYE || GetSpectatorMode() == OBS_MODE_CHASE))
 			{
-				if ( pSpectatorTarget->GetTeamNumber() == team )
+				if (pSpectatorTarget->GetTeamNumber() == team)
 				{
 					bValidTeam = true;
 				}
 			}
 		}
 
-		if ( team == 0 && GetLocalTeam() > 0 )
+		if (team == 0 && GetLocalTeam() > 0)
 		{
 			bValidTeam = false;
 		}
 
-		if ( team == 255 )
+		if (team == 255)
 		{
 			bValidTeam = true;
 		}
 
-		if ( bValidTeam == true )
+		if (bValidTeam == true)
 		{
+			EmitSound_t et;
+			et.m_pSoundName = event->GetString("sound");
+			et.m_nFlags = event->GetInt("additional_flags");
+
 			CLocalPlayerFilter filter;
-			const char *pszSoundName = event->GetString("sound");
-			C_BaseEntity::EmitSound( filter, SOUND_FROM_LOCAL_PLAYER, pszSoundName );
+			C_BaseEntity::EmitSound(filter, SOUND_FROM_LOCAL_PLAYER, et);
 		}
 	}
-	else if ( Q_strcmp( "teamplay_broadcast_audio", eventname ) == 0 )
+	else if (Q_strcmp("server_cvar", eventname) == 0)
 	{
-		int team = event->GetInt( "team" );
-		if ( !team || (GetLocalTeam() && GetLocalTeam()->GetTeamNumber() == team) )
-		{
-			CLocalPlayerFilter filter;
-			const char *pszSoundName = event->GetString("sound");
-			C_BaseEntity::EmitSound( filter, SOUND_FROM_LOCAL_PLAYER, pszSoundName );
-		}
-	}
-	else if ( Q_strcmp( "server_cvar", eventname ) == 0 )
-	{
-		if ( (IsGameConsole() && IsCert()) || (IsGameConsole() && developer.GetInt() < 2) )
-			return;
-
-		static bool s_bPerfectWorld = !!CommandLine()->FindParm( "-perfectworld" );
-		if ( s_bPerfectWorld )
-			return; // Perfect World cvars are not printed in client
-
-		char const *szCvarName = event->GetString("cvarname");
-		char const * arrIgnoredCvars[] = { "nextlevel" };
-		bool bIgnoredCvar = false;
-		for ( int ii = 0; ii < Q_ARRAYSIZE( arrIgnoredCvars ); ++ ii )
-		{
-			if ( !V_stricmp( szCvarName, arrIgnoredCvars[ii] ) )
-			{
-				bIgnoredCvar = true;
-				break;
-			}
-		}
-
-		if ( !IsInCommentaryMode() && !bIgnoredCvar )
+		if (!IsInCommentaryMode())
 		{
 			wchar_t wszCvarName[64];
-			g_pVGuiLocalize->ConvertANSIToUnicode( event->GetString("cvarname"), wszCvarName, sizeof(wszCvarName) );
+			g_pVGuiLocalize->ConvertANSIToUnicode(event->GetString("cvarname"), wszCvarName, sizeof(wszCvarName));
 
-			wchar_t wszCvarValue[16];
-			g_pVGuiLocalize->ConvertANSIToUnicode( event->GetString("cvarvalue"), wszCvarValue, sizeof(wszCvarValue) );
+			wchar_t wszCvarValue[64];
+			g_pVGuiLocalize->ConvertANSIToUnicode(event->GetString("cvarvalue"), wszCvarValue, sizeof(wszCvarValue));
 
-			wchar_t wszLocalized[100];
-			g_pVGuiLocalize->ConstructString( wszLocalized, sizeof( wszLocalized ), g_pVGuiLocalize->Find( "#game_server_cvar_changed" ), 2, wszCvarName, wszCvarValue );
+			wchar_t wszLocalized[256];
+			g_pVGuiLocalize->ConstructString(wszLocalized, sizeof(wszLocalized), g_pVGuiLocalize->Find("#game_server_cvar_changed"), 2, wszCvarName, wszCvarValue);
 
-			char szLocalized[100];
-			g_pVGuiLocalize->ConvertUnicodeToANSI( wszLocalized, szLocalized, sizeof(szLocalized) );
+			char szLocalized[256];
+			g_pVGuiLocalize->ConvertUnicodeToANSI(wszLocalized, szLocalized, sizeof(szLocalized));
 
-			hudChat->Printf( CHAT_FILTER_SERVERMSG, "%s", szLocalized );
+			hudChat->Printf(CHAT_FILTER_SERVERMSG, "%s", szLocalized);
 		}
 	}
-	else if ( Q_strcmp( "achievement_earned", eventname ) == 0 )
+#if defined( TF_CLIENT_DLL )
+	else if (Q_strcmp("item_found", eventname) == 0)
 	{
-		int iPlayerIndex = event->GetInt( "player" );
-		C_BasePlayer *pPlayer = UTIL_PlayerByIndex( iPlayerIndex );
-		int iAchievement = event->GetInt( "achievement" );
+		int iPlayerIndex = event->GetInt("player");
+		entityquality_t iItemQuality = event->GetInt("quality");
+		int iMethod = event->GetInt("method");
+		int iItemDef = event->GetInt("itemdef");
+		bool bIsStrange = event->GetInt("isstrange");
+		bool bIsUnusual = event->GetInt("isunusual");
+		float flWear = event->GetFloat("wear");
 
-		if ( !hudChat || !pPlayer )
+		C_BasePlayer *pPlayer = UTIL_PlayerByIndex(iPlayerIndex);
+		const GameItemDefinition_t *pItemDefinition = dynamic_cast<GameItemDefinition_t *>(GetItemSchema()->GetItemDefinition(iItemDef));
+
+		if (!pPlayer || !pItemDefinition || pItemDefinition->IsHidden())
 			return;
 
-		if ( !IsInCommentaryMode() )
-		{
-			char const *szAchievementName = NULL; // should arrive as part of event instead of achievement ID
-			if ( szAchievementName )
-			{
-				if ( !pPlayer->IsDormant() )
-				{
-					// no particle effect if the local player is the one with the achievement or the player is dead
-					if ( !C_BasePlayer::IsLocalPlayer( pPlayer ) && pPlayer->IsAlive() ) 
-					{
-						//tagES using the "head" attachment won't work for CS and DoD
-						pPlayer->ParticleProp()->Create( "achieved", PATTACH_POINT_FOLLOW, "head" );
-					}
-
-					pPlayer->OnAchievementAchieved( iAchievement );
-				}
-
-				if ( g_PR )
-				{
-					wchar_t wszPlayerName[MAX_PLAYER_NAME_LENGTH];
-					g_pVGuiLocalize->ConvertANSIToUnicode( g_PR->GetPlayerName( iPlayerIndex ), wszPlayerName, sizeof( wszPlayerName ) );
-
-					const wchar_t *pchLocalizedAchievement = g_pVGuiLocalize->Find( CFmtStr( "#%s_T", szAchievementName ) );
-					if ( pchLocalizedAchievement )
-					{
-						wchar_t wszLocalizedString[128];
-						g_pVGuiLocalize->ConstructString( wszLocalizedString, sizeof( wszLocalizedString ), g_pVGuiLocalize->Find( "#Achievement_Earned" ), 2, wszPlayerName, pchLocalizedAchievement );
-
-						char szLocalized[128];
-						g_pVGuiLocalize->ConvertUnicodeToANSI( wszLocalizedString, szLocalized, sizeof( szLocalized ) );
-
-						hudChat->ChatPrintf( iPlayerIndex, CHAT_FILTER_SERVERMSG, "%s", szLocalized );
-					}
-				}
-			}
-		}
-	}
-#if defined( TF_CLIENT_DLL ) || defined( CSTRIKE_CLIENT_DLL )
-	else if ( Q_strcmp( "item_found", eventname ) == 0 )
-	{
-		int iPlayerIndex = event->GetInt( "player" );
-		//entityquality_t iItemQuality = event->GetInt( "quality" );
-		int iMethod = event->GetInt( "method" );
-		int iItemDef = event->GetInt( "itemdef" );
-		C_BasePlayer *pPlayer = UTIL_PlayerByIndex( iPlayerIndex );
-		const GameItemDefinition_t *pItemDefinition = dynamic_cast<const GameItemDefinition_t *>( GetItemSchema()->GetItemDefinition( iItemDef ) );
-
-		if ( !pPlayer || !pItemDefinition )
-			return;
-
-		if ( g_PR )
+		if (g_PR)
 		{
 			wchar_t wszPlayerName[MAX_PLAYER_NAME_LENGTH];
-			g_pVGuiLocalize->ConvertANSIToUnicode( g_PR->GetPlayerName( iPlayerIndex ), wszPlayerName, sizeof( wszPlayerName ) );
+			g_pVGuiLocalize->ConvertANSIToUnicode(g_PR->GetPlayerName(iPlayerIndex), wszPlayerName, sizeof(wszPlayerName));
 
-			if ( iMethod < 0 || iMethod >= ARRAYSIZE( g_pszItemFoundMethodStrings ) )
+			if (iMethod < 0 || iMethod >= ARRAYSIZE(g_pszItemFoundMethodStrings))
 			{
 				iMethod = 0;
 			}
 
 			const char *pszLocString = g_pszItemFoundMethodStrings[iMethod];
-			if ( pszLocString )
+			if (pszLocString)
 			{
 				wchar_t wszItemFound[256];
-				V_swprintf_safe( wszItemFound, L"%ls", g_pVGuiLocalize->Find( pszLocString ) );
+				_snwprintf(wszItemFound, ARRAYSIZE(wszItemFound), L"%ls", g_pVGuiLocalize->Find(pszLocString));
 
-				wchar_t *colorMarker = wcsstr( wszItemFound, L"::" );
-				if ( colorMarker )
+				wchar_t *colorMarker = wcsstr(wszItemFound, L"::");
+				const CEconItemRarityDefinition* pItemRarity = GetItemSchema()->GetRarityDefinition(pItemDefinition->GetRarity());
+
+				if (colorMarker)
 				{
-					//const char *pszQualityColorString = EconQuality_GetColorString( (EEconItemQuality)iItemQuality );
-					//if ( pszQualityColorString )
-					//{
-					//	hudChat->SetCustomColor( pszQualityColorString );
-					//	*(colorMarker+1) = COLOR_CUSTOM;
-					//}
+					if (pItemRarity)
+					{
+						attrib_colors_t colorRarity = pItemRarity->GetAttribColor();
+						vgui::HScheme scheme = vgui::scheme()->GetScheme("ClientScheme");
+						vgui::IScheme *pScheme = vgui::scheme()->GetIScheme(scheme);
+						Color color = pScheme->GetColor(GetColorNameForAttribColor(colorRarity), Color(255, 255, 255, 255));
+						hudChat->SetCustomColor(color);
+					}
+					else
+					{
+						const char *pszQualityColorString = EconQuality_GetColorString((EEconItemQuality)iItemQuality);
+						if (pszQualityColorString)
+						{
+							hudChat->SetCustomColor(pszQualityColorString);
+						}
+					}
 
-					*(colorMarker+1) = wszItemFound[ 0 ];
+					*(colorMarker + 1) = COLOR_CUSTOM;
 				}
 
 				// TODO: Update the localization strings to only have two format parameters since that's all we need.
-				wchar_t wszLocalizedString[256];
-				g_pVGuiLocalize->ConstructString( wszLocalizedString, sizeof( wszLocalizedString ), wszItemFound, 3, wszPlayerName, g_pVGuiLocalize->Find( pItemDefinition->GetItemBaseName() ), L"" );
+				locchar_t wszLocalizedString[256];
+
+				locchar_t szItemname[64] = LOCCHAR("");
+				locchar_t szRarity[64] = LOCCHAR("");
+				locchar_t szWear[64] = LOCCHAR("");
+				locchar_t szStrange[64] = LOCCHAR("");
+				locchar_t szUnusual[64] = LOCCHAR("");
+
+				loc_scpy_safe(
+					szItemname,
+					CConstructLocalizedString(g_pVGuiLocalize->Find("TFUI_InvTooltip_ItemFound_Itemname"),
+						CEconItemLocalizedFullNameGenerator(GLocalizationProvider(), pItemDefinition, iItemQuality).GetFullName())
+				);
+
+				/*g_pVGuiLocalize->ConstructString_safe(
+				szItemname,
+				LOCCHAR( "%s1 " ),
+				1,
+				CEconItemLocalizedFullNameGenerator( GLocalizationProvider(), pItemDefinition, iItemQuality ).GetFullName()
+				);*/
+
+				locchar_t tempName[MAX_ITEM_NAME_LENGTH];
+				// If items have rarity
+				if (pItemRarity)
+				{
+					// Weapon Wear
+					if (!IsWearableSlot(pItemDefinition->GetDefaultLoadoutSlot()))
+					{
+						loc_scpy_safe(szWear, CConstructLocalizedString(g_pVGuiLocalize->Find("TFUI_InvTooltip_ItemFound_Wear"), g_pVGuiLocalize->Find(GetWearLocalizationString(flWear))));
+					}
+
+					// Rarity / grade
+					loc_scpy_safe(szRarity, CConstructLocalizedString(g_pVGuiLocalize->Find("TFUI_InvTooltip_ItemFound_Rarity"), g_pVGuiLocalize->Find(pItemRarity->GetLocKey())));
+				}
+
+				if (bIsUnusual)
+				{
+					loc_scpy_safe(szUnusual, CConstructLocalizedString(g_pVGuiLocalize->Find("TFUI_InvTooltip_ItemFound_Unusual"), g_pVGuiLocalize->Find("rarity4")));
+				}
+
+				if (bIsStrange)
+				{
+					loc_scpy_safe(szStrange, CConstructLocalizedString(g_pVGuiLocalize->Find("TFUI_InvTooltip_ItemFound_Strange"), g_pVGuiLocalize->Find("strange")));
+				}
+
+				// // Strange Unusual Item Grade 		
+				loc_scpy_safe(wszLocalizedString, CConstructLocalizedString(g_pVGuiLocalize->Find("TFUI_InvTooltip_ItemFound"), szStrange, szUnusual, szItemname, szRarity, szWear));
+
+				loc_scpy_safe(tempName, wszLocalizedString);
+				g_pVGuiLocalize->ConstructString_safe(
+					wszLocalizedString,
+					wszItemFound,
+					3,
+					wszPlayerName, tempName, L"");
 
 				char szLocalized[256];
-				g_pVGuiLocalize->ConvertUnicodeToANSI( wszLocalizedString, szLocalized, sizeof( szLocalized ) );
+				g_pVGuiLocalize->ConvertUnicodeToANSI(wszLocalizedString, szLocalized, sizeof(szLocalized));
 
-				hudChat->ChatPrintf( iPlayerIndex, CHAT_FILTER_SERVERMSG, "%s", szLocalized );
+				hudChat->ChatPrintf(iPlayerIndex, CHAT_FILTER_SERVERMSG, "%s", szLocalized);
 			}
-		}		
+		}
+			}
+#endif
+#if defined( REPLAY_ENABLED )
+	else if (!V_strcmp("replay_servererror", eventname))
+	{
+		DisplayReplayMessage(event->GetString("error", "#Replay_DefaultServerError"), replay_msgduration_error.GetFloat(), true, NULL, false);
+	}
+	else if (!V_strcmp("replay_startrecord", eventname))
+	{
+		m_flReplayStartRecordTime = gpGlobals->curtime;
+	}
+	else if (!V_strcmp("replay_endrecord", eventname))
+	{
+		m_flReplayStopRecordTime = gpGlobals->curtime;
+	}
+	else if (!V_strcmp("replay_replaysavailable", eventname))
+	{
+		DisplayReplayMessage("#Replay_ReplaysAvailable", replay_msgduration_replaysavailable.GetFloat(), false, NULL, false);
+	}
+
+	else if (!V_strcmp("game_newmap", eventname))
+	{
+		// Make sure the instance count is reset to 0.  Sometimes the count stay in sync and we get replay messages displaying lower than they should.
+		CReplayMessagePanel::RemoveAll();
 	}
 #endif
+
 	else
 	{
-		DevMsg( 2, "Unhandled GameEvent in ClientModeShared::FireGameEvent - %s\n", event->GetName()  );
+		DevMsg(2, "Unhandled GameEvent in ClientModeShared::FireGameEvent - %s\n", event->GetName());
 	}
-}
+		}
 
 
 

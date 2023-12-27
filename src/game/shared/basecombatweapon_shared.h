@@ -580,7 +580,7 @@ public:
 	bool					IsBeingCarried() const;
 
 	// Returns the aiment render origin + angles
-	virtual int				DrawModel( int flags, const RenderableInstance_t &instance );
+	virtual int				DrawModel(int flags);
 	virtual bool			ShouldDraw( void );
 	virtual bool			ShouldSuppressForSplitScreenPlayer( int nSlot );
 	virtual bool			ShouldDrawPickup( void );

@@ -592,60 +592,7 @@ void CLocatorTarget::SetBinding( const char *pszBinding )
 	char		szToken[ 128 ];
 
 	pchToken = nexttoken( szToken, pchToken, ';' );
-
-	// Get our steam controller handles ready
-	uint64 nSteamControllerHandles[STEAM_CONTROLLER_MAX_COUNT];
-	int nSteamControllerCount = 0;
-	if ( nBindingLookupFlags == BINDINGLOOKUP_STEAMCONTROLLER_ONLY )
 	{
-		if ( steamapicontext && steamapicontext->SteamController() )
-		{
-			nSteamControllerCount = steamapicontext->SteamController()->GetConnectedControllers( nSteamControllerHandles );
-		}
-	}
-
-// 	Msg("    m_bWasControllerLast     : %s\n", m_bWasControllerLast ? "TRUE" : "FALSE" );
-// 	Msg("    m_bWasSteamControllerLast: %s\n", m_bWasSteamControllerLast ? "TRUE" : "FALSE" );
-// 	Msg("    nSteamControllerCount    : %d\n", nSteamControllerCount );
-
-	while ( pchToken )
-	{
-		if ( nBindingLookupFlags == BINDINGLOOKUP_STEAMCONTROLLER_ONLY && nSteamControllerCount > 0 )
-		{
-			// What to do if they have multiple controllers connected?
-			uint64 nController = nSteamControllerHandles[0];
-
-			const char *pszSearchToken = szToken;
-			if ( pszSearchToken && pszSearchToken[0] == '+' )
-			{
-				pszSearchToken++;
-			}
-
-			const ControllerActionSetHandle_t handleActionSet = steamapicontext->SteamController()->GetActionSetHandle( "GameControls" );
-
-			// Get the handle for the game action matching the command.
-			ControllerDigitalActionHandle_t hDigitalAction = steamapicontext->SteamController()->GetDigitalActionHandle( pszSearchToken );
-			if ( hDigitalAction )
-			{
-				EControllerActionOrigin eOrigins[STEAM_CONTROLLER_MAX_ORIGINS];
-				memset( eOrigins, k_EControllerActionOrigin_None, sizeof( eOrigins ) );
-				steamapicontext->SteamController()->GetDigitalActionOrigins( nController, handleActionSet, hDigitalAction, eOrigins );
-				SetSteamControllerBindingToOrigin( eOrigins, nOriginalToken, pszSearchToken );
-			}
-			else
-			{
-				ControllerAnalogActionHandle_t hAnalogAction = steamapicontext->SteamController()->GetAnalogActionHandle( pszSearchToken );
-				if ( hAnalogAction )
-				{
-					EControllerActionOrigin eOrigins[STEAM_CONTROLLER_MAX_ORIGINS];
-					memset( eOrigins, k_EControllerActionOrigin_None, sizeof( eOrigins ) );
-					steamapicontext->SteamController()->GetDigitalActionOrigins( nController, handleActionSet, hAnalogAction, eOrigins );
-					SetSteamControllerBindingToOrigin( eOrigins, nOriginalToken, pszSearchToken );
-				}
-			}
-		}
-		else
-		{
 			// Get the first parameter
 			int iTokenBindingCount = 0;
 			const char *pchBinding = engine->Key_LookupBindingEx( szToken, nSlot, iTokenBindingCount, nBindingLookupFlags );
@@ -659,11 +606,11 @@ void CLocatorTarget::SetBinding( const char *pszBinding )
 
 				pchBinding = engine->Key_LookupBindingEx( szToken, nSlot, iTokenBindingCount, nBindingLookupFlags );
 			}
-		}
+	}
 
 		nOriginalToken++;
 		pchToken = nexttoken( szToken, pchToken, ';' );
-	}
+
 
 	//Msg("    m_iBindingChoicesCount   : %d\n", m_iBindingChoicesCount );
 
@@ -721,41 +668,6 @@ char *g_szControllerOrigins[] =
 #endif
 
 //------------------------------------
-void CLocatorTarget::SetSteamControllerBindingToOrigin( EControllerActionOrigin *pOrigins, int nOriginalToken, const char *pszActionName )
-{
-#ifdef DEBUG
-	if ( sc_debug_origins.GetBool() )
-	{
-		bool bFound = false;
-		for( int i = 0; i < STEAM_CONTROLLER_MAX_ORIGINS; i++ )
-		{
-			if ( pOrigins[i] == k_EControllerActionOrigin_None )
-				break;
-
-			if ( !bFound )
-			{
-				bFound = true;
-				Msg("ORIGINS FOR %s\n", pszActionName);
-			}
-
-			Msg("   (%d) %s\n", pOrigins[i], g_szControllerOrigins[ pOrigins[i] ] );
-		}
-	}
-#endif
-
-	for( int i = 0; i < STEAM_CONTROLLER_MAX_ORIGINS; i++ )
-	{
-		if ( pOrigins[i] == k_EControllerActionOrigin_None )
-			break;
-
-		m_pchBindingChoices[ m_iBindingChoicesCount ] = g_SteamControllerOriginStrings[ pOrigins[i] ];
-		m_iBindChoicesOriginalToken[ m_iBindingChoicesCount ] = nOriginalToken;
-
-		m_iBindingChoicesCount++;
-		if ( m_iBindingChoicesCount >= MAX_LOCATOR_BINDINGS_SHOWN )
-			break;
-	}
-}
 
 //-----------------------------------------------------------------------------
 // Purpose: 

@@ -2704,7 +2704,7 @@ bool DoEnginePostProcessing( int x, int y, int w, int h, bool bFlashlightIsOn, b
 		// -Ted
 		C_Portal_Player::RenderLocalScreenSpaceEffect( PAINT_SCREEN_SPACE_EFFECT, pRenderContext, x, y, w, h );
 		#else if CSTRIKE15
-		C_CSPlayer::RenderLocalScreenSpaceEffect( AR_LEADER_SCREEN_SPACE_EFFECT, pRenderContext, x, y, w, h );
+//		C_CSPlayer::RenderLocalScreenSpaceEffect( AR_LEADER_SCREEN_SPACE_EFFECT, pRenderContext, x, y, w, h );
 		#endif
 
 

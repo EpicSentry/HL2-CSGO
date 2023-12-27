@@ -483,20 +483,32 @@ IClientModelRenderable*	C_BaseCombatWeapon::GetClientModelRenderable()
 // Purpose: Render the weapon. Draw the Viewmodel if the weapon's being carried
 //			by this player, otherwise draw the worldmodel.
 //-----------------------------------------------------------------------------
-int C_BaseCombatWeapon::DrawModel( int flags, const RenderableInstance_t &instance )
+int C_BaseCombatWeapon::DrawModel(int flags)
 {
-	VPROF_BUDGET( "C_BaseCombatWeapon::DrawModel", VPROF_BUDGETGROUP_MODEL_RENDERING );
-	if ( !m_bReadyToDraw )
+	VPROF_BUDGET("C_BaseCombatWeapon::DrawModel", VPROF_BUDGETGROUP_MODEL_RENDERING);
+	if (!m_bReadyToDraw)
 		return 0;
 
-	if ( !IsVisible() )
+	if (!IsVisible())
 		return 0;
 
-	if( IsFirstPersonSpectated() )
-		return 0;
+	// check if local player chases owner of this weapon in first person
+	C_BasePlayer *localplayer = C_BasePlayer::GetLocalPlayer();
 
-	return BaseClass::DrawModel( flags, instance );
+	if (localplayer && localplayer->IsObserver() && GetOwner())
+	{
+		// don't draw weapon if chasing this guy as spectator
+		// we don't check that in ShouldDraw() since this may change
+		// without notification 
+
+		if (localplayer->GetObserverMode() == OBS_MODE_IN_EYE &&
+			localplayer->GetObserverTarget() == GetOwner())
+			return false;
+	}
+
+	return BaseClass::DrawModel(flags);
 }
+
 /* conn - comment out stupid csgo bullshit that for some reason is in base class?
 #ifdef _DEBUG
 	ConVar stickers_enabled_thirdperson( "stickers_enabled_thirdperson", "1", FCVAR_DEVELOPMENTONLY, "Enable work-in-progress stickers on worldmodels." );

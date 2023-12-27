@@ -25,7 +25,7 @@
 
 #include <game/client/iviewport.h>
 
-#include "cs_gamerules.h"
+//#include "cs_gamerules.h"
 
 #include "matchmaking/imatchframework.h"
 #include "tier1/netadr.h"

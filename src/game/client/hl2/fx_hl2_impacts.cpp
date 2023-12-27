@@ -259,7 +259,7 @@ void ImpactHelicopterCallback( const CEffectData &data )
 	// If we hit, perform our custom effects and play the sound. Don't create decals
 	if ( Impact( vecOrigin, vecStart, iMaterial, iDamageType, iHitbox, pEntity, tr, IMPACT_NODECAL | IMPACT_REPORT_RAGDOLL_IMPACTS ) )
 	{
-		FX_AirboatGunImpact( vecOrigin, tr.plane.normal, IsXbox() ? 1 : 2 );
+		FX_AirboatGunImpact( vecOrigin, tr.plane.normal, IsX360() ? 1 : 2 );
 
 		// Only do metal + computer custom effects
 		if ( (iMaterial == CHAR_TEX_METAL) || (iMaterial == CHAR_TEX_COMPUTER) )

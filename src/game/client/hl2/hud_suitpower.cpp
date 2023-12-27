@@ -112,16 +112,16 @@ void CHudSuitPower::OnThink( void )
 		{
 		default:
 		case 3:
-			g_pClientMode->GetViewportAnimationController()->StartAnimationSequence("SuitAuxPowerThreeItemsActive");
+			GetClientMode()->GetViewportAnimationController()->StartAnimationSequence("SuitAuxPowerThreeItemsActive");
 			break;
 		case 2:
-			g_pClientMode->GetViewportAnimationController()->StartAnimationSequence("SuitAuxPowerTwoItemsActive");
+			GetClientMode()->GetViewportAnimationController()->StartAnimationSequence("SuitAuxPowerTwoItemsActive");
 			break;
 		case 1:
-			g_pClientMode->GetViewportAnimationController()->StartAnimationSequence("SuitAuxPowerOneItemActive");
+			GetClientMode()->GetViewportAnimationController()->StartAnimationSequence("SuitAuxPowerOneItemActive");
 			break;
 		case 0:
-			g_pClientMode->GetViewportAnimationController()->StartAnimationSequence("SuitAuxPowerNoItemsActive");
+			GetClientMode()->GetViewportAnimationController()->StartAnimationSequence("SuitAuxPowerNoItemsActive");
 			break;
 		}
 	}
@@ -154,11 +154,11 @@ void CHudSuitPower::Paint()
 		{
 			if (lowPower)
 			{
-				g_pClientMode->GetViewportAnimationController()->StartAnimationSequence("SuitAuxPowerDecreasedBelow25");
+				GetClientMode()->GetViewportAnimationController()->StartAnimationSequence("SuitAuxPowerDecreasedBelow25");
 			}
 			else
 			{
-				g_pClientMode->GetViewportAnimationController()->StartAnimationSequence("SuitAuxPowerIncreasedAbove25");
+				GetClientMode()->GetViewportAnimationController()->StartAnimationSequence("SuitAuxPowerIncreasedAbove25");
 			}
 			m_nSuitPowerLow = lowPower;
 		}

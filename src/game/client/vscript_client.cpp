@@ -117,7 +117,7 @@ bool VScriptClientInit()
 				
 				if ( GameRules() )
 				{
-					GameRules()->RegisterScriptFunctions();
+					//GameRules()->RegisterScriptFunctions();
 				}
 
 				//g_pScriptVM->RegisterInstance( &g_ScriptEntityIterator, "Entities" );

@@ -22,7 +22,7 @@
 
 #include <game/client/iviewport.h>
 
-#include "cs_achievementdefs.h"
+//#include "cs_achievementdefs.h"
 
 // CS-specific viewport panels
 #define PANEL_CHOOSE_CLASS			"choose_class"

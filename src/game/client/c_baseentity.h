@@ -64,6 +64,7 @@ class ConVar;
 class CClientAlphaProperty;
 struct CSoundParameters;
 class CCallQueue;
+class CDmgAccumulator;
 
 typedef unsigned int			AimEntsListHandle_t;
 
@@ -428,8 +429,8 @@ public:
 	virtual bool					HandleShotImpactingWater( const FireBulletsInfo_t &info, 
 		const Vector &vecEnd, ITraceFilter *pTraceFilter, Vector *pVecTracerDest );
 	virtual ITraceFilter*			GetBeamTraceFilter( void );
-	virtual void					DispatchTraceAttack( const CTakeDamageInfo &info, const Vector &vecDir, trace_t *ptr );
-	virtual void					TraceAttack( const CTakeDamageInfo &info, const Vector &vecDir, trace_t *ptr );
+	virtual void					DispatchTraceAttack(const CTakeDamageInfo &info, const Vector &vecDir, trace_t *ptr);
+	virtual void					TraceAttack(const CTakeDamageInfo &info, const Vector &vecDir, trace_t *ptr, CDmgAccumulator *pAccumulator);
 	virtual void					DoImpactEffect( trace_t &tr, int nDamageType );
 	virtual void					MakeTracer( const Vector &vecTracerSrc, const trace_t &tr, int iTracerType );
 	virtual int						GetTracerAttachment( void );

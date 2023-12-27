@@ -718,17 +718,6 @@ bool CVoiceStatus::IsPlayerBlocked(int iPlayer)
 	return m_BanMgr.GetPlayerBan( pi.guid );
 }
 
-
-bool IsPartyMember( XUID xuidPlayer )
-{
-	if ( IMatchSession *pMatchSession = g_pMatchFramework->GetMatchSession() )
-	{
-		return SessionMembersFindPlayer( pMatchSession->GetSessionSettings(), xuidPlayer ) != NULL;
-	}
-	return false;
-}
-
-
 bool CVoiceStatus::ShouldHideCommunicationFromPlayer( int iPlayerIndex )
 {
 #if defined ( CSTRIKE15 )

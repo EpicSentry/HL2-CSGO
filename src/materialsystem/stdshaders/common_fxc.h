@@ -388,7 +388,7 @@ float3 SrgbGammaTo360Gamma( float3 vSrgbGammaColor )
 
 // comment out to revert to PWL srgb shader reads and gamma RT's
 #ifndef CSTRIKE15
-    #define CSTRIKE15
+    //#define CSTRIKE15
 #endif
 
 float4 tex2Dsrgb( sampler iSampler, float2 iUv )

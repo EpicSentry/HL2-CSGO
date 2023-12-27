@@ -1556,6 +1556,7 @@ float CInput::HandleMotionControllerInputSmoothing( float flDeadZonePct, float v
 // Input  : frametime - 
 //			*cmd - 
 //-----------------------------------------------------------------------------
+/*
 void CInput::MotionControllerMove( float frametime, CUserCmd *cmd )
 {
 	// conn - this probably aint worth it
@@ -1824,7 +1825,7 @@ void CInput::MotionControllerMove( float frametime, CUserCmd *cmd )
 	cmd->mousedx = deltaYaw;
 	cmd->mousedy = deltaPitch;
 }
-
+*/
 //-----------------------------------------------------------------------------
 // Purpose: Apply joystick to CUserCmd creation
 // Input  : frametime - 
@@ -1906,7 +1907,9 @@ void CInput::JoyStickMove( float frametime, CUserCmd *cmd )
 		// If we are using a motion controller, then we use the pointing device for updating the look direction.
 		if( inputsystem->MotionControllerActive())
 		{
-			MotionControllerMove( frametime, cmd );
+			//MotionControllerMove( frametime, cmd );
+			return;
+			//too broken and what the hell is a motion controller? the hydra shit? waste of time
 		}
 		else
 		{

@@ -633,79 +633,56 @@ void CBaseHudWeaponSelection::SetWeaponSelected( void )
 //-----------------------------------------------------------------------------
 // Purpose: Player has chosen to draw the currently selected weapon
 //-----------------------------------------------------------------------------
-void CBaseHudWeaponSelection::SelectWeapon( void )
+void CBaseHudWeaponSelection::SelectWeapon(void)
 {
-	if ( !GetSelectedWeapon() )
+	if (!GetSelectedWeapon())
 	{
-		engine->ClientCmd( "cancelselect\n" );
+		engine->ClientCmd("cancelselect\n");
 		return;
 	}
 
 	C_BasePlayer *player = C_BasePlayer::GetLocalPlayer();
-	if ( !player )
+	if (!player)
 		return;
 
 	// Don't allow selections of weapons that can't be selected (out of ammo, etc)
-	if ( !GetSelectedWeapon()->CanBeSelected() )
+	if (!GetSelectedWeapon()->CanBeSelected())
 	{
-		player->EmitSound( "Player.DenyWeaponSelection" );
+		player->EmitSound("Player.DenyWeaponSelection");
 	}
 	else
 	{
 		SetWeaponSelected();
-	
+
 		m_hSelectedWeapon = NULL;
-	
-		engine->ClientCmd( "cancelselect\n" );
 
-		if (player->GetTeamNumber() == TEAM_CT)
-		{
-			// Play the "weapon selected" sound
-			player->EmitSound("Player.WeaponSelected_CT");
+		engine->ClientCmd("cancelselect\n");
 
-		}
-		else
-		{
-			// Play the "weapon selected" sound
-			player->EmitSound("Player.WeaponSelected_T");
-		}
-		
+		// Play the "weapon selected" sound
+		player->EmitSound("Player.WeaponSelected");
 	}
 }
 
 //-----------------------------------------------------------------------------
 // Purpose: Abort selecting a weapon
 //-----------------------------------------------------------------------------
-void CBaseHudWeaponSelection::CancelWeaponSelection( void )
+void CBaseHudWeaponSelection::CancelWeaponSelection(void)
 {
 	C_BasePlayer *player = C_BasePlayer::GetLocalPlayer();
-	if ( !player )
+	if (!player)
 		return;
 
 	// Fastswitches happen in a single frame, so the Weapon Selection HUD Element isn't visible
 	// yet, but it's going to be next frame. We need to ask it if it thinks it's going to draw,
 	// instead of checking it's IsActive flag.
-	if ( ShouldDraw() )
+	if (ShouldDraw())
 	{
 		HideSelection();
 
 		m_hSelectedWeapon = NULL;
 
-		// Play the "close weapon selection" sound based on faction
-		//player->EmitSound( "Player.WeaponSelectionClose" );
-
-		if (player->GetTeamNumber() == TEAM_CT)
-		{
-			// Play the CT Suit sound
-			player->EmitSound("Player.WeaponSelectionClose_CT");
-
-		}
-		else
-		{
-			// Play the T Suit sound
-			player->EmitSound("Player.WeaponSelectionClose_T");
-		}
-
+		// Play the "close weapon selection" sound
+		player->EmitSound("Player.WeaponSelectionClose");
 	}
 	else
 	{

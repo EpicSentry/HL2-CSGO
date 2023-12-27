@@ -1678,7 +1678,7 @@ void CViewRender::DrawViewModels( const CViewSetup &view, bool drawViewmodel )
 	render->PopView( pRenderContext, GetFrustum() );
 
 	// Render objects that use normal FOV
-	if ( !bDrawScopeLensMask && (opaqueNormalFOVList.Count() > 0 || translucentNormalFOVList.Count() > 0) )
+	if ( opaqueNormalFOVList.Count() > 0 || translucentNormalFOVList.Count() > 0) 
 	{
 		viewModelSetup.fov = view.fov;
 		render->Push3DView( pRenderContext, viewModelSetup, 0, NULL, GetFrustum() );

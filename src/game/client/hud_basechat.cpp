@@ -20,7 +20,7 @@
 #include <keyvalues.h>
 #include "ienginevgui.h"
 #include "c_playerresource.h"
-#include "cstrike15/c_cs_playerresource.h"
+//#include "cstrike15/c_cs_playerresource.h"
 #include "ihudlcd.h"
 #include "vgui/IInput.h"
 #include "vgui/ILocalize.h"
