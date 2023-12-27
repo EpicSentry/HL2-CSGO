@@ -88,10 +88,9 @@ void CEnvHudHint::InputShowHudHint( inputdata_t &inputdata )
 		CSingleUserRecipientFilter user( (CBasePlayer *)pPlayer );
 		user.MakeReliable();
 
-/*		CCSUsrMsg_KeyHintText msg;
+		CUsrMsg_KeyHintText msg;
 		msg.add_hints( STRING(m_iszMessage) );
-		SendUserMessage( user, CS_UM_KeyHintText, msg );
-		*/
+		SendUserMessage( user, UM_KeyHintText, msg );
 	}
 }
 
@@ -117,10 +116,10 @@ void CEnvHudHint::InputHideHudHint( inputdata_t &inputdata )
 
 		CSingleUserRecipientFilter user( (CBasePlayer *)pPlayer );
 		user.MakeReliable();
-/*
-		CCSUsrMsg_KeyHintText msg;
+
+		CUsrMsg_KeyHintText msg;
 		msg.add_hints( STRING(NULL_STRING) );
-		SendUserMessage( user, CS_UM_KeyHintText, msg );
-		*/
+		SendUserMessage( user, UM_KeyHintText, msg );
+		
 	}
 }

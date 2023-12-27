@@ -209,8 +209,8 @@ void CVoiceGameMgr::UpdateMasks()
 		// Request the state of their "VModEnable" cvar.
 		if(g_bWantModEnable[iClient])
 		{
-/*			CCSUsrMsg_RequestState msg;
-			SendUserMessage( user, CS_UM_RequestState, msg );*/
+			CUsrMsg_RequestState msg;
+			SendUserMessage( user, UM_RequestState, msg );
 
 			// Since this is reliable, only send it once
 			g_bWantModEnable[iClient] = false;
@@ -241,18 +241,18 @@ void CVoiceGameMgr::UpdateMasks()
 			g_SentGameRulesMasks[iClient] = gameRulesMask;
 			g_SentBanMasks[iClient] = g_BanMasks[iClient];
 
-/*			CCSUsrMsg_VoiceMask msg;
+			CUsrMsg_VoiceMask msg;
 
 			int dw;
 			for(dw=0; dw < VOICE_MAX_PLAYERS_DW; dw++)
 			{
-				CCSUsrMsg_VoiceMask::PlayerMask *playerMask = msg.add_player_masks();
+				CUsrMsg_VoiceMask::PlayerMask *playerMask = msg.add_player_masks();
 				playerMask->set_game_rules_mask( gameRulesMask.GetDWord(dw) );
 				playerMask->set_ban_masks( g_BanMasks[iClient].GetDWord(dw) );
 			}
 			msg.set_player_mod_enable( !!g_PlayerModEnable[iClient] );
 
-			SendUserMessage( user, CS_UM_VoiceMask, msg );*/
+			SendUserMessage( user, UM_VoiceMask, msg );
 		}
 
 		// Tell the engine.

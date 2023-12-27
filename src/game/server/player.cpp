@@ -2138,7 +2138,7 @@ void CBasePlayer::ShowViewPortPanel( const char * name, bool bShow, KeyValues *d
 		subkey = data->GetFirstSubKey(); // reset 
 	}
 
-	/*CCSUsrMsg_VGUIMenu msg;
+	CUsrMsg_VGUIMenu msg;
 
 	msg.set_name( name );
 	msg.set_show( bShow );
@@ -2146,7 +2146,7 @@ void CBasePlayer::ShowViewPortPanel( const char * name, bool bShow, KeyValues *d
 	// write additional data (be careful not more than 192 bytes!)
 	while ( subkey )
 	{
-		CCSUsrMsg_VGUIMenu::Subkey *pMsgSubkey = msg.add_subkeys();
+		CUsrMsg_VGUIMenu::Subkey *pMsgSubkey = msg.add_subkeys();
 
 		pMsgSubkey->set_name( subkey->GetName() );
 		pMsgSubkey->set_str( subkey-> GetString() );
@@ -2154,11 +2154,11 @@ void CBasePlayer::ShowViewPortPanel( const char * name, bool bShow, KeyValues *d
 		subkey = subkey->GetNextKey();
 	}
 
-//	int x = 1;
+//	int x = 1; idk honestly it was left commented but i feel like this wasnt intended
 //	if ( bShow )
 //		x++;
 
-	SendUserMessage( filter, CS_UM_VGUIMenu, msg );*/
+	SendUserMessage( filter, UM_VGUIMenu, msg );
 }
 
 
@@ -2341,8 +2341,8 @@ void CBasePlayer::StopObserverMode()
 	CSingleUserRecipientFilter filter( this );
 	filter.MakeReliable();	
 	
-/*	CCSUsrMsg_StopSpectatorMode msg;
-	SendUserMessage( filter, CS_UM_StopSpectatorMode, msg );*/
+/*	CUsrMsg_StopSpectatorMode msg;
+	SendUserMessage( filter, UM_StopSpectatorMode, msg );*/
 }
 
 bool CBasePlayer::StartObserverMode(int mode)
@@ -4374,9 +4374,9 @@ void CBasePlayer::UpdateGeigerCounter( void )
 		CSingleUserRecipientFilter user( this );
 		user.MakeReliable();
 
-/*		CCSUsrMsg_Geiger msg;
+		CUsrMsg_Geiger msg;
 		msg.set_range( range );
-		SendUserMessage( user, CS_UM_Geiger, msg );*/
+		SendUserMessage( user, UM_Geiger, msg );
 	}
 
 	// reset counter and semaphore
@@ -7049,9 +7049,9 @@ void CBasePlayer::UpdateClientData( void )
 		m_fInitHUD = false;
 		gInitHUD = false;
 
-/*		CCSUsrMsg_ResetHud msg;
+		CUsrMsg_ResetHud msg;
 		msg.set_reset( 0 );
-		SendUserMessage( user, CS_UM_ResetHud, msg );*/
+		SendUserMessage( user, UM_ResetHud, msg );
 
 		if ( !m_fGameHUDInitialized )
 		{
@@ -7073,8 +7073,8 @@ void CBasePlayer::UpdateClientData( void )
 	CWorld *world = GetWorldEntity();
 	if ( world && world->GetDisplayTitle() )
 	{
-/*		CCSUsrMsg_GameTitle msg;
-		SendUserMessage( user, CS_UM_GameTitle, msg );*/
+		CUsrMsg_GameTitle msg;
+		SendUserMessage( user, UM_GameTitle, msg );
 
 		world->SetDisplayTitle( false );
 	}
@@ -7153,12 +7153,12 @@ void CBasePlayer::RumbleEffect( unsigned char index, unsigned char rumbleData, u
 	CSingleUserRecipientFilter filter( this );
 	filter.MakeReliable();
 
-/*	CCSUsrMsg_Rumble msg;
+	CUsrMsg_Rumble msg;
 	msg.set_index( index );
 	msg.set_data( rumbleData );
 	msg.set_flags( rumbleFlags	);
 
-	SendUserMessage( filter, CS_UM_Rumble, msg );*/	
+	SendUserMessage( filter, UM_Rumble, msg );
 }
 
 void CBasePlayer::EnableControl(bool fControl)
@@ -7177,9 +7177,9 @@ void CBasePlayer::CheckTrainUpdate( void )
 		CSingleUserRecipientFilter user( this );
 		user.MakeReliable();
 
-/*		CCSUsrMsg_Train msg;
+		CUsrMsg_Train msg;
 		msg.set_train( m_iTrain & 0xF );
-		SendUserMessage( user, CS_UM_Train, msg );*/
+		SendUserMessage( user, UM_Train, msg );
 
 		m_iTrain &= ~TRAIN_NEW;
 	}

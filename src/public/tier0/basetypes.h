@@ -107,6 +107,8 @@ T abs( const T &a )
 #endif
 
 
+#include "valve_minmax_on.h"
+
 // #define COMPILETIME_MAX and COMPILETIME_MIN for max/min in constant expressions
 #define COMPILETIME_MIN( a, b ) ( ( ( a ) < ( b ) ) ? ( a ) : ( b ) )
 #define COMPILETIME_MAX( a, b ) ( ( ( a ) > ( b ) ) ? ( a ) : ( b ) )

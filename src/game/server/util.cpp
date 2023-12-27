@@ -816,13 +816,13 @@ inline void TransmitShakeEvent( CBasePlayer *pPlayer, float localAmplitude, floa
 
 		CSingleUserRecipientFilter user( pPlayer );
 		user.MakeReliable();
-/*		CCSUsrMsg_Shake msg;
+		CUsrMsg_Shake msg;
 		msg.set_command( eCommand );					// shake command (SHAKE_START, STOP, FREQUENCY, AMPLITUDE)
 		msg.set_local_amplitude( localAmplitude );		// shake magnitude/amplitude
 		msg.set_frequency( frequency	 );				// shake noise frequency
 		msg.set_duration( duration );					// shake lasts this long
 
-		SendUserMessage( user, CS_UM_Shake, msg );*/
+		SendUserMessage( user, UM_Shake, msg );
 	}
 }
 
@@ -1065,7 +1065,7 @@ void UTIL_ScreenFadeWrite( const ScreenFade_t &fade, CBaseEntity *pEntity )
 	CSingleUserRecipientFilter user( pRecipient );
 	user.MakeReliable();
 
-/*	CCSUsrMsg_Fade msg;
+	CUsrMsg_Fade msg;
 
 	msg.set_duration( fade.duration );		// fade lasts this long
 	msg.set_hold_time( fade.holdTime );		// fade lasts this long
@@ -1075,8 +1075,8 @@ void UTIL_ScreenFadeWrite( const ScreenFade_t &fade, CBaseEntity *pEntity )
 	msg.mutable_clr()->set_b( fade.b );				// fade blue
 	msg.mutable_clr()->set_a( fade.a );				// fade blue
 
-	SendUserMessage( user, CS_UM_Fade, msg );	
-	*/
+	SendUserMessage( user, UM_Fade, msg );	
+	
 }
 
 
@@ -1120,8 +1120,8 @@ void UTIL_HudMessage( CBasePlayer *pToPlayer, const hudtextparms_t &textparms, c
 	}
 
 	filter.MakeReliable();
-/*
-	CCSUsrMsg_HudMsg msg;
+
+	CUsrMsg_HudMsg msg;
 	msg.set_channel( textparms.channel & 0xFF );
 	msg.mutable_pos()->set_x( textparms.x );
 	msg.mutable_pos()->set_y( textparms.y );
@@ -1139,8 +1139,7 @@ void UTIL_HudMessage( CBasePlayer *pToPlayer, const hudtextparms_t &textparms, c
 	msg.set_hold_time( textparms.holdTime );
 	msg.set_fx_time( textparms.fxTime );
 	msg.set_text( pMessage );
-	SendUserMessage( filter, CS_UM_HudMsg, msg );
-	*/
+	SendUserMessage( filter, UM_HudMsg, msg );
 }
 
 void UTIL_HudMessageAll( const hudtextparms_t &textparms, const char *pMessage )
@@ -1156,16 +1155,15 @@ void UTIL_HudHintText( CBaseEntity *pEntity, const char *pMessage )
 	CSingleUserRecipientFilter user( (CBasePlayer *)pEntity );
 	user.MakeReliable();
 
-/*	CCSUsrMsg_KeyHintText msg;
+	CUsrMsg_KeyHintText msg;
 	msg.add_hints( pMessage );
-	SendUserMessage( user, CS_UM_KeyHintText, msg );
-	*/
+	SendUserMessage( user, UM_KeyHintText, msg );
+	
 }
 
 void UTIL_ClientPrintFilter( IRecipientFilter& filter, int msg_dest, const char *msg_name, const char *param1, const char *param2, const char *param3, const char *param4 )
 {
-	/**
-	CCSUsrMsg_TextMsg msg;
+	CUsrMsg_TextMsg msg;
 
 	msg.set_msg_dst( msg_dest );
 	msg.add_params( msg_name );
@@ -1190,8 +1188,7 @@ void UTIL_ClientPrintFilter( IRecipientFilter& filter, int msg_dest, const char 
 	else
 		msg.add_params( "" );
 
-	SendUserMessage( filter, CS_UM_TextMsg, msg );
-	*/
+	SendUserMessage( filter, UM_TextMsg, msg );
 }
 					 
 void UTIL_ClientPrintAll( int msg_dest, const char *msg_name, const char *param1, const char *param2, const char *param3, const char *param4 )
@@ -1214,7 +1211,7 @@ void ClientPrint( CBasePlayer *player, int msg_dest, const char *msg_name, const
 
 void UTIL_SayTextFilter( IRecipientFilter& filter, const char *pText, CBasePlayer *pPlayer, EUtilSayTextMessageType_t eMessageType )
 {
-/*	CCSUsrMsg_SayText msg;
+	CUsrMsg_SayText msg;
 	
 	if ( pPlayer ) 
 	{
@@ -1228,13 +1225,12 @@ void UTIL_SayTextFilter( IRecipientFilter& filter, const char *pText, CBasePlaye
 	msg.set_chat( ( eMessageType == kEUtilSayTextMessageType_TeamonlyChat ) || ( eMessageType == kEUtilSayTextMessageType_AllChat ) );
 	msg.set_textallchat( eMessageType == kEUtilSayTextMessageType_AllChat );
 
-	SendUserMessage( filter, CS_UM_SayText, msg );*/
+	SendUserMessage( filter, UM_SayText, msg );
 }
 
 void UTIL_SayText2Filter( IRecipientFilter& filter, CBasePlayer *pEntity, EUtilSayTextMessageType_t eMessageType, const char *msg_name, const char *param1, const char *param2, const char *param3, const char *param4 )
 {
-	/*
-	CCSUsrMsg_SayText2 msg;
+	CUsrMsg_SayText2 msg;
 
 	if ( pEntity )
 	{
@@ -1269,7 +1265,7 @@ void UTIL_SayText2Filter( IRecipientFilter& filter, CBasePlayer *pEntity, EUtilS
 	else
 		msg.add_params( "" );
 
-	SendUserMessage( filter, CS_UM_SayText2, msg );*/
+	SendUserMessage( filter, UM_SayText2, msg );
 }
 
 void UTIL_SayText( const char *pText, CBasePlayer *pToPlayer )
@@ -1304,9 +1300,9 @@ void UTIL_ShowMessage( const char *pString, CBasePlayer *pPlayer )
 	
 	filter.MakeReliable();
 
-/*	CCSUsrMsg_HudText msg;
+	CUsrMsg_HudText msg;
 	msg.set_text( pString );
-	SendUserMessage( filter, CS_UM_HudText, msg );*/
+	SendUserMessage( filter, UM_HudText, msg );
 }
 
 

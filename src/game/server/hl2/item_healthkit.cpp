@@ -11,6 +11,7 @@
 #include "items.h"
 #include "in_buttons.h"
 #include "engine/IEngineSound.h"
+#include "hl2_usermessages.pb.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -71,9 +72,15 @@ bool CHealthKit::MyTouch( CBasePlayer *pPlayer )
 		CSingleUserRecipientFilter user( pPlayer );
 		user.MakeReliable();
 
+		/*
 		UserMessageBegin( user, "ItemPickup" );
 			WRITE_STRING( GetClassname() );
 		MessageEnd();
+		*/
+
+		CUsrMsg_ItemPickup msg;
+		msg.set_item(GetClassname());
+		SendUserMessage(user, UM_ItemPickup, msg);
 
 		CPASAttenuationFilter filter( pPlayer, "HealthKit.Touch" );
 		EmitSound( filter, pPlayer->entindex(), "HealthKit.Touch" );
@@ -124,9 +131,9 @@ public:
 			CSingleUserRecipientFilter user( pPlayer );
 			user.MakeReliable();
 
-			UserMessageBegin( user, "ItemPickup" );
-				WRITE_STRING( GetClassname() );
-			MessageEnd();
+			CUsrMsg_ItemPickup msg;
+			msg.set_item(GetClassname());
+			SendUserMessage(user, UM_ItemPickup, msg);
 
 			CPASAttenuationFilter filter( pPlayer, "HealthVial.Touch" );
 			EmitSound( filter, pPlayer->entindex(), "HealthVial.Touch" );

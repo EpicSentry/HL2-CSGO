@@ -3562,8 +3562,8 @@ void ShowViewPortPanelToAll( const char * name, bool bShow, KeyValues *data )
 
 		subkey = data->GetFirstSubKey(); // reset 
 	}
-/*
-	CCSUsrMsg_VGUIMenu msg;
+
+	CUsrMsg_VGUIMenu msg;
 
 	msg.set_name( name );
 	msg.set_show( bShow );
@@ -3571,7 +3571,7 @@ void ShowViewPortPanelToAll( const char * name, bool bShow, KeyValues *data )
 	// write additional data (be careful not more than 192 bytes!)
 	while ( subkey )
 	{
-		CCSUsrMsg_VGUIMenu::Subkey *pMsgSubkey = msg.add_subkeys();
+		CUsrMsg_VGUIMenu::Subkey *pMsgSubkey = msg.add_subkeys();
 
 		pMsgSubkey->set_name( subkey->GetName() );
 		pMsgSubkey->set_str( subkey-> GetString() );
@@ -3579,7 +3579,7 @@ void ShowViewPortPanelToAll( const char * name, bool bShow, KeyValues *data )
 		subkey = subkey->GetNextKey();
 	}
 
-	SendUserMessage( filter, CS_UM_VGUIMenu, msg );*/
+	SendUserMessage( filter, UM_VGUIMenu, msg );
 }
 
 

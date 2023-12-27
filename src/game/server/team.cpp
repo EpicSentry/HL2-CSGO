@@ -8,6 +8,7 @@
 #include "team.h"
 #include "player.h"
 #include "team_spawnpoint.h"
+#include "hl2_usermessages.pb.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -326,9 +327,9 @@ void CTeam::AwardAchievement(int iAchievement)
 		}
 	}
 
-	UserMessageBegin(filter, "AchievementEvent");
-	WRITE_SHORT(iAchievement);
-	MessageEnd();
+	CUsrMsg_AchievementEvent msg;
+	msg.set_achievement(iAchievement);
+	SendUserMessage(filter, UM_AchievementEvent, msg);
 }
 
 int CTeam::GetAliveMembers(void) const
