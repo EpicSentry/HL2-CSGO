@@ -124,9 +124,6 @@ typedef void (*AssertFailedNotifyFunc_t)( const char *pchFile, int nLine, const 
 PLATFORM_INTERFACE void SetAssertFailedNotifyFunc( AssertFailedNotifyFunc_t func );
 PLATFORM_INTERFACE void CallAssertFailedNotifyFunc( const char *pchFile, int nLine, const char *pchMessage );
 
-/* True if -hushasserts was passed on command line. */
-DBG_INTERFACE bool HushAsserts();
-
 #if defined( LINUX )
 PLATFORM_INTERFACE void SetAssertDialogParent( struct SDL_Window *window );
 PLATFORM_INTERFACE struct SDL_Window * GetAssertDialogParent();

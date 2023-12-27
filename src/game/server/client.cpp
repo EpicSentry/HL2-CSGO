@@ -823,6 +823,11 @@ void kill_helper( const CCommand &args, bool bVector, bool bExplode )
 		pPlayer = UTIL_GetCommandClient();
 	}
 
+	if ( !pPlayer || g_pGameRules->IgnorePlayerKillCommand() )
+	{
+		return;
+	}
+
 #if defined ( CSTRIKE15 )
 	// If we're doing global assassination targets, we have a known assassinate quest and the player who is the target is on the correct team
 	// then don't let them suicide. 

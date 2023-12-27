@@ -433,7 +433,7 @@ bool CVoteController::CreateVote( int iEntIndex, const char *pszTypeString, cons
 						CSingleUserRecipientFilter filter( pPlayer );					
 						filter.MakeReliable();
 						
-						CUsrMsg_VoteStart msg;
+						CCSUsrMsg_VoteStart msg;
 						msg.set_team( m_iOnlyTeamToVote );			// move into the filter
 						msg.set_ent_idx( m_iEntityHoldingVote );
 						msg.set_vote_type( pCurrentIssue->GetVoteIssue() );
@@ -453,7 +453,7 @@ bool CVoteController::CreateVote( int iEntIndex, const char *pszTypeString, cons
 
 				m_nPotentialVotes = pCurrentIssue->CountPotentialVoters();
 				// FIX TO MAKE REMATCH ONLY
-				float flVoteDuration = sv_vote_timer_duration.GetFloat();
+				float flVoteDuration = CSGameRules()->IsQueuedMatchmaking() ? 45.0f : sv_vote_timer_duration.GetFloat();
 				m_acceptingVotesTimer.Start( flVoteDuration );
 				pCurrentIssue->OnVoteStarted();
 

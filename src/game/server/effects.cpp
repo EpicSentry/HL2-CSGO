@@ -2729,13 +2729,13 @@ void CEnvGunfire::FireBullet(
 #endif
 
 		// [dkorus] note: values are changed inside of HandleBulletPenetration
-/*		bool bulletStopped = pPlayer->HandleBulletPenetration( flPenetration, iEnterMaterial, hitGrate, tr, vecDir, pSurfaceData, flPenetrationModifier,
+		bool bulletStopped = pPlayer->HandleBulletPenetration( flPenetration, iEnterMaterial, hitGrate, tr, vecDir, pSurfaceData, flPenetrationModifier,
 													  flDamageModifier, bDoEffects, iDamageType, flPenetrationPower, nPenetrationCount, vecSrc, flDistance,
 													  flCurrentDistance, fCurrentDamage );
 
 		// [dkorus] bulletStopped is true if the bullet can no longer continue penetrating materials
 		if ( bulletStopped )
-			break;*/
+			break;
 	}
 
 

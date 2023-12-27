@@ -8280,28 +8280,30 @@ Vector CAI_BaseNPC::EyePosition( void )
 // Input   :
 // Output  :
 //------------------------------------------------------------------------------
-void CAI_BaseNPC::HandleAnimEvent(animevent_t *pEvent)
+void CAI_BaseNPC::HandleAnimEvent( animevent_t *pEvent )
 {
 	// UNDONE: Share this code into CBaseAnimating as appropriate?
-	switch (pEvent->event)
+	int nEvent = pEvent->Event();
+
+	switch( nEvent )
 	{
 	case SCRIPT_EVENT_DEAD:
-		if (m_NPCState == NPC_STATE_SCRIPT)
+		if ( m_NPCState == NPC_STATE_SCRIPT )
 		{
 			m_lifeState = LIFE_DYING;
 			// Kill me now! (and fade out when CineCleanup() is called)
 #if _DEBUG
-			DevMsg(2, "Death event: %s\n", GetClassname());
+			DevMsg( 2, "Death event: %s\n", GetClassname() );
 #endif
 			m_iHealth = 0;
 		}
 #if _DEBUG
 		else
-			DevWarning(2, "INVALID death event:%s\n", GetClassname());
+			DevWarning( 2, "INVALID death event:%s\n", GetClassname() );
 #endif
 		break;
 	case SCRIPT_EVENT_NOT_DEAD:
-		if (m_NPCState == NPC_STATE_SCRIPT)
+		if ( m_NPCState == NPC_STATE_SCRIPT )
 		{
 			m_lifeState = LIFE_ALIVE;
 			// This is for life/death sequences where the player can determine whether a character is dead or alive after the script
@@ -8310,23 +8312,23 @@ void CAI_BaseNPC::HandleAnimEvent(animevent_t *pEvent)
 		break;
 
 	case SCRIPT_EVENT_SOUND:			// Play a named wave file
-	{
-		EmitSound(pEvent->options);
-	}
-	break;
+		{
+			EmitSound( pEvent->options );
+		}
+		break;
 
 	case SCRIPT_EVENT_SOUND_VOICE:
-	{
-		EmitSound(pEvent->options);
-	}
-	break;
+		{
+			EmitSound( pEvent->options );
+		}
+		break;
 
 	case SCRIPT_EVENT_SENTENCE_RND1:		// Play a named sentence group 33% of the time
-		if (random->RandomInt(0, 2) == 0)
+		if (random->RandomInt(0,2) == 0)
 			break;
 		// fall through...
 	case SCRIPT_EVENT_SENTENCE:			// Play a named sentence group
-		SENTENCEG_PlayRndSz(edict(), pEvent->options, 1.0, SNDLVL_TALKING, 0, 100);
+		SENTENCEG_PlayRndSz( edict(), pEvent->options, 1.0, SNDLVL_TALKING, 0, 100 );
 		break;
 
 	case SCRIPT_EVENT_FIREEVENT:
@@ -8334,9 +8336,9 @@ void CAI_BaseNPC::HandleAnimEvent(animevent_t *pEvent)
 		//
 		// Fire a script event. The number of the script event to fire is in the options string.
 		//
-		if (m_hCine != NULL)
+		if ( m_hCine != NULL )
 		{
-			m_hCine->FireScriptEvent(atoi(pEvent->options));
+			m_hCine->FireScriptEvent( atoi( pEvent->options ) );
 		}
 		else
 		{
@@ -8346,20 +8348,20 @@ void CAI_BaseNPC::HandleAnimEvent(animevent_t *pEvent)
 		break;
 	}
 	case SCRIPT_EVENT_FIRE_INPUT:
-	{
-		variant_t emptyVariant;
-		this->AcceptInput(pEvent->options, this, this, emptyVariant, 0);
-		break;
-	}
+		{
+			variant_t emptyVariant;
+			this->AcceptInput( pEvent->options, this, this, emptyVariant, 0 );
+			break;
+		}
 
 	case SCRIPT_EVENT_NOINTERRUPT:		// Can't be interrupted from now on
-		if (m_hCine)
-			m_hCine->AllowInterrupt(false);
+		if ( m_hCine )
+			m_hCine->AllowInterrupt( false );
 		break;
 
 	case SCRIPT_EVENT_CANINTERRUPT:		// OK to interrupt now
-		if (m_hCine)
-			m_hCine->AllowInterrupt(true);
+		if ( m_hCine )
+			m_hCine->AllowInterrupt( true );
 		break;
 
 #if 0
@@ -8370,110 +8372,110 @@ void CAI_BaseNPC::HandleAnimEvent(animevent_t *pEvent)
 	case SCRIPT_EVENT_BODYGROUPON:
 	case SCRIPT_EVENT_BODYGROUPOFF:
 	case SCRIPT_EVENT_BODYGROUPTEMP:
-		DevMsg("Bodygroup!\n");
+			DevMsg( "Bodygroup!\n" );
 		break;
 
 	case AE_NPC_ATTACK_BROADCAST:
 		break;
 
 	case NPC_EVENT_BODYDROP_HEAVY:
-		if (GetFlags() & FL_ONGROUND)
+		if ( GetFlags() & FL_ONGROUND )
 		{
-			EmitSound("AI_BaseNPC.BodyDrop_Heavy");
+			EmitSound( "AI_BaseNPC.BodyDrop_Heavy" );
 		}
 		break;
 
 	case NPC_EVENT_BODYDROP_LIGHT:
-		if (GetFlags() & FL_ONGROUND)
+		if ( GetFlags() & FL_ONGROUND )
 		{
-			EmitSound("AI_BaseNPC.BodyDrop_Light");
+			EmitSound( "AI_BaseNPC.BodyDrop_Light" );
 		}
 		break;
 
 	case NPC_EVENT_SWISHSOUND:
-	{
-		// NO NPC may use this anim event unless that npc's precache precaches this sound!!!
-		EmitSound("AI_BaseNPC.SwishSound");
-		break;
-	}
+		{
+			// NO NPC may use this anim event unless that npc's precache precaches this sound!!!
+			EmitSound( "AI_BaseNPC.SwishSound" );
+			break;
+		}
 
 
 	case NPC_EVENT_180TURN:
-	{
-		//DevMsg( "Turned!\n" );
-		SetIdealActivity(ACT_IDLE);
-		Forget(bits_MEMORY_TURNING);
-		SetBoneController(0, GetLocalAngles().y);
-		IncrementInterpolationFrame();
-		break;
-	}
+		{
+			//DevMsg( "Turned!\n" );
+			SetIdealActivity( ACT_IDLE );
+			Forget( bits_MEMORY_TURNING );
+			SetBoneController( 0, GetLocalAngles().y );
+			AddEffects( EF_NOINTERP );
+			break;
+		}
 
 	case NPC_EVENT_ITEM_PICKUP:
-	{
-		CBaseEntity *pPickup = NULL;
+		{
+			CBaseEntity *pPickup = NULL;
 
-		//
-		// Figure out what we're supposed to pick up.
-		//
-		if (pEvent->options && strlen(pEvent->options) > 0)
-		{
-			// Pick up the weapon or item that was specified in the anim event.
-			pPickup = gEntList.FindEntityGenericNearest(pEvent->options, GetAbsOrigin(), 256, this);
-		}
-		else
-		{
-			// Pick up the weapon or item that was found earlier and cached in our target pointer.
-			pPickup = GetTarget();
-		}
-
-		// Make sure we found something to pick up.
-		if (!pPickup)
-		{
-			TaskFail("Item no longer available!\n");
-			break;
-		}
-
-		// Make sure the item hasn't moved.
-		float flDist = (pPickup->WorldSpaceCenter() - GetAbsOrigin()).Length2D();
-		if (flDist > ITEM_PICKUP_TOLERANCE)
-		{
-			TaskFail("Item has moved!\n");
-			break;
-		}
-
-		CBaseCombatWeapon *pWeapon = dynamic_cast<CBaseCombatWeapon *>(pPickup);
-		if (pWeapon)
-		{
-			// Picking up a weapon.
-			CBaseCombatCharacter *pOwner = pWeapon->GetOwner();
-			if (pOwner)
+			//
+			// Figure out what we're supposed to pick up.
+			//
+			if ( pEvent->options && strlen( pEvent->options ) > 0 )
 			{
-				TaskFail("Weapon in use by someone else");
-			}
-			else if (!pWeapon)
-			{
-				TaskFail("Weapon doesn't exist");
-			}
-			else if (!Weapon_CanUse(pWeapon))
-			{
-				TaskFail("Can't use this weapon type");
+				// Pick up the weapon or item that was specified in the anim event.
+				pPickup = gEntList.FindEntityGenericNearest( pEvent->options, GetAbsOrigin(), 256, this );
 			}
 			else
 			{
-				PickupWeapon(pWeapon);
-				TaskComplete();
+				// Pick up the weapon or item that was found earlier and cached in our target pointer.
+				pPickup = GetTarget();
+			}
+
+			// Make sure we found something to pick up.
+			if ( !pPickup )
+			{
+				TaskFail("Item no longer available!\n");
 				break;
 			}
-		}
-		else
-		{
-			// Picking up an item.
-			PickupItem(pPickup);
-			TaskComplete();
-		}
 
-		break;
-	}
+			// Make sure the item hasn't moved.
+			float flDist = ( pPickup->WorldSpaceCenter() - GetAbsOrigin() ).Length2D();
+			if ( flDist > ITEM_PICKUP_TOLERANCE )
+			{
+				TaskFail("Item has moved!\n");
+				break;
+			}
+
+			CBaseCombatWeapon *pWeapon = ToBaseCombatWeapon( pPickup );
+			if ( pWeapon )
+			{
+				// Picking up a weapon.
+				CBaseCombatCharacter *pOwner  = pWeapon->GetOwner();
+				if ( pOwner )
+				{
+					TaskFail( "Weapon in use by someone else" );
+				}
+				else if ( !pWeapon )
+				{
+					TaskFail( "Weapon doesn't exist" );
+				}
+				else if (!Weapon_CanUse( pWeapon ))
+				{
+					TaskFail( "Can't use this weapon type" );
+				}
+				else
+				{
+					PickupWeapon( pWeapon );
+					TaskComplete();
+					break;
+				}
+			}
+			else
+			{
+				// Picking up an item.
+				PickupItem( pPickup );
+				TaskComplete();
+			}
+
+			break;
+		}
 
 	case NPC_EVENT_WEAPON_SET_SEQUENCE_NUMBER:
 	{
@@ -8519,62 +8521,62 @@ void CAI_BaseNPC::HandleAnimEvent(animevent_t *pEvent)
 	}
 
 	case NPC_EVENT_WEAPON_DROP:
-	{
-		//
-		// Drop our active weapon (or throw it at the specified target entity).
-		//
-		CBaseEntity *pTarget = NULL;
-		if (pEvent->options)
 		{
-			pTarget = gEntList.FindEntityGeneric(NULL, pEvent->options, this);
+			//
+			// Drop our active weapon (or throw it at the specified target entity).
+			//
+			CBaseEntity *pTarget = NULL;
+			if (pEvent->options)
+			{
+				pTarget = gEntList.FindEntityGeneric(NULL, pEvent->options, this);
+			}
+
+			if (pTarget)
+			{
+				Vector vecTargetPos = pTarget->WorldSpaceCenter();
+				Weapon_Drop(GetActiveWeapon(), &vecTargetPos);
+			}
+			else
+			{
+				Weapon_Drop(GetActiveWeapon());
+			}
+
+			break;
 		}
 
-		if (pTarget)
+  	case EVENT_WEAPON_RELOAD:
 		{
-			Vector vecTargetPos = pTarget->WorldSpaceCenter();
-			Weapon_Drop(GetActiveWeapon(), &vecTargetPos);
-		}
-		else
-		{
-			Weapon_Drop(GetActiveWeapon());
+  			if ( GetActiveWeapon() )
+  			{
+  				GetActiveWeapon()->WeaponSound( RELOAD_NPC );
+  				GetActiveWeapon()->m_iClip1 = GetActiveWeapon()->GetMaxClip1(); 
+  				ClearCondition(COND_LOW_PRIMARY_AMMO);
+  				ClearCondition(COND_NO_PRIMARY_AMMO);
+  				ClearCondition(COND_NO_SECONDARY_AMMO);
+  			}
+  			break;
 		}
 
-		break;
-	}
-
-	case EVENT_WEAPON_RELOAD:
-	{
-		if (GetActiveWeapon())
+  	case EVENT_WEAPON_RELOAD_SOUND:
 		{
-			GetActiveWeapon()->WeaponSound(RELOAD_NPC);
-			GetActiveWeapon()->m_iClip1 = GetActiveWeapon()->GetMaxClip1();
-			ClearCondition(COND_LOW_PRIMARY_AMMO);
-			ClearCondition(COND_NO_PRIMARY_AMMO);
-			ClearCondition(COND_NO_SECONDARY_AMMO);
+  			if ( GetActiveWeapon() )
+  			{
+  				GetActiveWeapon()->WeaponSound( RELOAD_NPC );
+  			}
+  			break;
 		}
-		break;
-	}
-
-	case EVENT_WEAPON_RELOAD_SOUND:
-	{
-		if (GetActiveWeapon())
-		{
-			GetActiveWeapon()->WeaponSound(RELOAD_NPC);
-		}
-		break;
-	}
 
 	case EVENT_WEAPON_RELOAD_FILL_CLIP:
-	{
-		if (GetActiveWeapon())
 		{
-			GetActiveWeapon()->m_iClip1 = GetActiveWeapon()->GetMaxClip1();
-			ClearCondition(COND_LOW_PRIMARY_AMMO);
-			ClearCondition(COND_NO_PRIMARY_AMMO);
-			ClearCondition(COND_NO_SECONDARY_AMMO);
+  			if ( GetActiveWeapon() )
+  			{
+  				GetActiveWeapon()->m_iClip1 = GetActiveWeapon()->GetMaxClip1(); 
+  				ClearCondition(COND_LOW_PRIMARY_AMMO);
+  				ClearCondition(COND_NO_PRIMARY_AMMO);
+  				ClearCondition(COND_NO_SECONDARY_AMMO);
+  			}
+  			break;
 		}
-		break;
-	}
 
 	case NPC_EVENT_LEFTFOOT:
 	case NPC_EVENT_RIGHTFOOT:
@@ -8582,39 +8584,39 @@ void CAI_BaseNPC::HandleAnimEvent(animevent_t *pEvent)
 		break;
 
 	case NPC_EVENT_OPEN_DOOR:
-	{
-		CBasePropDoor *pDoor = (CBasePropDoor *)(CBaseEntity *)GetNavigator()->GetPath()->GetCurWaypoint()->GetEHandleData();
-		if (pDoor != NULL)
 		{
-			OpenPropDoorNow(pDoor);
+			CBasePropDoor *pDoor = (CBasePropDoor *)(CBaseEntity *)GetNavigator()->GetPath()->GetCurWaypoint()->GetEHandleData();
+			if (pDoor != NULL)
+			{
+				OpenPropDoorNow( pDoor );
+			}
+	
+			break;
 		}
-
-		break;
-	}
 
 	default:
 		if ((pEvent->type & AE_TYPE_NEWEVENTSYSTEM) && (pEvent->type & AE_TYPE_SERVER))
 		{
-			if (pEvent->event == AE_NPC_HOLSTER)
+			if (nEvent == AE_NPC_HOLSTER)
 			{
 				// Cache off the weapon.
-				CBaseCombatWeapon *pWeapon = GetActiveWeapon();
+				CBaseCombatWeapon *pWeapon = GetActiveWeapon(); 
 
-				Assert(pWeapon != NULL);
+				Assert( pWeapon != NULL	); 
 
-				GetActiveWeapon()->Holster();
-				SetActiveWeapon(NULL);
+ 				GetActiveWeapon()->Holster();
+				SetActiveWeapon( NULL );
 
 				//Force the NPC to recalculate it's arrival activity since it'll most likely be wrong now that we don't have a weapon out.
-				GetNavigator()->SetArrivalSequence(ACT_INVALID);
+				GetNavigator()->SetArrivalSequence( ACT_INVALID );
 
-				if (m_iDesiredWeaponState == DESIREDWEAPONSTATE_CHANGING_DESTROY)
+				if ( m_iDesiredWeaponState == DESIREDWEAPONSTATE_CHANGING_DESTROY )
 				{
 					// Get rid of it!
-					UTIL_Remove(pWeapon);
+					UTIL_Remove( pWeapon );
 				}
 
-				if (m_iDesiredWeaponState != DESIREDWEAPONSTATE_IGNORE)
+				if ( m_iDesiredWeaponState != DESIREDWEAPONSTATE_IGNORE )
 				{
 					m_iDesiredWeaponState = DESIREDWEAPONSTATE_IGNORE;
 					m_Activity = ACT_RESET;
@@ -8622,16 +8624,16 @@ void CAI_BaseNPC::HandleAnimEvent(animevent_t *pEvent)
 
 				return;
 			}
-			else if (pEvent->event == AE_NPC_DRAW)
+			else if (nEvent == AE_NPC_DRAW)
 			{
 				if (GetActiveWeapon())
 				{
 					GetActiveWeapon()->Deploy();
 
 					//Force the NPC to recalculate it's arrival activity since it'll most likely be wrong now.
-					GetNavigator()->SetArrivalSequence(ACT_INVALID);
+					GetNavigator()->SetArrivalSequence( ACT_INVALID );
 
-					if (m_iDesiredWeaponState != DESIREDWEAPONSTATE_IGNORE)
+					if ( m_iDesiredWeaponState != DESIREDWEAPONSTATE_IGNORE )
 					{
 						m_iDesiredWeaponState = DESIREDWEAPONSTATE_IGNORE;
 						m_Activity = ACT_RESET;
@@ -8639,51 +8641,51 @@ void CAI_BaseNPC::HandleAnimEvent(animevent_t *pEvent)
 				}
 				return;
 			}
-			else if (pEvent->event == AE_NPC_BODYDROP_HEAVY)
+			else if ( nEvent == AE_NPC_BODYDROP_HEAVY )
 			{
-				if (GetFlags() & FL_ONGROUND)
+				if ( GetFlags() & FL_ONGROUND )
 				{
-					EmitSound("AI_BaseNPC.BodyDrop_Heavy");
+					EmitSound( "AI_BaseNPC.BodyDrop_Heavy" );
 				}
 				return;
 			}
-			else if (pEvent->event == AE_NPC_LEFTFOOT || pEvent->event == AE_NPC_RIGHTFOOT)
+			else if ( nEvent == AE_NPC_LEFTFOOT || nEvent == AE_NPC_RIGHTFOOT )
 			{
 				return;
 			}
-			else if (pEvent->event == AE_NPC_RAGDOLL)
+			else if ( nEvent == AE_NPC_RAGDOLL )
 			{
 				// Convert to ragdoll immediately
-				BecomeRagdollOnClient(vec3_origin);
+				BecomeRagdollOnClient( vec3_origin );
 				return;
 			}
-			else if (pEvent->event == AE_NPC_ADDGESTURE)
+			else if ( nEvent == AE_NPC_ADDGESTURE )
 			{
-				Activity act = (Activity)LookupActivity(pEvent->options);
+				Activity act = ( Activity )LookupActivity( pEvent->options );
 				if (act != ACT_INVALID)
 				{
-					act = TranslateActivity(act);
+					act = TranslateActivity( act );
 					if (act != ACT_INVALID)
 					{
-						AddGesture(act);
+						AddGesture( act );
 					}
 				}
 				return;
 			}
-			else if (pEvent->event == AE_NPC_RESTARTGESTURE)
+			else if ( nEvent == AE_NPC_RESTARTGESTURE )
 			{
-				Activity act = (Activity)LookupActivity(pEvent->options);
+				Activity act = ( Activity )LookupActivity( pEvent->options );
 				if (act != ACT_INVALID)
 				{
-					act = TranslateActivity(act);
+					act = TranslateActivity( act );
 					if (act != ACT_INVALID)
 					{
-						RestartGesture(act);
+						RestartGesture( act );
 					}
 				}
 				return;
 			}
-			else if (pEvent->event == AE_NPC_WEAPON_DROP)
+ 			else if ( nEvent == AE_NPC_WEAPON_DROP )
 			{
 				// Drop our active weapon (or throw it at the specified target entity).
 				CBaseEntity *pTarget = NULL;
@@ -8703,7 +8705,7 @@ void CAI_BaseNPC::HandleAnimEvent(animevent_t *pEvent)
 				}
 				return;
 			}
-			else if (pEvent->event == AE_NPC_WEAPON_SET_ACTIVITY)
+			else if ( nEvent == AE_NPC_WEAPON_SET_ACTIVITY )
 			{
 				CBaseCombatWeapon *pWeapon = GetActiveWeapon();
 				if ((pWeapon) && (pEvent->options))
@@ -8712,7 +8714,7 @@ void CAI_BaseNPC::HandleAnimEvent(animevent_t *pEvent)
 					if (act == ACT_INVALID)
 					{
 						// Try and translate it
-						act = Weapon_TranslateActivity((Activity)CAI_BaseNPC::GetActivityID(pEvent->options), NULL);
+						act = Weapon_TranslateActivity( (Activity)CAI_BaseNPC::GetActivityID(pEvent->options), NULL );
 					}
 
 					if (act != ACT_INVALID)
@@ -8723,62 +8725,62 @@ void CAI_BaseNPC::HandleAnimEvent(animevent_t *pEvent)
 				}
 				return;
 			}
-			else if (pEvent->event == AE_NPC_SET_INTERACTION_CANTDIE)
+			else if ( nEvent == AE_NPC_SET_INTERACTION_CANTDIE )
 			{
-				SetInteractionCantDie((atoi(pEvent->options) != 0));
+				SetInteractionCantDie( (atoi(pEvent->options) != 0) );
 				return;
 			}
-			else if (pEvent->event == AE_NPC_HURT_INTERACTION_PARTNER)
+			else if ( nEvent == AE_NPC_HURT_INTERACTION_PARTNER )
 			{
 				// If we're currently interacting with an enemy, hurt them/me
-				if (m_hInteractionPartner)
+				if ( m_hInteractionPartner )
 				{
 					CAI_BaseNPC *pTarget = NULL;
 					CAI_BaseNPC *pAttacker = NULL;
-					if (pEvent->options)
+					if ( pEvent->options )
 					{
 						char szEventOptions[128];
-						Q_strncpy(szEventOptions, pEvent->options, sizeof(szEventOptions));
-						char *pszParam = strtok(szEventOptions, " ");
-						if (pszParam)
+						Q_strncpy( szEventOptions, pEvent->options, sizeof(szEventOptions) );
+						char *pszParam = strtok( szEventOptions, " " );
+						if ( pszParam )
 						{
-							if (!Q_strncmp(pszParam, "ME", 2))
+							if ( StringHasPrefixCaseSensitive( pszParam, "ME" ) )
 							{
 								pTarget = this;
 								pAttacker = m_hInteractionPartner;
 							}
-							else if (!Q_strncmp(pszParam, "THEM", 4))
+							else if ( StringHasPrefixCaseSensitive( pszParam, "THEM" ) ) 
 							{
 								pAttacker = this;
 								pTarget = m_hInteractionPartner;
 							}
 
-							pszParam = strtok(NULL, " ");
-							if (pAttacker && pTarget && pszParam)
+							pszParam = strtok(NULL," ");
+							if ( pAttacker && pTarget && pszParam )
 							{
-								int iDamage = atoi(pszParam);
-								if (iDamage)
+								int iDamage = atoi( pszParam );
+ 								if ( iDamage )
 								{
 									// We've got a target, and damage. Now hurt them.
 									CTakeDamageInfo info;
-									info.SetDamage(iDamage);
-									info.SetAttacker(pAttacker);
-									info.SetInflictor(pAttacker);
-									info.SetDamageType(DMG_GENERIC | DMG_PREVENT_PHYSICS_FORCE);
-									pTarget->TakeDamage(info);
+									info.SetDamage( iDamage );
+									info.SetAttacker( pAttacker );
+									info.SetInflictor( pAttacker );
+   									info.SetDamageType( DMG_GENERIC | DMG_PREVENT_PHYSICS_FORCE );
+									pTarget->TakeDamage( info );
 									return;
 								}
 							}
 						}
 					}
-
+					
 					// Bad data. Explain how to use this anim event.
-					const char *pName = EventList_NameForIndex(pEvent->event);
-					DevWarning(1, "Bad %s format. Should be: { AE_NPC_HURT_INTERACTION_PARTNER <frame number> \"<ME/THEM> <Amount of damage done>\" }\n", pName);
+					const char *pName = EventList_NameForIndex( nEvent );
+					DevWarning( 1, "Bad %s format. Should be: { AE_NPC_HURT_INTERACTION_PARTNER <frame number> \"<ME/THEM> <Amount of damage done>\" }\n", pName );
 					return;
 				}
 
-				DevWarning("%s received AE_NPC_HURT_INTERACTION_PARTNER anim event, but it's not interacting with anything.\n", GetDebugName());
+				DevWarning( "%s received AE_NPC_HURT_INTERACTION_PARTNER anim event, but it's not interacting with anything.\n", GetDebugName() );
 				return;
 			}
 		}
@@ -8786,13 +8788,13 @@ void CAI_BaseNPC::HandleAnimEvent(animevent_t *pEvent)
 		// FIXME: why doesn't this code pass unhandled events down to its parent?
 		// Came from my weapon?
 		//Adrian I'll clean this up once the old event system is phased out.
-		if (pEvent->pSource != this || (pEvent->type & AE_TYPE_NEWEVENTSYSTEM && pEvent->type & AE_TYPE_WEAPON) || (pEvent->event >= EVENT_WEAPON && pEvent->event <= EVENT_WEAPON_LAST))
+		if ( pEvent->pSource != this || ( pEvent->type & AE_TYPE_NEWEVENTSYSTEM && pEvent->type & AE_TYPE_WEAPON ) || ( nEvent >= EVENT_WEAPON && nEvent <= EVENT_WEAPON_LAST ) )
 		{
-			Weapon_HandleAnimEvent(pEvent);
+			Weapon_HandleAnimEvent( pEvent );
 		}
 		else
 		{
-			BaseClass::HandleAnimEvent(pEvent);
+			BaseClass::HandleAnimEvent( pEvent );
 		}
 		break;
 	}

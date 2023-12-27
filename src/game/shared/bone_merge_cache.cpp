@@ -84,20 +84,36 @@ void CBoneMergeCache::UpdateCache()
 				CMergedBone mergedBone;
 				mergedBone.m_iMyBone = i;
 				mergedBone.m_iParentBone = parentBoneIndex;
-				m_MergedBones.AddToTail(mergedBone);
+				m_MergedBones.AddToTail( mergedBone );
+				m_BoneMergeBits.Set( i );
 
-				m_BoneMergeBits[i >> 3] |= (1 << (i & 7));
-
-				if ((m_pFollowHdr->boneFlags(parentBoneIndex) & BONE_USED_BY_BONE_MERGE) == 0)
+				// flag bones used in merge so that they'll always be setup
+				if ( ( m_pFollowHdr->boneFlags( parentBoneIndex ) & BONE_USED_BY_BONE_MERGE ) == 0 )
 				{
-					m_nFollowBoneSetupMask = BONE_USED_BY_ANYTHING;
-					//					Warning("Performance warning: Merge with '%s'. Mark bone '%s' in model '%s' as being used by bone merge in the .qc!\n",
-					//						pOwnerHdr->pszName(), m_pFollowHdr->pBone( parentBoneIndex )->pszName(), m_pFollowHdr->pszName() ); 
+					// go ahead and mark the bone and its parents
+					int n = parentBoneIndex;
+					while (n != -1)
+					{
+						m_pFollowHdr->setBoneFlags( n, BONE_USED_BY_BONE_MERGE );
+						n = m_pFollowHdr->boneParent( n );
+					}
+				}
+
+				// FIXME: only do this if it's for a "reverse" merge
+				if ( ( m_pOwnerHdr->boneFlags( i ) & BONE_USED_BY_BONE_MERGE ) == 0 )
+				{
+					// go ahead and mark the bone and its parents
+					int n = i;
+					while (n != -1)
+					{
+						m_pOwnerHdr->setBoneFlags( n, BONE_USED_BY_BONE_MERGE );
+						n = m_pOwnerHdr->boneParent( n );
+					}
 				}
 			}
 
 			// No merged bones found? Slam the mask to 0
-			if (!m_MergedBones.Count())
+			if ( !m_MergedBones.Count() )
 			{
 				m_nFollowBoneSetupMask = 0;
 			}

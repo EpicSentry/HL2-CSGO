@@ -467,9 +467,9 @@ void UTIL_TraceEntity( CBaseEntity *pEntity, const Vector &vecAbsStart, const Ve
 
 bool UTIL_EntityHasMatchingRootParent( CBaseEntity *pRootParent, CBaseEntity *pEntity );
 
-inline int UTIL_PointContents(const Vector &vec)
+inline int UTIL_PointContents( const Vector &vec, int contentsMask )
 {
-	return enginetrace->GetPointContents(vec);
+	return enginetrace->GetPointContents( vec, contentsMask );
 }
 
 // Sweeps against a particular model, using collision rules 
@@ -502,7 +502,6 @@ float UTIL_WaterLevel( const Vector &position, float minz, float maxz );
 float UTIL_FindWaterSurface( const Vector &position, float minz, float maxz );
 
 void		UTIL_StringToVector( float *pVector, const char *pString );
-void		UTIL_StringToIntArray(int *pVector, int count, const char *pString);
 void		UTIL_StringToFloatArray( float *pVector, int count, const char *pString );
 
 CBasePlayer *UTIL_PlayerByIndex( int entindex );

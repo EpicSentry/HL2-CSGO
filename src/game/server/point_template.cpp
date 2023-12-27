@@ -13,7 +13,7 @@
 #include "mapentities.h"
 #include "tier0/icommandline.h"
 #include "mapentities_shared.h"
-//#include "spawn_helper_nut.h"
+#include "spawn_helper_nut.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -455,7 +455,6 @@ void CPointTemplate::InputForceSpawn( inputdata_t &inputdata )
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
-/*
 void ScriptInstallPreSpawnHook()
 {
 	if ( g_pScriptVM && !g_pScriptVM->ValueExists( "__ExecutePreSpawn" ) )
@@ -463,7 +462,6 @@ void ScriptInstallPreSpawnHook()
 		g_pScriptVM->Run( g_Script_spawn_helper );
 	}
 }
-*/
 
 //-----------------------------------------------------------------------------
 // Purpose:	This function is called after a spawner creates its child entity

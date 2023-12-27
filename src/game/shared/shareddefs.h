@@ -761,11 +761,11 @@ struct FireBulletsInfo_t
 	FireBulletsInfo_t()
 	{
 		m_iShots = 1;
-		m_vecSpread.Init(0, 0, 0);
+		m_vecSpread.Init( 0, 0, 0 );
 		m_flDistance = 8192;
 		m_iTracerFreq = 4;
-		m_flDamage = 0;
-		m_iPlayerDamage = 0;
+		m_flDamage = 0.0f;
+		m_flPlayerDamage = 0.0f;
 		m_pAttacker = NULL;
 		m_nFlags = 0;
 		m_pAdditionalIgnoreEnt = NULL;
@@ -773,14 +773,13 @@ struct FireBulletsInfo_t
 
 #ifdef _DEBUG
 		m_iAmmoType = -1;
-		m_vecSrc.Init(VEC_T_NAN, VEC_T_NAN, VEC_T_NAN);
-		m_vecDirShooting.Init(VEC_T_NAN, VEC_T_NAN, VEC_T_NAN);
+		m_vecSrc.Init( VEC_T_NAN, VEC_T_NAN, VEC_T_NAN );
+		m_vecDirShooting.Init( VEC_T_NAN, VEC_T_NAN, VEC_T_NAN );
 #endif
 		m_bPrimaryAttack = true;
-		m_bUseServerRandomSeed = false;
 	}
 
-	FireBulletsInfo_t(int nShots, const Vector &vecSrc, const Vector &vecDir, const Vector &vecSpread, float flDistance, int nAmmoType, bool bPrimaryAttack = true)
+	FireBulletsInfo_t( int nShots, const Vector &vecSrc, const Vector &vecDir, const Vector &vecSpread, float flDistance, int nAmmoType, bool bPrimaryAttack = true )
 	{
 		m_iShots = nShots;
 		m_vecSrc = vecSrc;
@@ -790,13 +789,12 @@ struct FireBulletsInfo_t
 		m_iAmmoType = nAmmoType;
 		m_iTracerFreq = 4;
 		m_flDamage = 0;
-		m_iPlayerDamage = 0;
+		m_flPlayerDamage = 0;
 		m_pAttacker = NULL;
 		m_nFlags = 0;
 		m_pAdditionalIgnoreEnt = NULL;
 		m_flDamageForceScale = 1.0f;
 		m_bPrimaryAttack = bPrimaryAttack;
-		m_bUseServerRandomSeed = false;
 	}
 
 	int m_iShots;
@@ -807,13 +805,12 @@ struct FireBulletsInfo_t
 	int m_iAmmoType;
 	int m_iTracerFreq;
 	float m_flDamage;
-	int m_iPlayerDamage;	// Damage to be used instead of m_flDamage if we hit a player
+	float m_flPlayerDamage;	// Damage to be used instead of m_flDamage if we hit a player
 	int m_nFlags;			// See FireBulletsFlags_t
 	float m_flDamageForceScale;
 	CBaseEntity *m_pAttacker;
 	CBaseEntity *m_pAdditionalIgnoreEnt;
 	bool m_bPrimaryAttack;
-	bool m_bUseServerRandomSeed;;
 };
 
 //-----------------------------------------------------------------------------
@@ -872,7 +869,6 @@ struct ModelScale
 #include "SoundEmitterSystem/isoundemittersystembase.h"
 
 struct CSoundParameters;
-typedef short HSOUNDSCRIPTHANDLE;
 //-----------------------------------------------------------------------------
 // Purpose: Aggregates and sets default parameters for EmitSound function calls
 //-----------------------------------------------------------------------------

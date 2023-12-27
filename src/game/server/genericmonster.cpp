@@ -107,9 +107,9 @@ void CGenericNPC::TempGunEffect( void )
 // HandleAnimEvent - catches the NPC-specific messages
 // that occur when tagged animation frames are played.
 //=========================================================
-void CGenericNPC::HandleAnimEvent(animevent_t *pEvent)
+void CGenericNPC::HandleAnimEvent( animevent_t *pEvent )
 {
-	switch (pEvent->event)
+	switch( pEvent->Event() )
 	{
 	case 1:
 		// TEMPORARLY. Makes the May 2001 sniper demo work (sjb)
@@ -117,7 +117,7 @@ void CGenericNPC::HandleAnimEvent(animevent_t *pEvent)
 		break;
 
 	default:
-		BaseClass::HandleAnimEvent(pEvent);
+		BaseClass::HandleAnimEvent( pEvent );
 		break;
 	}
 }

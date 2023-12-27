@@ -1131,6 +1131,15 @@ unsigned int CBaseEntity::PhysicsSolidMaskForEntity( void ) const
 	return MASK_SOLID;
 }
 
+static inline int GetWaterContents( const Vector &point )
+{
+#ifdef HL2_DLL
+	return UTIL_PointContents(point, MASK_WATER);
+#else
+	// left 4 dead doesn't support moveable water brushes, only world water
+	return enginetrace->GetPointContents_WorldOnly(point, MASK_WATER);
+#endif
+}
 //-----------------------------------------------------------------------------
 // Computes the water level + type
 //-----------------------------------------------------------------------------
@@ -1142,39 +1151,39 @@ void CBaseEntity::UpdateWaterState()
 
 	// Compute the point to check for water state
 	Vector	point;
-	CollisionProp()->NormalizedToWorldSpace(Vector(0.5f, 0.5f, 0.0f), &point);
+	CollisionProp()->NormalizedToWorldSpace( Vector( 0.5f, 0.5f, 0.0f ), &point );
 
-	SetWaterLevel(0);
-	SetWaterType(CONTENTS_EMPTY);
-	int cont = UTIL_PointContents(point);
+	SetWaterLevel( 0 );
+	SetWaterType( CONTENTS_EMPTY );
+	int cont = GetWaterContents(point);
 
-	if ((cont & MASK_WATER) == 0)
+	if (( cont & MASK_WATER ) == 0)
 		return;
 
-	SetWaterType(cont);
-	SetWaterLevel(1);
+	SetWaterType( cont );
+	SetWaterLevel( 1 );
 
 	// point sized entities are always fully submerged
-	if (IsPointSized())
+	if ( IsPointSized() )
 	{
-		SetWaterLevel(3);
+		SetWaterLevel( 3 );
 	}
 	else
 	{
 		// Check the exact center of the box
 		point[2] = WorldSpaceCenter().z;
 
-		int midcont = UTIL_PointContents(point);
-		if (midcont & MASK_WATER)
+		int midcont = GetWaterContents(point);
+		if ( midcont & MASK_WATER )
 		{
 			// Now check where the eyes are...
-			SetWaterLevel(2);
+			SetWaterLevel( 2 );
 			point[2] = EyePosition().z;
 
-			int eyecont = UTIL_PointContents(point);
-			if (eyecont & MASK_WATER)
+			int eyecont = GetWaterContents(point);
+			if ( eyecont & MASK_WATER )
 			{
-				SetWaterLevel(3);
+				SetWaterLevel( 3 );
 			}
 		}
 	}
@@ -1662,7 +1671,25 @@ void CBaseEntity::PhysicsToss( void )
 	if (IsEdictFree())
 		return;
 #endif
+	
+	if ( debugoverlay && sv_grenade_trajectory.GetInt() && (GetFlags() & FL_GRENADE) )
+	{
+		QAngle angGrTrajAngles;
+		Vector vec3tempOrientation = (trace.endpos - trace.startpos);
+		VectorAngles( vec3tempOrientation, angGrTrajAngles );
 
+		float flGrTraThickness = sv_grenade_trajectory_thickness.GetFloat();
+		Vector vec3_GrTrajMin = Vector( 0, -flGrTraThickness, -flGrTraThickness );
+		Vector vec3_GrTrajMax = Vector( vec3tempOrientation.Length(), flGrTraThickness, flGrTraThickness );
+		bool bDotted = ( sv_grenade_trajectory_dash.GetInt() && (fmod( gpGlobals->curtime, 0.1f ) < 0.05f) );
+		
+		//extruded "line" is really a box for more visible thickness
+		debugoverlay->AddBoxOverlay( trace.startpos, vec3_GrTrajMin, vec3_GrTrajMax, angGrTrajAngles, 0, (bDotted ? 20 : 200), 0, 255, sv_grenade_trajectory_time.GetFloat() );
+
+		//per-bounce box
+		if (trace.fraction != 1.0f)
+			debugoverlay->AddBoxOverlay( trace.endpos, Vector( -GRENADE_DEFAULT_SIZE, -GRENADE_DEFAULT_SIZE, -GRENADE_DEFAULT_SIZE ), Vector( GRENADE_DEFAULT_SIZE, GRENADE_DEFAULT_SIZE, GRENADE_DEFAULT_SIZE ), QAngle( 0, 0, 0 ), 220, 0, 0, 190, sv_grenade_trajectory_time.GetFloat( ) );
+	}	
 
 	if (trace.fraction != 1.0f)
 	{
