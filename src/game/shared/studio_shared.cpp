@@ -1,4 +1,4 @@
-//========= Copyright Valve Corporation, All rights reserved. ============//
+//========= Copyright © 1996-2005, Valve Corporation, All rights reserved. ============//
 //
 // Purpose: 
 //
@@ -13,30 +13,35 @@
 #include "tier0/memdbgon.h"
 
 ////////////////////////////////////////////////////////////////////////
-const studiohdr_t *studiohdr_t::FindModel(void **cache, char const *modelname) const
+const studiohdr_t *studiohdr_t::FindModel( void **cache, char const *modelname ) const
 {
-	return modelinfo->FindModel(this, cache, modelname);
+	return modelinfo->FindModel( this, cache, modelname );
 }
 
-virtualmodel_t *studiohdr_t::GetVirtualModel(void) const
+virtualmodel_t *studiohdr_t::GetVirtualModel( void ) const
 {
-	if (numincludemodels == 0)
+	if ( numincludemodels == 0 )
 		return NULL;
-	return modelinfo->GetVirtualModel(this);
+	return modelinfo->GetVirtualModel( this );
 }
 
-const studiohdr_t *virtualgroup_t::GetStudioHdr() const
+const studiohdr_t *virtualgroup_t::GetStudioHdr( ) const
 {
-	return modelinfo->FindModel(this->cache);
+	return modelinfo->FindModel( this->cache );
 }
 
 
-byte *studiohdr_t::GetAnimBlock(int iBlock) const
+byte *studiohdr_t::GetAnimBlock( int iBlock, bool preloadIfMissing ) const
 {
-	return modelinfo->GetAnimBlock(this, iBlock);
+	return modelinfo->GetAnimBlock( this, iBlock, preloadIfMissing );
 }
 
-int	studiohdr_t::GetAutoplayList(unsigned short **pOut) const
+bool studiohdr_t::hasAnimBlockBeenPreloaded( int i ) const
 {
-	return modelinfo->GetAutoplayList(this, pOut);
+	return modelinfo->HasAnimBlockBeenPreloaded( this, i );
+}
+
+int	studiohdr_t::GetAutoplayList( unsigned short **pOut ) const
+{
+	return modelinfo->GetAutoplayList( this, pOut );
 }

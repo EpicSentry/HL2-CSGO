@@ -435,7 +435,6 @@ public:
 	void 			StartTask( const Task_t *pTask );
 	void 			RunTask( const Task_t *pTask );
 	CAI_Schedule *	GetSchedule(int localScheduleID);
-	CAI_BehaviorBase *GetRunningBehavior();
 	const char *	TaskName(int taskID);
 	void			BuildScheduleTestBits();
 	void			BuildScheduleTestBitsNotActive();
@@ -466,8 +465,6 @@ private:
 
 
 	bool			m_bCalledBehaviorSelectSchedule;
-
-	CAI_BehaviorBase *			   m_pCurBehavior;
 	
 };
 
@@ -716,14 +713,6 @@ inline void CAI_BehaviorHost<BASE_NPC>::KeepRunningBehavior()
 {
 	if ( this->m_pPrimaryBehavior )
 		m_bCalledBehaviorSelectSchedule = true;
-}
-
-//-------------------------------------
-
-template <class BASE_NPC>
-inline CAI_BehaviorBase *CAI_BehaviorHost<BASE_NPC>::GetRunningBehavior()
-{
-	return m_pCurBehavior;
 }
 
 //-------------------------------------

@@ -1865,46 +1865,55 @@ void CBaseCombatCharacter::Weapon_DropAll( bool bDisallowWeaponPickup )
 // Input  : pWeapon - Weapon to drop/throw.
 //			pvecTarget - Position to throw it at, NULL for none.
 //-----------------------------------------------------------------------------
-void CBaseCombatCharacter::Weapon_Drop(CBaseCombatWeapon *pWeapon, const Vector *pvecTarget /* = NULL */, const Vector *pVelocity /* = NULL */)
+void CBaseCombatCharacter::Weapon_Drop( CBaseCombatWeapon *pWeapon, const Vector *pvecTarget /* = NULL */, const Vector *pVelocity /* = NULL */ )
 {
-	if (!pWeapon)
+	if ( !pWeapon )
 		return;
 
 	// If I'm an NPC, fill the weapon with ammo before I drop it.
-	if (GetFlags() & FL_NPC)
+	if ( GetFlags() & FL_NPC )
 	{
-		if (pWeapon->UsesClipsForAmmo1())
+		if ( pWeapon->UsesClipsForAmmo1() )
 		{
 			pWeapon->m_iClip1 = pWeapon->GetDefaultClip1();
 
-			if (FClassnameIs(pWeapon, "weapon_smg1"))
+			if( FClassnameIs( pWeapon, "weapon_smg1" ) )
 			{
-				// Drop enough ammo to kill 2 of me.
-				// Figure out how much damage one piece of this type of ammo does to this type of enemy.
-				float flAmmoDamage = g_pGameRules->GetAmmoDamage(UTIL_PlayerByIndex(1), this, pWeapon->GetPrimaryAmmoType());
-				pWeapon->m_iClip1 = (GetMaxHealth() / flAmmoDamage) * 2;
+				if ( CBasePlayer *pPlayer = UTIL_PlayerByIndex( 1 ) )
+				{
+					// Drop enough ammo to kill 2 of me.
+					// Figure out how much damage one piece of this type of ammo does to this type of enemy.
+					float flAmmoDamage = g_pGameRules->GetAmmoDamage( UTIL_PlayerByIndex(1), this, pWeapon->GetPrimaryAmmoType() );
+					pWeapon->m_iClip1 = (GetMaxHealth() / flAmmoDamage) * 2;
+				}
+				else
+				{
+					pWeapon->m_iClip1 = pWeapon->GetMaxClip1();
+				}
 			}
 		}
-		if (pWeapon->UsesClipsForAmmo2())
+		if ( pWeapon->UsesClipsForAmmo2() )
 		{
 			pWeapon->m_iClip2 = pWeapon->GetDefaultClip2();
 		}
+
+
 	}
 
-	if (IsPlayer())
+	if ( IsPlayer() )
 	{
-		Vector vThrowPos = Weapon_ShootPosition() - Vector(0, 0, 12);
+		Vector vThrowPos = Weapon_ShootPosition() - Vector(0,0,12);
 
-		if (UTIL_PointContents(vThrowPos) & CONTENTS_SOLID)
+		if( UTIL_PointContents(vThrowPos, CONTENTS_SOLID) & CONTENTS_SOLID )
 		{
 			Msg("Weapon spawning in solid!\n");
 		}
 
-		pWeapon->SetAbsOrigin(vThrowPos);
+		pWeapon->SetAbsOrigin( vThrowPos );
 
 		QAngle gunAngles;
-		VectorAngles(BodyDirection2D(), gunAngles);
-		pWeapon->SetAbsAngles(gunAngles);
+		VectorAngles( BodyDirection2D(), gunAngles );
+		pWeapon->SetAbsAngles( gunAngles );
 	}
 	else
 	{
@@ -1913,63 +1922,63 @@ void CBaseCombatCharacter::Weapon_Drop(CBaseCombatWeapon *pWeapon, const Vector 
 
 		CStudioHdr *hdr = pWeapon->GetModelPtr();
 		// If I have a hand, set the weapon position to my hand bone position.
-		if (hdr && hdr->numbones() > 0)
+		if ( hdr && hdr->numbones() > 0 )
 		{
 			// Assume bone zero is the root
-			for (iWeaponBoneIndex = 0; iWeaponBoneIndex < hdr->numbones(); ++iWeaponBoneIndex)
+			for ( iWeaponBoneIndex = 0; iWeaponBoneIndex < hdr->numbones(); ++iWeaponBoneIndex )
 			{
-				iBIndex = LookupBone(hdr->pBone(iWeaponBoneIndex)->pszName());
+				iBIndex = LookupBone( hdr->pBone( iWeaponBoneIndex )->pszName() );
 				// Found one!
-				if (iBIndex != -1)
+				if ( iBIndex != -1 )
 				{
 					break;
 				}
 			}
 
-			if (iBIndex == -1)
+			if ( iBIndex == -1 )
 			{
-				iBIndex = LookupBone("ValveBiped.Weapon_bone");
+				iBIndex = LookupBone( "ValveBiped.weapon_bone" );
 			}
 		}
 		else
 		{
-			iBIndex = LookupBone("ValveBiped.Weapon_bone");
+			iBIndex = LookupBone( "ValveBiped.weapon_bone" );
 		}
 
-		if (iBIndex != -1)
+		if ( iBIndex != -1)  
 		{
 			Vector origin;
 			QAngle angles;
 			matrix3x4_t transform;
 
 			// Get the transform for the weapon bonetoworldspace in the NPC
-			GetBoneTransform(iBIndex, transform);
+			GetBoneTransform( iBIndex, transform );
 
 			// find offset of root bone from origin in local space
 			// Make sure we're detached from hierarchy before doing this!!!
 			pWeapon->StopFollowingEntity();
-			pWeapon->SetAbsOrigin(Vector(0, 0, 0));
-			pWeapon->SetAbsAngles(QAngle(0, 0, 0));
+			pWeapon->SetAbsOrigin( Vector( 0, 0, 0 ) );
+			pWeapon->SetAbsAngles( QAngle( 0, 0, 0 ) );
 			pWeapon->InvalidateBoneCache();
 			matrix3x4_t rootLocal;
-			pWeapon->GetBoneTransform(iWeaponBoneIndex, rootLocal);
+			pWeapon->GetBoneTransform( iWeaponBoneIndex, rootLocal );
 
 			// invert it
 			matrix3x4_t rootInvLocal;
-			MatrixInvert(rootLocal, rootInvLocal);
+			MatrixInvert( rootLocal, rootInvLocal );
 
 			matrix3x4_t weaponMatrix;
-			ConcatTransforms(transform, rootInvLocal, weaponMatrix);
-			MatrixAngles(weaponMatrix, angles, origin);
-
-			pWeapon->Teleport(&origin, &angles, NULL);
+			ConcatTransforms( transform, rootInvLocal, weaponMatrix );
+			MatrixAngles( weaponMatrix, angles, origin );
+			
+			pWeapon->Teleport( &origin, &angles, NULL );
 		}
 		// Otherwise just set in front of me.
-		else
+		else 
 		{
 			Vector vFacingDir = BodyDirection2D();
-			vFacingDir = vFacingDir * 10.0;
-			pWeapon->SetAbsOrigin(Weapon_ShootPosition() + vFacingDir);
+			vFacingDir = vFacingDir * 10.0; 
+			pWeapon->SetAbsOrigin( Weapon_ShootPosition() + vFacingDir );
 		}
 	}
 
@@ -1977,11 +1986,11 @@ void CBaseCombatCharacter::Weapon_Drop(CBaseCombatWeapon *pWeapon, const Vector 
 	if (pvecTarget)
 	{
 		// I've been told to throw it somewhere specific.
-		vecThrow = VecCheckToss(this, pWeapon->GetAbsOrigin(), *pvecTarget, 0.2, 1.0, false);
+		vecThrow = VecCheckToss( this, pWeapon->GetAbsOrigin(), *pvecTarget, 0.2, 1.0, false );
 	}
 	else
 	{
-		if (pVelocity)
+		if ( pVelocity )
 		{
 			vecThrow = *pVelocity;
 			float flLen = vecThrow.Length();
@@ -1994,20 +2003,19 @@ void CBaseCombatCharacter::Weapon_Drop(CBaseCombatWeapon *pWeapon, const Vector 
 		else
 		{
 			// Nowhere in particular; just drop it.
-			float throwForce = (IsPlayer()) ? 400.0f : random->RandomInt(64, 128);
+			float throwForce = ( IsPlayer() ) ? 400.0f : random->RandomInt( 64, 128 );
 			vecThrow = BodyDirection3D() * throwForce;
 		}
 	}
 
-	pWeapon->Drop(vecThrow);
-	Weapon_Detach(pWeapon);
+	pWeapon->Drop( vecThrow );
+	Weapon_Detach( pWeapon );
 
-	if (HasSpawnFlags(SF_NPC_NO_WEAPON_DROP))
+	if ( HasSpawnFlags( SF_NPC_NO_WEAPON_DROP ) )
 	{
 		// Don't drop weapons when the super physgun is happening.
-		UTIL_Remove(pWeapon);
+		UTIL_Remove( pWeapon );
 	}
-
 }
 
 

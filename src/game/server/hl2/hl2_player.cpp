@@ -46,7 +46,6 @@
 #include "gamestats.h"
 #include "filters.h"
 #include "tier0/icommandline.h"
-#include "hl2_usermessages.pb.h"
 
 #ifdef HL2_EPISODIC
 #include "npc_alyx_episodic.h"
@@ -1993,9 +1992,9 @@ bool CHL2_Player::ApplyBattery( float powerMultiplier )
 		CSingleUserRecipientFilter user( this );
 		user.MakeReliable();
 
-		CUsrMsg_ItemPickup msg;
-		msg.set_item("item_battery");
-		SendUserMessage(user, UM_ItemPickup, msg);
+		UserMessageBegin( user, "ItemPickup" );
+			WRITE_STRING( "item_battery" );
+		MessageEnd();
 
 		
 		// Suit reports new power level
@@ -2248,9 +2247,8 @@ void CHL2_Player::OnSquadMemberKilled( inputdata_t &data )
 	// send a message to the client, to notify the hud of the loss
 	CSingleUserRecipientFilter user( this );
 	user.MakeReliable();
-	CUsrMsg_SquadMemberDied msg;
-	msg.set_dummy(1);
-	SendUserMessage(user, UM_SquadMemberDied, msg);
+	UserMessageBegin( user, "SquadMemberDied" );
+	MessageEnd();
 }
 
 //-----------------------------------------------------------------------------
@@ -2605,9 +2603,9 @@ int CHL2_Player::GiveAmmo( int nCount, int nAmmoIndex, bool bSuppressSound)
 		// we've been denied the pickup, display a hud icon to show that
 		CSingleUserRecipientFilter user( this );
 		user.MakeReliable();
-		CUsrMsg_AmmoDenied msg;
-		msg.set_ammoidx(nAmmoIndex);
-		SendUserMessage(user, UM_AmmoDenied, msg);
+		UserMessageBegin( user, "AmmoDenied" );
+			WRITE_SHORT( nAmmoIndex );
+		MessageEnd();
 	}
 
 	//
@@ -3227,12 +3225,14 @@ void CHL2_Player::UpdateClientData( void )
 
 		CSingleUserRecipientFilter user( this );
 		user.MakeReliable();
-		CUsrMsg_Damage msg;
-		msg.set_armor(m_DmgSave);
-		msg.set_damagetaken(m_DmgTake);
-		msg.set_bitsdamage(visibleDamageBits);
-		SendUserMessage(user, UM_Damage, msg);
-
+		UserMessageBegin( user, "Damage" );
+			WRITE_BYTE( m_DmgSave );
+			WRITE_BYTE( m_DmgTake );
+			WRITE_LONG( visibleDamageBits );
+			WRITE_FLOAT( damageOrigin.x );	//BUG: Should be fixed point (to hud) not floats
+			WRITE_FLOAT( damageOrigin.y );	//BUG: However, the HUD does _not_ implement bitfield messages (yet)
+			WRITE_FLOAT( damageOrigin.z );	//BUG: We use WRITE_VEC3COORD for everything else
+		MessageEnd();
 	
 		m_DmgTake = 0;
 		m_DmgSave = 0;

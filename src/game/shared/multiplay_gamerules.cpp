@@ -1164,225 +1164,172 @@ CMultiplayRules::CMultiplayRules()
 		}
 	}
 
-	void CMultiplayRules::GetNextLevelName(char *pszNextMap, int bufsize, bool bRandom /* = false */)
+	void CMultiplayRules::GetNextLevelName( char *pszNextMap, int bufsize, bool bRandom /* = false */ )
 	{
-		char mapcfile[MAX_PATH];
-		DetermineMapCycleFilename(mapcfile, sizeof(mapcfile), false);
+		const char *mapGroupName = NULL;	
+
+		mapGroupName = STRING( gpGlobals->mapGroupName );
+
+		if ( mp_verbose_changelevel_spew.GetBool() )
+		{
+			Msg( "CHANGELEVEL: Looking for next level in mapgroup '%s'\n", mapGroupName );
+		}
+
+		// If mapcycling is disabled, just return the same map name and bail.
+		if ( mapcycledisabled.GetBool() )
+		{
+			Q_strncpy( pszNextMap, STRING( gpGlobals->mapname ), bufsize );
+			if ( mp_verbose_changelevel_spew.GetBool() && pszNextMap )
+			{
+				Msg( "CHANGELEVEL: Map cycle disabled (due to convar '%s') -- not using map group, reloading current map '%s'\n", mapcycledisabled.GetName(), pszNextMap );
+			}
+			return;
+		}
+
+		const char* nextMapName = NULL;
+		if ( bRandom )
+		{	
+			nextMapName = g_pGameTypes->GetRandomMap( mapGroupName );
+			if ( mp_verbose_changelevel_spew.GetBool() && nextMapName )
+			{
+				Msg( "CHANGELEVEL: Random map request, choosing '%s'\n", nextMapName );
+			}
+		}
+		else
+		{
+			if ( m_szNextLevelName && m_szNextLevelName[0] )
+			{
+				nextMapName = m_szNextLevelName;
+				Assert( 0 ); // Suspect this is a dead code path... remove me if possible
+			}
+			else
+			{
+				const char* szPrevMap = STRING( gpGlobals->mapname );
+				nextMapName = g_pGameTypes->GetNextMap( mapGroupName, szPrevMap );
+				if ( mp_verbose_changelevel_spew.GetBool() )
+				{
+					if ( nextMapName && szPrevMap )
+						Msg( "CHANGELEVEL: Choosing map '%s' (previous was %s)\n", nextMapName, szPrevMap );
+					else
+						Msg( "CHANGELEVEL: GetNextMap failed for mapgroup '%s', map group invalid or empty\n", mapGroupName);
+				}
+			}		
+		}
+
+		if ( nextMapName )
+		{
+			// we have a valid map name from the mapgroup info
+			V_strncpy( pszNextMap, nextMapName, bufsize );
+			return;
+		}
+
+		// we were not given a mapgroup name or we were given a mapname that was not in the mapgroup, so we fall back to the old method of cycling maps
+
+		const char *mapcfile = mapcyclefile.GetString();
+		Assert( mapcfile != NULL );
 
 		// Check the time of the mapcycle file and re-populate the list of level names if the file has been modified
-		const int nMapCycleTimeStamp = filesystem->GetPathTime(mapcfile, "GAME");
+		const int nMapCycleTimeStamp = filesystem->GetPathTime( mapcfile, "GAME" );
 
-		if (0 == nMapCycleTimeStamp)
+		if ( 0 == nMapCycleTimeStamp )
 		{
 			// Map cycle file does not exist, make a list containing only the current map
-			char *szCurrentMapName = new char[MAX_MAP_NAME];
-			Q_strncpy(szCurrentMapName, STRING(gpGlobals->mapname), MAX_MAP_NAME);
-			m_MapList.AddToTail(szCurrentMapName);
+			char *szCurrentMapName = new char[MAX_PATH];
+			V_strncpy( szCurrentMapName, STRING(gpGlobals->mapname), MAX_PATH );
+			m_MapList.AddToTail( szCurrentMapName );
+
+			if ( mp_verbose_changelevel_spew.GetBool() && szCurrentMapName )
+			{
+				Msg( "CHANGELEVEL: No maycycle file, using current map '%s'\n", szCurrentMapName );
+			}
 		}
 		else
 		{
 			// If map cycle file has changed or this is the first time through ...
-			if (m_nMapCycleTimeStamp != nMapCycleTimeStamp)
+			if ( m_nMapCycleTimeStamp != nMapCycleTimeStamp )
 			{
-				// Reload
-				LoadMapCycleFile();
+				// Reset map index and map cycle timestamp
+				m_nMapCycleTimeStamp = nMapCycleTimeStamp;
+				m_nMapCycleindex = 0;
+
+				// Clear out existing map list. Not using Purge() because I don't think that it will do a 'delete []'
+				for ( int i = 0; i < m_MapList.Count(); i++ )
+				{
+					delete [] m_MapList[i];
+				}
+
+				m_MapList.RemoveAll();
+
+				// Repopulate map list from mapcycle file
+				int nFileLength;
+				char *aFileList = (char*)UTIL_LoadFileForMe( mapcfile, &nFileLength );
+				if ( aFileList && nFileLength )
+				{
+					V_SplitString( aFileList, "\n", m_MapList );
+
+					for ( int i = 0; i < m_MapList.Count(); i++ )
+					{
+						bool bIgnore = false;
+
+						// Strip out the spaces in the name
+						StripChar( m_MapList[i] , '\r');
+						StripChar( m_MapList[i] , ' ');
+						
+						if ( !engine->IsMapValid( m_MapList[i] ) )
+						{
+							bIgnore = true;
+
+							// If the engine doesn't consider it a valid map remove it from the lists
+							Warning( "Invalid map '%s' included in map cycle file. Ignored.\n", m_MapList[i] );
+						}
+						else if ( StringHasPrefixCaseSensitive( m_MapList[i], "//" ) )
+						{
+							bIgnore = true;
+						}
+
+						if ( bIgnore )
+						{
+							delete [] m_MapList[i];
+							m_MapList.Remove( i );
+							--i;
+						}
+					}
+
+					UTIL_FreeFile( (byte *)aFileList );
+				}
+
+				// If the current map selection is in the list, set m_nMapCycleindex to the map that follows it.
+				for ( int i = 0; i < m_MapList.Count(); i++ )
+				{
+					if ( V_strcmp( STRING( gpGlobals->mapname ), m_MapList[i] ) == 0 )
+					{
+						m_nMapCycleindex = i;
+						IncrementMapCycleIndex();
+						break;
+					}
+				}
 			}
 		}
 
 		// If somehow we have no maps in the list then add the current one
-		if (0 == m_MapList.Count())
+		if ( 0 == m_MapList.Count() )
 		{
-			char *szDefaultMapName = new char[MAX_MAP_NAME];
-			Q_strncpy(szDefaultMapName, STRING(gpGlobals->mapname), MAX_MAP_NAME);
-			m_MapList.AddToTail(szDefaultMapName);
+			char *szDefaultMapName = new char[MAX_PATH];
+			V_strncpy( szDefaultMapName, STRING(gpGlobals->mapname), MAX_PATH );
+			m_MapList.AddToTail( szDefaultMapName );
+			if ( mp_verbose_changelevel_spew.GetBool() && szDefaultMapName )
+			{
+				Msg( "CHANGELEVEL: Map list empty or failed to parse, using current map '%s'\n", szDefaultMapName );
+			}
 		}
 
-		if (bRandom)
+		if ( bRandom )
 		{
-			m_nMapCycleindex = RandomInt(0, m_MapList.Count() - 1);
+			m_nMapCycleindex = RandomInt( 0, m_MapList.Count() - 1 );
 		}
 
 		// Here's the return value
-		Q_strncpy(pszNextMap, m_MapList[m_nMapCycleindex], bufsize);
-	}
-
-	void CMultiplayRules::LoadMapCycleFile(void)
-	{
-		int nOldCycleIndex = m_nMapCycleindex;
-		m_nMapCycleindex = 0;
-
-		char mapcfile[MAX_PATH];
-		DetermineMapCycleFilename(mapcfile, sizeof(mapcfile), false);
-
-		FreeMapCycleFileVector(m_MapList);
-
-		const int nMapCycleTimeStamp = filesystem->GetPathTime(mapcfile, "GAME");
-		m_nMapCycleTimeStamp = nMapCycleTimeStamp;
-
-		// Repopulate map list from mapcycle file
-		LoadMapCycleFileIntoVector(mapcfile, m_MapList);
-
-		// Load server's mapcycle into network string table for client-side voting
-		if (g_pStringTableServerMapCycle)
-		{
-			CUtlString sFileList;
-			for (int i = 0; i < m_MapList.Count(); i++)
-			{
-				sFileList += m_MapList[i];
-				sFileList += '\n';
-			}
-
-			g_pStringTableServerMapCycle->AddString(CBaseEntity::IsServer(), "ServerMapCycle", sFileList.Length() + 1, sFileList.String());
-		}
-
-		// If the current map is in the same location in the new map cycle, keep that index. This gives better behavior
-		// when reloading a map cycle that has the current map in it multiple times.
-		int nOldPreviousMap = (nOldCycleIndex == 0) ? (m_MapList.Count() - 1) : (nOldCycleIndex - 1);
-		if (nOldCycleIndex >= 0 && nOldCycleIndex < m_MapList.Count() &&
-			nOldPreviousMap >= 0 && nOldPreviousMap < m_MapList.Count() &&
-			V_strcmp(STRING(gpGlobals->mapname), m_MapList[nOldPreviousMap]) == 0)
-		{
-			// The old index is still valid, and falls after our current map in the new cycle, use it
-			m_nMapCycleindex = nOldCycleIndex;
-		}
-		else
-		{
-			// Otherwise, if the current map selection is in the list, set m_nMapCycleindex to the map that follows it.
-			for (int i = 0; i < m_MapList.Count(); i++)
-			{
-				if (V_strcmp(STRING(gpGlobals->mapname), m_MapList[i]) == 0)
-				{
-					m_nMapCycleindex = i;
-					IncrementMapCycleIndex();
-					break;
-				}
-			}
-		}
-	}
-
-	void CMultiplayRules::LoadMapCycleFileIntoVector(const char *pszMapCycleFile, CUtlVector<char *> &mapList)
-	{
-		CMultiplayRules::RawLoadMapCycleFileIntoVector(pszMapCycleFile, mapList);
-	}
-
-	void CMultiplayRules::FreeMapCycleFileVector(CUtlVector<char *> &mapList)
-	{
-		// Clear out existing map list. Not using Purge() or PurgeAndDeleteAll() because they won't delete [] each element.
-		for (int i = 0; i < mapList.Count(); i++)
-		{
-			delete[] mapList[i];
-		}
-
-		mapList.RemoveAll();
-	}
-
-	void CMultiplayRules::RawLoadMapCycleFileIntoVector(const char *pszMapCycleFile, CUtlVector<char *> &mapList)
-	{
-		CUtlBuffer buf;
-		if (!filesystem->ReadFile(pszMapCycleFile, "GAME", buf))
-			return;
-		buf.PutChar(0);
-		V_SplitString((char*)buf.Base(), "\n", mapList);
-
-		for (int i = 0; i < mapList.Count(); i++)
-		{
-			bool bIgnore = false;
-
-			// Strip out ' ' and '\r' chars.
-			StripWhitespaceChars(mapList[i]);
-
-			if (!Q_strncmp(mapList[i], "//", 2) || mapList[i][0] == '\0')
-			{
-				bIgnore = true;
-			}
-
-			if (bIgnore)
-			{
-				delete[] mapList[i];
-				mapList.Remove(i);
-				--i;
-			}
-		}
-	}
-
-	// Strip ' ' and '\n' characters from string.
-	static void StripWhitespaceChars(char *szBuffer)
-	{
-		char *szOut = szBuffer;
-
-		for (char *szIn = szOut; *szIn; szIn++)
-		{
-			if (*szIn != ' ' && *szIn != '\r')
-				*szOut++ = *szIn;
-		}
-		*szOut = '\0';
-	}
-
-	void CMultiplayRules::DetermineMapCycleFilename(char *pszResult, int nSizeResult, bool bForceSpew)
-	{
-		static char szLastResult[MAX_PATH];
-
-		const char *pszVar = mapcyclefile.GetString();
-		if (*pszVar == '\0')
-		{
-			if (bForceSpew || V_stricmp(szLastResult, "__novar"))
-			{
-				Msg("mapcyclefile convar not set.\n");
-				V_strcpy_safe(szLastResult, "__novar");
-			}
-			*pszResult = '\0';
-			return;
-		}
-
-		char szRecommendedName[MAX_PATH];
-		V_sprintf_safe(szRecommendedName, "cfg/%s", pszVar);
-
-		// First, look for a mapcycle file in the cfg directory, which is preferred
-		V_strncpy(pszResult, szRecommendedName, nSizeResult);
-		if (filesystem->FileExists(pszResult, "GAME"))
-		{
-			if (bForceSpew || V_stricmp(szLastResult, pszResult))
-			{
-				Msg("Using map cycle file '%s'.\n", pszResult);
-				V_strcpy_safe(szLastResult, pszResult);
-			}
-			return;
-		}
-
-		// Nope?  Try the root.
-		V_strncpy(pszResult, pszVar, nSizeResult);
-		if (filesystem->FileExists(pszResult, "GAME"))
-		{
-			if (bForceSpew || V_stricmp(szLastResult, pszResult))
-			{
-				Msg("Using map cycle file '%s'.  ('%s' was not found.)\n", pszResult, szRecommendedName);
-				V_strcpy_safe(szLastResult, pszResult);
-			}
-			return;
-		}
-
-		// Nope?  Use the default.
-		if (!V_stricmp(pszVar, "mapcycle.txt"))
-		{
-			V_strncpy(pszResult, "cfg/mapcycle_default.txt", nSizeResult);
-			if (filesystem->FileExists(pszResult, "GAME"))
-			{
-				if (bForceSpew || V_stricmp(szLastResult, pszResult))
-				{
-					Msg("Using map cycle file '%s'.  ('%s' was not found.)\n", pszResult, szRecommendedName);
-					V_strcpy_safe(szLastResult, pszResult);
-				}
-				return;
-			}
-		}
-
-		// Failed
-		*pszResult = '\0';
-		if (bForceSpew || V_stricmp(szLastResult, "__notfound"))
-		{
-			Msg("Map cycle file '%s' was not found.\n", szRecommendedName);
-			V_strcpy_safe(szLastResult, "__notfound");
-		}
+		Q_strncpy( pszNextMap, m_MapList[m_nMapCycleindex], bufsize);
 	}
 
 	void CMultiplayRules::ChangeLevel( void )

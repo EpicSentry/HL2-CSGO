@@ -141,7 +141,7 @@ public:
 	virtual const studiohdr_t		*FindModel( const studiohdr_t *pStudioHdr, void **cache, const char *modelname ) const = 0;
 	virtual const studiohdr_t		*FindModel( void *cache ) const = 0;
 	virtual	virtualmodel_t			*GetVirtualModel( const studiohdr_t *pStudioHdr ) const = 0;
-	virtual byte					*GetAnimBlock(const studiohdr_t *pStudioHdr, int iBlock) const = 0;
+	virtual byte					*GetAnimBlock( const studiohdr_t *pStudioHdr, int nBlock, bool bPreloadIfMissing ) const = 0;
 	virtual bool					HasAnimBlockBeenPreloaded( const studiohdr_t *pStudioHdr, int nBlock ) const = 0;
 
 	// Available on client only!!!

@@ -1225,105 +1225,105 @@ float CAI_BaseNPC::GetHitgroupDamageMultiplier( int iHitGroup, const CTakeDamage
 //=========================================================
 // TraceAttack
 //=========================================================
-void CAI_BaseNPC::TraceAttack(const CTakeDamageInfo &info, const Vector &vecDir, trace_t *ptr, CDmgAccumulator *pAccumulator)
+void CAI_BaseNPC::TraceAttack( const CTakeDamageInfo &info, const Vector &vecDir, trace_t *ptr )
 {
 	m_fNoDamageDecal = false;
-	if (m_takedamage == DAMAGE_NO)
+	if ( m_takedamage == DAMAGE_NO )
 		return;
 
 	CTakeDamageInfo subInfo = info;
 
-	SetLastHitGroup(ptr->hitgroup);
+	SetLastHitGroup( ptr->hitgroup );
 	m_nForceBone = ptr->physicsbone;		// save this bone for physics forces
 
-	Assert(m_nForceBone > -255 && m_nForceBone < 256);
+	Assert( m_nForceBone > -255 && m_nForceBone < 256 );
 
 	bool bDebug = showhitlocation.GetBool();
 
-	switch (ptr->hitgroup)
+	switch ( ptr->hitgroup )
 	{
 	case HITGROUP_GENERIC:
-		if (bDebug) DevMsg("Hit Location: Generic\n");
+		if( bDebug ) DevMsg("Hit Location: Generic\n");
 		break;
 
-		// hit gear, react but don't bleed
+	// hit gear, react but don't bleed
 	case HITGROUP_GEAR:
-		subInfo.SetDamage(0.01);
+		subInfo.SetDamage( 0.01 );
 		ptr->hitgroup = HITGROUP_GENERIC;
-		if (bDebug) DevMsg("Hit Location: Gear\n");
+		if( bDebug ) DevMsg("Hit Location: Gear\n");
 		break;
 
 	case HITGROUP_HEAD:
-		subInfo.ScaleDamage(GetHitgroupDamageMultiplier(ptr->hitgroup, info));
-		if (bDebug) DevMsg("Hit Location: Head\n");
+		subInfo.ScaleDamage( GetHitgroupDamageMultiplier(ptr->hitgroup, info) );
+		if( bDebug ) DevMsg("Hit Location: Head\n");
 		break;
 
 	case HITGROUP_CHEST:
-		subInfo.ScaleDamage(GetHitgroupDamageMultiplier(ptr->hitgroup, info));
-		if (bDebug) DevMsg("Hit Location: Chest\n");
+		subInfo.ScaleDamage( GetHitgroupDamageMultiplier(ptr->hitgroup, info) );
+		if( bDebug ) DevMsg("Hit Location: Chest\n");
 		break;
 
 	case HITGROUP_STOMACH:
-		subInfo.ScaleDamage(GetHitgroupDamageMultiplier(ptr->hitgroup, info));
-		if (bDebug) DevMsg("Hit Location: Stomach\n");
+		subInfo.ScaleDamage( GetHitgroupDamageMultiplier(ptr->hitgroup, info) );
+		if( bDebug ) DevMsg("Hit Location: Stomach\n");
 		break;
 
 	case HITGROUP_LEFTARM:
 	case HITGROUP_RIGHTARM:
-		subInfo.ScaleDamage(GetHitgroupDamageMultiplier(ptr->hitgroup, info));
-		if (bDebug) DevMsg("Hit Location: Left/Right Arm\n");
+		subInfo.ScaleDamage( GetHitgroupDamageMultiplier(ptr->hitgroup, info) );
+		if( bDebug ) DevMsg("Hit Location: Left/Right Arm\n");
 		break
 			;
 	case HITGROUP_LEFTLEG:
 	case HITGROUP_RIGHTLEG:
-		subInfo.ScaleDamage(GetHitgroupDamageMultiplier(ptr->hitgroup, info));
-		if (bDebug) DevMsg("Hit Location: Left/Right Leg\n");
+		subInfo.ScaleDamage( GetHitgroupDamageMultiplier(ptr->hitgroup, info) );
+		if( bDebug ) DevMsg("Hit Location: Left/Right Leg\n");
 		break;
 
 	default:
-		if (bDebug) DevMsg("Hit Location: UNKNOWN\n");
+		if( bDebug ) DevMsg("Hit Location: UNKNOWN\n");
 		break;
 	}
 
-	if (subInfo.GetDamage() >= 1.0 && !(subInfo.GetDamageType() & DMG_SHOCK))
+	if ( subInfo.GetDamage() >= 1.0 && !(subInfo.GetDamageType() & DMG_SHOCK ) )
 	{
-		if (!IsPlayer() || (IsPlayer() && g_pGameRules->IsMultiplayer()))
+		if( !IsPlayer() || ( IsPlayer() && g_pGameRules->IsMultiplayer() ) )
 		{
 			// NPC's always bleed. Players only bleed in multiplayer.
-			SpawnBlood(ptr->endpos, vecDir, BloodColor(), subInfo.GetDamage());// a little surface blood.
+			SpawnBlood( ptr->endpos, vecDir, BloodColor(), subInfo.GetDamage() );// a little surface blood.
 		}
 
-		TraceBleed(subInfo.GetDamage(), vecDir, ptr, subInfo.GetDamageType());
+		TraceBleed( subInfo.GetDamage(), vecDir, ptr, subInfo.GetDamageType() );
 
-		if (ptr->hitgroup == HITGROUP_HEAD && m_iHealth - subInfo.GetDamage() > 0)
+		if ( ptr->hitgroup == HITGROUP_HEAD && m_iHealth - subInfo.GetDamage() > 0 )
 		{
 			m_fNoDamageDecal = true;
 		}
 	}
 
 	// Airboat gun will impart major force if it's about to kill him....
-	if (info.GetDamageType() & DMG_AIRBOAT)
+	if ( info.GetDamageType() & DMG_AIRBOAT )
 	{
-		if (subInfo.GetDamage() >= GetHealth())
+		if ( subInfo.GetDamage() >= GetHealth() )
 		{
 			float flMagnitude = subInfo.GetDamageForce().Length();
-			if ((flMagnitude != 0.0f) && (flMagnitude < 400.0f * 65.0f))
+			if ( (flMagnitude != 0.0f) && (flMagnitude < 400.0f * 65.0f) )
 			{
-				subInfo.ScaleDamageForce(400.0f * 65.0f / flMagnitude);
+				subInfo.ScaleDamageForce( 400.0f * 65.0f / flMagnitude );
 			}
 		}
 	}
 
-	if (info.GetInflictor())
+	if( info.GetInflictor() )
 	{
-		subInfo.SetInflictor(info.GetInflictor());
+		subInfo.SetInflictor( info.GetInflictor() );
 	}
 	else
 	{
-		subInfo.SetInflictor(info.GetAttacker());
+		subInfo.SetInflictor( info.GetAttacker() );
 	}
 
-	AddMultiDamage(subInfo, this);
+	AddMultiDamage( subInfo, this );
 }
 
 //-----------------------------------------------------------------------------

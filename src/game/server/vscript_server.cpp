@@ -522,7 +522,7 @@ bool VScriptServerInit()
 				
 				if ( GameRules() )
 				{
-					//GameRules()->RegisterScriptFunctions(); IF we want vscript, were gonna have to define these functions, see portalmp_gamerules for an example.
+					GameRules()->RegisterScriptFunctions();
 				}
 
 				g_pScriptVM->RegisterInstance( &g_ScriptEntityIterator, "Entities" );

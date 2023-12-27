@@ -13,7 +13,7 @@
 #include "cbase.h"
 #include "basetempentity.h"
 //#include "cstrike15/cs_gamerules.h"
-//#include "playerdecals_signature.h"
+#include "playerdecals_signature.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"

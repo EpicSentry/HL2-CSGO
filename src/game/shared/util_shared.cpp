@@ -1012,18 +1012,18 @@ float UTIL_WaterLevel( const Vector &position, float minz, float maxz )
 	Vector midUp = position;
 	midUp.z = minz;
 
-	if ( !(UTIL_PointContents(midUp)) )
+	if ( !(UTIL_PointContents(midUp, MASK_WATER) & MASK_WATER) )
 		return minz;
 
 	midUp.z = maxz;
-	if ( UTIL_PointContents(midUp) )
+	if ( UTIL_PointContents(midUp, MASK_WATER) & MASK_WATER )
 		return maxz;
 
 	float diff = maxz - minz;
 	while (diff > 1.0)
 	{
 		midUp.z = minz + diff/2.0;
-		if ( UTIL_PointContents(midUp) )
+		if ( UTIL_PointContents(midUp, MASK_WATER) & MASK_WATER )
 		{
 			minz = midUp.z;
 		}

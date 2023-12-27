@@ -326,6 +326,9 @@ void CTeam::AwardAchievement(int iAchievement)
 		}
 	}
 
+	UserMessageBegin(filter, "AchievementEvent");
+	WRITE_SHORT(iAchievement);
+	MessageEnd();
 }
 
 int CTeam::GetAliveMembers(void) const

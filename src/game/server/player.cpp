@@ -9011,24 +9011,26 @@ float CBasePlayer::GetStickDist()
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-void CBasePlayer::HandleAnimEvent(animevent_t *pEvent)
+void CBasePlayer::HandleAnimEvent( animevent_t *pEvent )
 {
+	int nEvent = pEvent->event();
+
 	if ((pEvent->type & AE_TYPE_NEWEVENTSYSTEM) && (pEvent->type & AE_TYPE_SERVER))
 	{
-		if (pEvent->event == AE_RAGDOLL)
+		if ( nEvent == AE_RAGDOLL )
 		{
 			// Convert to ragdoll immediately
 			CreateRagdollEntity();
-			BecomeRagdollOnClient(vec3_origin);
-
+			BecomeRagdollOnClient( vec3_origin );
+ 
 			// Force the player to start death thinking
 			SetThink(&CBasePlayer::PlayerDeathThink);
-			SetNextThink(gpGlobals->curtime + 0.1f);
+			SetNextThink( gpGlobals->curtime + 0.1f );
 			return;
 		}
 	}
 
-	BaseClass::HandleAnimEvent(pEvent);
+	BaseClass::HandleAnimEvent( pEvent );
 }
 
 //-----------------------------------------------------------------------------

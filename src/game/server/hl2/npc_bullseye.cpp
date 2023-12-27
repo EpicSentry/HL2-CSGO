@@ -303,7 +303,7 @@ void CNPC_Bullseye::ImpactTrace( trace_t *pTrace, int iDamageType, const char *p
 	if ( ( pEntity ) && ( pEntity->IsBSPModel() == false ) )
 		return;
 
-	BaseClass::ImpactTrace( pTrace, iDamageType, (char*)pCustomImpactName );
+	BaseClass::ImpactTrace( pTrace, iDamageType, pCustomImpactName );
 }
 
 //-----------------------------------------------------------------------------

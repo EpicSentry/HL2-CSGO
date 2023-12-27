@@ -347,7 +347,7 @@ public:
 
 #endif
 
-	virtual bool			IsWeaponZoomed() const { return false; }		// Is this weapon in its 'zoomed in' mode?
+	virtual bool			IsZoomed() const { return false; }		// Is this weapon in its 'zoomed in' mode?
 
 	// Reloading
 	virtual	void			CheckReload( void );
