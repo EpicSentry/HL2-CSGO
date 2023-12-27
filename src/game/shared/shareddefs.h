@@ -765,7 +765,7 @@ struct FireBulletsInfo_t
 		m_flDistance = 8192;
 		m_iTracerFreq = 4;
 		m_flDamage = 0;
-		m_iPlayerDamage = 0;
+		m_flPlayerDamage = 0;
 		m_pAttacker = NULL;
 		m_nFlags = 0;
 		m_pAdditionalIgnoreEnt = NULL;
@@ -790,7 +790,7 @@ struct FireBulletsInfo_t
 		m_iAmmoType = nAmmoType;
 		m_iTracerFreq = 4;
 		m_flDamage = 0;
-		m_iPlayerDamage = 0;
+		m_flPlayerDamage = 0;
 		m_pAttacker = NULL;
 		m_nFlags = 0;
 		m_pAdditionalIgnoreEnt = NULL;
@@ -807,7 +807,7 @@ struct FireBulletsInfo_t
 	int m_iAmmoType;
 	int m_iTracerFreq;
 	float m_flDamage;
-	int m_iPlayerDamage;	// Damage to be used instead of m_flDamage if we hit a player
+	int m_flPlayerDamage;	// Damage to be used instead of m_flDamage if we hit a player
 	int m_nFlags;			// See FireBulletsFlags_t
 	float m_flDamageForceScale;
 	CBaseEntity *m_pAttacker;
@@ -1089,9 +1089,11 @@ enum Class_T
 };
 
 // Factions
+/*
 #define FACTION_NONE				0					// Not assigned a faction.  Entities not assigned a faction will not do faction tests.
 #define LAST_SHARED_FACTION			(FACTION_NONE)
 #define NUM_SHARED_FACTIONS			(FACTION_NONE + 1)
+*/
 
 enum ModelScaleType_t
 {

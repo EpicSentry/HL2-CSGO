@@ -54,7 +54,7 @@ static CHL2EventLog s_HL2EventLog;
 //-----------------------------------------------------------------------------
 // Singleton access
 //-----------------------------------------------------------------------------
-IGameSystem* GameLogSystem()
+CEventLog* GameLogSystem()
 {
 	return &s_HL2EventLog;
 }

@@ -2508,7 +2508,7 @@ void CNPC_AntlionGuard::StartTask( const Task_t *pTask )
 	case TASK_ANTLIONGUARD_GET_CHASE_PATH_ENEMY_TOLERANCE:
 		{
 			// Chase the enemy, but allow local navigation to succeed if it gets within the goal tolerance
-			GetNavigator()->SetLocalSucceedOnWithinTolerance( true );
+			//GetNavigator()->SetLocalSucceedOnWithinTolerance( true );
 
 			if ( GetNavigator()->SetGoal( GOALTYPE_ENEMY ) )
 			{
@@ -2520,7 +2520,7 @@ void CNPC_AntlionGuard::StartTask( const Task_t *pTask )
 				TaskFail(FAIL_NO_ROUTE);
 			}
 
-			GetNavigator()->SetLocalSucceedOnWithinTolerance( false );
+			//GetNavigator()->SetLocalSucceedOnWithinTolerance( false );
 		}
 		break;
 

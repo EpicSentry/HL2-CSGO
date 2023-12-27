@@ -35,7 +35,6 @@ AI_EnemyInfo_t::AI_EnemyInfo_t(void)
 	timeValidEnemy = 0;
 	timeLastReceivedDamageFrom = 0;
 	timeAtFirstHand = AI_INVALID_TIME;
-	nFaction		= FACTION_NONE;
 	bDangerMemory = 0;
 	bEludedMe = 0;
 	bUnforgettable = 0;
@@ -251,10 +250,6 @@ bool CAI_Enemies::ShouldDiscardMemory( AI_EnemyInfo_t *pMemory )
 		{
 			if ( pEnemyNPC->GetState() == NPC_STATE_DEAD )
 				return true;
-
-			// forget about the enemy if he changes faction
-			if ( pEnemyNPC->GetFaction() != pMemory->nFaction )
-				return true;
 		}
 	}
 	else
@@ -392,13 +387,6 @@ bool CAI_Enemies::UpdateMemory(CAI_Network* pAINet, CBaseEntity *pEnemy, const V
 	// I'm either remembering a position of an enemy or just a danger position
 	pAddMemory->hEnemy = pEnemy;
 	pAddMemory->bDangerMemory = ( pEnemy == NULL );
-
-	if ( pEnemy )
-	{
-		CAI_BaseNPC *pEnemyNPC = pEnemy->MyNPCPointer();
-		if ( pEnemyNPC )
-			pAddMemory->nFaction = pEnemyNPC->GetFaction();
-	}
 
 	// add to the list
 	m_Map.Insert( pEnemy, pAddMemory );

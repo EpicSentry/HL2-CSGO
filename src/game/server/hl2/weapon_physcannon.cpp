@@ -1049,7 +1049,7 @@ void CPlayerPickupController::Init( CBasePlayer *pPlayer, CBaseEntity *pObject )
 	m_grabController.AttachEntity( pPlayer, pObject, pPhysics, false, vec3_origin, false );
 	// NVNT apply a downward force to simulate the mass of the held object.
 #if defined( WIN32 ) && !defined( _X360 )
-	HapticSetConstantForce(m_pPlayer,clamp(m_grabController.GetLoadWeight()*0.1,1,6)*Vector(0,-1,0));
+	//HapticSetConstantForce(m_pPlayer,clamp(m_grabController.GetLoadWeight()*0.1,1,6)*Vector(0,-1,0));
 #endif
 	
 	m_pPlayer->m_Local.m_iHideHUD |= HIDEHUD_WEAPONSELECTION;
@@ -1074,8 +1074,8 @@ void CPlayerPickupController::Shutdown( bool bThrown )
 	m_grabController.DetachEntity( bClearVelocity );
 	// NVNT if we have a player, issue a zero constant force message
 #if defined( WIN32 ) && !defined( _X360 )
-	if(m_pPlayer)
-		HapticSetConstantForce(m_pPlayer,Vector(0,0,0));
+	//if(m_pPlayer)
+		//HapticSetConstantForce(m_pPlayer,Vector(0,0,0));
 #endif
 	if ( pObject != NULL )
 	{
@@ -2423,7 +2423,7 @@ bool CWeaponPhysCannon::AttachObject( CBaseEntity *pObject, const Vector &vPosit
 	{
 #if defined( WIN32 ) && !defined( _X360 )
 		// NVNT set the players constant force to simulate holding mass
-		HapticSetConstantForce(pOwner,clamp(m_grabController.GetLoadWeight()*0.05,1,5)*Vector(0,-1,0));
+		//HapticSetConstantForce(pOwner,clamp(m_grabController.GetLoadWeight()*0.05,1,5)*Vector(0,-1,0));
 #endif
 		pOwner->EnableSprint( false );
 
@@ -2883,7 +2883,7 @@ void CWeaponPhysCannon::DetachObject( bool playSound, bool wasLaunched )
 		}
 #if defined( WIN32 ) && !defined( _X360 )
 		// NVNT clear constant force
-		HapticSetConstantForce(pOwner,Vector(0,0,0));
+		//HapticSetConstantForce(pOwner,Vector(0,0,0));
 #endif
 	}
 

@@ -95,7 +95,7 @@ public:
 	virtual int		SelectSchedule( void );
 	virtual int		SelectFailSchedule( int failedSchedule, int failedTask, AI_TaskFailureCode_t taskFailCode );
 	virtual bool	IsValidEnemy( CBaseEntity *pEnemy );
-	bool			IsLeading( void ) { return ( GetRunningBehavior() == &m_LeadBehavior && m_LeadBehavior.HasGoal() ); }
+	bool			IsLeading( void ) { return ( GetPrimaryBehavior() == &m_LeadBehavior && m_LeadBehavior.HasGoal() ); }
 
 	void			DeathSound( const CTakeDamageInfo &info );
 	void			PainSound( const CTakeDamageInfo &info );

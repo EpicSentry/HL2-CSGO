@@ -83,12 +83,34 @@ extern itemFlags_t g_ItemFlags[7];
 #endif
 
 
+static CUtlDict< FileWeaponInfo_t*, unsigned short > m_WeaponInfoDatabase;
 
 #ifdef _DEBUG
 // used to track whether or not two weapons have been mistakenly assigned the wrong slot
 bool g_bUsedWeaponSlots[MAX_WEAPON_SLOTS][MAX_WEAPON_POSITIONS] = { 0 };
 
 #endif
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+// Input  : *name - 
+// Output : FileWeaponInfo_t
+//-----------------------------------------------------------------------------
+static WEAPON_FILE_INFO_HANDLE FindWeaponInfoSlot( const char* name )
+{
+	// Complain about duplicately defined metaclass names...
+	unsigned short lookup = m_WeaponInfoDatabase.Find( name );
+	if ( lookup != m_WeaponInfoDatabase.InvalidIndex() )
+	{
+		return lookup;
+	}
+
+	FileWeaponInfo_t* insert = CreateWeaponInfo();
+
+	lookup = m_WeaponInfoDatabase.Insert( name, insert );
+	Assert( lookup != m_WeaponInfoDatabase.InvalidIndex() );
+	return lookup;
+}
 
 // Find a weapon slot, assuming the weapon's data has already been loaded.
 WEAPON_FILE_INFO_HANDLE LookupWeaponInfoSlot( const char *name )
@@ -557,30 +579,6 @@ bool ReadWeaponDataFromFileForSlot(IFileSystem* pFilesystem, const char *szWeapo
 
 	return true;
 }
-
-//-----------------------------------------------------------------------------
-// Purpose: 
-// Input  : *name - 
-// Output : FileWeaponInfo_t
-//-----------------------------------------------------------------------------
-static CUtlDict< FileWeaponInfo_t*, unsigned short > m_WeaponInfoDatabase;
-static WEAPON_FILE_INFO_HANDLE FindWeaponInfoSlot(const char *name)
-{
-	// Complain about duplicately defined metaclass names...
-	unsigned short lookup = m_WeaponInfoDatabase.Find(name);
-	if (lookup != m_WeaponInfoDatabase.InvalidIndex())
-	{
-		return lookup;
-	}
-
-	FileWeaponInfo_t *insert = CreateWeaponInfo();
-
-	lookup = m_WeaponInfoDatabase.Insert(name, insert);
-	Assert(lookup != m_WeaponInfoDatabase.InvalidIndex());
-	return lookup;
-}
-
-
 
 CWeaponDatabase::CWeaponDatabase() : m_bPreCached( false )
 {

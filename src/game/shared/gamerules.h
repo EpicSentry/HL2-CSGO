@@ -404,9 +404,6 @@ public:
 
 	virtual void OnNavMeshLoad(void) { return; }
 
-	// game-specific factories
-	virtual CTacticalMissionManager *TacticalMissionManagerFactory(void);
-
 	virtual void ProcessVerboseLogOutput(void) {}
 
 #endif

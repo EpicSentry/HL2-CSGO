@@ -7621,25 +7621,6 @@ void CAI_BaseNPC::RemoveMemory( void )
 }
 
 //-----------------------------------------------------------------------------
-// Purpose: Change faction NPC belongs to
-//-----------------------------------------------------------------------------
-void CAI_BaseNPC::ChangeFaction( int nNewFaction )
-{
-	BaseClass::ChangeFaction( nNewFaction );
-
-	// Remove anyone who is no longer an enemy
-	AIEnemiesIter_t iter;
-	AI_EnemyInfo_t *pNextEMemory;
-	for( AI_EnemyInfo_t *pEMemory = GetEnemies()->GetFirst(&iter); pEMemory != NULL; pEMemory = pNextEMemory )
-	{
-		CBaseEntity *pEnemy = pEMemory->hEnemy;
-		pNextEMemory = GetEnemies()->GetNext(&iter);
-		if ( pEnemy && ( IRelationType( pEnemy ) == D_LI ) )
-			GetEnemies()->ClearMemory( pEnemy );
-	}	
-}
-
-//-----------------------------------------------------------------------------
 // Purpose:
 //-----------------------------------------------------------------------------
 void CAI_BaseNPC::TaskComplete(  bool fIgnoreSetFailedCondition )

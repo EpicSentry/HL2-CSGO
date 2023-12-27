@@ -2457,7 +2457,7 @@ inline void UTIL_TraceLineIgnoreTwoEntities( const Vector& vecAbsStart, const Ve
 }
 
 extern ConVar sv_showbullethits;
-extern ConVar sv_penetration_type;
+//extern ConVar sv_penetration_type;
 #define	CS_MASK_SHOOT (MASK_SOLID|CONTENTS_DEBRIS)
 
 void CEnvGunfire::FireBullet(
@@ -2496,8 +2496,8 @@ void CEnvGunfire::FireBullet(
 	float flPenetrationModifier = 1.0f;
 
 	// we use the max penetrations on this gun to figure out how much penetration it's capable of
-	if ( sv_penetration_type.GetInt() == 1 )
-		flPenetrationPower = flPenetration;
+	//if ( sv_penetration_type.GetInt() == 1 )
+	//	flPenetrationPower = flPenetration;
 
 	if ( !pevAttacker )
 		pevAttacker = this;  // the default attacker is ourselves

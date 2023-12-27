@@ -138,7 +138,7 @@ extern ConVar sv_maxunlag;
 extern ConVar sv_turbophysics;
 extern ConVar *sv_maxreplay;
 
-extern ConVar sv_coaching_enabled;
+//extern ConVar sv_coaching_enabled;
 
 extern CServerGameDLL g_ServerGameDLL;
 

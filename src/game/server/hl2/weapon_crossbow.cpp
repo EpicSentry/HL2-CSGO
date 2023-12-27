@@ -438,7 +438,7 @@ public:
 	virtual void	ItemBusyFrame( void );
 	virtual void	Operator_HandleAnimEvent( animevent_t *pEvent, CBaseCombatCharacter *pOperator );
 	virtual bool	SendWeaponAnim( int iActivity );
-	virtual bool	IsWeaponZoomed() { return m_bInZoom; }
+	virtual bool	IsZoomed() { return m_bInZoom; }
 	
 	bool	ShouldDisplayHUDHint() { return true; }
 

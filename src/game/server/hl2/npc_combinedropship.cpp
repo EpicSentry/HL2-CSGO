@@ -314,7 +314,8 @@ private:
 	
 	// Misc Vars
 	CHandle<CBaseAnimating>	m_hContainer;
-	EHANDLE		m_hPickupTarget;
+	//EHANDLE		m_hPickupTarget;
+	CHandle<CBaseAnimating> m_hPickupTarget;
 	int			m_iContainerMoveType;
 	bool		m_bWaitForDropoffInput;
 
@@ -1836,7 +1837,8 @@ void CNPC_CombineDropship::InputPickup( inputdata_t &inputdata )
 		Warning("npc_combinedropship %s tried to pickup with no specified pickup target.\n", STRING(GetEntityName()) );
 		return;
 	}
-	CBaseEntity *pTarget = gEntList.FindEntityByName( NULL, iszTargetName );
+	// conn - hopefully every dropship's pickup target in HL2 is also a CBaseAnimating, what else could it be anyway
+	CBaseAnimating* pTarget = dynamic_cast<CBaseAnimating*>(gEntList.FindEntityByName( NULL, iszTargetName ));
 	if ( !pTarget )
 	{
 		Warning("npc_combinedropship %s couldn't find pickup target named %s\n", STRING(GetEntityName()), STRING(iszTargetName) );

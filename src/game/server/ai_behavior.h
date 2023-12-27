@@ -126,6 +126,7 @@ public:
 
 	virtual void BuildScheduleTestBits() {}
 	virtual void BuildScheduleTestBitsNotActive() {}
+	void BridgeBuildScheduleTestBits() { BuildScheduleTestBits(); }
 
 	virtual void GatherConditions();
 	virtual void GatherConditionsNotActive() { return; } // Override this and your behavior will call this in place of GatherConditions() when your behavior is NOT the active one.

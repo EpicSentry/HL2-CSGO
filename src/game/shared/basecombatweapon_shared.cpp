@@ -620,7 +620,7 @@ void CBaseCombatWeapon::Spawn( void )
 
 	GiveDefaultAmmo();
 
-	VerifyAndSetContextSensitiveWeaponModel();
+	//VerifyAndSetContextSensitiveWeaponModel();
 
 #if !defined( CLIENT_DLL )
 	if ( GetWpnData().szAIAddOn[ 0 ] != '\0' )
@@ -776,15 +776,13 @@ const FileWeaponInfo_t &CBaseCombatWeapon::GetWpnData( void ) const
 {
 	return *GetFileWeaponInfoFromHandle( m_hWeaponFileInfo );
 }
-/*
+
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-const char *CBaseCombatWeapon::GetViewModel( int /*viewmodelindex = 0 -- this is ignored in the base class here*//* ) const
+const char *CBaseCombatWeapon::GetViewModel( int /*viewmodelindex = 0 -- this is ignored in the base class here*/ ) const
 {
-	return GetWpnData().GetViewModel( GetEconItemView(), (
-		( GetOwner() != NULL && GetOwner()->IsPlayer() ) ? GetOwner()->GetTeamNumber() : 0
-		) );
+	return GetWpnData().szViewModel;
 }
 
 //-----------------------------------------------------------------------------
@@ -792,29 +790,9 @@ const char *CBaseCombatWeapon::GetViewModel( int /*viewmodelindex = 0 -- this is
 //-----------------------------------------------------------------------------
 const char *CBaseCombatWeapon::GetWorldModel( void ) const
 {
-	return GetWpnData().GetWorldModel( GetEconItemView(), (
-		( GetOwner() != NULL && GetOwner()->IsPlayer() ) ? GetOwner()->GetTeamNumber() : 0 
-		) );
+	return GetWpnData().szWorldModel;
 }
 
-
-const char *CBaseCombatWeapon::GetWorldDroppedModel( void ) const
-{
-	const char *szWorldDroppedModel = GetWpnData().GetWorldDroppedModel( GetEconItemView(), (
-		( GetOwner() != NULL && GetOwner()->IsPlayer() ) ? GetOwner()->GetTeamNumber() : 0 
-		) );
-
-	// world dropped model path is optional, but always built. Make sure the model exists before returning it.
-	if ( szWorldDroppedModel )
-	{
-		MDLHandle_t modelHandle = g_pMDLCache->FindMDL( szWorldDroppedModel );
-		if ( !g_pMDLCache->IsErrorModel( modelHandle ) )
-			return szWorldDroppedModel;
-	}
-
-	return GetWorldModel();
-}
-*/
 
 //-----------------------------------------------------------------------------
 // Purpose: 
@@ -823,19 +801,55 @@ const char *CBaseCombatWeapon::GetAnimPrefix( void ) const
 {
 	return GetWpnData().szAnimationPrefix;
 }
-/*
+
 //-----------------------------------------------------------------------------
 // Purpose: 
 // Output : char const
 //-----------------------------------------------------------------------------
 const char *CBaseCombatWeapon::GetPrintName( void ) const
 {
-	if ( GetEconItemView( ) )
-		return GetEconItemView( )->GetItemDefinition()->GetItemBaseName();
-	else
-		return GetWpnData().szPrintName;
+	return GetWpnData().szPrintName;
 }
-*/
+
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+int CBaseCombatWeapon::GetMaxClip1( void ) const
+{
+#if defined ( TF_DLL ) || defined ( TF_CLIENT_DLL )
+	int iModMaxClipOverride = 0;
+	CALL_ATTRIB_HOOK_INT( iModMaxClipOverride, mod_max_primary_clip_override );
+	if ( iModMaxClipOverride != 0 )
+		return iModMaxClipOverride;
+#endif
+
+	return GetWpnData().iMaxClip1;
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+int CBaseCombatWeapon::GetMaxClip2( void ) const
+{
+	return GetWpnData().iMaxClip2;
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+int CBaseCombatWeapon::GetDefaultClip1( void ) const
+{
+	return GetWpnData().iDefaultClip1;
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+int CBaseCombatWeapon::GetDefaultClip2( void ) const
+{
+	return GetWpnData().iDefaultClip2;
+}
 
 //-----------------------------------------------------------------------------
 // Purpose: 
@@ -1433,7 +1447,7 @@ void CBaseCombatWeapon::Equip( CBaseCombatCharacter *pOwner )
 	m_flNextPrimaryAttack = gpGlobals->curtime;
 	m_flNextSecondaryAttack = gpGlobals->curtime;
 	
-	VerifyAndSetContextSensitiveWeaponModel();
+	//VerifyAndSetContextSensitiveWeaponModel();
 }
 
 CStudioHdr* CBaseCombatWeapon::OnNewModel()
@@ -1479,51 +1493,6 @@ void CBaseCombatWeapon::ClassifyWeaponModel( void )
 		// valid path, just didn't match anything we were looking for.
 		m_WeaponModelClassification = WEAPON_MODEL_IS_UNRECOGNIZED;
 	}
-}
-
-void CBaseCombatWeapon::VerifyAndSetContextSensitiveWeaponModel( void )
-{
-	// Check that the weapon model is the right kind (viewmodel, worldmodel, etc )
-	// Using a fast, non-string comparison check. If it's the wrong type,
-	// set the model to the correct version, then update the record so
-	// future checks are fast and don't need to continuously re-set the
-	// model unnecessarily.
-
-	WeaponModelClassification_t tClassification = GetWeaponModelClassification();
-
-#ifdef CLIENT_DLL
-	if ( tClassification == WEAPON_MODEL_IS_UNCLASSIFIED )
-	{
-		if ( GetOwner() )
-		{
-			SetModel( GetWorldModel() );
-		}
-		else
-		{
-			SetModel( GetWorldDroppedModel() );
-		}
-	}
-	else if ( tClassification == WEAPON_MODEL_IS_VIEWMODEL )
-	{
-		if ( !GetOwner() )
-		{
-			SetModel( GetWorldDroppedModel() );
-		}
-		else if ( GetOwner()->ShouldDraw() )
-		{
-			SetModel( GetWorldModel() );
-		}
-	}
-#else
-	if ( tClassification != WEAPON_MODEL_IS_VIEWMODEL && GetOwner() )
-	{
-		SetModel( GetViewModel() );
-	}
-	else if ( tClassification == WEAPON_MODEL_IS_UNCLASSIFIED || (tClassification == WEAPON_MODEL_IS_VIEWMODEL && !GetOwner()) )
-	{
-		SetModel( GetWorldDroppedModel() );
-	}
-#endif
 }
 
 WeaponModelClassification_t	CBaseCombatWeapon::GetWeaponModelClassification( void )
@@ -1595,6 +1564,28 @@ void CBaseCombatWeapon::SetViewModelIndex( int index )
 {
 	Assert( index >= 0 && index < MAX_VIEWMODELS );
 	m_nViewModelIndex = index;
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: Set the desired activity for the weapon and its viewmodel counterpart
+// Input  : iActivity - activity to play
+//-----------------------------------------------------------------------------
+bool CBaseCombatWeapon::SendWeaponAnim( int iActivity )
+{
+#ifdef USES_ECON_ITEMS
+	iActivity = TranslateViewmodelHandActivity( (Activity)iActivity );
+#endif		
+	// NVNT notify the haptics system of this weapons new activity
+#ifdef WIN32
+#ifdef CLIENT_DLL
+	if ( prediction->InPrediction() && prediction->IsFirstTimePredicted() )
+#endif
+#ifndef _X360
+		// HapticSendWeaponAnim( this, iActivity );
+#endif
+#endif
+	//For now, just set the ideal activity and be done with it
+	return SetIdealActivity( (Activity)iActivity );
 }
 
 //-----------------------------------------------------------------------------

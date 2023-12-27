@@ -110,7 +110,6 @@ END_DATADESC()
 BEGIN_SIMPLE_DATADESC( Relationship_t )
 	DEFINE_FIELD( entity,			FIELD_EHANDLE ),
 	DEFINE_FIELD( classType,		FIELD_INTEGER ),
-	DEFINE_FIELD( faction,			FIELD_INTEGER ),
 	DEFINE_FIELD( disposition,		FIELD_INTEGER ),
 	DEFINE_FIELD( priority,			FIELD_INTEGER ),
 END_DATADESC()
@@ -701,9 +700,6 @@ CBaseCombatCharacter::CBaseCombatCharacter( void )
 	m_hActiveWeapon			= NULL;
 	m_uiLastDamageTypeFlags = 0;
 
-	// Init faction
-	m_nFaction = FACTION_NONE;
-
 	// reset all ammo values to 0
 	RemoveAllAmmo();
 	
@@ -743,10 +739,6 @@ CBaseCombatCharacter::CBaseCombatCharacter( void )
 //------------------------------------------------------------------------------
 CBaseCombatCharacter::~CBaseCombatCharacter( void )
 {
-	if ( ( m_nFaction != FACTION_NONE ) && ( m_aFactions.Count() != 0 ) )
-	{
-		m_aFactions[ m_nFaction ].FindAndFastRemove( this );
-	}
 	ResetVisibilityCache( this );
 	ClearLastKnownArea();
 }
@@ -806,9 +798,6 @@ int CBaseCombatCharacter::Restore( IRestore &restore )
 	int status = BaseClass::Restore(restore);
 	if ( !status )
 		return 0;
-
-	// restore faction information
-	ChangeFaction( m_nFaction );
 
 	if ( gpGlobals->eLoadType == MapLoad_Transition )
 	{
@@ -2081,11 +2070,11 @@ void CBaseCombatCharacter::Weapon_Equip( CBaseCombatWeapon *pWeapon )
 	}
 	// If default ammo given is greater than clip
 	// size, fill clips and give extra ammo
-// 	else if (pWeapon->GetDefaultClip1() >  pWeapon->GetMaxClip1() )
-// 	{
-// 		pWeapon->m_iClip1 = pWeapon->GetMaxClip1();
-// 		pWeapon->SetReserveAmmoCount( AMMO_POSITION_PRIMARY, (pWeapon->GetDefaultClip1() - pWeapon->GetMaxClip1())); 
-// 	}
+ 	else if (pWeapon->GetDefaultClip1() >  pWeapon->GetMaxClip1() )
+ 	{
+ 		pWeapon->m_iClip1 = pWeapon->GetMaxClip1();
+ 		pWeapon->SetReserveAmmoCount( AMMO_POSITION_PRIMARY, (pWeapon->GetDefaultClip1() - pWeapon->GetMaxClip1())); 
+ 	}
 
 	// ----------------------
 	//  Give Secondary Ammo
@@ -2104,11 +2093,11 @@ void CBaseCombatCharacter::Weapon_Equip( CBaseCombatWeapon *pWeapon )
 	}
 	// If default ammo given is greater than clip
 	// size, fill clips and give extra ammo
-// 	else if ( pWeapon->GetDefaultClip2() > pWeapon->GetMaxClip2() )
-// 	{
-// 		pWeapon->m_iClip2 = pWeapon->GetMaxClip2();
-// 		pWeapon->SetReserveAmmoCount( AMMO_POSITION_SECONDARY, ( pWeapon->GetDefaultClip2() - pWeapon->GetMaxClip2() ) );
-// 	}
+ 	else if ( pWeapon->GetDefaultClip2() > pWeapon->GetMaxClip2() )
+ 	{
+ 		pWeapon->m_iClip2 = pWeapon->GetMaxClip2();
+ 		pWeapon->SetReserveAmmoCount( AMMO_POSITION_SECONDARY, ( pWeapon->GetDefaultClip2() - pWeapon->GetMaxClip2() ) );
+ 	}
 
 	pWeapon->Equip( this );
 
@@ -2656,18 +2645,6 @@ void CBaseCombatCharacter::SetTransmit( CCheckTransmitInfo *pInfo, bool bAlways 
 }
 
 //-----------------------------------------------------------------------------
-// Purpose: Fetch the default team relationship
-// Input  :
-// Output :
-//-----------------------------------------------------------------------------
-Disposition_t CBaseCombatCharacter::GetFactionRelationshipDisposition( int nFaction )
-{
-	Assert( m_FactionRelationship != NULL );
-
-	return m_FactionRelationship[ GetFaction() ][ nFaction ].disposition;
-}
-
-//-----------------------------------------------------------------------------
 // Purpose: Add or Change a class relationship for this entity
 // Input  :
 // Output :
@@ -2691,7 +2668,6 @@ void CBaseCombatCharacter::AddClassRelationship ( Class_T class_type, Dispositio
 	// Add the new class relationship to our relationship table
 	m_Relationship[index].classType		= class_type;
 	m_Relationship[index].entity		= NULL;
-	m_Relationship[index].faction		= FACTION_NONE;
 	m_Relationship[index].disposition	= disposition;
 	m_Relationship[index].priority		= ( priority != DEF_RELATIONSHIP_PRIORITY ) ? priority : 0;
 }
@@ -2720,7 +2696,6 @@ void CBaseCombatCharacter::AddEntityRelationship ( CBaseEntity* pEntity, Disposi
 	// Add the new class relationship to our relationship table
 	m_Relationship[index].classType		= CLASS_NONE;
 	m_Relationship[index].entity		= pEntity;
-	m_Relationship[index].faction		= FACTION_NONE;
 	m_Relationship[index].disposition	= disposition;
 	m_Relationship[index].priority		= ( priority != DEF_RELATIONSHIP_PRIORITY ) ? priority : 0;
 }
@@ -2747,107 +2722,6 @@ bool CBaseCombatCharacter::RemoveEntityRelationship( CBaseEntity *pEntity )
 }
 
 //-----------------------------------------------------------------------------
-// Purpose: 
-// Input  :
-// Output :
-//-----------------------------------------------------------------------------
-void CBaseCombatCharacter::AddFactionRelationship(int nFaction, Disposition_t disposition, int priority )
-{
-	// First check to see if a relationship has already been declared for this faction
-	// If so, update it with the new relationship
-	for (int i=m_Relationship.Count()-1;i >= 0;i--) 
-	{
-		if (m_Relationship[i].faction == nFaction) 
-		{
-			m_Relationship[i].disposition	= disposition;
-			if ( priority != DEF_RELATIONSHIP_PRIORITY )
-				m_Relationship[i].priority	= priority;
-			return;
-		}
-	}
-
-	int index = m_Relationship.AddToTail();
-	// Add the new class relationship to our relationship table
-	m_Relationship[index].classType		= CLASS_NONE;
-	m_Relationship[index].entity		= NULL;
-	m_Relationship[index].faction		= nFaction;
-	m_Relationship[index].disposition	= disposition;
-	m_Relationship[index].priority		= ( priority != DEF_RELATIONSHIP_PRIORITY ) ? priority : 0;
-}
-
-//-----------------------------------------------------------------------------
-// Purpose: 
-// Input  :
-// Output :
-//-----------------------------------------------------------------------------
-void CBaseCombatCharacter::ChangeFaction( int nNewFaction ) {
-	int nOldFaction = m_nFaction;
-
-	if ( ( m_nFaction != FACTION_NONE ) && ( m_aFactions.Count() != 0 ) )
-	{
-		m_aFactions[ m_nFaction ].FindAndFastRemove( this );
-	}
-
-	m_nFaction = nNewFaction;
-
-	if ( m_nFaction != FACTION_NONE )
-	{
-		if ( !m_aFactions.Count() )
-		{
-			AllocateDefaultFactionRelationships();
-		}
-
-		m_aFactions[ m_nFaction ].AddToTail( this );
-	}
-
-	// remove any relationship to entities where the relationship may change due to the faction change
-	if ( ( m_FactionRelationship ) && ( m_nFaction != FACTION_NONE ) )
-	{
-		for(int i = 0; i < m_Relationship.Count(); i++ )
-		{
-			if ( (CBaseEntity *)m_Relationship[ i ].entity && ( (CBaseEntity *)m_Relationship[ i ].entity )->IsNPC() )
-			{
-				int nFaction = ( (CBaseEntity *)m_Relationship[ i ].entity )->MyNPCPointer()->GetFaction();
-				if ( m_FactionRelationship[ m_nFaction ][ nFaction ].disposition != m_FactionRelationship[ nOldFaction ][ nFaction ].disposition )
-				{
-					m_Relationship.FastRemove( i );
-					i--;
-					continue;
-				}
-			}
-		}
-	}
-}
-
-//-----------------------------------------------------------------------------
-// Purpose: 
-// Input  :
-// Output :
-//-----------------------------------------------------------------------------
-int CBaseCombatCharacter::GetNumFactions( void ) {
-	if ( !m_aFactions.Count() )
-	{
-		AllocateDefaultFactionRelationships();
-	}
-
-	return m_aFactions.Count();
-}
-
-//-----------------------------------------------------------------------------
-// Purpose: 
-// Input  :
-// Output :
-//-----------------------------------------------------------------------------
-CUtlVector<EHANDLE> *CBaseCombatCharacter::GetEntitiesInFaction( int nFaction ) {
-	if ( !m_aFactions.Count() )
-	{
-		return NULL;
-	}
-
-	return &m_aFactions[ nFaction ];
-}
-
-//-----------------------------------------------------------------------------
 // Allocates default relationships
 //-----------------------------------------------------------------------------
 void CBaseCombatCharacter::AllocateDefaultRelationships()
@@ -2865,27 +2739,6 @@ void CBaseCombatCharacter::AllocateDefaultRelationships()
 }
 
 //-----------------------------------------------------------------------------
-// Allocates default faction relationships
-//-----------------------------------------------------------------------------
-#if defined ( CSTRIKE15 )
-void CBaseCombatCharacter::AllocateDefaultFactionRelationships( )
-{
-	if (!m_FactionRelationship)
-	{
-		int nNumFactions = GameRules() ? GameRules()->NumFactions() : NUM_SHARED_FACTIONS;
-		m_aFactions.SetCount( nNumFactions );
-		m_FactionRelationship = new Relationship_t*[nNumFactions];
-
-		for (int i=0; i<nNumFactions; ++i)
-		{
-			// Be default all relationships are neutral of priority zero
-			m_FactionRelationship[i] = new Relationship_t[nNumFactions];
-		}
-	}
-}
-#endif
-
-//-----------------------------------------------------------------------------
 // Purpose: 
 // Input  :
 // Output :
@@ -2897,22 +2750,6 @@ void CBaseCombatCharacter::SetDefaultRelationship(Class_T nClass, Class_T nClass
 		m_DefaultRelationship[nClass][nClassTarget].disposition	= nDisposition;
 		m_DefaultRelationship[nClass][nClassTarget].priority	= nPriority;
 	}
-}
-
-//-----------------------------------------------------------------------------
-// Purpose: 
-// Input  :
-// Output :
-//-----------------------------------------------------------------------------
-void CBaseCombatCharacter::SetDefaultFactionRelationship(int nFaction, int nFactionTarget, Disposition_t nDisposition, int nPriority)
-{
-	if (!m_FactionRelationship)
-	{
-		AllocateDefaultFactionRelationships();
-	}
-
-	m_FactionRelationship[nFaction][nFactionTarget].disposition	= nDisposition;
-	m_FactionRelationship[nFaction][nFactionTarget].priority	= nPriority;
 }
 
 //-----------------------------------------------------------------------------
@@ -2937,57 +2774,34 @@ Relationship_t *CBaseCombatCharacter::FindEntityRelationship( CBaseEntity *pTarg
 {
 	if ( !pTarget )
 	{
-		static Relationship_t dummy; 
+		static Relationship_t dummy;
 		return &dummy;
 	}
 
 	// First check for specific relationship with this edict
 	int i;
-	for (i=0;i<m_Relationship.Count();i++) 
+	for ( i = 0; i < m_Relationship.Count(); i++ )
 	{
-		if (pTarget == (CBaseEntity *)m_Relationship[i].entity) 
+		if ( pTarget == (CBaseEntity*)m_Relationship[i].entity )
 		{
 			return &m_Relationship[i];
 		}
 	}
 
-	if (pTarget->Classify() != CLASS_NONE)
+	if ( pTarget->Classify() != CLASS_NONE )
 	{
 		// Then check for relationship with this edict's class
-		for (i=0;i<m_Relationship.Count();i++) 
+		for ( i = 0; i < m_Relationship.Count(); i++ )
 		{
-			if (pTarget->Classify() == m_Relationship[i].classType) 
+			if ( pTarget->Classify() == m_Relationship[i].classType )
 			{
 				return &m_Relationship[i];
 			}
 		}
 	}
-	
-	CBaseCombatCharacter *pBaseCombatCharacter = ToBaseCombatCharacter( pTarget );
-	if (pBaseCombatCharacter)
-	{
-		int nFaction = pBaseCombatCharacter->GetFaction();
-		if ( nFaction != FACTION_NONE )
-		{
-			// Then check for relationship with this edict's faction
-			for (i=0;i<m_Relationship.Count();i++) 
-			{
-				if (nFaction == m_Relationship[i].faction) 
-				{
-					return &m_Relationship[i];
-				}
-			}
-
-			if ( ( m_FactionRelationship ) && ( GetFaction() != FACTION_NONE ) )
-			{
-				return &m_FactionRelationship[ GetFaction() ][ nFaction ];
-			}
-		}
-	}
-
 	AllocateDefaultRelationships();
 	// If none found return the default
-	return &m_DefaultRelationship[ Classify() ][ pTarget->Classify() ];
+	return &m_DefaultRelationship[Classify()][pTarget->Classify()];
 }
 
 Disposition_t CBaseCombatCharacter::IRelationType ( CBaseEntity *pTarget )

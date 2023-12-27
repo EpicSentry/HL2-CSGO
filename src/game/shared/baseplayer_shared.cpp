@@ -3482,11 +3482,12 @@ bool CBasePlayer::IsCoach( void ) const
 
 int CBasePlayer::GetCoachingTeam( void ) const
 {
+	/*
 	if ( sv_coaching_enabled.GetBool() && ( GetTeamNumber() == TEAM_SPECTATOR ) )
 	{
 		return m_iCoachingTeam;
 	}
-	else
+	else*/
 	{ 
 		return 0;
 	}

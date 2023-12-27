@@ -854,20 +854,20 @@ void CNPC_MetroPolice::SpeakSentence( int nSentenceType )
 
 	if ( nSentenceType >= SENTENCE_BASE_BEHAVIOR_INDEX )
 	{
-		if ( GetRunningBehavior() == &m_FuncTankBehavior )
+		if ( GetPrimaryBehavior() == &m_FuncTankBehavior )
 		{
 			SpeakFuncTankSentence( nSentenceType );
 			return;
 		}
 
-		if ( GetRunningBehavior() == &m_StandoffBehavior )
+		if ( GetPrimaryBehavior() == &m_StandoffBehavior )
 		{
 			SpeakStandoffSentence( nSentenceType );
 			return;
 		}
 
 
-		if ( GetRunningBehavior() == &m_AssaultBehavior )
+		if ( GetPrimaryBehavior() == &m_AssaultBehavior )
 		{
 			SpeakAssaultSentence( nSentenceType );
 			return;

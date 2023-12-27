@@ -458,7 +458,7 @@ void CNPC_Antlion::Precache( void )
 
 	PrecacheScriptSound( "NPC_Antlion.RunOverByVehicle" );
 	PrecacheScriptSound( "NPC_Antlion.MeleeAttack" );
-	m_hFootstep = PrecacheScriptSound( "NPC_Antlion.Footstep" );
+	/*m_hFootstep = */PrecacheScriptSound("NPC_Antlion.Footstep");
 	PrecacheScriptSound( "NPC_Antlion.BurrowIn" );
 	PrecacheScriptSound( "NPC_Antlion.BurrowOut" );
 	PrecacheScriptSound( "NPC_Antlion.FootstepSoft" );
@@ -1155,7 +1155,7 @@ void CNPC_Antlion::HandleAnimEvent( animevent_t *pEvent )
 	if ( pEvent->Event() == AE_ANTLION_WALK_FOOTSTEP )
 	{
 		MakeAIFootstepSound( 240.0f );
-		EmitSound( "NPC_Antlion.Footstep", m_hFootstep, pEvent->eventtime );
+		EmitSound( "NPC_Antlion.Footstep", pEvent->eventtime );
 		return;
 	}
 

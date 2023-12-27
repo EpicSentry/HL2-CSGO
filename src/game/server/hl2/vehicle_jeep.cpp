@@ -907,7 +907,7 @@ void CPropJeep::FireCannon( void )
 
 #if defined( WIN32 ) && !defined( _X360 ) 
 	// NVNT apply a punch on fire
-	HapticPunch(m_hPlayer,0,0,hap_jeep_cannon_mag.GetFloat());
+	//HapticPunch(m_hPlayer,0,0,hap_jeep_cannon_mag.GetFloat());
 #endif
 	FireBulletsInfo_t info( 1, m_vecGunOrigin, aimDir, VECTOR_CONE_1DEGREES, MAX_TRACE_LENGTH, m_nAmmoType );
 

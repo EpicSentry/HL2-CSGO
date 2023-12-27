@@ -192,8 +192,8 @@ CBaseEntity *CGameRules::GetPlayerSpawnSpot(CBasePlayer *pPlayer)
 	pPlayer->SetLocalOrigin(pSpawnSpot->GetAbsOrigin() + Vector(0, 0, 1));
 	pPlayer->SetAbsVelocity(vec3_origin);
 	pPlayer->SetLocalAngles(pSpawnSpot->GetLocalAngles());
-	pPlayer->m_Local.m_vecPunchAngle = vec3_angle;
-	pPlayer->m_Local.m_vecPunchAngleVel = vec3_angle;
+	pPlayer->m_Local.m_aimPunchAngle = vec3_angle;
+	pPlayer->m_Local.m_aimPunchAngleVel = vec3_angle;
 	pPlayer->SnapEyeAngles(pSpawnSpot->GetLocalAngles());
 
 	return pSpawnSpot;
@@ -201,7 +201,7 @@ CBaseEntity *CGameRules::GetPlayerSpawnSpot(CBasePlayer *pPlayer)
 
 bool CGameRules::PlayerCanHearChat(CBasePlayer *pListener, CBasePlayer *pSpeaker)
 {
-	PlayerRelationship(pListener, pSpeaker) == GR_TEAMMATE;
+	return PlayerRelationship(pListener, pSpeaker) == GR_TEAMMATE;
 }
 
 // checks if the spot is clear of players
@@ -876,10 +876,4 @@ void CGameRules::ClientSettingsChanged(CBasePlayer *pPlayer)
 		pPlayer->SetHaptics(iHH != 0);
 	}
 }
-/*
-CTacticalMissionManager *CGameRules::TacticalMissionManagerFactory(void)
-{
-	return new CTacticalMissionManager;
-}
-*/
 #endif

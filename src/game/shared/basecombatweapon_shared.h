@@ -202,7 +202,6 @@ public:
 	virtual bool IsFollowingEntity() { return true; } // weapon world models are ALWAYS carried by players
 
 #else
-	virtual void HandleAnimEvent( animevent_t *pEvent );
 	virtual int  ShouldTransmit( const CCheckTransmitInfo *pInfo ) OVERRIDE;
 	virtual int	UpdateTransmitState() OVERRIDE;
 #endif
@@ -427,7 +426,7 @@ public:
 	const FileWeaponInfo_t	&GetWpnData( void ) const;
 	virtual const char		*GetViewModel( int viewmodelindex = 0 ) const;
 	virtual const char		*GetWorldModel( void ) const;
-	virtual const char		*GetWorldDroppedModel( void ) const;
+	//virtual const char		*GetWorldDroppedModel( void ) const;
 	virtual const char		*GetAnimPrefix( void ) const;
 	virtual int				GetMaxClip1( void ) const;
 	virtual int				GetMaxClip2( void ) const;
@@ -743,7 +742,7 @@ public:
 	virtual CStudioHdr			*OnNewModel() OVERRIDE;
 	void						ClassifyWeaponModel( void );
 	WeaponModelClassification_t	GetWeaponModelClassification( void );
-	void						VerifyAndSetContextSensitiveWeaponModel( void );
+	//void						VerifyAndSetContextSensitiveWeaponModel( void );
 
 private:
 	WeaponModelClassification_t m_WeaponModelClassification;

@@ -176,7 +176,7 @@ public:
 
 	const char* GetWorldModel( const CEconItemView* pWepView = NULL, int iTeam = 0 ) const;
 	const char* GetViewModel( const CEconItemView* pWepView = NULL, int iTeam = 0 ) const;
-	const char* GetWorldDroppedModel( const CEconItemView* pWepView = NULL, int iTeam = 0 ) const;
+	//const char* GetWorldDroppedModel( const CEconItemView* pWepView = NULL, int iTeam = 0 ) const;
 	const char* GetPrimaryAmmo( const CEconItemView* pWepView = NULL ) const;
 	
 	int GetPrimaryAmmoType( const CEconItemView* pWepView = NULL ) const;

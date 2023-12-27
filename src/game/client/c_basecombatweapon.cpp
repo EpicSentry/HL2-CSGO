@@ -473,7 +473,7 @@ IClientModelRenderable*	C_BaseCombatWeapon::GetClientModelRenderable()
 	if( IsFirstPersonSpectated() )
 		return NULL;
 
-	VerifyAndSetContextSensitiveWeaponModel();
+	//VerifyAndSetContextSensitiveWeaponModel();
 
 	return BaseClass::GetClientModelRenderable();
 }

@@ -873,7 +873,7 @@ void CHL2_Player::PreThink(void)
 	{
 		if ( IsZooming() )
 		{
-			if( GetActiveWeapon() && !GetActiveWeapon()->IsWeaponZoomed() )
+			if( GetActiveWeapon() && !GetActiveWeapon()->IsZoomed() )
 			{
 				// If not zoomed because of the weapon itself, do not attack.
 				m_nButtons &= ~(IN_ATTACK|IN_ATTACK2);
@@ -3360,7 +3360,7 @@ WeaponProficiency_t CHL2_Player::CalcWeaponProficiency( CBaseCombatWeapon *pWeap
 //-----------------------------------------------------------------------------
 // Purpose: override how single player rays hit the player
 //-----------------------------------------------------------------------------
-
+/* conn: hmm... im hoping commenting this won't fuck shit up in some barely noticeable way
 bool LineCircleIntersection(
 	const Vector2D &center,
 	const float radius,
@@ -3403,7 +3403,7 @@ bool LineCircleIntersection(
 
 	return true;
 }
-
+*/
 static void Collision_ClearTrace( const Vector &vecRayStart, const Vector &vecRayDelta, CBaseTrace *pTrace )
 {
 	pTrace->startpos = vecRayStart;
@@ -3415,7 +3415,7 @@ static void Collision_ClearTrace( const Vector &vecRayStart, const Vector &vecRa
 	pTrace->contents = 0;
 }
 
-
+/*
 bool IntersectRayWithAACylinder( const Ray_t &ray, 
 	const Vector &center, float radius, float height, CBaseTrace *pTrace )
 {
@@ -3493,7 +3493,7 @@ bool IntersectRayWithAACylinder( const Ray_t &ray,
 
 	return true;
 }
-
+*/
 
 bool CHL2_Player::TestHitboxes( const Ray_t &ray, unsigned int fContentsMask, trace_t& tr )
 {
@@ -3773,168 +3773,3 @@ void CHL2_Player::FirePlayerProxyOutput( const char *pszOutputName, variant_t va
 
 	GetPlayerProxy()->FireNamedOutput( pszOutputName, variant, pActivator, pCaller );
 }
-
-LINK_ENTITY_TO_CLASS( logic_playerproxy, CLogicPlayerProxy);
-
-BEGIN_DATADESC( CLogicPlayerProxy )
-	DEFINE_OUTPUT( m_OnFlashlightOn, "OnFlashlightOn" ),
-	DEFINE_OUTPUT( m_OnFlashlightOff, "OnFlashlightOff" ),
-	DEFINE_OUTPUT( m_RequestedPlayerHealth, "PlayerHealth" ),
-	DEFINE_OUTPUT( m_PlayerHasAmmo, "PlayerHasAmmo" ),
-	DEFINE_OUTPUT( m_PlayerHasNoAmmo, "PlayerHasNoAmmo" ),
-	DEFINE_OUTPUT( m_PlayerDied,	"PlayerDied" ),
-	DEFINE_OUTPUT( m_PlayerMissedAR2AltFire, "PlayerMissedAR2AltFire" ),
-	DEFINE_INPUTFUNC( FIELD_VOID,	"RequestPlayerHealth",	InputRequestPlayerHealth ),
-	DEFINE_INPUTFUNC( FIELD_VOID,	"SetFlashlightSlowDrain",	InputSetFlashlightSlowDrain ),
-	DEFINE_INPUTFUNC( FIELD_VOID,	"SetFlashlightNormalDrain",	InputSetFlashlightNormalDrain ),
-	DEFINE_INPUTFUNC( FIELD_INTEGER, "SetPlayerHealth",	InputSetPlayerHealth ),
-	DEFINE_INPUTFUNC( FIELD_VOID,	"RequestAmmoState", InputRequestAmmoState ),
-	DEFINE_INPUTFUNC( FIELD_VOID,	"LowerWeapon", InputLowerWeapon ),
-	DEFINE_INPUTFUNC( FIELD_VOID,	"EnableCappedPhysicsDamage", InputEnableCappedPhysicsDamage ),
-	DEFINE_INPUTFUNC( FIELD_VOID,	"DisableCappedPhysicsDamage", InputDisableCappedPhysicsDamage ),
-	DEFINE_INPUTFUNC( FIELD_STRING,	"SetLocatorTargetEntity", InputSetLocatorTargetEntity ),
-#ifdef PORTAL
-	DEFINE_INPUTFUNC( FIELD_VOID,	"SuppressCrosshair", InputSuppressCrosshair ),
-#endif // PORTAL
-	DEFINE_FIELD( m_hPlayer, FIELD_EHANDLE ),
-END_DATADESC()
-
-void CLogicPlayerProxy::Activate( void )
-{
-	BaseClass::Activate();
-
-	if ( m_hPlayer == NULL )
-	{
-		m_hPlayer = AI_GetSinglePlayer();
-	}
-}
-
-bool CLogicPlayerProxy::PassesDamageFilter( const CTakeDamageInfo &info )
-{
-	if (m_hDamageFilter)
-	{
-		CBaseFilter *pFilter = (CBaseFilter *)(m_hDamageFilter.Get());
-		return pFilter->PassesDamageFilter(info);
-	}
-
-	return true;
-}
-
-void CLogicPlayerProxy::InputSetPlayerHealth( inputdata_t &inputdata )
-{
-	if ( m_hPlayer == NULL )
-		return;
-
-	m_hPlayer->SetHealth( inputdata.value.Int() );
-
-}
-
-void CLogicPlayerProxy::InputRequestPlayerHealth( inputdata_t &inputdata )
-{
-	if ( m_hPlayer == NULL )
-		return;
-
-	m_RequestedPlayerHealth.Set( m_hPlayer->GetHealth(), inputdata.pActivator, inputdata.pCaller );
-}
-
-void CLogicPlayerProxy::InputSetFlashlightSlowDrain( inputdata_t &inputdata )
-{
-	if( m_hPlayer == NULL )
-		return;
-
-	CHL2_Player *pPlayer = dynamic_cast<CHL2_Player*>(m_hPlayer.Get());
-
-	if( pPlayer )
-		pPlayer->SetFlashlightPowerDrainScale( hl2_darkness_flashlight_factor.GetFloat() );
-}
-
-void CLogicPlayerProxy::InputSetFlashlightNormalDrain( inputdata_t &inputdata )
-{
-	if( m_hPlayer == NULL )
-		return;
-
-	CHL2_Player *pPlayer = dynamic_cast<CHL2_Player*>(m_hPlayer.Get());
-
-	if( pPlayer )
-		pPlayer->SetFlashlightPowerDrainScale( 1.0f );
-}
-
-void CLogicPlayerProxy::InputRequestAmmoState( inputdata_t &inputdata )
-{
-	if( m_hPlayer == NULL )
-		return;
-
-	CHL2_Player *pPlayer = dynamic_cast<CHL2_Player*>(m_hPlayer.Get());
-
-	for ( int i = 0 ; i < pPlayer->WeaponCount(); ++i )
-	{
-		CBaseCombatWeapon* pCheck = pPlayer->GetWeapon( i );
-
-		if ( pCheck )
-		{
-			if ( pCheck->HasAnyAmmo() && (pCheck->UsesPrimaryAmmo() || pCheck->UsesSecondaryAmmo()))
-			{
-				m_PlayerHasAmmo.FireOutput( this, this, 0 );
-				return;
-			}
-		}
-	}
-
-	m_PlayerHasNoAmmo.FireOutput( this, this, 0 );
-}
-
-void CLogicPlayerProxy::InputLowerWeapon( inputdata_t &inputdata )
-{
-	if( m_hPlayer == NULL )
-		return;
-
-	CHL2_Player *pPlayer = dynamic_cast<CHL2_Player*>(m_hPlayer.Get());
-
-	pPlayer->Weapon_Lower();
-}
-
-void CLogicPlayerProxy::InputEnableCappedPhysicsDamage( inputdata_t &inputdata )
-{
-	if( m_hPlayer == NULL )
-		return;
-
-	CHL2_Player *pPlayer = dynamic_cast<CHL2_Player*>(m_hPlayer.Get());
-	pPlayer->EnableCappedPhysicsDamage();
-}
-
-void CLogicPlayerProxy::InputDisableCappedPhysicsDamage( inputdata_t &inputdata )
-{
-	if( m_hPlayer == NULL )
-		return;
-
-	CHL2_Player *pPlayer = dynamic_cast<CHL2_Player*>(m_hPlayer.Get());
-	pPlayer->DisableCappedPhysicsDamage();
-}
-
-void CLogicPlayerProxy::InputSetLocatorTargetEntity( inputdata_t &inputdata )
-{
-	if( m_hPlayer == NULL )
-		return;
-
-	CBaseEntity *pTarget = NULL; // assume no target
-	string_t iszTarget = MAKE_STRING( inputdata.value.String() );
-
-	if( iszTarget != NULL_STRING )
-	{
-		pTarget = gEntList.FindEntityByName( NULL, iszTarget );
-	}
-
-	CHL2_Player *pPlayer = dynamic_cast<CHL2_Player*>(m_hPlayer.Get());
-	pPlayer->SetLocatorTargetEntity(pTarget);
-}
-
-#ifdef PORTAL
-void CLogicPlayerProxy::InputSuppressCrosshair( inputdata_t &inputdata )
-{
-	if( m_hPlayer == NULL )
-		return;
-
-	CPortal_Player *pPlayer = ToPortalPlayer(m_hPlayer.Get());
-	pPlayer->SuppressCrosshair( true );
-}
-#endif // PORTAL

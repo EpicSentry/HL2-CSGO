@@ -108,7 +108,7 @@ struct Relationship_t
 {
 	EHANDLE			entity;			// Relationship to a particular entity
 	Class_T			classType;		// Relationship to a class  CLASS_NONE = not class based (Def. in baseentity.h)
-	int				faction;		// Relationship to a faction FACTION_NONE = not faction based
+	// int				faction;		// Relationship to a faction FACTION_NONE = not faction based
 
 	Disposition_t	disposition;	// D_HT (Hate), D_FR (Fear), D_LI (Like), D_NT (Neutral)
 	int				priority;		// Relative importance of this relationship (higher numbers mean more important)
@@ -130,7 +130,7 @@ public:
 
 	DECLARE_SERVERCLASS();
 	DECLARE_DATADESC();
-	DECLARE_PREDICTABLE();
+	DECLARE_PREDICTABLE();	
 
 public:
 
@@ -392,22 +392,12 @@ public:
 	static void			InitInteractionSystem();
 
 	// Relationships
-	static void			SetDefaultFactionRelationship(int nFaction, int nFactionTarget, Disposition_t nDisposition, int nPriority);
-	Disposition_t		GetFactionRelationshipDisposition( int nFaction );
-	static void			AllocateDefaultRelationships( );
-	static void			AllocateDefaultFactionRelationships( );
-	static void			SetDefaultRelationship( Class_T nClass, Class_T nClassTarget,  Disposition_t nDisposition, int nPriority );
+	static void			AllocateDefaultRelationships();
+	static void			SetDefaultRelationship( Class_T nClass, Class_T nClassTarget, Disposition_t nDisposition, int nPriority );
 	Disposition_t		GetDefaultRelationshipDisposition( Class_T nClassTarget );
-	virtual void		AddEntityRelationship( CBaseEntity *pEntity, Disposition_t nDisposition, int nPriority );
-	virtual bool		RemoveEntityRelationship( CBaseEntity *pEntity );
+	virtual void		AddEntityRelationship( CBaseEntity* pEntity, Disposition_t nDisposition, int nPriority );
+	virtual bool		RemoveEntityRelationship( CBaseEntity* pEntity );
 	virtual void		AddClassRelationship( Class_T nClass, Disposition_t nDisposition, int nPriority );
-	virtual void		AddFactionRelationship(int nFaction, Disposition_t nDisposition, int nPriority);
-
-	// Factions
-	static int			GetNumFactions( void );
-	static CUtlVector<EHANDLE> *GetEntitiesInFaction( int nFaction );
-	int					GetFaction( void ) const { return m_nFaction; }
-	virtual void		ChangeFaction( int nNewFaction );
 
 	virtual void		ChangeTeam( int iTeamNum );
 

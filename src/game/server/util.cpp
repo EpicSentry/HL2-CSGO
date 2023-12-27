@@ -1593,7 +1593,7 @@ void UTIL_PlayerDecalTrace( trace_t *pTrace, Vector const &right, int playernum 
 	filter.SetIgnorePredictionCull( true );	// need to ignore prediction cull for the person who is spraying
 
 	te->PlayerDecal( filter, 0.0,
-		&pTrace->endpos, &pTrace->startpos, &right, playernum, pTrace->m_pEnt->entindex(), pTrace->hitbox );
+		&pTrace->endpos, playernum, pTrace->m_pEnt->entindex() );
 }
 
 bool UTIL_TeamsMatch( const char *pTeamName1, const char *pTeamName2 )

@@ -56,7 +56,7 @@
 
 #define GUNSHIP_NUM_DAMAGE_OUTPUTS		4
 
-extern short		g_sModelIndexFireball;		// holds the index for the fireball
+// extern short		g_sModelIndexFireball;		// holds the index for the fireball
 
 int g_iGunshipEffectIndex = -1;
 
@@ -1728,13 +1728,13 @@ void CNPC_CombineGunship::FireCannonRound( void )
 		FireBulletsInfo_t info( 1, vecMuzzle, vecToEnemy, vec3_origin, MAX_COORD_RANGE, m_iAmmoType );
 		info.m_iTracerFreq = 1;
 		CAmmoDef *pAmmoDef = GetAmmoDef();
-		info.m_iPlayerDamage = pAmmoDef->PlrDamage( m_iAmmoType );
+		info.m_flPlayerDamage = pAmmoDef->PlrDamage( m_iAmmoType );
 
 		// If we've already hit the player, do 0 damage. This ensures we don't hit the
 		// player multiple times during a single burst.
 		if ( m_iBurstHits >= GUNSHIP_MAX_HITS_PER_BURST )
 		{
-			info.m_iPlayerDamage = 1;
+			info.m_flPlayerDamage = 1;
 		}
 
 		FireBullets( info );

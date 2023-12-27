@@ -1611,8 +1611,6 @@ public:
 	virtual CAI_Enemies *GetEnemies( void );
 	virtual void		RemoveMemory( void );
 
-	virtual void		ChangeFaction( int nNewFaction );
-
 	virtual bool		UpdateEnemyMemory( CBaseEntity *pEnemy, const Vector &position, CBaseEntity *pInformer = NULL );
 	virtual float		GetReactionDelay( CBaseEntity *pEnemy );
 	
