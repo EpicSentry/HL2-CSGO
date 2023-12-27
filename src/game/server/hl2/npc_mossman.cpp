@@ -68,7 +68,7 @@ Class_T	CNPC_Mossman::Classify ( void )
 //-----------------------------------------------------------------------------
 void CNPC_Mossman::HandleAnimEvent( animevent_t *pEvent )
 {
-	switch( pEvent->event )
+	switch( pEvent->Event() )
 	{
 	case 1:
 	default:

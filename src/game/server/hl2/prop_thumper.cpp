@@ -232,7 +232,7 @@ void CPropThumper::Thump ( void )
 
 void CPropThumper::HandleAnimEvent( animevent_t *pEvent )
 {
-	if ( pEvent->event == AE_THUMPER_THUMP )
+	if ( pEvent->Event() == AE_THUMPER_THUMP )
 	{
 		Thump();
 		return;

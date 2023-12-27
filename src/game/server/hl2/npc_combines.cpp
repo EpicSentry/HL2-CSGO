@@ -222,7 +222,7 @@ float CNPC_CombineS::GetHitgroupDamageMultiplier( int iHitGroup, const CTakeDama
 //-----------------------------------------------------------------------------
 void CNPC_CombineS::HandleAnimEvent( animevent_t *pEvent )
 {
-	switch( pEvent->event )
+	switch( pEvent->Event() )
 	{
 	case AE_SOLDIER_BLOCK_PHYSICS:
 		DevMsg( "BLOCKING!\n" );

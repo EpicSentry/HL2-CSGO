@@ -370,7 +370,7 @@ void CCrossbowBolt::BoltTouch( CBaseEntity *pOther )
 			}
 			
 			// Shoot some sparks
-			if ( UTIL_PointContents( GetAbsOrigin() ) != CONTENTS_WATER)
+			if ( UTIL_PointContents_HL2( GetAbsOrigin() ) != CONTENTS_WATER)
 			{
 				g_pEffects->Sparks( GetAbsOrigin() );
 			}
@@ -919,7 +919,7 @@ void CWeaponCrossbow::SetChargerState( ChargerState_t state )
 //-----------------------------------------------------------------------------
 void CWeaponCrossbow::Operator_HandleAnimEvent( animevent_t *pEvent, CBaseCombatCharacter *pOperator )
 {
-	switch( pEvent->event )
+	switch( pEvent->Event() )
 	{
 	case EVENT_WEAPON_THROW:
 		SetChargerState( CHARGER_STATE_START_LOAD );

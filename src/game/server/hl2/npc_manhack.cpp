@@ -891,7 +891,7 @@ void CNPC_Manhack::OnStateChange( NPC_STATE OldState, NPC_STATE NewState )
 void CNPC_Manhack::HandleAnimEvent( animevent_t *pEvent )
 {
 	Vector vecNewVelocity;
-	switch( pEvent->event )
+	switch( pEvent->Event() )
 	{
 	case MANHACK_AE_START_ENGINE:
 		StartEye();
@@ -1939,7 +1939,7 @@ void CNPC_Manhack::MoveExecute_Alive(float flInterval)
 
 	if( m_flWaterSuspendTime > gpGlobals->curtime )
 	{ 
-		if( UTIL_PointContents( GetAbsOrigin() ) & (CONTENTS_WATER|CONTENTS_SLIME) )
+		if( UTIL_PointContents_HL2( GetAbsOrigin() ) & (CONTENTS_WATER|CONTENTS_SLIME) )
 		{
 			// Ooops, we're submerged somehow. Move upwards until our origin is out of the water.
 			m_vCurrentVelocity.z = 20.0;

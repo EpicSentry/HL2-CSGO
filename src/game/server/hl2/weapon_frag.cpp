@@ -147,7 +147,7 @@ void CWeaponFrag::Operator_HandleAnimEvent( animevent_t *pEvent, CBaseCombatChar
 	CBasePlayer *pOwner = ToBasePlayer( GetOwner() );
 	bool fThrewGrenade = false;
 
-	switch( pEvent->event )
+	switch( pEvent->Event() )
 	{
 		case EVENT_WEAPON_SEQUENCE_FINISHED:
 			m_fDrawbackFinished = true;

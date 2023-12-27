@@ -56,7 +56,7 @@ Class_T	CNPC_Kleiner::Classify ( void )
 //-----------------------------------------------------------------------------
 void CNPC_Kleiner::HandleAnimEvent( animevent_t *pEvent )
 {
-	switch( pEvent->event )
+	switch( pEvent->Event() )
 	{
 	case 1:
 	default:

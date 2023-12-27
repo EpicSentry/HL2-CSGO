@@ -69,7 +69,7 @@ void CWeapon357::Operator_HandleAnimEvent( animevent_t *pEvent, CBaseCombatChara
 {
 	CBasePlayer *pOwner = ToBasePlayer( GetOwner() );
 
-	switch( pEvent->event )
+	switch( pEvent->Event() )
 	{
 		case EVENT_WEAPON_RELOAD:
 			{

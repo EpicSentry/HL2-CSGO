@@ -211,7 +211,7 @@ void AvoidPushawayProps( CBaseCombatCharacter *pPlayer, CUserCmd *pCmd )
 	Vector rightdir;
 	if (g_pGameRules->IsTopDown())
 	{
-		AngleVectors( g_pGameRules->GetTopDownMovementAxis(), &currentdir, &rightdir, NULL );
+		//AngleVectors( g_pGameRules->GetTopDownMovementAxis(), &currentdir, &rightdir, NULL );
 	}
 	else
 	{

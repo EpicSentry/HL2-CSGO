@@ -61,7 +61,7 @@ float CMyNPC::MaxYawSpeed ( void )
 //=========================================================
 void CMyNPC::HandleAnimEvent( animevent_t *pEvent )
 {
-	switch( pEvent->event )
+	switch( pEvent->Event() )
 	{
 	case 0:
 	default:

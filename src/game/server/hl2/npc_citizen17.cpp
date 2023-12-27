@@ -1859,7 +1859,7 @@ Activity CNPC_Citizen::NPC_TranslateActivity( Activity activity )
 //------------------------------------------------------------------------------
 void CNPC_Citizen::HandleAnimEvent( animevent_t *pEvent )
 {
-	if ( pEvent->event == AE_CITIZEN_GET_PACKAGE )
+	if ( pEvent->Event() == AE_CITIZEN_GET_PACKAGE )
 	{
 		// Give the citizen a package
 		CBaseCombatWeapon *pWeapon = Weapon_Create( "weapon_citizenpackage" );
@@ -1874,7 +1874,7 @@ void CNPC_Citizen::HandleAnimEvent( animevent_t *pEvent )
 		}
 		return;
 	}
-	else if ( pEvent->event == AE_CITIZEN_HEAL )
+	else if ( pEvent->Event() == AE_CITIZEN_HEAL )
 	{
 		// Heal my target (if within range)
 #if HL2_EPISODIC
@@ -1898,7 +1898,7 @@ void CNPC_Citizen::HandleAnimEvent( animevent_t *pEvent )
 		return;
 	}
 
-	switch( pEvent->event )
+	switch( pEvent->Event() )
 	{
 	case NPC_EVENT_LEFTFOOT:
 		{

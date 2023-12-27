@@ -1386,7 +1386,7 @@ void CNPC_PlayerCompanion::HandleAnimEvent( animevent_t *pEvent )
 {
 #ifdef HL2_EPISODIC
 	// Create a flare and parent to our hand
-	if ( pEvent->event == AE_COMPANION_PRODUCE_FLARE )
+	if ( pEvent->Event() == AE_COMPANION_PRODUCE_FLARE )
 	{
 		m_hFlare = static_cast<CPhysicsProp *>(CreateEntityByName( "prop_physics" ));
 		if ( m_hFlare != NULL )
@@ -1403,7 +1403,7 @@ void CNPC_PlayerCompanion::HandleAnimEvent( animevent_t *pEvent )
 	}
 
 	// Start the flare up with proper fanfare
-	if ( pEvent->event == AE_COMPANION_LIGHT_FLARE )
+	if ( pEvent->Event() == AE_COMPANION_LIGHT_FLARE )
 	{
 		if ( m_hFlare != NULL )
 		{
@@ -1414,7 +1414,7 @@ void CNPC_PlayerCompanion::HandleAnimEvent( animevent_t *pEvent )
 	}
 
 	// Drop the flare to the ground
-	if ( pEvent->event == AE_COMPANION_RELEASE_FLARE )
+	if ( pEvent->Event() == AE_COMPANION_RELEASE_FLARE )
 	{
 		// Detach
 		m_hFlare->SetParent( NULL );
@@ -1444,7 +1444,7 @@ void CNPC_PlayerCompanion::HandleAnimEvent( animevent_t *pEvent )
 	}
 #endif // HL2_EPISODIC
 
-	switch( pEvent->event )
+	switch( pEvent->Event() )
 	{
 	case EVENT_WEAPON_RELOAD:
 		if ( GetActiveWeapon() )

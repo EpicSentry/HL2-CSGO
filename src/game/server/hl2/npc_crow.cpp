@@ -217,7 +217,7 @@ void CNPC_Crow::StopLoopingSounds( void )
 //-----------------------------------------------------------------------------
 void CNPC_Crow::HandleAnimEvent( animevent_t *pEvent )
 {
-	if ( pEvent->event == AE_CROW_TAKEOFF )
+	if ( pEvent->Event() == AE_CROW_TAKEOFF )
 	{
 		if ( GetNavigator()->GetPath()->GetCurWaypoint() )
 		{
@@ -226,7 +226,7 @@ void CNPC_Crow::HandleAnimEvent( animevent_t *pEvent )
 		return;
 	}
 
-	if( pEvent->event == AE_CROW_HOP )
+	if( pEvent->Event() == AE_CROW_HOP )
 	{
 		SetGroundEntity( NULL );
 
@@ -282,7 +282,7 @@ void CNPC_Crow::HandleAnimEvent( animevent_t *pEvent )
 		return;
 	}
 
-	if( pEvent->event == AE_CROW_FLY )
+	if( pEvent->Event() == AE_CROW_FLY )
 	{
 		//
 		// Start flying.

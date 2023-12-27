@@ -485,7 +485,7 @@ Activity CNPC_CScanner::NPC_TranslateActivity( Activity eNewActivity )
 //-----------------------------------------------------------------------------
 void CNPC_CScanner::HandleAnimEvent( animevent_t *pEvent )
 {
-	if( pEvent->event == AE_SCANNER_CLOSED )
+	if( pEvent->Event() == AE_SCANNER_CLOSED )
 	{
 		m_bIsOpen = false;
 		SetActivity( ACT_IDLE );

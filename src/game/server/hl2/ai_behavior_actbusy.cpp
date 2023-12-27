@@ -952,12 +952,12 @@ Activity CAI_ActBusyBehavior::NPC_TranslateActivity( Activity nActivity )
 //-----------------------------------------------------------------------------
 void CAI_ActBusyBehavior::HandleAnimEvent( animevent_t *pEvent )
 {
-	if( pEvent->event == AE_ACTBUSY_WEAPON_FIRE_ON )
+	if( pEvent->Event() == AE_ACTBUSY_WEAPON_FIRE_ON )
 	{
 		m_bAutoFireWeapon = true;
 		return;
 	}
-	else if( pEvent->event == AE_ACTBUSY_WEAPON_FIRE_OFF )
+	else if( pEvent->Event() == AE_ACTBUSY_WEAPON_FIRE_OFF )
 	{
 		m_bAutoFireWeapon = false;
 		return;

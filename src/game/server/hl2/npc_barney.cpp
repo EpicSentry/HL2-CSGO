@@ -162,7 +162,7 @@ void CNPC_Barney::Weapon_Equip( CBaseCombatWeapon *pWeapon )
 //---------------------------------------------------------
 void CNPC_Barney::HandleAnimEvent( animevent_t *pEvent )
 {
-	switch( pEvent->event )
+	switch( pEvent->Event() )
 	{
 	case NPC_EVENT_LEFTFOOT:
 		{

@@ -399,12 +399,12 @@ void CPropVehiclePrisonerPod::InputClose( inputdata_t &inputdata )
 //-----------------------------------------------------------------------------
 void CPropVehiclePrisonerPod::HandleAnimEvent( animevent_t *pEvent )
 {
-	if ( pEvent->event == AE_POD_OPEN )
+	if ( pEvent->Event() == AE_POD_OPEN )
 	{
 		m_OnOpen.FireOutput( this, this );
 		m_bLocked = false;
 	}
-	else if ( pEvent->event == AE_POD_CLOSE )
+	else if ( pEvent->Event() == AE_POD_CLOSE )
 	{
 		m_OnClose.FireOutput( this, this );
 		m_bLocked = true;

@@ -347,7 +347,7 @@ Vector CNPC_Monk::GetActualShootTrajectory( const Vector &shootOrigin )
 //-----------------------------------------------------------------------------
 void CNPC_Monk::HandleAnimEvent( animevent_t *pEvent )
 {
-	switch( pEvent->event )
+	switch( pEvent->Event() )
 	{
 		case NPC_EVENT_LEFTFOOT:
 			{

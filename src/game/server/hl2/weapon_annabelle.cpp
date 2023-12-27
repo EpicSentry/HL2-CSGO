@@ -112,7 +112,7 @@ void CWeaponAnnabelle::Precache( void )
 //-----------------------------------------------------------------------------
 void CWeaponAnnabelle::Operator_HandleAnimEvent( animevent_t *pEvent, CBaseCombatCharacter *pOperator )
 {
-	switch( pEvent->event )
+	switch( pEvent->Event() )
 	{
 		case EVENT_WEAPON_SHOTGUN_FIRE:
 		{

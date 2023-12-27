@@ -1000,7 +1000,7 @@ void CNPC_Stalker::DrawAttackBeam(void)
 
 	CalcBeamPosition();
 
-	bool bInWater = (UTIL_PointContents ( tr.endpos ) & MASK_WATER)?true:false;
+	bool bInWater = (UTIL_PointContents_HL2 ( tr.endpos ) & MASK_WATER)?true:false;
 	// ---------------------------------------------
 	//	Update the beam position
 	// ---------------------------------------------
@@ -1244,7 +1244,7 @@ int CNPC_Stalker::RangeAttack1Conditions( float flDot, float flDist )
 //-----------------------------------------------------------------------------
 void CNPC_Stalker::HandleAnimEvent( animevent_t *pEvent )
 {
-	switch( pEvent->event )
+	switch( pEvent->Event() )
 	{
 		case NPC_EVENT_LEFTFOOT:
 			{

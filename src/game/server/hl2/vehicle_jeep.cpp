@@ -535,7 +535,7 @@ bool CPropJeep::CheckWater( void )
 		// Check to see if we hit water.
 		if ( pWheel->GetContactPoint( &m_WaterData.m_vecWheelContactPoints[iWheel], NULL ) )
 		{
-			m_WaterData.m_bWheelInWater[iWheel] = ( UTIL_PointContents( m_WaterData.m_vecWheelContactPoints[iWheel] ) & MASK_WATER ) ? true : false;
+			m_WaterData.m_bWheelInWater[iWheel] = ( UTIL_PointContents_HL2( m_WaterData.m_vecWheelContactPoints[iWheel] ) & MASK_WATER ) ? true : false;
 			if ( m_WaterData.m_bWheelInWater[iWheel] )
 			{
 				bInWater = true;
@@ -549,7 +549,7 @@ bool CPropJeep::CheckWater( void )
 	QAngle vecEngineAngles;
 	GetAttachment( iEngine, vecEnginePoint, vecEngineAngles );
 
-	m_WaterData.m_bBodyInWater = ( UTIL_PointContents( vecEnginePoint ) & MASK_WATER ) ? true : false;
+	m_WaterData.m_bBodyInWater = ( UTIL_PointContents_HL2( vecEnginePoint ) & MASK_WATER ) ? true : false;
 	if ( m_WaterData.m_bBodyInWater )
 	{
 		if ( m_bHasPoop )
@@ -603,7 +603,7 @@ void CPropJeep::CheckWaterLevel( void )
 		vecUp.z = clamp( vecUp.z, 0.0f, vecUp.z );
 		vecAttachPoint.z += r_JeepViewZHeight.GetFloat() * vecUp.z;
 
-		bool bEyes = ( UTIL_PointContents( vecAttachPoint ) & MASK_WATER ) ? true : false;
+		bool bEyes = ( UTIL_PointContents_HL2( vecAttachPoint ) & MASK_WATER ) ? true : false;
 		if ( bEyes )
 		{
 			pPlayer->SetWaterLevel( WL_Eyes );
@@ -620,7 +620,7 @@ void CPropJeep::CheckWaterLevel( void )
 		// Check feet. (vehicle_feet_passenger0 point)
 		iAttachment = LookupAttachment( "vehicle_feet_passenger0" );
 		GetAttachment( iAttachment, vecAttachPoint, vecAttachAngles );
-		bool bFeet = ( UTIL_PointContents( vecAttachPoint ) & MASK_WATER ) ? true : false;
+		bool bFeet = ( UTIL_PointContents_HL2( vecAttachPoint ) & MASK_WATER ) ? true : false;
 		if ( bFeet )
 		{
 			pPlayer->SetWaterLevel( WL_Feet );

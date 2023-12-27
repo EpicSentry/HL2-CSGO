@@ -9013,7 +9013,7 @@ float CBasePlayer::GetStickDist()
 //-----------------------------------------------------------------------------
 void CBasePlayer::HandleAnimEvent( animevent_t *pEvent )
 {
-	int nEvent = pEvent->event();
+	int nEvent = pEvent->Event();
 
 	if ((pEvent->type & AE_TYPE_NEWEVENTSYSTEM) && (pEvent->type & AE_TYPE_SERVER))
 	{

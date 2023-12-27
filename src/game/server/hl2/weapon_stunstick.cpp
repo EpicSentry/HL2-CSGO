@@ -183,7 +183,7 @@ void CWeaponStunStick::ImpactEffect( trace_t &traceHit )
 
 void CWeaponStunStick::Operator_HandleAnimEvent( animevent_t *pEvent, CBaseCombatCharacter *pOperator )
 {
-	switch( pEvent->event )
+	switch( pEvent->Event() )
 	{
 		case EVENT_WEAPON_MELEE_HIT:
 		{

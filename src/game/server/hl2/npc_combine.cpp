@@ -2318,19 +2318,19 @@ void CNPC_Combine::HandleAnimEvent( animevent_t *pEvent )
 
 	if (pEvent->type & AE_TYPE_NEWEVENTSYSTEM)
 	{
-		if ( pEvent->event == COMBINE_AE_BEGIN_ALTFIRE )
+		if ( pEvent->Event() == COMBINE_AE_BEGIN_ALTFIRE )
 		{
 			EmitSound( "Weapon_CombineGuard.Special1" );
 			handledEvent = true;
 		}
-		else if ( pEvent->event == COMBINE_AE_ALTFIRE )
+		else if ( pEvent->Event() == COMBINE_AE_ALTFIRE )
 		{
 			if( IsElite() )
 			{
 				animevent_t fakeEvent;
 
 				fakeEvent.pSource = this;
-				fakeEvent.event = EVENT_WEAPON_AR2_ALTFIRE;
+				fakeEvent.Event = EVENT_WEAPON_AR2_ALTFIRE;
 				GetActiveWeapon()->Operator_HandleAnimEvent( &fakeEvent, this );
 
 				// Stop other squad members from combine balling for a while.
@@ -2355,7 +2355,7 @@ void CNPC_Combine::HandleAnimEvent( animevent_t *pEvent )
 	}
 	else
 	{
-		switch( pEvent->event )
+		switch( pEvent->Event() )
 		{
 		case COMBINE_AE_AIM:	
 			{
@@ -2481,7 +2481,7 @@ void CNPC_Combine::HandleAnimEvent( animevent_t *pEvent )
 
 	if( handledEvent )
 	{
-		m_iLastAnimEventHandled = pEvent->event;
+		m_iLastAnimEventHandled = pEvent->Event();
 	}
 }
 

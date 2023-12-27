@@ -111,6 +111,8 @@ public:
 	virtual int		Damage_GetNoPhysicsForce( void );
 	virtual int		Damage_GetShouldNotBleed( void );
 
+	static void DetermineMapCycleFilename(char *pszResult, int nSizeResult, bool bForceSpew);
+
 	CMultiplayRules();
 	virtual ~CMultiplayRules() {}
 
@@ -231,6 +233,7 @@ public:
 protected:
 	virtual bool UseSuicidePenalty() { return true; }		// apply point penalty for suicide?
 	virtual void GetNextLevelName( char *szNextMap, int bufsize, bool bRandom = false );
+	virtual void LoadMapCycleFile(void);
 	virtual void ChangeLevel( void );
 	virtual void GoToIntermission( void );
 	float GetIntermissionDuration() const;

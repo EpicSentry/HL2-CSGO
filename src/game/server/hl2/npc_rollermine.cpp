@@ -2524,7 +2524,7 @@ void CNPC_RollerMine::Explode( void )
 	}
 
 	// Underwater explosion?
-	if ( UTIL_PointContents( GetAbsOrigin() ) & MASK_WATER )
+	if ( UTIL_PointContents_HL2( GetAbsOrigin() ) & MASK_WATER )
 	{
 		CEffectData	data;
 		data.m_vOrigin = WorldSpaceCenter();
@@ -2596,11 +2596,11 @@ void CNPC_RollerMine::EmbedOnGroundImpact()
 void CNPC_RollerMine::PrescheduleThink()
 {
 	// Are we underwater?
-	if ( UTIL_PointContents( GetAbsOrigin() ) & MASK_WATER )
+	if ( UTIL_PointContents_HL2( GetAbsOrigin() ) & MASK_WATER )
 	{
 		// As soon as we're far enough underwater, detonate
 		Vector vecAboveMe = GetAbsOrigin() + Vector(0,0,64);
-		if ( UTIL_PointContents( vecAboveMe ) & MASK_WATER )
+		if ( UTIL_PointContents_HL2( vecAboveMe ) & MASK_WATER )
 		{
 			Explode();
 			return;

@@ -49,7 +49,7 @@ Class_T	CNPC_Alyx::Classify ( void )
 //=========================================================
 void CNPC_Alyx::HandleAnimEvent( animevent_t *pEvent )
 {
-	if (pEvent->event == AE_ALYX_EMPTOOL_ATTACHMENT)
+	if (pEvent->Event() == AE_ALYX_EMPTOOL_ATTACHMENT)
 	{
 		if (!m_hEmpTool)
 		{
@@ -66,7 +66,7 @@ void CNPC_Alyx::HandleAnimEvent( animevent_t *pEvent )
 
 		return;
 	}
-	else if (pEvent->event == AE_ALYX_EMPTOOL_SEQUENCE)
+	else if (pEvent->Event() == AE_ALYX_EMPTOOL_SEQUENCE)
 	{
 		if (!m_hEmpTool)
 			return;
@@ -85,7 +85,7 @@ void CNPC_Alyx::HandleAnimEvent( animevent_t *pEvent )
 		return;
 	}
 
-	switch( pEvent->event )
+	switch( pEvent->Event() )
 	{
 	case 1:
 	default:

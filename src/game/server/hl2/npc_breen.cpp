@@ -55,7 +55,7 @@ Class_T	CNPC_Breen::Classify ( void )
 //-----------------------------------------------------------------------------
 void CNPC_Breen::HandleAnimEvent( animevent_t *pEvent )
 {
-	switch( pEvent->event )
+	switch( pEvent->Event() )
 	{
 	case 1:
 	default:

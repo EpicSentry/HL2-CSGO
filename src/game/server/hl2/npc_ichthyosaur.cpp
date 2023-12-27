@@ -1010,7 +1010,7 @@ int CNPC_Ichthyosaur::MeleeAttack1Conditions( float flDot, float flDist )
 //-----------------------------------------------------------------------------
 void CNPC_Ichthyosaur::HandleAnimEvent( animevent_t *pEvent )
 {
-	switch ( pEvent->event )
+	switch ( pEvent->Event() )
 	{
 	case ICH_AE_BITE:
 		Bite();

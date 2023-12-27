@@ -15,7 +15,7 @@
 #ifdef _WIN32
 #pragma once
 #endif
-
+typedef short HSOUNDSCRIPTHANDLE;
 
 //-----------------------------------------------------------------------------
 // Important enumerations

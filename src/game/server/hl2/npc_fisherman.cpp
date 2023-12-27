@@ -170,15 +170,15 @@ Class_T	CNPC_Fisherman::Classify( void )
 //---------------------------------------------------------
 void CNPC_Fisherman::HandleAnimEvent( animevent_t *pEvent )
 {
-	if ( pEvent->event == NPC_EVENT_LEFTFOOT )
+	if ( pEvent->Event() == NPC_EVENT_LEFTFOOT )
 	{
 		EmitSound( "NPC_Fisherman.FootstepLeft", pEvent->eventtime );
 	}
-	else if ( pEvent->event == NPC_EVENT_RIGHTFOOT )
+	else if ( pEvent->Event() == NPC_EVENT_RIGHTFOOT )
 	{
 		EmitSound( "NPC_Fisherman.FootstepRight", pEvent->eventtime );
 	}
-	else if ( pEvent->event == AE_FISHERMAN_HAT_UP )
+	else if ( pEvent->Event() == AE_FISHERMAN_HAT_UP )
 	{
 		if (m_iHatLayer != -1)
 		{
@@ -189,7 +189,7 @@ void CNPC_Fisherman::HandleAnimEvent( animevent_t *pEvent )
 		m_iHatState = ACT_FISHERMAN_HAT_UP;
 		m_iHatLayer = AddGesture( (Activity)m_iHatState, false );
 	}
-	else if ( pEvent->event == AE_FISHERMAN_HAT_DOWN )
+	else if ( pEvent->Event() == AE_FISHERMAN_HAT_DOWN )
 	{
 		if (m_iHatLayer != -1)
 		{
@@ -200,11 +200,11 @@ void CNPC_Fisherman::HandleAnimEvent( animevent_t *pEvent )
 		m_iHatState = ACT_FISHERMAN_HAT_DOWN;
 		m_iHatLayer = AddGesture( (Activity)m_iHatState, false );
 	}
-	else if ( pEvent->event == AE_FISHERMAN_HAT_ON )
+	else if ( pEvent->Event() == AE_FISHERMAN_HAT_ON )
 	{
 		m_iHatLayer = AddGesture( (Activity)m_iHatState, false );
 	}
-	else if ( pEvent->event == AE_FISHERMAN_HAT_OFF )
+	else if ( pEvent->Event() == AE_FISHERMAN_HAT_OFF )
 	{
 		if (m_iHatLayer != -1)
 		{

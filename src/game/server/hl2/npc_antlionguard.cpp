@@ -1691,7 +1691,7 @@ void CNPC_AntlionGuard::GetPhysicsShoveDir( CBaseEntity *pObject, float flMass, 
 //-----------------------------------------------------------------------------
 void CNPC_AntlionGuard::HandleAnimEvent( animevent_t *pEvent )
 {
-	if ( pEvent->event == AE_ANTLIONGUARD_CHARGE_EARLYOUT )
+	if ( pEvent->Event() == AE_ANTLIONGUARD_CHARGE_EARLYOUT )
 	{
 		// Robin: Removed this because it usually made him look less intelligent, not more.
 		//		  This code left here so we don't get warnings in the console.
@@ -1714,7 +1714,7 @@ void CNPC_AntlionGuard::HandleAnimEvent( animevent_t *pEvent )
 		return;
 	}
 
-	if ( pEvent->event == AE_ANTLIONGUARD_SHOVE_PHYSOBJECT )
+	if ( pEvent->Event() == AE_ANTLIONGUARD_SHOVE_PHYSOBJECT )
 	{
 		if ( m_hPhysicsTarget == NULL )
 		{
@@ -1839,7 +1839,7 @@ void CNPC_AntlionGuard::HandleAnimEvent( animevent_t *pEvent )
 		return;
 	}
 	
-	if ( pEvent->event == AE_ANTLIONGUARD_CHARGE_HIT )
+	if ( pEvent->Event() == AE_ANTLIONGUARD_CHARGE_HIT )
 	{
 		UTIL_ScreenShake( GetAbsOrigin(), 32.0f, 4.0f, 1.0f, 512, SHAKE_START );
 		EmitSound( "NPC_AntlionGuard.HitHard" );
@@ -1876,14 +1876,14 @@ void CNPC_AntlionGuard::HandleAnimEvent( animevent_t *pEvent )
 		return;
 	}
 
-	if ( pEvent->event == AE_ANTLIONGUARD_SHOVE )
+	if ( pEvent->Event() == AE_ANTLIONGUARD_SHOVE )
 	{
 		EmitSound("NPC_AntlionGuard.StepLight", pEvent->eventtime );
 		Shove();
 		return;
 	}
 
-	if ( pEvent->event == AE_ANTLIONGUARD_FOOTSTEP_LIGHT )
+	if ( pEvent->Event() == AE_ANTLIONGUARD_FOOTSTEP_LIGHT )
 	{
 		if ( HasSpawnFlags(SF_ANTLIONGUARD_INSIDE_FOOTSTEPS) )
 		{
@@ -1904,7 +1904,7 @@ void CNPC_AntlionGuard::HandleAnimEvent( animevent_t *pEvent )
 		return;
 	}
 
-	if ( pEvent->event == AE_ANTLIONGUARD_FOOTSTEP_HEAVY )
+	if ( pEvent->Event() == AE_ANTLIONGUARD_FOOTSTEP_HEAVY )
 	{
 		if ( HasSpawnFlags(SF_ANTLIONGUARD_INSIDE_FOOTSTEPS) )
 		{
@@ -1925,7 +1925,7 @@ void CNPC_AntlionGuard::HandleAnimEvent( animevent_t *pEvent )
 		return;
 	}
 	
-	if ( pEvent->event == AE_ANTLIONGUARD_VOICE_GROWL )
+	if ( pEvent->Event() == AE_ANTLIONGUARD_VOICE_GROWL )
 	{
 		StartSounds();
 
@@ -1954,7 +1954,7 @@ void CNPC_AntlionGuard::HandleAnimEvent( animevent_t *pEvent )
 	}
 		
 
-	if ( pEvent->event == AE_ANTLIONGUARD_VOICE_BARK )
+	if ( pEvent->Event() == AE_ANTLIONGUARD_VOICE_BARK )
 	{
 		StartSounds();
 
@@ -1970,7 +1970,7 @@ void CNPC_AntlionGuard::HandleAnimEvent( animevent_t *pEvent )
 		return;
 	}
 	
-	if ( pEvent->event == AE_ANTLIONGUARD_VOICE_ROAR )
+	if ( pEvent->Event() == AE_ANTLIONGUARD_VOICE_ROAR )
 	{
 		StartSounds();
 
@@ -1987,7 +1987,7 @@ void CNPC_AntlionGuard::HandleAnimEvent( animevent_t *pEvent )
 		return;
 	}
 
-	if ( pEvent->event == AE_ANTLIONGUARD_VOICE_PAIN )
+	if ( pEvent->Event() == AE_ANTLIONGUARD_VOICE_PAIN )
 	{
 		StartSounds();
 
@@ -2001,7 +2001,7 @@ void CNPC_AntlionGuard::HandleAnimEvent( animevent_t *pEvent )
 		return;
 	}
 
-	if ( pEvent->event == AE_ANTLIONGUARD_VOICE_SQUEEZE )
+	if ( pEvent->Event() == AE_ANTLIONGUARD_VOICE_SQUEEZE )
 	{	
 		StartSounds();
 
@@ -2018,7 +2018,7 @@ void CNPC_AntlionGuard::HandleAnimEvent( animevent_t *pEvent )
 		return;
 	}
 
-	if ( pEvent->event == AE_ANTLIONGUARD_VOICE_SCRATCH )
+	if ( pEvent->Event() == AE_ANTLIONGUARD_VOICE_SCRATCH )
 	{	
 		StartSounds();
 
@@ -2035,7 +2035,7 @@ void CNPC_AntlionGuard::HandleAnimEvent( animevent_t *pEvent )
 		return;
 	}
 		
-	if ( pEvent->event == AE_ANTLIONGUARD_VOICE_GRUNT )
+	if ( pEvent->Event() == AE_ANTLIONGUARD_VOICE_GRUNT )
 	{	
 		StartSounds();
 
@@ -2049,7 +2049,7 @@ void CNPC_AntlionGuard::HandleAnimEvent( animevent_t *pEvent )
 		return;
 	}
 
-	if ( pEvent->event == AE_ANTLIONGUARD_BURROW_OUT )
+	if ( pEvent->Event() == AE_ANTLIONGUARD_BURROW_OUT )
 	{
 		EmitSound( "NPC_Antlion.BurrowOut" );
 

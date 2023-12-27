@@ -1855,7 +1855,7 @@ void CNPC_Strider::HandleAnimEvent( animevent_t *pEvent )
 {
 	Vector footPosition;
 
-	switch( pEvent->event )
+	switch( pEvent->Event() )
 	{
 	case STRIDER_AE_DIE:
 		{
@@ -2788,7 +2788,7 @@ void CNPC_Strider::DoImpactEffect( trace_t &tr, int nDamageType )
 
 		Vector vecReTrace = tr.endpos + vecDir * 12;
 
-		if( UTIL_PointContents( vecReTrace ) == CONTENTS_EMPTY )
+		if( UTIL_PointContents_HL2( vecReTrace ) == CONTENTS_EMPTY )
 		{
 			AI_TraceLine( vecReTrace, vecReTrace - vecDir * 24, MASK_SHOT, NULL, COLLISION_GROUP_NONE, &retrace );
 
@@ -4386,7 +4386,7 @@ void CNPC_Strider::FootFX( const Vector &origin )
 	AI_TraceLine( origin + Vector(0, 0, 48), origin - Vector(0,0,100), MASK_SOLID_BRUSHONLY, this, COLLISION_GROUP_NONE, &tr );
 	float yaw = random->RandomInt(0,120);
 	
-	if ( UTIL_PointContents( tr.endpos + Vector( 0, 0, 1 ) ) & MASK_WATER )
+	if ( UTIL_PointContents_HL2( tr.endpos + Vector( 0, 0, 1 ) ) & MASK_WATER )
 	{
 		float flWaterZ = UTIL_FindWaterSurface( tr.endpos, tr.endpos.z, tr.endpos.z + 100.0f );
 

@@ -204,7 +204,7 @@ void CWeaponShotgun::Operator_ForceNPCFire( CBaseCombatCharacter *pOperator, boo
 //-----------------------------------------------------------------------------
 void CWeaponShotgun::Operator_HandleAnimEvent( animevent_t *pEvent, CBaseCombatCharacter *pOperator )
 {
-	switch( pEvent->event )
+	switch( pEvent->Event() )
 	{
 		case EVENT_WEAPON_SHOTGUN_FIRE:
 		{

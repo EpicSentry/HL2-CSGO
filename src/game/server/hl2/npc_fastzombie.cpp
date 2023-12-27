@@ -1048,7 +1048,7 @@ int CFastZombie::RangeAttack1Conditions( float flDot, float flDist )
 //-----------------------------------------------------------------------------
 void CFastZombie::HandleAnimEvent( animevent_t *pEvent )
 {
-	if ( pEvent->event == AE_FASTZOMBIE_CLIMB_LEFT || pEvent->event == AE_FASTZOMBIE_CLIMB_RIGHT )
+	if ( pEvent->Event() == AE_FASTZOMBIE_CLIMB_LEFT || pEvent->Event() == AE_FASTZOMBIE_CLIMB_RIGHT )
 	{
 		if( ++m_iClimbCount % 3 == 0 )
 		{
@@ -1059,25 +1059,25 @@ void CFastZombie::HandleAnimEvent( animevent_t *pEvent )
 		return;
 	}
 
-	if ( pEvent->event == AE_FASTZOMBIE_LEAP )
+	if ( pEvent->Event() == AE_FASTZOMBIE_LEAP )
 	{
 		LeapAttack();
 		return;
 	}
 	
-	if ( pEvent->event == AE_FASTZOMBIE_GALLOP_LEFT )
+	if ( pEvent->Event() == AE_FASTZOMBIE_GALLOP_LEFT )
 	{
 		EmitSound( "NPC_FastZombie.GallopLeft" );
 		return;
 	}
 
-	if ( pEvent->event == AE_FASTZOMBIE_GALLOP_RIGHT )
+	if ( pEvent->Event() == AE_FASTZOMBIE_GALLOP_RIGHT )
 	{
 		EmitSound( "NPC_FastZombie.GallopRight" );
 		return;
 	}
 	
-	if ( pEvent->event == AE_ZOMBIE_ATTACK_RIGHT )
+	if ( pEvent->Event() == AE_ZOMBIE_ATTACK_RIGHT )
 	{
 		Vector right;
 		AngleVectors( GetLocalAngles(), NULL, &right, NULL );
@@ -1088,7 +1088,7 @@ void CFastZombie::HandleAnimEvent( animevent_t *pEvent )
 		return;
 	}
 
-	if ( pEvent->event == AE_ZOMBIE_ATTACK_LEFT )
+	if ( pEvent->Event() == AE_ZOMBIE_ATTACK_LEFT )
 	{
 		Vector right;
 		AngleVectors( GetLocalAngles(), NULL, &right, NULL );
@@ -1102,14 +1102,14 @@ void CFastZombie::HandleAnimEvent( animevent_t *pEvent )
 #ifdef HL2_EPISODIC
 
 	// Do the leap attack
-	if ( pEvent->event == AE_FASTZOMBIE_VEHICLE_LEAP )
+	if ( pEvent->Event() == AE_FASTZOMBIE_VEHICLE_LEAP )
 	{
 		VehicleLeapAttack();
 		return;
 	}
 
 	// Die while doing an SS in a vehicle
-	if ( pEvent->event == AE_FASTZOMBIE_VEHICLE_SS_DIE )
+	if ( pEvent->Event() == AE_FASTZOMBIE_VEHICLE_SS_DIE )
 	{
 		if ( IsInAVehicle() )
 		{

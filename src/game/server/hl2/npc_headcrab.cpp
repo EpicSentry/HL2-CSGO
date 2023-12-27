@@ -599,7 +599,7 @@ void CBaseHeadcrab::JumpAttack( bool bRandomJump, const Vector &vecPos, bool bTh
 //-----------------------------------------------------------------------------
 void CBaseHeadcrab::HandleAnimEvent( animevent_t *pEvent )
 {
-	if ( pEvent->event == AE_HEADCRAB_JUMPATTACK )
+	if ( pEvent->Event() == AE_HEADCRAB_JUMPATTACK )
 	{
 		// Ignore if we're in mid air
 		if ( m_bMidJump )
@@ -631,7 +631,7 @@ void CBaseHeadcrab::HandleAnimEvent( animevent_t *pEvent )
 		return;
 	}
 	
-	if ( pEvent->event == AE_HEADCRAB_CEILING_DETACH )
+	if ( pEvent->Event() == AE_HEADCRAB_CEILING_DETACH )
 	{
 		SetMoveType( MOVETYPE_STEP );
 		RemoveFlag( FL_ONGROUND );
@@ -640,7 +640,7 @@ void CBaseHeadcrab::HandleAnimEvent( animevent_t *pEvent )
 		SetAbsVelocity( Vector ( 0, 0, -128 ) );
 		return;
 	}
-	if ( pEvent->event == AE_HEADCRAB_JUMP_TELEGRAPH )
+	if ( pEvent->Event() == AE_HEADCRAB_JUMP_TELEGRAPH )
 	{
 		TelegraphSound();
 
@@ -657,7 +657,7 @@ void CBaseHeadcrab::HandleAnimEvent( animevent_t *pEvent )
 		return;
 	}
 
-	if ( pEvent->event == AE_HEADCRAB_BURROW_IN )
+	if ( pEvent->Event() == AE_HEADCRAB_BURROW_IN )
 	{
 		EmitSound( "NPC_Headcrab.BurrowIn" );
 		CreateDust();
@@ -665,13 +665,13 @@ void CBaseHeadcrab::HandleAnimEvent( animevent_t *pEvent )
 		return;
 	}
 
-	if ( pEvent->event == AE_HEADCRAB_BURROW_IN_FINISH )
+	if ( pEvent->Event() == AE_HEADCRAB_BURROW_IN_FINISH )
 	{
 		SetBurrowed( true );
 		return;
 	}
 
-	if ( pEvent->event == AE_HEADCRAB_BURROW_OUT )
+	if ( pEvent->Event() == AE_HEADCRAB_BURROW_OUT )
 	{
 		Assert( m_bBurrowed );
 		if ( m_bBurrowed )
@@ -3423,7 +3423,7 @@ void CBlackHeadcrab::JumpFlinch( const Vector *pvecDir )
 //-----------------------------------------------------------------------------
 void CBlackHeadcrab::HandleAnimEvent( animevent_t *pEvent )
 {
-	if ( pEvent->event == AE_POISONHEADCRAB_FOOTSTEP )
+	if ( pEvent->Event() == AE_POISONHEADCRAB_FOOTSTEP )
 	{
 		bool walk = ( GetActivity() == ACT_WALK );   // ? 1.0 : 0.6; !!cgreen! old code had bug
 
@@ -3439,7 +3439,7 @@ void CBlackHeadcrab::HandleAnimEvent( animevent_t *pEvent )
 		return;
 	}
 
-	if ( pEvent->event == AE_HEADCRAB_JUMP_TELEGRAPH )
+	if ( pEvent->Event() == AE_HEADCRAB_JUMP_TELEGRAPH )
 	{
 		EmitSound( "NPC_BlackHeadcrab.Telegraph" );
 
@@ -3456,7 +3456,7 @@ void CBlackHeadcrab::HandleAnimEvent( animevent_t *pEvent )
 		return;
 	}
 
-	if ( pEvent->event == AE_POISONHEADCRAB_THREAT_SOUND )
+	if ( pEvent->Event() == AE_POISONHEADCRAB_THREAT_SOUND )
 	{
 		EmitSound( "NPC_BlackHeadcrab.Threat" );
 		EmitSound( "NPC_BlackHeadcrab.Alert" );
@@ -3464,7 +3464,7 @@ void CBlackHeadcrab::HandleAnimEvent( animevent_t *pEvent )
 		return;
 	}
 
-	if ( pEvent->event == AE_POISONHEADCRAB_FLINCH_HOP )
+	if ( pEvent->Event() == AE_POISONHEADCRAB_FLINCH_HOP )
 	{
 		//
 		// Hop in a random direction, then run and hide. If we're already running

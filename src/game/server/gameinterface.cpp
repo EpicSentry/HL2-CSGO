@@ -1269,7 +1269,7 @@ bool CServerGameDLL::LevelInit( const char *pMapName, char const *pMapEntities, 
 	m_fAutoSaveDangerousMinHealthToCommit = 0.0f;
 
 	// ask for the latest game rules
-	GameRules()->UpdateGameplayStatsFromSteam();
+//	GameRules()->UpdateGameplayStatsFromSteam();
 
 	if ( gpGlobals->eLoadType == MapLoad_Transition )
 	{
@@ -1396,7 +1396,7 @@ void CServerGameDLL::GameFrame( bool simulating )
 	// are done before the engine has got the Steam API connected, so we have to wait until now to connect ourselves.
 	if ( Steam3Server().CheckInitialized() )
 	{
-		GameRules()->UpdateGameplayStatsFromSteam();
+//		GameRules()->UpdateGameplayStatsFromSteam();
 	}
 #endif
 
@@ -3653,7 +3653,7 @@ bool CServerGameClients::ClientReplayEvent( edict_t *pEdict, const ClientReplayE
 	CBasePlayer *pPlayer = ( CBasePlayer * )CBaseEntity::Instance( pEdict );
 	if ( pPlayer )
 	{
-		return pPlayer->StartHltvReplayEvent( params );
+//		return pPlayer->StartHltvReplayEvent( params );
 	}
 	else
 	{
@@ -3758,7 +3758,7 @@ int CServerGameClients::GetMaxHumanPlayers()
 {
 	if ( g_pGameRules )
 	{
-		return g_pGameRules->GetMaxHumanPlayers();
+		//return g_pGameRules->GetMaxHumanPlayers();
 	}
 	return -1;
 }
@@ -4020,22 +4020,6 @@ private:
 
 	CUtlVector< AppSystemInfo_t >	m_Systems;
 };
-
-void UserMessageBegin(IRecipientFilter& filter, const char *messagename)
-{
-	Assert(!g_pMsgBuffer);
-
-	Assert(messagename);
-
-	int msg_type = usermessages->LookupUserMessage(messagename);
-
-	if (msg_type == -1)
-	{
-		Error("UserMessageBegin:  Unregistered message '%s'\n", messagename);
-	}
-
-	g_pMsgBuffer = engine->UserMessageBegin(&filter, msg_type);
-}
 
 
 

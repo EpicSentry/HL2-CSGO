@@ -1438,7 +1438,7 @@ void CNPC_BaseZombie::PoundSound()
 //-----------------------------------------------------------------------------
 void CNPC_BaseZombie::HandleAnimEvent( animevent_t *pEvent )
 {
-	if ( pEvent->event == AE_NPC_ATTACK_BROADCAST )
+	if ( pEvent->Event() == AE_NPC_ATTACK_BROADCAST )
 	{
 		if( GetEnemy() && GetEnemy()->IsNPC() )
 		{
@@ -1453,33 +1453,33 @@ void CNPC_BaseZombie::HandleAnimEvent( animevent_t *pEvent )
 		return;
 	}
 
-	if ( pEvent->event == AE_ZOMBIE_POUND )
+	if ( pEvent->Event() == AE_ZOMBIE_POUND )
 	{
 		PoundSound();
 		return;
 	}
 
-	if ( pEvent->event == AE_ZOMBIE_ALERTSOUND )
+	if ( pEvent->Event() == AE_ZOMBIE_ALERTSOUND )
 	{
 		AlertSound();
 		return;
 	}
 
-	if ( pEvent->event == AE_ZOMBIE_STEP_LEFT )
+	if ( pEvent->Event() == AE_ZOMBIE_STEP_LEFT )
 	{
 		MakeAIFootstepSound( 180.0f );
 		FootstepSound( false );
 		return;
 	}
 	
-	if ( pEvent->event == AE_ZOMBIE_STEP_RIGHT )
+	if ( pEvent->Event() == AE_ZOMBIE_STEP_RIGHT )
 	{
 		MakeAIFootstepSound( 180.0f );
 		FootstepSound( true );
 		return;
 	}
 
-	if ( pEvent->event == AE_ZOMBIE_GET_UP )
+	if ( pEvent->Event() == AE_ZOMBIE_GET_UP )
 	{
 		MakeAIFootstepSound( 180.0f, 3.0f );
 		if( !IsOnFire() )
@@ -1491,14 +1491,14 @@ void CNPC_BaseZombie::HandleAnimEvent( animevent_t *pEvent )
 		return;
 	}
 
-	if ( pEvent->event == AE_ZOMBIE_SCUFF_LEFT )
+	if ( pEvent->Event() == AE_ZOMBIE_SCUFF_LEFT )
 	{
 		MakeAIFootstepSound( 180.0f );
 		FootscuffSound( false );
 		return;
 	}
 
-	if ( pEvent->event == AE_ZOMBIE_SCUFF_RIGHT )
+	if ( pEvent->Event() == AE_ZOMBIE_SCUFF_RIGHT )
 	{
 		MakeAIFootstepSound( 180.0f );
 		FootscuffSound( true );
@@ -1506,20 +1506,20 @@ void CNPC_BaseZombie::HandleAnimEvent( animevent_t *pEvent )
 	}
 
 	// all swat animations are handled as a single case.
-	if ( pEvent->event == AE_ZOMBIE_STARTSWAT )
+	if ( pEvent->Event() == AE_ZOMBIE_STARTSWAT )
 	{
 		MakeAIFootstepSound( 180.0f );
 		AttackSound();
 		return;
 	}
 
-	if ( pEvent->event == AE_ZOMBIE_ATTACK_SCREAM )
+	if ( pEvent->Event() == AE_ZOMBIE_ATTACK_SCREAM )
 	{
 		AttackSound();
 		return;
 	}
 
-	if ( pEvent->event == AE_ZOMBIE_SWATITEM )
+	if ( pEvent->Event() == AE_ZOMBIE_SWATITEM )
 	{
 		CBaseEntity *pEnemy = GetEnemy();
 		if ( pEnemy )
@@ -1571,7 +1571,7 @@ void CNPC_BaseZombie::HandleAnimEvent( animevent_t *pEvent )
 		}
 	}
 	
-	if ( pEvent->event == AE_ZOMBIE_ATTACK_RIGHT )
+	if ( pEvent->Event() == AE_ZOMBIE_ATTACK_RIGHT )
 	{
 		Vector right, forward;
 		AngleVectors( GetLocalAngles(), &forward, &right, NULL );
@@ -1585,7 +1585,7 @@ void CNPC_BaseZombie::HandleAnimEvent( animevent_t *pEvent )
 		return;
 	}
 
-	if ( pEvent->event == AE_ZOMBIE_ATTACK_LEFT )
+	if ( pEvent->Event() == AE_ZOMBIE_ATTACK_LEFT )
 	{
 		Vector right, forward;
 		AngleVectors( GetLocalAngles(), &forward, &right, NULL );
@@ -1599,7 +1599,7 @@ void CNPC_BaseZombie::HandleAnimEvent( animevent_t *pEvent )
 		return;
 	}
 
-	if ( pEvent->event == AE_ZOMBIE_ATTACK_BOTH )
+	if ( pEvent->Event() == AE_ZOMBIE_ATTACK_BOTH )
 	{
 		Vector forward;
 		QAngle qaPunch( 45, random->RandomInt(-5,5), random->RandomInt(-5,5) );
@@ -1609,7 +1609,7 @@ void CNPC_BaseZombie::HandleAnimEvent( animevent_t *pEvent )
 		return;
 	}
 
-	if ( pEvent->event == AE_ZOMBIE_POPHEADCRAB )
+	if ( pEvent->Event() == AE_ZOMBIE_POPHEADCRAB )
 	{
 		if ( GetInteractionPartner() == NULL )
 			return;

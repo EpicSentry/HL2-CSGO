@@ -2920,31 +2920,31 @@ void CNPC_MetroPolice::OnAnimEventBatonOff( void )
 void CNPC_MetroPolice::HandleAnimEvent( animevent_t *pEvent )
 {
 	// Shove!
-	if ( pEvent->event == AE_METROPOLICE_SHOVE )
+	if ( pEvent->Event() == AE_METROPOLICE_SHOVE )
 	{
 		OnAnimEventShove();
 		return;
 	}
 
-	if ( pEvent->event == AE_METROPOLICE_BATON_ON )
+	if ( pEvent->Event() == AE_METROPOLICE_BATON_ON )
 	{
 		OnAnimEventBatonOn();
 		return;
 	}
 
-	if ( pEvent->event == AE_METROPOLICE_BATON_OFF )
+	if ( pEvent->Event() == AE_METROPOLICE_BATON_OFF )
 	{
 		OnAnimEventBatonOff();
 		return;
 	}
 
-	if ( pEvent->event == AE_METROPOLICE_START_DEPLOY )
+	if ( pEvent->Event() == AE_METROPOLICE_START_DEPLOY )
 	{
 		OnAnimEventStartDeployManhack();
 		return;
 	}
 
-	if ( pEvent->event == AE_METROPOLICE_DRAW_PISTOL )
+	if ( pEvent->Event() == AE_METROPOLICE_DRAW_PISTOL )
 	{
 		m_fWeaponDrawn = true;
 		if( GetActiveWeapon() )
@@ -2954,7 +2954,7 @@ void CNPC_MetroPolice::HandleAnimEvent( animevent_t *pEvent )
 		return;
 	}
 
-	if ( pEvent->event == AE_METROPOLICE_DEPLOY_MANHACK )
+	if ( pEvent->Event() == AE_METROPOLICE_DEPLOY_MANHACK )
 	{
 		OnAnimEventDeployManhack( pEvent );
 		return;
