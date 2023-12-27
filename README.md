@@ -1,7 +1,6 @@
 # Half-Life 2 in the CSGO engine (Atleast, an attempt of doing so)
 
-This project is aimed to improve the leaked CS:GO code, to make it more stable and to make it playable.
-Use resources from CS:S to get the HUD and GameUI to work properly.
+This project is aimed to port HL2 to the leaked CSGO engine while keeping the benefits of the CSGO branch (such as the better lighting).
 
 Partially used code from https://github.com/SwagSoftware/Kisak-Strike (some econ stuff, weapon recoil).
 Forked from https://github.com/SourceSDK2013Ports/csgo-src.
