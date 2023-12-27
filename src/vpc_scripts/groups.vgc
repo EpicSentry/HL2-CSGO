@@ -98,7 +98,7 @@ $Group "csgo_partner"
 	"vscript"
 	"vstdlib"
 	"vtf"
-	"vaudio_minimp3"
+//	"vaudio_minimp3"
 }
 
 $Group "csgo_partner_linux"

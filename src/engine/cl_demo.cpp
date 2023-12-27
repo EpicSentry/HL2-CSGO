@@ -1535,7 +1535,6 @@ netpacket_t *CDemoPlayer::ReadPacket( void )
 			{
 				m_nCurrentHighlight = -1;
 				SetPlaybackTimeScale( 1.0f );
-				g_ClientDLL->ShowHighlightSkippingMessage( false );
 				m_pPlaybackParameters = NULL;
 				return NULL;
 			}
@@ -1548,20 +1547,17 @@ netpacket_t *CDemoPlayer::ReadPacket( void )
 		// deal with skipping and fast forwarding
 		if ( highlight.nSeekToTick != -1 && nCurrentTick < highlight.nSeekToTick )
 		{
-			g_ClientDLL->ShowHighlightSkippingMessage( true, nCurrentTick, highlight.nSeekToTick, highlight.nPlayToTick );
 			m_nSkipToTick = highlight.nSeekToTick;
 		}
 		else
 		{
 			if ( nCurrentTick < highlight.nFastForwardToTick )
 			{
-				g_ClientDLL->ShowHighlightSkippingMessage( true, nCurrentTick, highlight.nSeekToTick, highlight.nPlayToTick );
 				SetPlaybackTimeScale( demo_highlight_fastforwardspeed.GetFloat() );
 			}
 			else
 			{
 				SetPlaybackTimeScale( 1.0f );
-				g_ClientDLL->ShowHighlightSkippingMessage( false, nCurrentTick, highlight.nSeekToTick, highlight.nPlayToTick );
 			}
 		}
 	}
@@ -2671,7 +2667,6 @@ void CDemoPlayer::SetHighlightXuid( uint64 xuid, bool bLowlights )
 		m_bDoHighlightScan = true;
 		m_bLowlightsMode = bLowlights;
 	}
-	g_ClientDLL->SetDemoPlaybackHighlightXuid( xuid, bLowlights );
 }
 
 void ParseEventKeys( CSVCMsg_GameEvent_t *msg, CGameEventDescriptor *pDescriptor, const char *pszEventName, KeyValues **ppKeys )

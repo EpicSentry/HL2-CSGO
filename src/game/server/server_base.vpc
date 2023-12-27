@@ -15,13 +15,13 @@ $include "$SRCDIR\vpc_scripts\protobuf_builder.vpc"
 $include "$SRCDIR\vpc_scripts\netmessages_include.vpc"
 $include "$SRCDIR\vpc_scripts\networkbasetypes_include.vpc"
 
-//$CustomBuildStep "nut"
-//{
-//	$CommandLine	"$SRCDIR\devtools\srcsrv\perl\bin\perl.exe $SRCDIR\devtools\bin\texttoarray.pl $(InputPath) g_Script_$(InputName)> $(IntDir)\$(InputName)_nut.h" [$WINDOWS]
-//	$CommandLine	"perl $SRCDIR\devtools\bin\texttoarray.pl $(InputPath) g_Script_$(InputName)> $(IntDir)\$(InputName)_nut.h" [$POSIX]
-//	$Description	"$(InputFileName) produces $(InputName)_nut.h"
-//	$Outputs		"$(IntDir)\$(InputName)_nut.h"
-//}
+$CustomBuildStep "nut"
+{
+	$CommandLine	"$SRCDIR\devtools\srcsrv\perl\bin\perl.exe $SRCDIR\devtools\bin\texttoarray.pl $(InputPath) g_Script_$(InputName)> $(IntDir)\$(InputName)_nut.h" [$WINDOWS]
+	$CommandLine	"perl $SRCDIR\devtools\bin\texttoarray.pl $(InputPath) g_Script_$(InputName)> $(IntDir)\$(InputName)_nut.h" [$POSIX]
+	$Description	"$(InputFileName) produces $(InputName)_nut.h"
+	$Outputs		"$(IntDir)\$(InputName)_nut.h"
+}
 
 $Configuration	"Debug"
 {
@@ -694,12 +694,12 @@ $Project
 		$File	"$SRVSRCDIR\triggers.cpp"
 		$File	"$SRVSRCDIR\triggers.h"
 		$File	"$SRCDIR\game\shared\usercmd.cpp"
-		$File	"$SRCDIR\game\shared\ugc_file_info_manager.cpp"
-		$File	"$SRCDIR\game\shared\ugc_file_info_manager.h"
-		$File	"$SRCDIR\game\shared\ugc_request_manager.cpp"
-		$File	"$SRCDIR\game\shared\ugc_request_manager.h"
-		$File	"$SRCDIR\game\shared\ugc_utils.cpp"
-		$File	"$SRCDIR\game\shared\ugc_utils.h"
+//		$File	"$SRCDIR\game\shared\ugc_file_info_manager.cpp"
+//		$File	"$SRCDIR\game\shared\ugc_file_info_manager.h"
+//		$File	"$SRCDIR\game\shared\ugc_request_manager.cpp"
+//		$File	"$SRCDIR\game\shared\ugc_request_manager.h"
+//		$File	"$SRCDIR\game\shared\ugc_utils.cpp"
+//		$File	"$SRCDIR\game\shared\ugc_utils.h"
 		$File	"$SRVSRCDIR\util.cpp"
 		$File	"$SRVSRCDIR\util.h"
 		$File	"$SRCDIR\game\shared\util_shared.cpp"
@@ -735,8 +735,6 @@ $Project
 		$File	"$SRVSRCDIR\world.cpp"
 		$File	"$SRVSRCDIR\world.h"
 		$File	"$SRCDIR\game\shared\mp_shareddefs.cpp"
-		$File	"$SRCDIR\game\server\vote_controller.h"
-		$File	"$SRCDIR\game\server\vote_controller.cpp"
 
 		// Not using precompiled header cbase.h
 
