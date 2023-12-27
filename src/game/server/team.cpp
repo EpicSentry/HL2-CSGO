@@ -71,7 +71,7 @@ CTeam *GetGlobalTeam(int iIndex)
 //-----------------------------------------------------------------------------
 int GetNumberOfTeams(void)
 {
-	//return g_Teams.Size();
+	return g_Teams.Size();
 }
 
 
@@ -265,7 +265,7 @@ void CTeam::RemovePlayer(CBasePlayer *pPlayer)
 //-----------------------------------------------------------------------------
 int CTeam::GetNumPlayers(void) const
 {
-	//return m_aPlayers.Size();
+	return m_aPlayers.Size();
 }
 
 //-----------------------------------------------------------------------------

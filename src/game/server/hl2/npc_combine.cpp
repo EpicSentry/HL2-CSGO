@@ -2330,7 +2330,7 @@ void CNPC_Combine::HandleAnimEvent( animevent_t *pEvent )
 				animevent_t fakeEvent;
 
 				fakeEvent.pSource = this;
-				fakeEvent.Event = EVENT_WEAPON_AR2_ALTFIRE;
+				fakeEvent.Event() == EVENT_WEAPON_AR2_ALTFIRE;
 				GetActiveWeapon()->Operator_HandleAnimEvent( &fakeEvent, this );
 
 				// Stop other squad members from combine balling for a while.

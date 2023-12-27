@@ -1071,7 +1071,7 @@ void CNPC_BaseZombie::DieChopped( const CTakeDamageInfo &info )
 
 	Vector forceVector( vec3_origin );
 
-	forceVector += CalcDamageForceVector( info );
+	forceVector += CalcDeathForceVector( info );
 
 	if( !m_fIsHeadless && !bSquashed )
 	{

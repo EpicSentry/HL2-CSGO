@@ -14,6 +14,7 @@
 #define TE_EXPLFLAG_NOADDITIVE	0x1	// sprite will be drawn opaque (ensure that the sprite you send is a non-additive sprite)
 #define TE_EXPLFLAG_DLIGHT		0x2	// explosion has a DLIGHT
 #define TE_EXPLFLAG_NOSOUND		0x4	// do not play client explosion sound
+#define TE_EXPLFLAG_NODLIGHTS	0x5
 #define TE_EXPLFLAG_NOPARTICLES	0x8	// do not draw particles
 #define TE_EXPLFLAG_DRAWALPHA	0x10	// sprite will be drawn alpha
 #define TE_EXPLFLAG_ROTATE		0x20	// rotate the sprite randomly

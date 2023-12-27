@@ -123,7 +123,7 @@ void CGrenadePathfollower::Detonate(void)
 	CPASFilter filter( GetAbsOrigin() );
 
 	te->Explosion( filter, 0.0,
-		&GetAbsOrigin(), 
+		GetAbsOrigin(), 
 		g_sModelIndexFireball,
 		0.5, 
 		15,

@@ -2830,7 +2830,7 @@ void CNPC_RollerMine::TraceAttack( const CTakeDamageInfo &info, const Vector &ve
 			newInfo.SetDamageForce( info.GetDamageForce() * 20 );
 		}
 
-		BaseClass::TraceAttack( newInfo, vecDir, ptr );
+		BaseClass::TraceAttack( newInfo, vecDir, ptr, pAccumulator );
 		return;
 	}
 

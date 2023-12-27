@@ -176,7 +176,7 @@ private:
 	CHandle<CBarnacleTongueTip>	m_hTongueRoot;
 	CHandle<CBarnacleTongueTip>	m_hTongueTip;
 	CHandle<CRagdollProp>		m_hRagdoll;
-	matrix3x4_t					m_pRagdollBones[MAXSTUDIOBONES];
+	matrix3x4a_t					m_pRagdollBones[MAXSTUDIOBONES];
 	IPhysicsConstraint			*m_pConstraint;
 	float						m_flRestUnitsAboveGround;
 	int							m_nSpitAttachment;

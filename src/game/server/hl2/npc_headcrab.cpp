@@ -2040,7 +2040,7 @@ void CBaseHeadcrab::TraceAttack( const CTakeDamageInfo &info, const Vector &vecD
 		ApplyAbsVelocityImpulse( puntDir );
 	}
 
-	BaseClass::TraceAttack( newInfo, vecDir, ptr );
+	BaseClass::TraceAttack( newInfo, vecDir, ptr, pAccumulator );
 }
 
 

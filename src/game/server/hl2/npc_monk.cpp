@@ -679,7 +679,10 @@ bool CNPC_Monk::IsJumpLegal( const Vector &startPos, const Vector &apex, const V
 {
 	if ( startPos.z - endPos.z < 0 )
 		return false;
-	return BaseClass::IsJumpLegal( startPos, apex, endPos );
+	const float MAX_JUMP_RISE = 220.0f;
+	const float MAX_JUMP_DISTANCE = 512.0f;
+	const float MAX_JUMP_DROP = 384.0f;
+	return BaseClass::IsJumpLegal( startPos, apex, endPos, MAX_JUMP_RISE, MAX_JUMP_DROP, MAX_JUMP_DISTANCE);
 }
 
 //-----------------------------------------------------------------------------

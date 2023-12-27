@@ -129,6 +129,7 @@ public:
 	// container to have this many elements.
 	// Use GetCount to retrieve the current count.
 	void SetCount( int count );
+	int Size() const;	// don't use me! (?)
 	void SetCountNonDestructively( int count ); //sets count by adding or removing elements to tail TODO: This should probably be the default behavior for SetCount
 	
 	// Calls SetSize and copies each element.
@@ -749,6 +750,11 @@ inline int CUtlVector<T, A>::Count() const
 	return m_Size;
 }
 
+template< typename T, class A >
+inline int CUtlVector<T, A>::Size() const
+{
+	return m_Size;
+}
 
 //-----------------------------------------------------------------------------
 // Is element index valid?

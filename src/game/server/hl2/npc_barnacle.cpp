@@ -748,7 +748,7 @@ bool CNPC_Barnacle::WaitForRagdollToSettle( float flBiteZOffset )
 
 	// Get the velocity of the bone we've grabbed, and only bite when it's not moving much
 	CStudioHdr *pStudioHdr = m_hRagdoll->GetModelPtr();
-	mstudiobone_t *pBone = pStudioHdr->pBone( m_iGrabbedBoneIndex );
+	const mstudiobone_t* pBone = pStudioHdr->pBone(m_iGrabbedBoneIndex);
 	int iBoneIndex = pBone->physicsbone;
 	ragdoll_t *pRagdoll = m_hRagdoll->GetRagdoll();
 	IPhysicsObject *pRagdollPhys = pRagdoll->list[iBoneIndex].pObject;

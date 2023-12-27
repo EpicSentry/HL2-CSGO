@@ -1127,30 +1127,31 @@ void CAI_PlayerAlly::OnKilledNPC( CBaseCombatCharacter *pKilled )
 }
 
 //-----------------------------------------------------------------------------
-void CAI_PlayerAlly::TraceAttack( const CTakeDamageInfo &info, const Vector &vecDir, trace_t *ptr )
+void CAI_PlayerAlly::TraceAttack(const CTakeDamageInfo &info, const Vector &vecDir, trace_t *ptr, CDmgAccumulator *pAccumulator)
 {
 	const char *pszHitLocCriterion = NULL;
 
-	if ( ptr->hitgroup == HITGROUP_LEFTLEG || ptr->hitgroup == HITGROUP_RIGHTLEG )
+	if (ptr->hitgroup == HITGROUP_LEFTLEG || ptr->hitgroup == HITGROUP_RIGHTLEG)
 	{
 		pszHitLocCriterion = "shotloc:leg";
 	}
-	else if ( ptr->hitgroup == HITGROUP_LEFTARM || ptr->hitgroup == HITGROUP_RIGHTARM )
+	else if (ptr->hitgroup == HITGROUP_LEFTARM || ptr->hitgroup == HITGROUP_RIGHTARM)
 	{
 		pszHitLocCriterion = "shotloc:arm";
 	}
-	else if ( ptr->hitgroup == HITGROUP_STOMACH )
+	else if (ptr->hitgroup == HITGROUP_STOMACH)
 	{
 		pszHitLocCriterion = "shotloc:gut";
 	}
 
 	// set up the speech modifiers
-	CFmtStrN<128> modifiers( "%s,damageammo:%s", pszHitLocCriterion, info.GetAmmoName() );
+	CFmtStrN<128> modifiers("%s,damageammo:%s", pszHitLocCriterion, info.GetAmmoName());
 
-	SpeakIfAllowed( TLK_SHOT, modifiers );
+	SpeakIfAllowed(TLK_SHOT, modifiers);
 
-	BaseClass::TraceAttack( info, vecDir, ptr );
+	BaseClass::TraceAttack(info, vecDir, ptr, pAccumulator);
 }
+
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------

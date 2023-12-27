@@ -206,7 +206,7 @@ void CGrenadeAR2::Detonate(void)
 	CPASFilter filter( GetAbsOrigin() );
 
 	te->Explosion( filter, 0.0,
-		&GetAbsOrigin(), 
+		GetAbsOrigin(), 
 		g_sModelIndexFireball,
 		2.0, 
 		15,

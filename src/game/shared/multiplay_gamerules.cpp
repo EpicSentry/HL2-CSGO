@@ -172,6 +172,11 @@ int CMultiplayRules::Damage_GetShowOnHud( void )
 	return iDamage;
 }
 
+bool CMultiplayRules::PlayerCanHearChat(CBasePlayer *pListener, CBasePlayer *pSpeaker, bool bTeamOnly)
+{
+	return !bTeamOnly || PlayerRelationship(pListener, pSpeaker) == GR_TEAMMATE;
+}
+
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
@@ -1065,10 +1070,7 @@ CMultiplayRules::CMultiplayRules()
 
 	//=========================================================
 	//=========================================================
-	bool CMultiplayRules::PlayerCanHearChat( CBasePlayer *pListener, CBasePlayer *pSpeaker, bool bTeamOnly )
-	{
-		return !bTeamOnly || PlayerRelationship( pListener, pSpeaker ) == GR_TEAMMATE;
-	}
+
 
 	int CMultiplayRules::PlayerRelationship( CBaseEntity *pPlayer, CBaseEntity *pTarget )
 	{

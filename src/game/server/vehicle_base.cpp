@@ -973,52 +973,53 @@ int CPropVehicleDriveable::VPhysicsGetObjectList( IPhysicsObject **pList, int li
 //-----------------------------------------------------------------------------
 // Purpose: Handle trace attacks from the physcannon
 //-----------------------------------------------------------------------------
-void CPropVehicleDriveable::TraceAttack( const CTakeDamageInfo &info, const Vector &vecDir, trace_t *ptr )
+void CPropVehicleDriveable::TraceAttack(const CTakeDamageInfo &info, const Vector &vecDir, trace_t *ptr, CDmgAccumulator *pAccumulator)
 {
 	// If we've just been zapped by the physcannon, try and right ourselves
-	if ( info.GetDamageType() & DMG_PHYSGUN )
+	if (info.GetDamageType() & DMG_PHYSGUN)
 	{
 		float flUprightStrength = GetUprightStrength();
-		if ( flUprightStrength )
+		if (flUprightStrength)
 		{
 			// Update our strength value if we already have an upright controller
-			if ( m_hKeepUpright )
+			if (m_hKeepUpright)
 			{
 				variant_t limitVariant;
-				limitVariant.SetFloat( flUprightStrength );
-				m_hKeepUpright->AcceptInput( "SetAngularLimit", this, this, limitVariant, USE_TOGGLE );
+				limitVariant.SetFloat(flUprightStrength);
+				m_hKeepUpright->AcceptInput("SetAngularLimit", this, this, limitVariant, USE_TOGGLE);
 			}
 			else
 			{
 				// If we don't have one, create an upright controller for us
-				m_hKeepUpright = CreateKeepUpright( GetAbsOrigin(), vec3_angle, this, GetUprightStrength(), false );
+				m_hKeepUpright = CreateKeepUpright(GetAbsOrigin(), vec3_angle, this, GetUprightStrength(), false);
 			}
 
-			Assert( m_hKeepUpright );
+			Assert(m_hKeepUpright);
 			variant_t emptyVariant;
-			m_hKeepUpright->AcceptInput( "TurnOn", this, this, emptyVariant, USE_TOGGLE );
+			m_hKeepUpright->AcceptInput("TurnOn", this, this, emptyVariant, USE_TOGGLE);
 
 			// Turn off the keepupright after a short time
 			m_flTurnOffKeepUpright = gpGlobals->curtime + GetUprightTime();
-			SetNextThink( gpGlobals->curtime );
+			SetNextThink(gpGlobals->curtime);
 		}
 
 #ifdef HL2_EPISODIC
 		// Notify all children
-		for ( int i = 0; i < m_hPhysicsChildren.Count(); i++ )
+		for (int i = 0; i < m_hPhysicsChildren.Count(); i++)
 		{
-			if ( m_hPhysicsChildren[i] == NULL )
+			if (m_hPhysicsChildren[i] == NULL)
 				continue;
 
 			variant_t emptyVariant;
-			m_hPhysicsChildren[i]->AcceptInput( "VehiclePunted", info.GetAttacker(), this, emptyVariant, USE_TOGGLE );
+			m_hPhysicsChildren[i]->AcceptInput("VehiclePunted", info.GetAttacker(), this, emptyVariant, USE_TOGGLE);
 		}
 #endif // HL2_EPISODIC
 
 	}
 
-	BaseClass::TraceAttack( info, vecDir, ptr );
+	BaseClass::TraceAttack(info, vecDir, ptr, pAccumulator);
 }
+
 
 //=============================================================================
 // Passenger carrier

@@ -66,7 +66,8 @@ void CTakeDamageInfo::Init( CBaseEntity *pInflictor, CBaseEntity *pAttacker, CBa
 	m_iDamagedOtherPlayers = 0;
 	m_iObjectsPenetrated = iObjectsPenetrated;
 #ifdef GAME_DLL
-	m_uiBulletID = CBasePlayer::GetBulletGroup();
+	//m_uiBulletID = CBasePlayer::GetBulletGroup();
+	m_uiBulletID = 0;
 #else
 	m_uiBulletID = 0;
 #endif

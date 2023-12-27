@@ -1209,7 +1209,7 @@ int CBasePlayer::OnTakeDamage( const CTakeDamageInfo &inputInfo )
 	// go take the damage first
 
 	
-	if ( !g_pGameRules->FPlayerCanTakeDamage( this, info.GetAttacker() ) )
+	if ( !g_pGameRules->FPlayerCanTakeDamage( this, info.GetAttacker(), info) )
 	{
 		// Refuse the damage
 		return 0;

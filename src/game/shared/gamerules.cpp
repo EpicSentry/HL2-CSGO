@@ -199,6 +199,11 @@ CBaseEntity *CGameRules::GetPlayerSpawnSpot(CBasePlayer *pPlayer)
 	return pSpawnSpot;
 }
 
+bool CGameRules::PlayerCanHearChat(CBasePlayer *pListener, CBasePlayer *pSpeaker)
+{
+	PlayerRelationship(pListener, pSpeaker) == GR_TEAMMATE;
+}
+
 // checks if the spot is clear of players
 bool CGameRules::IsSpawnPointValid(CBaseEntity *pSpot, CBasePlayer *pPlayer)
 {

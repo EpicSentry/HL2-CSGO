@@ -353,9 +353,9 @@ public:
 	virtual int DeadPlayerAmmo(CBasePlayer *pPlayer) = 0;// Do I drop ammo when the player dies? How much?
 
 														 // Teamplay stuff
-	virtual const char *GetTeamID(CBaseEntity *pEntity) = 0;// what team is this entity on?
+//	virtual const char *GetTeamID(CBaseEntity *pEntity) = 0;// what team is this entity on?
 	virtual int PlayerRelationship(CBaseEntity *pPlayer, CBaseEntity *pTarget) = 0;// What is the player's relationship with this entity?
-	virtual bool PlayerCanHearChat(CBasePlayer *pListener, CBasePlayer *pSpeaker) = 0;
+	bool PlayerCanHearChat(CBasePlayer *pListener, CBasePlayer *pSpeaker);
 	virtual void CheckChatText(CBasePlayer *pPlayer, char *pText) { return; }
 
 	virtual int GetTeamIndex(const char *pTeamName) { return -1; }

@@ -2417,15 +2417,15 @@ edict_t *UTIL_FindClientInPVSGuts(edict_t *pEdict, unsigned char *pvs, unsigned 
 
 edict_t *UTIL_FindClientInPVS(edict_t *pEdict)
 {
-	return g_pGameRules->DoFindClientInPVS( pEdict, g_CheckClient.m_checkPVS, sizeof( g_CheckClient.m_checkPVS ) );
+	return UTIL_FindClientInPVSGuts(pEdict, g_CheckClient.m_checkPVS, sizeof(g_CheckClient.m_checkPVS));
 }
 
 //-----------------------------------------------------------------------------
 // Purpose: Returns a client that could see the entity, including through a camera
 //-----------------------------------------------------------------------------
-edict_t *UTIL_FindClientInVisibilityPVS( edict_t *pEdict )
+edict_t *UTIL_FindClientInVisibilityPVS(edict_t *pEdict)
 {
-	return g_pGameRules->DoFindClientInPVS( pEdict, g_CheckClient.m_checkVisibilityPVS, sizeof( g_CheckClient.m_checkVisibilityPVS ) );
+	return UTIL_FindClientInPVSGuts(pEdict, g_CheckClient.m_checkVisibilityPVS, sizeof(g_CheckClient.m_checkVisibilityPVS));
 }
 
 

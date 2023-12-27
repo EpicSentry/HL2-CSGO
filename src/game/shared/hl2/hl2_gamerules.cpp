@@ -281,6 +281,11 @@ ConVar  alyx_darkness_force( "alyx_darkness_force", "0", FCVAR_CHEAT | FCVAR_REP
 	{
 	}
 
+	bool CHalfLife2::PlayerCanHearChat(CBasePlayer *pListener, CBasePlayer *pSpeaker)
+	{
+		return PlayerRelationship(pListener, pSpeaker) == GR_TEAMMATE;
+	}
+
 	//-----------------------------------------------------------------------------
 	// Purpose: MULTIPLAYER BODY QUE HANDLING
 	//-----------------------------------------------------------------------------
