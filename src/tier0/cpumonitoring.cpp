@@ -241,10 +241,10 @@ static DWORD WINAPI HeartbeatThread( LPVOID )
 			ULONG MaxCurrentMHz = processorInfo[ 0 ].CurrentMhz;
 			for ( DWORD i = 0; i < g_numCPUs; ++i )
 			{
-				MinCurrentMHz = std::min( MinCurrentMHz, processorInfo[ i ].CurrentMhz );
-				MaxCurrentMHz = std::max( MaxCurrentMHz, processorInfo[ i ].CurrentMhz );
-				MaxMHz = std::max( MaxMHz, processorInfo[ i ].MaxMhz );
-				LimitMHz = std::max( LimitMHz, processorInfo[ i ].MhzLimit );
+				MinCurrentMHz = min( MinCurrentMHz, processorInfo[ i ].CurrentMhz );
+				MaxCurrentMHz = max( MaxCurrentMHz, processorInfo[ i ].CurrentMhz );
+				MaxMHz = max( MaxMHz, processorInfo[ i ].MaxMhz );
+				LimitMHz = max( LimitMHz, processorInfo[ i ].MhzLimit );
 			}
 
 			// This will wake up all of the worker threads. It is possible that some of the
@@ -268,8 +268,8 @@ static DWORD WINAPI HeartbeatThread( LPVOID )
 			float maxActualFreq = s_frequency[ 0 ];
 			for ( DWORD i = 1; i < g_numCPUs; ++i )
 			{
-				minActualFreq = std::min( minActualFreq, s_frequency[ i ] );
-				maxActualFreq = std::max( maxActualFreq, s_frequency[ i ] );
+				minActualFreq = min( minActualFreq, s_frequency[ i ] );
+				maxActualFreq = max( maxActualFreq, s_frequency[ i ] );
 			}
 
 			{
