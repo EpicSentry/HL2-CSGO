@@ -135,29 +135,16 @@ public:
 
 	virtual void Shutdown()
 	{
-		if ( CBaseCombatCharacter::m_DefaultRelationship != NULL )
-		{
-			int iNumClasses = GameRules() ? GameRules()->NumEntityClasses() : LAST_SHARED_ENTITY_CLASS;
-			for ( int i=0; i<iNumClasses; ++i )
-			{
-				delete[] CBaseCombatCharacter::m_DefaultRelationship[ i ];
-			}
+		if (!CBaseCombatCharacter::m_DefaultRelationship)
+			return;
 
-			delete[] CBaseCombatCharacter::m_DefaultRelationship;
-			CBaseCombatCharacter::m_DefaultRelationship = NULL;
+		for (int i = 0; i<NUM_AI_CLASSES; ++i)
+		{
+			delete[] CBaseCombatCharacter::m_DefaultRelationship[i];
 		}
 
-		if ( CBaseCombatCharacter::m_FactionRelationship != NULL )
-		{
-			for( int i = 0; i < CBaseCombatCharacter::m_aFactions.Count(); i++ )
-			{
-				delete[] CBaseCombatCharacter::m_FactionRelationship[ i ];
-				CBaseCombatCharacter::m_aFactions[ i ].Purge();
-			}
-			CBaseCombatCharacter::m_aFactions.Purge();
-			delete[] CBaseCombatCharacter::m_FactionRelationship;
-			CBaseCombatCharacter::m_FactionRelationship = NULL;
-		}
+		delete[] CBaseCombatCharacter::m_DefaultRelationship;
+		CBaseCombatCharacter::m_DefaultRelationship = NULL;
 	}
 };
 
@@ -2863,17 +2850,16 @@ CUtlVector<EHANDLE> *CBaseCombatCharacter::GetEntitiesInFaction( int nFaction ) 
 //-----------------------------------------------------------------------------
 // Allocates default relationships
 //-----------------------------------------------------------------------------
-void CBaseCombatCharacter::AllocateDefaultRelationships( )
+void CBaseCombatCharacter::AllocateDefaultRelationships()
 {
 	if (!m_DefaultRelationship)
 	{
-		int iNumClasses = GameRules() ? GameRules()->NumEntityClasses() : LAST_SHARED_ENTITY_CLASS;
-		m_DefaultRelationship = new Relationship_t*[iNumClasses];
+		m_DefaultRelationship = new Relationship_t*[NUM_AI_CLASSES];
 
-		for (int i=0; i<iNumClasses; ++i)
+		for (int i = 0; i<NUM_AI_CLASSES; ++i)
 		{
 			// Be default all relationships are neutral of priority zero
-			m_DefaultRelationship[i] = new Relationship_t[iNumClasses];
+			m_DefaultRelationship[i] = new Relationship_t[NUM_AI_CLASSES];
 		}
 	}
 }
@@ -2881,6 +2867,7 @@ void CBaseCombatCharacter::AllocateDefaultRelationships( )
 //-----------------------------------------------------------------------------
 // Allocates default faction relationships
 //-----------------------------------------------------------------------------
+#if defined ( CSTRIKE15 )
 void CBaseCombatCharacter::AllocateDefaultFactionRelationships( )
 {
 	if (!m_FactionRelationship)
@@ -2896,6 +2883,7 @@ void CBaseCombatCharacter::AllocateDefaultFactionRelationships( )
 		}
 	}
 }
+#endif
 
 //-----------------------------------------------------------------------------
 // Purpose: 

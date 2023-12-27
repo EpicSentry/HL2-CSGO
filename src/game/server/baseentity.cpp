@@ -5527,7 +5527,7 @@ void CBaseEntity::PrecacheModelComponents( int nModelIndex )
 				{
 					mstudioevent_t *pEvent = (mstudioevent_for_client_server_t*)seq.pEvent( j );
 					
-					int nEvent = pEvent->event();
+					int nEvent = pEvent->Event();
 
 					if ( !( pEvent->type & AE_TYPE_NEWEVENTSYSTEM ) || ( pEvent->type & AE_TYPE_CLIENT ) )
 					{

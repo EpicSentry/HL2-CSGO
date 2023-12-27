@@ -1768,16 +1768,16 @@ void CAchievementMgr::OnAchievementEvent( int iAchievementID, int nUserSlot )
 //-----------------------------------------------------------------------------
 // Purpose: called when a map-fired achievement event occurs
 //-----------------------------------------------------------------------------
-void CAchievementMgr::OnMapEvent( const char *pchEventName, int nUserSlot )
+void CAchievementMgr::OnMapEvent( const char *pchEventName )
 {
 	Assert( pchEventName && *pchEventName );
 	if ( !pchEventName || !*pchEventName ) 
 		return;
 
 	// see if this event matches the prefix for an achievement component
-	FOR_EACH_VEC( m_vecComponentListeners[nUserSlot], iAchievement )
+	FOR_EACH_VEC( m_vecComponentListeners, iAchievement )
 	{
-		CBaseAchievement *pAchievement = m_vecComponentListeners[nUserSlot][iAchievement];
+		CBaseAchievement *pAchievement = m_vecComponentListeners[iAchievement];
 		Assert( pAchievement->m_pszComponentPrefix );
 		if ( 0 == Q_strncmp( pchEventName, pAchievement->m_pszComponentPrefix, pAchievement->m_iComponentPrefixLen ) )
 		{
@@ -1788,9 +1788,9 @@ void CAchievementMgr::OnMapEvent( const char *pchEventName, int nUserSlot )
 	}
 
 	// look through all the map event listeners
-	FOR_EACH_VEC( m_vecMapEventListeners[nUserSlot], iAchievement )
+	FOR_EACH_VEC( m_vecMapEventListeners, iAchievement )
 	{
-		CBaseAchievement *pAchievement = m_vecMapEventListeners[nUserSlot][iAchievement];
+		CBaseAchievement *pAchievement = m_vecMapEventListeners[iAchievement];
 		pAchievement->OnMapEvent( pchEventName );
 	}
 }

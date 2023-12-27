@@ -333,13 +333,13 @@ void CGameRules::RadiusDamage(const CTakeDamageInfo &info, const Vector &vecSrcI
 	else
 		falloff = 1.0;
 
-	int bInWater = (UTIL_PointContents(vecSrc) & MASK_WATER) ? true : false;
+	int bInWater = (UTIL_PointContents_HL2(vecSrc) & MASK_WATER) ? true : false;
 
 #ifdef HL2_DLL
 	if (bInWater)
 	{
 		// Only muffle the explosion if deeper than 2 feet in water.
-		if (!(UTIL_PointContents(vecSrc + Vector(0, 0, 24)) & MASK_WATER))
+		if (!(UTIL_PointContents_HL2(vecSrc + Vector(0, 0, 24)) & MASK_WATER))
 		{
 			bInWater = false;
 		}

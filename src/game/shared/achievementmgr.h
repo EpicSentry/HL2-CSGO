@@ -46,7 +46,7 @@ public:
 	virtual void Update( float frametime );
 	virtual bool IsPerFrame( void ) { return true; }
 
-	void OnMapEvent( const char *pchEventName, int nUserSlot );
+	void OnMapEvent( const char *pchEventName);
 
 	// Interfaces exported to other dlls for achievement list queries
 	IAchievement* GetAchievementByIndex( int index, int nUserSlot );
@@ -191,7 +191,7 @@ public:
 	virtual int GetAchievementCount( bool bAssets = false ) { return m_pDelegate->CAchievementMgr::GetAchievementCount( bAssets ); }
 	virtual void InitializeAchievements( ) { m_pDelegate->CAchievementMgr::InitializeAchievements(); }
 	virtual void AwardAchievement( int nAchievementID, int nPlayerSlot ) { m_pDelegate->CAchievementMgr::AwardAchievement( nAchievementID, nPlayerSlot ); }
-	virtual void OnMapEvent( const char *pchEventName, int nPlayerSlot ) { m_pDelegate->CAchievementMgr::OnMapEvent( pchEventName, nPlayerSlot ); }
+	virtual void OnMapEvent( const char *pchEventName) { m_pDelegate->CAchievementMgr::OnMapEvent( pchEventName); }
 	virtual void SaveGlobalStateIfDirty( ) { m_pDelegate->CAchievementMgr::SaveGlobalState(); }
 	virtual bool HasAchieved( const char *pchName, int nPlayerSlot ) { return m_pDelegate->CAchievementMgr::HasAchieved( pchName, nPlayerSlot ); }
 	virtual const CUtlVector<int>& GetAchievedDuringCurrentGame( int nPlayerSlot ) { return m_pDelegate->CAchievementMgr::GetAchievedDuringCurrentGame( nPlayerSlot ); }

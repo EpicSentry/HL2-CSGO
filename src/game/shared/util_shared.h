@@ -472,6 +472,12 @@ inline int UTIL_PointContents( const Vector &vec, int contentsMask )
 	return enginetrace->GetPointContents( vec, contentsMask );
 }
 
+// This is a copy of the original PointContents but with 1 less argument because csgo had to add another one and i dont want to mess anything up here.
+inline int UTIL_PointContents_HL2(const Vector &vec)
+{
+	return enginetrace->GetPointContents(vec);
+}
+
 // Sweeps against a particular model, using collision rules 
 void UTIL_TraceModel( const Vector &vecStart, const Vector &vecEnd, const Vector &hullMin, 
 					  const Vector &hullMax, CBaseEntity *pentModel, int collisionGroup, trace_t *ptr );
@@ -503,6 +509,8 @@ float UTIL_FindWaterSurface( const Vector &position, float minz, float maxz );
 
 void		UTIL_StringToVector( float *pVector, const char *pString );
 void		UTIL_StringToFloatArray( float *pVector, int count, const char *pString );
+void		UTIL_StringToIntArray(int *pVector, int count, const char *pString);
+void		UTIL_StringToColor32(color32 *color, const char *pString);
 
 CBasePlayer *UTIL_PlayerByIndex( int entindex );
 
