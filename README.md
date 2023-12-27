@@ -9,6 +9,7 @@ Features:
 - Removed Scaleform;
 - Filesystem from TF2 leak (less hardcoded stuff, allows for 'custom' folder, etc);
 - Some VGUI stuff and complete GameUI ported from TF2 leak;
+- CSGO Usermessage system, everything now makes use of the CUsrMsg class.
 
 Currently known bugs:
 - sv_pure is most likely broken due to differences between CS:GO and TF2 implementations;
