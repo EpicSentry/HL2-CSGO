@@ -866,6 +866,7 @@ void CNPC_MetroPolice::SpeakSentence( int nSentenceType )
 			return;
 		}
 
+
 		if ( GetRunningBehavior() == &m_AssaultBehavior )
 		{
 			SpeakAssaultSentence( nSentenceType );
