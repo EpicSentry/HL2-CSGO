@@ -429,7 +429,7 @@ public:
 	virtual bool					HandleShotImpactingWater( const FireBulletsInfo_t &info, 
 		const Vector &vecEnd, ITraceFilter *pTraceFilter, Vector *pVecTracerDest );
 	virtual ITraceFilter*			GetBeamTraceFilter( void );
-	virtual void					DispatchTraceAttack(const CTakeDamageInfo &info, const Vector &vecDir, trace_t *ptr);
+	void							DispatchTraceAttack(const CTakeDamageInfo & info, const Vector & vecDir, trace_t * ptr, CDmgAccumulator * pAccumulator);
 	virtual void					TraceAttack(const CTakeDamageInfo &info, const Vector &vecDir, trace_t *ptr, CDmgAccumulator *pAccumulator);
 	virtual void					DoImpactEffect( trace_t &tr, int nDamageType );
 	virtual void					MakeTracer( const Vector &vecTracerSrc, const trace_t &tr, int iTracerType );
@@ -1737,8 +1737,8 @@ private:
 public:
 	// Object model index
 	short							m_nModelIndex;
-private:
 	unsigned char					m_nRenderFX;
+private:
 	unsigned char 					m_nRenderMode;
 	unsigned char					m_MoveType;
 	unsigned char					m_MoveCollide;

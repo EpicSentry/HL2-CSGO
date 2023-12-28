@@ -181,7 +181,7 @@ void C_PlayerResource::UpdateXuids( void )
 		}
 	}
 }
-
+/*
 void C_PlayerResource::UpdateAsLocalizedFakePlayerName( int slot, char const *pchPlayerName )
 {
 	static CUtlStringMap< CUtlString > s_mapLocalizedNames;
@@ -216,7 +216,7 @@ void C_PlayerResource::UpdateAsLocalizedFakePlayerName( int slot, char const *pc
 
 	m_szName[ slot ] = s_mapLocalizedNames[ symName ];
 }
-
+*/
 void C_PlayerResource::UpdatePlayerName( int slot )
 {
 	if ( slot < 1 || slot > MAX_PLAYERS )
@@ -230,12 +230,13 @@ void C_PlayerResource::UpdatePlayerName( int slot )
 		engine->GetPlayerInfo( slot, &sPlayerInfo ) )
 	{
 		pchPlayerName = sPlayerInfo.name;
-
+		/*
 		if ( sPlayerInfo.fakeplayer && *pchPlayerName )
 		{
 			UpdateAsLocalizedFakePlayerName( slot, pchPlayerName );
 			return;
 		}
+		*/
 	}
 
 	if ( !m_szName[slot] || Q_stricmp( m_szName[slot], pchPlayerName ) )

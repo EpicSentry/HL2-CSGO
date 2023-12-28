@@ -286,11 +286,7 @@ wchar_t* ReadChatTextString( const char *szString, wchar_t *pOut, int outSize, b
 	pOut[0] = 0;
 	if ( const char *pszEntIndex = StringAfterPrefix( szString, "#ENTNAME[" ) )
 	{
-		int iEntIndex = V_atoi( pszEntIndex );
-		if ( C_CS_PlayerResource *pCSPR = ( C_CS_PlayerResource* ) GameResources() )
-		{
-			pCSPR->GetDecoratedPlayerName( iEntIndex, pOut, outSize, ( EDecoratedPlayerNameFlag_t ) ( k_EDecoratedPlayerNameFlag_DontUseNameOfControllingPlayer | k_EDecoratedPlayerNameFlag_DontUseAssassinationTargetName ) );
-		}
+		//int iEntIndex = V_atoi( pszEntIndex );
 		if ( !pOut[0] )
 		{
 			if ( const char *pszCloseBracket = V_strnchr( pszEntIndex, ']', 64 ) )
@@ -1002,6 +998,7 @@ bool CBaseHudChat::MsgFunc_SayText2( const CUsrMsg_SayText2 &msg )
 // any string that starts with the character '#' is a message name, and is used to look up the real message in titles.txt
 // the next ( optional) one to four strings are parameters for that string ( which can also be message names if they begin with '#')
 //-----------------------------------------------------------------------------
+#define MAX_DECORATED_PLAYER_NAME_LENGTH ( ( MAX_NETWORKID_LENGTH * 10 ) + 20 ) //I got lazy and plopped this rather useless define here
 bool CBaseHudChat::MsgFunc_TextMsg( const CUsrMsg_TextMsg &msg )
 {
 	char szString[2048] = {};
@@ -1017,10 +1014,6 @@ bool CBaseHudChat::MsgFunc_TextMsg( const CUsrMsg_TextMsg &msg )
 		{
 			int iEntIndex = V_atoi( pszEntIndex );
 			wchar_t wszPlayerName[MAX_DECORATED_PLAYER_NAME_LENGTH] = {};
-			if ( C_CS_PlayerResource *pCSPR = ( C_CS_PlayerResource* ) GameResources() )
-			{
-				pCSPR->GetDecoratedPlayerName( iEntIndex, wszPlayerName, sizeof( wszPlayerName ), ( EDecoratedPlayerNameFlag_t ) ( k_EDecoratedPlayerNameFlag_DontUseNameOfControllingPlayer | k_EDecoratedPlayerNameFlag_DontUseAssassinationTargetName ) );
-			}
 			if ( wszPlayerName[0] )
 			{
 				szString[0] = 0;

@@ -77,7 +77,7 @@ public : // IGameResources intreface
 
 protected:
 	virtual void	UpdatePlayerName( int slot );
-	void	UpdateAsLocalizedFakePlayerName( int slot, char const *pchRawPlayerName );
+	//void	UpdateAsLocalizedFakePlayerName( int slot, char const *pchRawPlayerName ); Not used anywhere.
 	void	UpdateXuids( void );
 
 	// Data for each player that's propagated to all clients

@@ -206,7 +206,7 @@ void CTextWindow::ShowText( const char *text)
 void CTextWindow::ShowURL( const char *URL, bool bAllowUserToDisable )
 {
 #if defined( ENABLE_CHROMEHTMLWINDOW )
-	if ( bAllowUserToDisable && cl_disablehtmlmotd.GetBool() && !GetNumSecondsRequiredByServer() )
+	if ( bAllowUserToDisable && cl_disablehtmlmotd.GetBool())
 	{
 		// User has disabled HTML TextWindows. Show the fallback as text only.
 		if ( g_pStringTableInfoPanel )
@@ -465,7 +465,7 @@ void CTextWindow::Update( void )
 	}
 }
 
-int CTextWindow::GetNumSecondsRequiredByServer() const
+/*int CTextWindow::GetNumSecondsRequiredByServer() const
 {
 	if ( !g_pGameTypes )
 		return 0;
@@ -477,7 +477,7 @@ int CTextWindow::GetNumSecondsRequiredByServer() const
 	if ( numSecondsRequired > 35 )
 		numSecondsRequired = 35; // never allow > 35 second ads
 	return numSecondsRequired;
-}
+}*/
 
 int CTextWindow::GetNumSecondsSponsorRequiredRemaining() const
 {
@@ -485,10 +485,10 @@ int CTextWindow::GetNumSecondsSponsorRequiredRemaining() const
 	if ( !m_bForcingWindowCloseRegardlessOfTime )
 	{
 		int numSecondsShownAlready = int( Plat_MSTime() - m_uiTimestampStarted ) / 1000;
-		int numSecondsRequired = GetNumSecondsRequiredByServer();
+		//int numSecondsRequired = GetNumSecondsRequiredByServer();
 
-		if ( ( numSecondsRequired > 0 ) && ( numSecondsShownAlready < numSecondsRequired ) )
-			numSecondsRemaining = ( numSecondsRequired - numSecondsShownAlready );
+		//if ( ( numSecondsRequired > 0 ) && ( numSecondsShownAlready < numSecondsRequired ) )
+		//	numSecondsRemaining = ( numSecondsRequired - numSecondsShownAlready );
 	}
 
 	static ConVarRef cv_ignore_ui_activate_key( "ignore_ui_activate_key" );
@@ -680,7 +680,7 @@ void CTextWindow::PaintBackground()
 	BaseClass::PaintBackground();
 
 	if ( m_uiTimestampStarted && IsVisible() &&
-		CSGameRules() && CSGameRules()->IsQueuedMatchmaking() &&
+	//	CSGameRules() && CSGameRules()->IsQueuedMatchmaking() &&
 		( int( Plat_MSTime() - m_uiTimestampStarted ) > 1000*cl_motd_competitive_timeout.GetInt() ) )
 	{
 		m_bForcingWindowCloseRegardlessOfTime = true;

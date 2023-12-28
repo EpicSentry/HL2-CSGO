@@ -1093,25 +1093,12 @@ void C_BasePlayer::PostDataUpdate( DataUpdateType_t updateType )
 		}
 		else if ( m_bWasFreezeFraming && GetObserverMode() != OBS_MODE_FREEZECAM )
 		{
-			if ( spec_freeze_panel_extended_time.GetFloat() > 0 )
-			{
-				m_flFreezePanelExtendedStartTime = gpGlobals->curtime;
-				m_bWasFreezePanelExtended = true;
-			}
-			else
-			{
-				bHideFreezePanel = true;
-			}
+			bHideFreezePanel = true;
 
 			view->FreezeFrame(0);
 
 			ConVar *pVar = ( ConVar * )cvar->FindVar( "snd_soundmixer" );
 			pVar->Revert();
-		}
-		else if ( m_bWasFreezePanelExtended && gpGlobals->curtime >= m_flFreezePanelExtendedStartTime + spec_freeze_panel_extended_time.GetFloat() )
-		{
-			bHideFreezePanel = true;
-			m_bWasFreezePanelExtended = false;
 		}
 #if defined( INCLUDE_SCALEFORM )
 		else if ( IsAlive() )
@@ -1256,9 +1243,7 @@ void C_BasePlayer::OnRestore()
 	}
 
 	// For ammo history icons to current value so they don't flash on level transtions
-	int ammoTypes = GetAmmoDef()->NumAmmoTypes();
-	// ammodef is 1 based, use <=
-	for ( int i = 0; i <= ammoTypes; i++ )
+	for (int i = 0; i < MAX_AMMO_TYPES; i++)
 	{
 		m_iOldAmmo[i] = GetAmmoCount(i);
 	}

@@ -347,15 +347,7 @@ bool CStatTrakDigitProxy::HelperOnBindGetStatTrakScore( void *pC_BaseEntity, int
 			C_BasePlayer *pPlayer = ToBasePlayer( pViewModel->GetPredictionOwner() );
 			if ( pPlayer )
 			{
-				CWeaponCSBase *pWeap = pPlayer->GetActiveCSWeapon();
-				if ( pWeap )
-				{
-					if ( CEconItemView *pItemView = pWeap->GetEconItemView() )
-					{
-						// Always get headshot-trak(TM)
-						*piScore = pItemView->GetKillEaterValueByType( 0 );
-					}
-				}
+				return false;
 			}
 		}
 	}
@@ -518,7 +510,7 @@ void CStatTrakIllumProxy::OnBind( void *pC_BaseEntity )
 		C_BaseViewModel *pViewModel = dynamic_cast< C_BaseViewModel* >( pEntity->GetMoveParent() );
 		if ( pViewModel )
 		{
-			SetFloatResult( Lerp( pViewModel->GetStatTrakGlowMultiplier(), m_flMinVal.GetFloat(), m_flMaxVal.GetFloat() ) );
+			//SetFloatResult( Lerp( pViewModel->GetStatTrakGlowMultiplier(), m_flMinVal.GetFloat(), m_flMaxVal.GetFloat() ) );
 			return;
 		}
 	}
@@ -573,12 +565,8 @@ bool CWeaponLabelTextProxy::HelperOnBindGetLabel( void *pC_BaseEntity, const cha
 			CBaseCombatWeapon *pWeapon = pViewModel->GetWeapon();
 			if ( pWeapon )
 			{
-				CEconItemView *pItem = pWeapon->GetEconItemView();
-				if ( pItem )
-				{
-					*p_szLabel = pItem->GetCustomName();
-					return true;
-				}
+				//CEconItemView *pItem = pWeapon->GetEconItemView();
+				return false;
 			}
 		}
 	}

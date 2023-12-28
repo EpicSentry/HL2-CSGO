@@ -458,6 +458,7 @@ void CBaseViewModel::CalcViewModelView( CBasePlayer *owner, const Vector& eyePos
 	Vector vecForward;
 	AngleVectors( vmangoriginal, &vecForward, &vecRight, &vecUp );
 	//Vector vecOffset = Vector( viewmodel_offset_x.GetFloat(), viewmodel_offset_y.GetFloat(), viewmodel_offset_z.GetFloat() ); 
+	/*
 	if ( !m_bShouldIgnoreOffsetAndAccuracy )
 	{
 #ifdef IRONSIGHT
@@ -476,7 +477,7 @@ void CBaseViewModel::CalcViewModelView( CBasePlayer *owner, const Vector& eyePos
 		}	
 #endif
 		vmorigin += (vecForward * viewmodel_offset_y.GetFloat()) + (vecUp * viewmodel_offset_z.GetFloat()) + (vecRight * viewmodel_offset_x.GetFloat());
-	}
+	}*/
 
 	// TrackIR
 	if ( IsHeadTrackingEnabled() )
@@ -659,7 +660,7 @@ BEGIN_NETWORK_TABLE_NOBASE(CBaseViewModel, DT_BaseViewModel)
 	RecvPropInt( RECVINFO( m_nResetEventsParity )),
 	RecvPropInt( RECVINFO( m_nMuzzleFlashParity )),
 
-	RecvPropBool( RECVINFO( m_bShouldIgnoreOffsetAndAccuracy ) ),
+	//RecvPropBool( RECVINFO( m_bShouldIgnoreOffsetAndAccuracy ) ),
 
 #endif
 END_NETWORK_TABLE()

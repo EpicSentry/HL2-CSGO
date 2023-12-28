@@ -47,7 +47,7 @@ public:
 #if defined( CSTRIKE15 )
 		return false;
 #else
-		return Super::ShouldDraw();
+		return ((GetAlpha() > 0) && CHudElement::ShouldDraw());
 #endif
 	}
 

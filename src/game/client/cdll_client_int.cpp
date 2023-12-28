@@ -3625,12 +3625,13 @@ void CHLClient::OnDemoRecordStart( char const* pDemoBaseName )
 		}
 	}
 #endif
-
+	/*
 	if ( CSGameRules() )
 	{
 		// If client was previously marked to stop recording at round end then mark it now as not requiring to stop
 		CSGameRules()->MarkClientStopRecordAtRoundEnd( false );
 	}
+	*/
 }
 
 void CHLClient::OnDemoRecordStop()
@@ -3905,7 +3906,7 @@ int CHLClient::GetSpectatorTarget( ClientDLLObserverMode_t* pObserverMode )
 		*pObserverMode = CLIENT_DLL_OBSERVER_NONE;
 	}
 
-	C_CSPlayer *pPlayer = GetLocalOrInEyeCSPlayer();
+	C_BasePlayer *pPlayer = ToBasePlayer(pPlayer);
 
 	if ( pPlayer != NULL )
 	{
@@ -4281,10 +4282,11 @@ void CHLClient::OnDemoPlaybackTimeJump()
 }
 
 // Inventory access
+
 float CHLClient::FindInventoryItemWithMaxAttributeValue( char const *szItemType, char const *szAttrClass )
 {
-	CCSPlayerInventory *pLocalInv = CSInventoryManager()->GetLocalCSInventory();
-	return pLocalInv ? pLocalInv->FindInventoryItemWithMaxAttributeValue( szItemType, szAttrClass ) : -1.0f;
+	//CCSPlayerInventory *pLocalInv = CSInventoryManager()->GetLocalCSInventory();
+	//return pLocalInv ? pLocalInv->FindInventoryItemWithMaxAttributeValue( szItemType, szAttrClass ) : -1.0f;
 }
 
 void CHLClient::DetermineSubscriptionKvToAdvertise( KeyValues *kvLocalPlayer )
@@ -4688,7 +4690,7 @@ char const * CHLClient::GetRichPresenceStatusString()
 */
 int CHLClient::GetInEyeEntity() const
 {
-	C_CSPlayer* player = GetLocalOrInEyeCSPlayer();
+	C_BasePlayer* player = ToBasePlayer(player);
 	if (player != nullptr)
 	{
 		return player->entindex();

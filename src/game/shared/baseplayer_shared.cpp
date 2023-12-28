@@ -28,6 +28,7 @@
 	#include "view.h"
 	#include "c_physicsprop.h"
 	#include "c_physbox.h"
+	#include "haptics\haptic_utils.h"
 
 #if defined( CSTRIKE15 )
 	#include "weapon_selection.h"

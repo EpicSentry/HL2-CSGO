@@ -1,4 +1,4 @@
-//========= Copyright © 1996-2005, Valve Corporation, All rights reserved. ============//
+ï»¿//========= Copyright ï¿½ 1996-2005, Valve Corporation, All rights reserved. ============//
 //
 // Purpose: Entity that simulates bullets that are underwater.
 //
@@ -16,12 +16,12 @@
 //=========================================================
 class CWaterBullet : public CBaseAnimating
 {
-	DECLARE_CLASS( CWaterBullet, CBaseAnimating );
+	DECLARE_CLASS(CWaterBullet, CBaseAnimating);
 
 public:
 	void Precache();
-	void Spawn( const Vector &vecOrigin, const Vector &vecDir );
-	void Touch( CBaseEntity *pOther );
+	void Spawn(const Vector &vecOrigin, const Vector &vecDir);
+	void Touch(CBaseEntity *pOther);
 	void BulletThink();
 
 	DECLARE_DATADESC();

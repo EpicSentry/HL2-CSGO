@@ -87,7 +87,7 @@ ConVar locator_split_len( "locator_split_len", "0.5f", FCVAR_CHEAT );
 
 // This maps a controller origin to a localized string (like "GameUI_Icons_SC_L_Trigger"). That string
 // will then remap to a character (like 'L'), which will correspond to a character inside the SC button font file.
-static const char *g_SteamControllerOriginStrings[k_EControllerActionOrigin_Count] = 
+/*static const char *g_SteamControllerOriginStrings[k_EControllerActionOrigin_Count] = 
 {
 	"SC_None",				// 	k_EControllerActionOrigin_None,
 	"SC_A_Button",			// 	k_EControllerActionOrigin_A,
@@ -124,7 +124,7 @@ static const char *g_SteamControllerOriginStrings[k_EControllerActionOrigin_Coun
 	"SC_Gyro_Pitch",		// 	k_EControllerActionOrigin_Gyro_Pitch,
 	"SC_Gyro_Yaw",			// 	k_EControllerActionOrigin_Gyro_Yaw,
 	"SC_Gyro_Roll"			// 	k_EControllerActionOrigin_Gyro_Roll,
-};
+};*/
 
 #ifdef DEBUG
 ConVar sc_debug_origins( "sc_debug_origins", "0", FCVAR_ARCHIVE, "Debugging" );
