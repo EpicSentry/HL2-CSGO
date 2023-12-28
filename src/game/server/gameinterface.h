@@ -61,9 +61,9 @@ public:
 	virtual void			ClientCommandKeyValues( edict_t *pEntity, KeyValues *pKeyValues );
 
 	// Server override for supplied client name
-	//virtual const char *	ClientNameHandler( uint64 xuid, const char *pchName ) OVERRIDE;
+	virtual const char *	ClientNameHandler( uint64 xuid, const char *pchName ) OVERRIDE;
 
-	//virtual void		ClientSvcUserMessage( edict_t *pEntity, int nType, int nPassthrough, uint32 cbSize, const void *pvBuffer ) OVERRIDE;
+	virtual void		ClientSvcUserMessage( edict_t *pEntity, int nType, int nPassthrough, uint32 cbSize, const void *pvBuffer ) OVERRIDE;
 };
 
 
@@ -123,8 +123,9 @@ public:
 
 	virtual void			InvalidateMdlCache();
 	// conn: there seem to be a lot of functions here that are declared but have their definitions somewhere else depending on the game. the cs_gameinterface.cpp file has many definitions stubbed for partner depot so these wouldn't work anyway
+	// sentry: these have been mostly added back, some are really crippled though, better than nothing
 	// Called to apply lobby settings to a dedicated server
-	//virtual void			ApplyGameSettings( KeyValues *pKV );
+	virtual void			ApplyGameSettings( KeyValues *pKV );
 
 	//virtual void			GetMatchmakingTags( char *buf, size_t bufSize );
 
@@ -172,13 +173,13 @@ public:
 	virtual void			GameServerSteamAPIActivated( bool bActive );
 
 	// Returns which encryption key to use for messages to be encrypted for TV
-	//virtual EncryptedMessageKeyType_t GetMessageEncryptionKey( INetMessage *pMessage );
+	virtual EncryptedMessageKeyType_t GetMessageEncryptionKey( INetMessage *pMessage );
 
 	// If server game dll needs more time before server process quits then
 	// it should return true to hold game server reservation from this interface method.
 	// If this method returns false then the server process will clear the reservation
 	// and might shutdown to meet uptime or memory limit requirements.
-	//virtual bool ShouldHoldGameServerReservation( float flTimeElapsedWithoutClients );
+	virtual bool ShouldHoldGameServerReservation( float flTimeElapsedWithoutClients );
 
 	// Pure server validation failed for the given client, client supplied
 	// data is included in the payload
@@ -200,7 +201,7 @@ public:
 	//virtual bool OnEngineClientProxiedRedirect( uint64 ullClient, const char *adrProxiedRedirect, const char *adrRegular ) OVERRIDE;
 
 	// Tell server about a line we will write to the log file which may be sent to remote listeners
-	//bool LogForHTTPListeners( const char* szLogLine ) OVERRIDE;
+	bool LogForHTTPListeners( const char* szLogLine ) OVERRIDE;
 private:
 
 	// This can just be a wrapper on MapEntity_ParseAllEntities, but CS does some tricks in here

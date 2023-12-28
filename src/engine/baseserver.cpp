@@ -2606,18 +2606,26 @@ void CBaseServer::CheckTimeouts (void)
 	
 		// Don't timeout in _DEBUG builds
 #if !defined( _DEBUG )
-		if ( netchan->IsTimedOut() )
+
+		for (i = 0; i< m_Clients.Count(); i++)
 		{
-			if ( this == &sv )
+			IClient    *cl = m_Clients[i];
+
+			if (cl->IsFakeClient() || !cl->IsConnected())
+				continue;
+
+			INetChannel *netchan = cl->GetNetChannel();
+
+			if (!netchan)
+				continue;
+
+
+
+			if (netchan->IsTimedOut())
 			{
-				if ( CGameClient *pGameClient = dynamic_cast< CGameClient * >( cl ) )
-				{
-					serverGameDLL->OnEngineClientNetworkEvent( pGameClient->edict, pGameClient->m_SteamID.ConvertToUint64(), INetChannelInfo::k_ENetworkEventType_TimedOut, NULL );
-				}
+				cl->Disconnect("%s timed out");
 			}
-			cl->Disconnect( CFmtStr( "%s timed out", cl->GetClientName() ) );
 		}
-		else
 #endif
 		// Handle steam socket disconnection
 		if ( netchan->IsRemoteDisconnected() )

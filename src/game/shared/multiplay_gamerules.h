@@ -227,6 +227,8 @@ public:
 
 	void SkipNextMapInCycle();
 
+	virtual void	ClientCommandKeyValues(edict_t *pEntity, KeyValues *pKeyValues);
+
 	virtual float GetIntermissionStartTime() const { return m_flIntermissionStartTime; };
 	
 	virtual bool OnReplayPrompt( CBasePlayer *pVictim, CBasePlayer *pScorer );

@@ -450,32 +450,26 @@ bool CGameClient::CLCMsg_FileCRCCheck( const CCLCMsg_FileCRCCheck& msg )
 	// 2. make sure the user doesnt skip any files
 	// 3. make sure the user sends the right files...
 
-	if ( warningStr[0] )
+	if (warningStr[0])
 	{
-		if ( serverGameDLL )
+		if (sv_pure_kick_clients.GetInt())
 		{
-			serverGameDLL->OnPureServerFileValidationFailure( edict, path, fileName, filehash.m_crcIOSequence, filehash.m_eFileHashType,
-				filehash.m_cbFileLen, filehash.m_nPackFileNumber, filehash.m_PackFileID );
-		}
-
-		if ( sv_pure_kick_clients.GetInt() )
-		{
-			Disconnect( warningStr );
+			Disconnect(warningStr);
 		}
 		else
 		{
-			ClientPrintf( "Warning: %s\n", warningStr );
-			if ( sv_pure_trace.GetInt() >= 1 )
+			ClientPrintf("Warning: %s\n", warningStr);
+			if (sv_pure_trace.GetInt() >= 1)
 			{
-				Msg( "[%s] %s\n", GetNetworkIDString(), warningStr );
+				Msg("[%s] %s\n", GetNetworkIDString(), warningStr);
 			}
-		}		
+		}
 	}
 	else
 	{
-		if ( sv_pure_trace.GetInt() == 2 )
+		if (sv_pure_trace.GetInt() >= 2)
 		{
-			Msg( "Pure server CRC check: client %s passed check for [%s]\\%s\n", GetClientName(), path, fileName );
+			Msg("Pure server CRC check: client %s passed check for [%s]\\%s\n", GetClientName(), path, fileName);
 		}
 	}
 

@@ -60,7 +60,7 @@ public:
 	virtual void			DestroyMP3StreamDecoder( IAudioStream *pDecoder ) = 0;
 
 	virtual void			*CreateMilesAudioEngine() = 0;
-	virtual void			DestroyMilesAudioEngine( void *pEngine ) = 0;
+	virtual void			DestroyMilesAudioEngine(void *pEngine) = 0;
 };
 
 

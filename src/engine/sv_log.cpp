@@ -542,7 +542,7 @@ void CLog::Print( const char * text )
 		return;
 	}
 
-	serverGameDLL->LogForHTTPListeners( text );
+	//serverGameDLL->LogForHTTPListeners( text );
 
 	tm today;
 	Plat_GetLocalTime( &today );

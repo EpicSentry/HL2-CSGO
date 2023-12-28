@@ -2746,8 +2746,8 @@ bool SV_ActivateServer()
 	}
 	#endif
 
-	if ( serverGameDLL && Steam3Server().GetGSSteamID().IsValid() )
-		serverGameDLL->UpdateGCInformation();
+//	if ( serverGameDLL && Steam3Server().GetGSSteamID().IsValid() )
+//		serverGameDLL->UpdateGCInformation();
 
     COM_TimestampedLog( "SV_ActivateServer(finished)" );
 

@@ -3783,10 +3783,277 @@ void CServerGameClients::ClientCommandKeyValues( edict_t *pEntity, KeyValues *pK
 }
 
 // Server override for supplied client name (implemented in cs_gameinterface)
-// const char * CServerGameClients::ClientNameHandler( uint64 xuid, const char *pchName )
-// {
-// 	return pchName;
-// }
+const char * CServerGameClients::ClientNameHandler( uint64 xuid, const char *pchName )
+{
+ 	return pchName;
+}
+
+// Returns which encryption key to use for messages to be encrypted for TV
+EncryptedMessageKeyType_t CServerGameDLL::GetMessageEncryptionKey(INetMessage *pMessage)
+{
+	switch (pMessage->GetType())
+	{
+	case svc_VoiceData:
+	{
+		/*
+		// check the voice data packets for being from an active caster and add the caster flag and use the public key
+		CSVCMsg_VoiceData *pVoiceData = (CSVCMsg_VoiceData *)pMessage;
+		CSteamID steamID(static_cast<uint64>(pVoiceData->xuid()));
+		if (steamID.GetAccountID())
+		{
+			for (int j = 0; j < CSGameRules()->m_arrTournamentActiveCasterAccounts.Count(); j++)
+			{
+				if (steamID.GetAccountID() == CSGameRules()->m_arrTournamentActiveCasterAccounts[j])
+				{
+					pVoiceData->set_caster(true);
+					return kEncryptedMessageKeyType_Public;
+				}
+			}
+		}
+		*/
+		return kEncryptedMessageKeyType_Private;
+	}
+	return kEncryptedMessageKeyType_Private;
+
+	case svc_UserMessage:
+	{
+		CSVCMsg_UserMessage *pUsrMessageHeader = (CSVCMsg_UserMessage *)pMessage;
+		switch (pUsrMessageHeader->msg_type())
+		{
+		case UM_SayText:
+		{
+			CUsrMsg_SayText usrMsg;
+			if (usrMsg.ParseFromArray(&pUsrMessageHeader->msg_data().at(0), pUsrMessageHeader->msg_data().size()))
+			{
+				if (usrMsg.textallchat())
+					return kEncryptedMessageKeyType_Public;
+			}
+		}
+		return kEncryptedMessageKeyType_Private;
+
+		case UM_SayText2:
+		{
+			CUsrMsg_SayText2 usrMsg;
+			if (usrMsg.ParseFromArray(&pUsrMessageHeader->msg_data().at(0), pUsrMessageHeader->msg_data().size()))
+			{
+				if (usrMsg.textallchat())
+					return kEncryptedMessageKeyType_Public;
+			}
+		}
+		return kEncryptedMessageKeyType_Private;
+
+		case UM_TextMsg:
+		case UM_RadioText:
+		case UM_RawAudio:
+		case UM_SendAudio:
+			return kEncryptedMessageKeyType_Private;
+
+		default:
+			return kEncryptedMessageKeyType_None;
+		}
+	}
+	return kEncryptedMessageKeyType_None;
+
+	case svc_EncryptedData:
+	default:
+		return kEncryptedMessageKeyType_None;
+	}
+}
+
+bool CServerGameDLL::LogForHTTPListeners(const char* szLogLine)
+{
+	//return GetServerLogHTTPDispatcher()->LogForHTTPListeners(szLogLine);
+	return true;
+}
+
+void CServerGameClients::ClientSvcUserMessage(edict_t *pEntity, int nType, int nPassthrough, uint32 cbSize, const void *pvBuffer)
+{
+	CBasePlayer *pPlayer = ToBasePlayer(GetContainingEntity(pEntity));
+	if (!pPlayer)
+		return;
+
+	switch (nType)
+	{
+		/*
+	case UM_PlayerDecalDigitalSignature:
+	{
+		CUsrMsg_PlayerDecalDigitalSignature msg;
+		if (msg.ParseFromArray(pvBuffer, cbSize))
+			pPlayer->SprayPaint(msg);
+	}
+	*/
+	return;
+	}
+}
+
+// If server game dll needs more time before server process quits then
+// it should return true to hold game server reservation from this interface method.
+// If this method returns false then the server process will clear the reservation
+// and might shutdown to meet uptime or memory limit requirements.
+bool CServerGameDLL::ShouldHoldGameServerReservation(float flTimeElapsedWithoutClients)
+{
+	/** Removed for partner depot ... fuck**/ 
+	return false; // let the server get unreserved
+}
+
+void CServerGameDLL::ApplyGameSettings(KeyValues *pKV)
+{
+	if (!pKV)
+	{
+		return;
+	}
+
+	if (engine)
+	{
+		DevMsg("CServerGameDLL::ApplyGameSettings game settings payload received:\n");
+		KeyValuesDumpAsDevMsg(pKV, 1);
+
+		const char* pMapName = NULL;
+		const char* pMapNameFromKV = pKV->GetString("game/map");
+		const char* pGameType = pKV->GetString("game/type");
+		const char* pGameMode = pKV->GetString("game/mode");
+		const char* pMapGroupName = pKV->GetString("game/mapgroupname", NULL);
+		const char* pMapGroupNameToValidate = NULL;		// pMapGroupName is ok to be NULL; this variable lets us easily use a non null pMapGroupName or gpGlobals->mapGroupName
+
+		/*
+		if (!IsValveDS() &&
+			pMapNameFromKV && StringHasPrefix(pMapNameFromKV, "workshop") &&
+			pMapGroupName && Q_stristr(pMapGroupName, "@workshop"))
+		{
+			// A community server is getting reserved by a client for a workshop map,
+			// retain our current workshop collection if we are hosting one to preserve
+			// map rotation process
+			pMapGroupName = engine->IsDedicatedServer() ? STRING(gpGlobals->mapGroupName) : pMapGroupName;
+		}
+		*/
+
+		if (pMapGroupName && (pMapGroupName[0] != '\0') && !pMapNameFromKV)
+		{
+			// if we have a mapgroup name, then we don't care about any map name from the pKV and we just want the first map from the mapgroup
+			//pMapName = g_pGameTypes->GetRandomMap(pMapGroupName);
+			pMapGroupNameToValidate = pMapGroupName;
+		}
+		else
+		{
+			pMapGroupNameToValidate = (pMapGroupName && (pMapGroupName[0] != '\0')) ? pMapGroupName : STRING(gpGlobals->mapGroupName);
+		}
+
+		// make sure we are not using a bogus mapgroup name
+		//if (pMapGroupNameToValidate && !StringIsEmpty(pMapGroupNameToValidate) && !g_pGameTypes->IsValidMapGroupName(pMapGroupNameToValidate))
+		//{
+		//	Warning("ApplyGameSettings: Invalid mapgroup name %s\n", pMapGroupNameToValidate);
+		//	return;
+		//}
+
+		// only use the map name from the pKV if there was no mapgroup name in the pKV
+		if (!pMapName)
+		{
+			pMapName = pMapNameFromKV;
+		}
+
+		// For team games we add the prefix "team" to the game type. This is to
+		// eliminate team game lobbies from searches for QuickMatch and Custom Match
+		const char *teamStr = "team";
+		const char *pTeamPrefix = Q_strstr(pGameType, teamStr);
+		if (pTeamPrefix == pGameType)
+		{
+			pGameType += Q_strlen(teamStr);
+		}
+
+		if (pMapName && pMapName[0] != '\0')
+		{
+			// validate map exists in the mapgroup
+			//if (!g_pGameTypes->IsValidMapInMapGroup(pMapGroupNameToValidate, pMapName))
+			//{
+			//	Warning("ApplyGameSettings: Map %s not part of Mapgroup %s\n", pMapName, pMapGroupNameToValidate);
+			//}
+
+			int extraSpectators = 2;
+
+			if ((pGameType && pGameType[0] != '\0') &&
+				(pGameMode && pGameMode[0] != '\0'))
+			{
+				// make sure the mapgroup is in this game type & mode
+				//if (!g_pGameTypes->IsValidMapGroupForTypeAndMode(pMapGroupNameToValidate, pGameType, pGameMode))
+				//{
+				//	Warning("ApplyGameSettings: MapGroup %s not part of type %s mode %s\n", pMapGroupNameToValidate, pGameType, pGameMode);
+				//}
+
+				// Get the bot difficulty setting before it gets reverted.
+				ConVarRef cvCustomBotDiff("custom_bot_difficulty");
+				int customBotDiff = cvCustomBotDiff.GetInt();
+
+				/*
+				// FIXME[pmf]: We don't want to reset all replicated convars unless we also re-exec game.cfg on the server,
+				// otherwise we'll overwrite all the game configuration convars specified in game.cfg
+
+				// Reset server enforced convars
+				g_pCVar->RevertFlaggedConVars( FCVAR_REPLICATED );
+				*/
+
+				// Cheats were disabled; revert all cheat cvars to their default values.
+				// This must be done heading into multiplayer games because people can play
+				// demos etc and set cheat cvars with sv_cheats 0.
+				g_pCVar->RevertFlaggedConVars(FCVAR_CHEAT);
+
+				// we know that the loading screen data is correct, so let the loading screen know
+				//g_pGameTypes->SetLoadingScreenDataIsCorrect( true );
+				//g_pGameTypes->SetRunMapWithDefaultGametype(false);
+				// Set game_type and game_mode convars.
+				//g_pGameTypes->SetGameTypeAndMode(pGameType, pGameMode);
+
+				//extern ConVar game_online;
+				//if (char const *szOnline = pKV->GetString("system/network", NULL))
+				//{
+				//	game_online.SetValue((!V_stricmp(szOnline, "LIVE")) ? 1 : 0);
+				//}
+
+				//extern ConVar game_public;
+				//if (char const *szAccess = pKV->GetString("system/access", NULL))
+				//{
+				//	game_public.SetValue((!V_stricmp(szAccess, "public")) ? 1 : 0);
+				//}
+
+#ifndef CLIENT_DLL
+				//if (engine->IsDedicatedServer())
+				//	game_online.SetValue(1);
+#endif
+				// Special case: set the custom bot difficulty for offline games
+				//if (!game_online.GetBool())
+				//{
+				//double comment	//g_pGameTypes->SetCustomBotDifficulty(customBotDiff);
+				//}
+
+				// Make sure that correct number of slots is set for the engine
+				{
+					//int iType, iMode;
+					//if (g_pGameTypes->GetGameModeAndTypeIntsFromStrings(pGameType, pGameMode, iType, iMode))
+					//{
+					//	int iMaxPlayersForTypeMode = g_pGameTypes->GetMaxPlayersForTypeAndMode(iType, iMode);
+					//	pKV->SetInt("members/numSlots", iMaxPlayersForTypeMode);
+					//}
+				}
+
+				// Make sure the settings keys have extra spectator info
+				pKV->SetInt("members/numExtraSpectatorSlots", extraSpectators);
+			}
+
+			CFmtStr command;
+
+			if (pMapGroupName)
+			{
+				command.AppendFormat("mapgroup %s\n", pMapGroupName);
+			}
+			command.AppendFormat("nextlevel %s\n", pMapName); // gamerules will clean it up when they construct for the next map
+			command.AppendFormat("map %s reserved\n", pMapName);
+
+			Warning("Executing server command:\n%s\n---\n", command.Access());
+			engine->ServerCommand(command);
+			if (engine->IsDedicatedServer())
+				engine->ServerExecute();
+		}
+	}
+}
 
 //-----------------------------------------------------------------------------
 // Purpose: 

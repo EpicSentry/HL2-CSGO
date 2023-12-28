@@ -651,7 +651,7 @@ public:
 	virtual void			GameServerSteamAPIActivated( bool bActive ) = 0;
 	
 	// Called to apply lobby settings to a dedicated server
-	//virtual void			ApplyGameSettings( KeyValues *pKV ) = 0;
+	virtual void			ApplyGameSettings( KeyValues *pKV ) = 0;
 
 	// 
 	//virtual void			GetMatchmakingTags( char *buf, size_t bufSize ) = 0;
@@ -690,13 +690,13 @@ public:
 	//virtual void UpdateUGCMap( PublishedFileId_t id ) = 0;
 
 	// Returns which encryption key to use for messages to be encrypted for TV
-	//virtual EncryptedMessageKeyType_t GetMessageEncryptionKey( INetMessage *pMessage ) = 0;
+	virtual EncryptedMessageKeyType_t GetMessageEncryptionKey( INetMessage *pMessage ) = 0;
 
 	// If server game dll needs more time before server process quits then
 	// it should return true to hold game server reservation from this interface method.
 	// If this method returns false then the server process will clear the reservation
 	// and might shutdown to meet uptime or memory limit requirements.
-	//virtual bool ShouldHoldGameServerReservation( float flTimeElapsedWithoutClients ) = 0;
+	virtual bool ShouldHoldGameServerReservation( float flTimeElapsedWithoutClients ) = 0;
 
 	// Pure server validation failed for the given client, client supplied
 	// data is included in the payload
@@ -719,7 +719,7 @@ public:
 	//virtual bool OnEngineClientProxiedRedirect( uint64 ullClient, const char *adrProxiedRedirect, const char *adrRegular ) = 0;
 
 	// Tell server about a line we will write to the log file which may be sent to remote listeners
-	//virtual bool LogForHTTPListeners( const char* szLogLine ) = 0;
+	virtual bool LogForHTTPListeners( const char* szLogLine ) = 0;
 };
 
 //-----------------------------------------------------------------------------
@@ -836,10 +836,10 @@ public:
 	virtual void			ClientCommandKeyValues( edict_t *pEntity, KeyValues *pKeyValues ) = 0;
 
 	// Server override for supplied client name
-	//virtual const char *	ClientNameHandler( uint64 xuid, const char *pchName ) = 0;
+	virtual const char *	ClientNameHandler( uint64 xuid, const char *pchName ) = 0;
 
 	// Client submitted a user command
-	//virtual void			ClientSvcUserMessage( edict_t *pEntity, int nType, int nPassthrough, uint32 cbSize, const void *pvBuffer ) = 0;
+	virtual void			ClientSvcUserMessage( edict_t *pEntity, int nType, int nPassthrough, uint32 cbSize, const void *pvBuffer ) = 0;
 
 };
 
