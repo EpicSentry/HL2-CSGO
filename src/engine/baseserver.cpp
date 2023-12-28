@@ -222,7 +222,7 @@ ConVar			sv_alternateticks( "sv_alternateticks", ( IsX360() ) ? "1" : "0", FCVAR
 ConVar			sv_allow_wait_command( "sv_allow_wait_command", "1", FCVAR_REPLICATED | FCVAR_RELEASE, "Allow or disallow the wait command on clients connected to this server." );
 #if !defined( CSTRIKE15 )
 // We are switching CStrike to always have lobbies associated with servers for community matchmaking
-ConVar			sv_allow_lobby_connect_only( "sv_allow_lobby_connect_only", "1",  FCVAR_RELEASE, "If set, players may only join this server from matchmaking lobby, may not connect directly." );
+ConVar			sv_allow_lobby_connect_only( "sv_allow_lobby_connect_only", "0",  FCVAR_RELEASE, "If set, players may only join this server from matchmaking lobby, may not connect directly." );
 #endif
 static ConVar   sv_reservation_timeout( "sv_reservation_timeout", "45", FCVAR_RELEASE, "Time in seconds before lobby reservation expires.", true, 5.0f, true, 180.0f );
 static ConVar   sv_reservation_grace( "sv_reservation_grace", "5", 0, "Time in seconds given for a lobby reservation.", true, 3.0f, true, 30.0f );
@@ -232,8 +232,8 @@ ConVar			sv_steamgroup_exclusive( "sv_steamgroup_exclusive", "0", FCVAR_RELEASE,
 
 static void SvMmQueueReservationChanged( IConVar *pConVar, const char *pOldValue, float flOldValue )
 {
-	if ( serverGameDLL )
-		serverGameDLL->UpdateGCInformation();
+	//if ( serverGameDLL )
+	//	serverGameDLL->UpdateGCInformation();
 }
 ConVar			sv_mmqueue_reservation( "sv_mmqueue_reservation", "", FCVAR_DEVELOPMENTONLY | FCVAR_DONTRECORD, "Server queue reservation", SvMmQueueReservationChanged );
 ConVar			sv_mmqueue_reservation_timeout( "sv_mmqueue_reservation_timeout", "21", FCVAR_DEVELOPMENTONLY, "Time in seconds before mmqueue reservation expires.", true, 5.0f, true, 180.0f );
@@ -732,11 +732,11 @@ IClient *CBaseServer::ConnectClient ( const ns_address &adr, int protocol, int c
 	}
 
 	// Final validation chance by server.dll
-	if ( char const *szGameServerError = serverGameDLL->ClientConnectionValidatePreNetChan( ( this == &sv ), sAdr.String(), authProtocol, client->m_SteamID.ConvertToUint64() ) )
-	{
-		RejectConnection( adr, "%s", szGameServerError );
-		return NULL;
-	}
+//	if ( char const *szGameServerError = serverGameDLL->ClientConnectionValidatePreNetChan( ( this == &sv ), sAdr.String(), authProtocol, client->m_SteamID.ConvertToUint64() ) )
+//	{
+//		RejectConnection( adr, "%s", szGameServerError );
+//		return NULL;
+//	}
 
 	COM_TimestampedLog( "CBaseServer::ConnectClient:  NET_CreateNetChannel" );
 
@@ -1603,7 +1603,7 @@ void CBaseServer::FillServerInfo(CSVCMsg_ServerInfo &serverinfo)
 	
 	char szMapPath[MAX_PATH];
 	V_ComposeFileName( "maps", GetMapName(), szMapPath, sizeof(szMapPath) );
-	serverinfo.set_ugc_map_id( serverGameDLL->GetUGCMapFileID( szMapPath ) );
+	//serverinfo.set_ugc_map_id( serverGameDLL->GetUGCMapFileID( szMapPath ) );
 
 #if defined( REPLAY_ENABLED )
 	serverinfo.set_is_replay( IsReplay() );
@@ -1937,6 +1937,7 @@ static void DecryptBuffer( IceKey& cipher, unsigned char *bufData, uint bufferSi
 //-----------------------------------------------------------------------------
 // Purpose: Replies to a reservation request sent by the client
 //-----------------------------------------------------------------------------
+/*
 void CBaseServer::ReplyReservationRequest( const ns_address &adr, bf_read &msgIn )
 {
 	if ( msgIn.ReadLong() != GetHostVersion() )
@@ -2004,7 +2005,7 @@ void CBaseServer::ReplyReservationRequest( const ns_address &adr, bf_read &msgIn
 				}
 				else
 				{
-					IceKey cipher(1); /* medium encryption level */
+					IceKey cipher(1); /* medium encryption level *//*
 					unsigned char ucEncryptionKey[8] = { 0 };
 					*( int * )&ucEncryptionKey[ 0 ] = LittleDWord( nChallengeNr ^ 0x5ef8ce12 );
 					*( int * )&ucEncryptionKey[ 4 ] = LittleDWord( nChallengeNr ^ 0xaa98e42c );
@@ -2118,7 +2119,7 @@ void CBaseServer::ReplyReservationRequest( const ns_address &adr, bf_read &msgIn
 	// Send the status right away
 	SendReservationStatus( bAccepted ? kEReservationStatusPending : kEReservationStatusRejected );
 }
-
+*/
 void CBaseServer::ReplyReservationCheckRequest( const ns_address &adr, bf_read &msgIn )
 {
 	if ( msgIn.ReadLong() != GetHostVersion() )
@@ -2178,7 +2179,7 @@ void CBaseServer::ReplyReservationCheckRequest( const ns_address &adr, bf_read &
 						arrConfirmedAccounts.AddToTail( m_arrReservationPlayers[jj].m_uiAccountID );
 				}
 				DevMsg( "Match start status: %u/%u\n", uiMinReservationLevel, arrConfirmedAccounts.Count() );
-				serverGameDLL->ReportGCQueuedMatchStart( uiMinReservationLevel, arrConfirmedAccounts.Base(), arrConfirmedAccounts.Count() );
+				//serverGameDLL->ReportGCQueuedMatchStart( uiMinReservationLevel, arrConfirmedAccounts.Base(), arrConfirmedAccounts.Count() );
 
 				if ( !uiActualAwaitingClients )
 				{
@@ -3160,9 +3161,6 @@ void CBaseServer::UpdateMasterServer()
 			Steam3Server().SendUpdatedServerDetails();
 		}
 	}
-	
-	if ( serverGameDLL && Steam3Server().GetGSSteamID().IsValid() )
-		serverGameDLL->UpdateGCInformation();
 }
 
 void CBaseServer::UpdateMasterServerRules()
@@ -4372,11 +4370,6 @@ void CBaseServer::UpdateGameData()
 	{
 		Warning( "GameData: Too many Steam groups set for sv_steamgroup, not advertising Steam groups affiliation.\n" );
 		utlGroups.Purge();
-	}
-
-	if ( serverGameDLL )
-	{
-		serverGameDLL->GetMatchmakingGameData( m_GameData.Base(), m_GameData.Count() - 1 - utlKey.Length() - utlGroups.Length() - 2 );
 	}
 
 	int nLen = Q_strlen( m_GameData.Base() );

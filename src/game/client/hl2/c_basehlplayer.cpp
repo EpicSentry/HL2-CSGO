@@ -58,8 +58,8 @@ static ConCommand dropprimary("dropprimary", CC_DropPrimary, "dropprimary: Drops
 //-----------------------------------------------------------------------------
 C_BaseHLPlayer::C_BaseHLPlayer()
 {
-	AddVar( &m_Local.m_vecPunchAngle, &m_Local.m_iv_vecPunchAngle, LATCH_SIMULATION_VAR );
-	AddVar( &m_Local.m_vecPunchAngleVel, &m_Local.m_iv_vecPunchAngleVel, LATCH_SIMULATION_VAR );
+	AddVar( &m_Local.m_aimPunchAngle, &m_Local.m_iv_aimPunchAngle, LATCH_SIMULATION_VAR );
+	AddVar( &m_Local.m_aimPunchAngleVel, &m_Local.m_iv_aimPunchAngleVel, LATCH_SIMULATION_VAR );
 
 	m_flZoomStart		= 0.0f;
 	m_flZoomEnd			= 0.0f;

@@ -584,10 +584,6 @@ bool CHLTVClientState::SVCMsg_GameEvent( const CSVCMsg_GameEvent& msg )
 
 		g_GameEventManager.FreeEvent( event );
 		bDontForward = true;
-
-		// make sure we update GC information now that we updated HLTV status
-		if ( serverGameDLL && Steam3Server().GetGSSteamID().IsValid() )
-			serverGameDLL->UpdateGCInformation();
 	}
 	else if ( msg.eventid() == eventid_hltv_title || Q_strcmp( pszName, "hltv_title" ) == 0 )
 	{

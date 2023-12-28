@@ -3588,6 +3588,7 @@ bool CHLClient::CanRecordDemo( char *errorMsg, int length ) const
 
 bool CHLClient::CanStopRecordDemo( char *errorMsg, int length ) const
 {
+	/*
 	if ( CSGameRules() )
 	{
 		if ( CSGameRules()->IsWarmupPeriod() )
@@ -3609,7 +3610,7 @@ bool CHLClient::CanStopRecordDemo( char *errorMsg, int length ) const
 		CSGameRules()->MarkClientStopRecordAtRoundEnd( true );
 		return false;
 	}
-
+	*/
 	return true;
 }
 

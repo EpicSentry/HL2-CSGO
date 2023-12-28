@@ -724,10 +724,10 @@ void CSteam3Server::OnValidateAuthTicketResponse( ValidateAuthTicketResponse_t *
 		g_pServerPluginHandler->NetworkIDValidated( client->GetClientName(), client->GetNetworkIDString() );
 
 		// Tell IServerGameClients if its version is high enough.
-		if ( g_iServerGameClientsVersion >= 4 )
-		{
-			serverGameClients->NetworkIDValidated( client->GetClientName(), client->GetNetworkIDString(), pValidateAuthTicketResponse->m_SteamID );
-		}
+		//if ( g_iServerGameClientsVersion >= 4 )
+		//{
+			//serverGameClients->NetworkIDValidated( client->GetClientName(), client->GetNetworkIDString(), pValidateAuthTicketResponse->m_SteamID );
+		//}
 	}
 
 
@@ -1135,8 +1135,8 @@ void CSteam3Server::SendUpdatedServerDetails()
 //		Msg("  %d: %s, connected=%d, replay=%d, fake=%d\n", i, c->GetClientName(), c->IsConnected() ? 1 : 0, c->IsReplay() ? 1 : 0, c->IsFakeClient() ? 1 : 0 );
 //	}
 
-	if ( serverGameDLL && GetGSSteamID().IsValid() )
-		serverGameDLL->UpdateGCInformation();
+//	if ( serverGameDLL && GetGSSteamID().IsValid() )
+//		serverGameDLL->UpdateGCInformation();
 }
 
 bool CSteam3Server::IsMasterServerUpdaterSharingGameSocket()

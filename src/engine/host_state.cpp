@@ -207,18 +207,7 @@ void HostState_ChangeLevelMP( char const *pNewLevel, char const *pLandmarkName )
 	Q_strncpy( g_HostState.m_levelName, pNewLevel, sizeof( g_HostState.m_levelName ) );
 	Q_FixSlashes( g_HostState.m_levelName, '/' ); // Store with forward slashes internally to be consistent. 
 	Q_strncpy( g_HostState.m_landmarkName, pLandmarkName, sizeof( g_HostState.m_landmarkName ) );
-
-	PublishedFileId_t id = serverGameDLL->GetUGCMapFileID( pNewLevel );
-	if ( sv.IsDedicated() && id != 0 )
-	{
-		// If we're hosting a workshop map, don't change level until we've made sure we're hosting the latest version.
-		serverGameDLL->UpdateUGCMap( id );
-		g_HostState.m_bWorkshopMapDownloadPending = true;
-	}	
-	else
-	{
-		g_HostState.SetNextState( HS_CHANGE_LEVEL_MP );
-	}
+	g_HostState.SetNextState( HS_CHANGE_LEVEL_MP );
 }
 
 // set the mapgroup name
@@ -612,12 +601,8 @@ void CHostState::State_Run( float frameTime )
 	if ( sv.IsDedicated() )
 		EndWatchdogTimer();
 
-	// Continue loading process once we've tried to update the new map
-	if ( sv.IsDedicated() && g_HostState.m_bWorkshopMapDownloadPending && !serverGameDLL->HasPendingMapDownloads() )
-	{
-		g_HostState.SetNextState( HS_CHANGE_LEVEL_MP );
-		g_HostState.m_bWorkshopMapDownloadPending = false;
-	}
+	g_HostState.SetNextState( HS_CHANGE_LEVEL_MP );
+	g_HostState.m_bWorkshopMapDownloadPending = false;
 
 	switch( m_nextState )
 	{

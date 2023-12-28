@@ -22,7 +22,7 @@
 
 #include <vgui_controls/TextEntry.h>
 #include <vgui_controls/Button.h>
-
+#include "fmtstr.h"
 #include <game/client/iviewport.h>
 
 //#include "cs_gamerules.h"

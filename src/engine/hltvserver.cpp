@@ -3495,6 +3495,7 @@ bool CHLTVServer::GetRedirectAddressForConnectClient( const ns_address &adr, CUt
 				{
 					// Ensure that client gets a ticket for the new SDR address
 					// and that the game server allows redirect
+					/*
 					if ( serverGameDLL->IsValveDS() && serverGameDLL->OnEngineClientProxiedRedirect(
 						adr.m_steamID.GetSteamID().ConvertToUint64(), pszRelaySdrAddr, pszRelayAddr ) )
 					{
@@ -3508,6 +3509,7 @@ bool CHLTVServer::GetRedirectAddressForConnectClient( const ns_address &adr, CUt
 						V_strcpy( pchStackCopy, nsadrRendered.String() );
 						pszRelayAddr = pchStackCopy;
 					}
+					*/
 				}
 			}
 		}

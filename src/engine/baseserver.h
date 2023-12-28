@@ -208,7 +208,7 @@ protected:
 
 	virtual void	ReplyChallenge( const ns_address &adr, bf_read &msg );
 	virtual void	ReplyServerChallenge( const ns_address &adr);
-	virtual void	ReplyReservationRequest( const ns_address &adr, bf_read &msg );
+	//virtual void	ReplyReservationRequest( const ns_address &adr, bf_read &msg );
 	virtual void	ReplyReservationCheckRequest( const ns_address &adr, bf_read &msg );
 
 	virtual void	CalculateCPUUsage();
