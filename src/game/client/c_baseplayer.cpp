@@ -2866,7 +2866,7 @@ void C_BasePlayer::SetAimPunchAngleVelocity( const QAngle &angleVelocity )
 {
 	m_Local.m_aimPunchAngleVel = angleVelocity;
 }
-
+/*
 QAngle C_BasePlayer::GetFinalAimAngle()
 {
 	QAngle eyeAngles = EyeAngles();
@@ -2879,7 +2879,7 @@ QAngle C_BasePlayer::GetFinalAimAngle()
 
 	return eyeAngles + GetAimPunchAngle();
 }
-
+*/
 float C_BasePlayer::GetWaterJumpTime() const
 {
 	return m_flWaterJumpTime;

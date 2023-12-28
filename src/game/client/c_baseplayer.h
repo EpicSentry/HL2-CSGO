@@ -436,7 +436,7 @@ public:
 	bool					IsSpectator( void ) const; 
 
 	// Returns the eye or pointer angle plus the punch angle.
-	QAngle					GetFinalAimAngle();
+	//QAngle					GetFinalAimAngle();
 
 	float					GetWaterJumpTime() const;
 	void					SetWaterJumpTime( float flWaterJumpTime );

@@ -90,6 +90,7 @@ const char *GetGameDescription()
 // Input  :
 // Output :
 //-----------------------------------------------------------------------------
+/* i have no idea what im doing
 CBaseEntity* FindEntity( edict_t *pEdict, char *classname)
 {
 	// If no name was given set bits based on the picked
@@ -99,7 +100,7 @@ CBaseEntity* FindEntity( edict_t *pEdict, char *classname)
 	}
 	return NULL;
 }
-
+*/
 //-----------------------------------------------------------------------------
 // Purpose: Precache game-specific models & sounds
 //-----------------------------------------------------------------------------

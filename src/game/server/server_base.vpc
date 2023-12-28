@@ -842,7 +842,7 @@ $Project
 			$File	"$SRVSRCDIR\te_particlesystem.cpp"
 			$File	"$SRVSRCDIR\te_particlesystem.h"
 			$File	"$SRVSRCDIR\te_physicsprop.cpp"
-//			$File	"$SRVSRCDIR\te_playerdecal.cpp"
+			$File	"$SRVSRCDIR\te_playerdecal.cpp"
 			$File	"$SRVSRCDIR\te_projecteddecal.cpp"
 			$File	"$SRVSRCDIR\te_showline.cpp"
 			$File	"$SRVSRCDIR\te_smoke.cpp"

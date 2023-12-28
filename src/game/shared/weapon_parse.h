@@ -225,7 +225,7 @@ KeyValues* ReadEncryptedKVFile( IFileSystem *filesystem, const char *szFilenameW
 // Each game implements this. It can return a derived class and override Parse() if it wants.
 extern FileWeaponInfo_t* CreateWeaponInfo();
 
-extern void LoadEquipmentData();
+//extern void LoadEquipmentData();
 
 class CWeaponDatabase : public CAutoGameSystem, public CGameEventListener
 {
@@ -241,7 +241,7 @@ public:
 	FileWeaponInfo_t *GetFileWeaponInfoFromHandle( WEAPON_FILE_INFO_HANDLE handle );
 
 protected:
-	friend void LoadEquipmentData();
+	//friend void LoadEquipmentData();
 
 	virtual bool Init();
 

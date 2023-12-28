@@ -495,10 +495,10 @@ public:
 	void					NotifySinglePlayerGameEnding() { m_bSinglePlayerGameEnding = true; }
 	bool					IsSinglePlayerGameEnding() { return m_bSinglePlayerGameEnding == true; }
 
-	bool					HandleVoteCommands( const CCommand &args );
-	IntervalTimer &			GetLastHeldVoteTimer(){ return m_lastHeldVoteTimer; }
+	//bool					HandleVoteCommands( const CCommand &args );
+	//IntervalTimer &			GetLastHeldVoteTimer(){ return m_lastHeldVoteTimer; }
 
-	CVoteController *		GetTeamVoteController( void );	// returns one of the two team vote controllers, g_voteControllerT or g_voteControllerCT
+	//CVoteController *		GetTeamVoteController( void );	// returns one of the two team vote controllers, g_voteControllerT or g_voteControllerCT
 	
 	// Observer functions
 	virtual bool			StartObserverMode(int mode); // true, if successful
@@ -664,7 +664,7 @@ public:
 	bool				IsSpectator( void ) const; // is TEAM_SPECTATOR and is not a coach.
 
 	// Returns the eye or pointer angle plus the punch angle.
-	QAngle					GetFinalAimAngle();
+	//QAngle					GetFinalAimAngle();
 
 	void					PropagatePunchAnglesToObservers( void );
 

@@ -19,7 +19,7 @@
 
 CWeaponDatabase g_WeaponDatabase;
 
-extern void LoadEquipmentData();
+//extern void LoadEquipmentData();
 
 // The sound categories found in the weapon classname.txt files
 // This needs to match the WeaponSound_t enum in weapon_parse.h
@@ -616,7 +616,7 @@ bool CWeaponDatabase::LoadManifest()
 		}
 	}
 
-	LoadEquipmentData();
+	//LoadEquipmentData();
 
 	return true;
 }

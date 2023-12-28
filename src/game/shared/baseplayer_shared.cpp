@@ -1287,8 +1287,8 @@ CBaseEntity *CBasePlayer::FindUseEntity()
 {
 	Vector forward, up;
 	// NOTE: This doesn't handle the case when the player is in a vehicle.
-	AngleVectors( GetFinalAimAngle(), &forward, NULL, &up );
-
+	//AngleVectors( GetFinalAimAngle(), &forward, NULL, &up );
+	EyeVectors( &forward, NULL, &up );
 	trace_t tr;
 	// Search for objects in a sphere (tests for entities that are not solid, yet still useable)
 	Vector searchCenter = EyePosition();

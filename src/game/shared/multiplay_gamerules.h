@@ -233,7 +233,7 @@ public:
 protected:
 	virtual bool UseSuicidePenalty() { return true; }		// apply point penalty for suicide?
 	virtual void GetNextLevelName( char *szNextMap, int bufsize, bool bRandom = false );
-	virtual void LoadMapCycleFile(void);
+	//virtual void LoadMapCycleFile(void);
 	virtual void ChangeLevel( void );
 	virtual void GoToIntermission( void );
 	float GetIntermissionDuration() const;

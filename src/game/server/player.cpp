@@ -6438,10 +6438,12 @@ bool CBasePlayer::ClientCommand( const CCommand &args )
 			return true;
 		}
 	}
+	/*
 	else if ( HandleVoteCommands( args ) )
 	{
 		return true;
 	}
+	*/
 	else if ( stricmp( cmd, "spectate" ) == 0 ) // join spectator team & start observer mode
 	{
 		if ( GetTeamNumber() == TEAM_SPECTATOR )
@@ -6653,6 +6655,7 @@ bool CBasePlayer::ClientCommand( const CCommand &args )
 		
 		return true;
 	}
+	/*
 	else if ( stricmp( cmd, "spec_player_by_accountid" ) == 0 )
 	{
 		if ( GetObserverMode( ) == OBS_MODE_ROAMING || GetObserverMode( ) == OBS_MODE_FIXED )
@@ -6671,7 +6674,7 @@ bool CBasePlayer::ClientCommand( const CCommand &args )
 			}
 		}
 	}
-
+	*/
 	else if ( stricmp( cmd, "spec_goto" ) == 0 ) // chase next player
 	{
 		if ( !sv_cheats->GetBool() && IsAlive()/* || (pPlayer->GetObserverMode() != OBS_MODE_ROAMING && pPlayer->GetObserverMode() != OBS_MODE_FIXED)*/ )
@@ -6785,18 +6788,20 @@ bool CBasePlayer::ClientCommand( const CCommand &args )
 		}
 		return true;
 	}
+	/*
 	else if ( stricmp( cmd, "cameraman_request" ) == 0 )
 	{
 		CSteamID steamID;
 		if ( GetSteamID( &steamID ) )
 		{
-			if ( g_ServerGameDLL.ValidateAndAddActiveCaster( steamID ) )
+			//if ( g_ServerGameDLL.ValidateAndAddActiveCaster( steamID ) )
 			{
 				// for now, also set this user as an active camera man
 				SetActiveCameraMan( true );
 			}
 		}
 	}
+	*/
 	else if ( stricmp( cmd, "cameraman_ui_state" ) == 0 )
 	{
 		if ( GetTeamNumber() != TEAM_SPECTATOR )
@@ -8576,7 +8581,7 @@ void CBasePlayer::SetAimPunchAngleVelocity( const QAngle &punchAngleVelocity )
 	m_Local.m_aimPunchAngleVel = punchAngleVelocity;
 	PropagatePunchAnglesToObservers();
 }
-
+/*
 QAngle CBasePlayer::GetFinalAimAngle()
 {
 	QAngle eyeAngles = EyeAngles();
@@ -8589,7 +8594,7 @@ QAngle CBasePlayer::GetFinalAimAngle()
 
 	return eyeAngles + GetAimPunchAngle();
 }
-
+*/
 //-----------------------------------------------------------------------------
 // Purpose: If someone is observing this player, we set their punch angle
 //			as well.
@@ -9702,7 +9707,7 @@ void CBasePlayer::UpdateFXVolume( void )
 	}
 }
 
-
+/*
 CVoteController* CBasePlayer::GetTeamVoteController()
 {
 	switch ( GetAssociatedTeamNumber( ) )
@@ -9803,7 +9808,7 @@ bool CBasePlayer::HandleVoteCommands( const CCommand &args )
 
 	return false;
 }
-
+*/
 
 #if !defined(NO_STEAM)
 //-----------------------------------------------------------------------------

@@ -13,7 +13,7 @@
 #include "usermessages.h"
 
 ConVar sv_allchat("sv_allchat", "1", FCVAR_NOTIFY, "Players can receive all other players' text chat, team restrictions apply");
-
+ConVar sv_deadtalk( "sv_deadtalk", "0", FCVAR_NOTIFY, "Dead players can speak (voice, text) to the living" );
 // NOTE: This has to be the last file included!
 #include "tier0/memdbgon.h"
 

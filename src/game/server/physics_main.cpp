@@ -92,6 +92,9 @@ static void PhysicsCheckSweep( CBaseEntity *pEntity, const Vector& vecAbsStart, 
 	Physics_TraceEntity( pEntity, vecAbsStart, vecAbsEnd, mask, pTrace );
 }
 
+CPhysicsPushedEntities s_PushedEntities;
+CPhysicsPushedEntities* g_pPushedEntities = &s_PushedEntities;
+
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------

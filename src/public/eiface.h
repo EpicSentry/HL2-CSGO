@@ -651,7 +651,7 @@ public:
 	virtual void			GameServerSteamAPIActivated( bool bActive ) = 0;
 	
 	// Called to apply lobby settings to a dedicated server
-	virtual void			ApplyGameSettings( KeyValues *pKV ) = 0;
+	//virtual void			ApplyGameSettings( KeyValues *pKV ) = 0;
 
 	// 
 	//virtual void			GetMatchmakingTags( char *buf, size_t bufSize ) = 0;
@@ -673,53 +673,53 @@ public:
 	//virtual KeyValues*		GetExtendedServerInfoForNewClient() = 0;
 
 	// Updates GC information for this server
-	virtual void UpdateGCInformation() = 0;
+	//virtual void UpdateGCInformation() = 0;
 
 	// Marks the queue matchmaking game as starting
-	virtual void ReportGCQueuedMatchStart( int32 iReservationStage, uint32 *puiConfirmedAccounts, int numConfirmedAccounts ) = 0;
+	//virtual void ReportGCQueuedMatchStart( int32 iReservationStage, uint32 *puiConfirmedAccounts, int numConfirmedAccounts ) = 0;
 
 	// Get the published file id for the community map this server is running. 0 if non-ugc map or no map is running.
-	virtual PublishedFileId_t GetUGCMapFileID( const char* szMapPath ) = 0;
+	//virtual PublishedFileId_t GetUGCMapFileID( const char* szMapPath ) = 0;
 	
 	// Matchmaking game data buffer to set into SteamGameServer()->SetGameData
-	virtual void			GetMatchmakingGameData( char *buf, size_t bufSize ) = 0;
+	//virtual void			GetMatchmakingGameData( char *buf, size_t bufSize ) = 0;
 
 	// Returns true if server is in the process of updating the given map
-	virtual bool HasPendingMapDownloads( void ) const = 0;
+	//virtual bool HasPendingMapDownloads( void ) const = 0;
 
-	virtual void UpdateUGCMap( PublishedFileId_t id ) = 0;
+	//virtual void UpdateUGCMap( PublishedFileId_t id ) = 0;
 
 	// Returns which encryption key to use for messages to be encrypted for TV
-	virtual EncryptedMessageKeyType_t GetMessageEncryptionKey( INetMessage *pMessage ) = 0;
+	//virtual EncryptedMessageKeyType_t GetMessageEncryptionKey( INetMessage *pMessage ) = 0;
 
 	// If server game dll needs more time before server process quits then
 	// it should return true to hold game server reservation from this interface method.
 	// If this method returns false then the server process will clear the reservation
 	// and might shutdown to meet uptime or memory limit requirements.
-	virtual bool ShouldHoldGameServerReservation( float flTimeElapsedWithoutClients ) = 0;
+	//virtual bool ShouldHoldGameServerReservation( float flTimeElapsedWithoutClients ) = 0;
 
 	// Pure server validation failed for the given client, client supplied
 	// data is included in the payload
-	virtual void OnPureServerFileValidationFailure( edict_t *edictClient, const char *path, const char *fileName, uint32 crc, int32 hashType, int32 len, int packNumber, int packFileID ) = 0;
+	//virtual void OnPureServerFileValidationFailure( edict_t *edictClient, const char *path, const char *fileName, uint32 crc, int32 hashType, int32 len, int packNumber, int packFileID ) = 0;
 
 	// Precaches particle systems defined in the specific file
 	virtual void PrecacheParticleSystemFile( const char *pParticleSystemFile ) = 0;
 
 	// Last chance validation on connect packet for the client, non-NULL return value
 	// causes the client connect to be aborted with the provided error
-	virtual char const * ClientConnectionValidatePreNetChan( bool bGameServer, char const *adr, int nAuthProtocol, uint64 ullSteamID ) = 0;
+	//virtual char const * ClientConnectionValidatePreNetChan( bool bGameServer, char const *adr, int nAuthProtocol, uint64 ullSteamID ) = 0;
 
 	// Network channel notification from engine to game server code
-	virtual void OnEngineClientNetworkEvent( edict_t *edictClient, uint64 ullSteamID, int nEventType, void *pvParam ) = 0;
+	//virtual void OnEngineClientNetworkEvent( edict_t *edictClient, uint64 ullSteamID, int nEventType, void *pvParam ) = 0;
 
 	// Engine notifying GC with a message
-	virtual void EngineGotvSyncPacket( const CEngineGotvSyncPacket *pPkt ) = 0;
+	//virtual void EngineGotvSyncPacket( const CEngineGotvSyncPacket *pPkt ) = 0;
 
 	// GOTV client attempt redirect over SDR
-	virtual bool OnEngineClientProxiedRedirect( uint64 ullClient, const char *adrProxiedRedirect, const char *adrRegular ) = 0;
+	//virtual bool OnEngineClientProxiedRedirect( uint64 ullClient, const char *adrProxiedRedirect, const char *adrRegular ) = 0;
 
 	// Tell server about a line we will write to the log file which may be sent to remote listeners
-	virtual bool LogForHTTPListeners( const char* szLogLine ) = 0;
+	//virtual bool LogForHTTPListeners( const char* szLogLine ) = 0;
 };
 
 //-----------------------------------------------------------------------------
@@ -824,7 +824,7 @@ public:
 	virtual void			ClientVoice( edict_t *pEdict ) = 0;
 
 	// A user has had their network id setup and validated 
-	virtual void			NetworkIDValidated( const char *pszUserName, const char *pszNetworkID, CSteamID steamID ) = 0;
+	//virtual void			NetworkIDValidated( const char *pszUserName, const char *pszNetworkID, CSteamID steamID ) = 0;
 
 	// Returns max splitscreen slot count ( 1 == no splits, 2 for 2-player split screen )
 	virtual int				GetMaxSplitscreenPlayers() = 0;
@@ -836,10 +836,10 @@ public:
 	virtual void			ClientCommandKeyValues( edict_t *pEntity, KeyValues *pKeyValues ) = 0;
 
 	// Server override for supplied client name
-	virtual const char *	ClientNameHandler( uint64 xuid, const char *pchName ) = 0;
+	//virtual const char *	ClientNameHandler( uint64 xuid, const char *pchName ) = 0;
 
 	// Client submitted a user command
-	virtual void			ClientSvcUserMessage( edict_t *pEntity, int nType, int nPassthrough, uint32 cbSize, const void *pvBuffer ) = 0;
+	//virtual void			ClientSvcUserMessage( edict_t *pEntity, int nType, int nPassthrough, uint32 cbSize, const void *pvBuffer ) = 0;
 
 };
 

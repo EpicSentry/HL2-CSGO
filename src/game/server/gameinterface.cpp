@@ -1580,10 +1580,12 @@ void CServerGameDLL::Think( bool finalTick )
 	}
 
 	// TODO: would have liked this to be totally event driven... currently needs a tick.
+	/*
 	if ( engine->IsDedicatedServer() && steamgameserverapicontext->SteamHTTP() )
 	{
 		DedicatedServerWorkshop().Update();	
 	}
+	*/
 }
 
 void CServerGameDLL::OnQueryCvarValueFinished( QueryCvarCookie_t iCookie, edict_t *pPlayerEntity, EQueryCvarValueStatus eStatus, const char *pCvarName, const char *pCvarValue )
@@ -2237,8 +2239,8 @@ void LoadMOTDFile( const char *stringname, ConVar *pConvarFilename )
 	g_pStringTableInfoPanel->AddString( CBaseEntity::IsServer(), stringname, length+1, data );
 }
 
-extern ConVar sv_server_graphic1;
-extern ConVar sv_server_graphic2;
+//extern ConVar sv_server_graphic1;
+//extern ConVar sv_server_graphic2;
 
 void LoadServerImageFile( const char *stringname )
 {
@@ -2269,10 +2271,10 @@ void CServerGameDLL::LoadMessageOfTheDay()
 {
 	LoadMOTDFile( "motd", &motdfile );
 	LoadMOTDFile( "hostfile", &hostfile );
-	LoadServerImageFile( sv_server_graphic1.GetString() );
-	LoadServerImageFile( sv_server_graphic2.GetString() );
+	//LoadServerImageFile( sv_server_graphic1.GetString() );
+	//LoadServerImageFile( sv_server_graphic2.GetString() );
 }
-
+/*
 PublishedFileId_t CServerGameDLL::GetUGCMapFileID( const char* szMapPath )
 {
 	return DedicatedServerWorkshop().GetUGCMapPublishedFileID( szMapPath );
@@ -2293,7 +2295,7 @@ bool CServerGameDLL::HasPendingMapDownloads( void ) const
 {
 	return DedicatedServerWorkshop().HasPendingMapDownloads();
 }
-
+*/
 // keeps track of which chapters the user has unlocked
 ConVar sv_unlockedchapters( "sv_unlockedchapters", "1", FCVAR_ARCHIVE );
 
@@ -3107,7 +3109,7 @@ void CServerGameClients::ClientActive( edict_t *pEdict, bool bLoadGame )
 //-----------------------------------------------------------------------------
 void CServerGameClients::ClientFullyConnect( edict_t *pEdict )
 {
-	::ClientFullyConnect( pEdict );
+	//::ClientFullyConnect( pEdict );
 }
 
 

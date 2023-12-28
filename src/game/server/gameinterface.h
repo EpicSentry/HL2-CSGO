@@ -53,7 +53,7 @@ public:
 	// A player sent a voice packet
 	virtual void			ClientVoice( edict_t *pEdict );
 
-	virtual void			NetworkIDValidated( const char *pszUserName, const char *pszNetworkID, CSteamID steamID ) OVERRIDE;
+	//virtual void			NetworkIDValidated( const char *pszUserName, const char *pszNetworkID, CSteamID steamID ) OVERRIDE;
 	virtual int				GetMaxSplitscreenPlayers();
 	virtual int				GetMaxHumanPlayers();
 
@@ -61,9 +61,9 @@ public:
 	virtual void			ClientCommandKeyValues( edict_t *pEntity, KeyValues *pKeyValues );
 
 	// Server override for supplied client name
-	virtual const char *	ClientNameHandler( uint64 xuid, const char *pchName ) OVERRIDE;
+	//virtual const char *	ClientNameHandler( uint64 xuid, const char *pchName ) OVERRIDE;
 
-	virtual void		ClientSvcUserMessage( edict_t *pEntity, int nType, int nPassthrough, uint32 cbSize, const void *pvBuffer ) OVERRIDE;
+	//virtual void		ClientSvcUserMessage( edict_t *pEntity, int nType, int nPassthrough, uint32 cbSize, const void *pvBuffer ) OVERRIDE;
 };
 
 
@@ -122,11 +122,11 @@ public:
 	virtual bool			ShouldHideServer( void );
 
 	virtual void			InvalidateMdlCache();
-
+	// conn: there seem to be a lot of functions here that are declared but have their definitions somewhere else depending on the game. the cs_gameinterface.cpp file has many definitions stubbed for partner depot so these wouldn't work anyway
 	// Called to apply lobby settings to a dedicated server
-	virtual void			ApplyGameSettings( KeyValues *pKV );
+	//virtual void			ApplyGameSettings( KeyValues *pKV );
 
-	virtual void			GetMatchmakingTags( char *buf, size_t bufSize );
+	//virtual void			GetMatchmakingTags( char *buf, size_t bufSize );
 
 	virtual void			ServerHibernationUpdate( bool bHibernating );
 
@@ -139,30 +139,30 @@ public:
 	virtual bool			IsValveDS( void );
 
 	// Builds extended server info for new connecting client
-	virtual KeyValues*		GetExtendedServerInfoForNewClient();
+	//virtual KeyValues*		GetExtendedServerInfoForNewClient();
 
-	virtual void UpdateGCInformation();
+	//virtual void UpdateGCInformation();
 	
 	// Marks the queue matchmaking game as starting
-	virtual void ReportGCQueuedMatchStart( int32 iReservationStage, uint32 *puiConfirmedAccounts, int numConfirmedAccounts );
+	//virtual void ReportGCQueuedMatchStart( int32 iReservationStage, uint32 *puiConfirmedAccounts, int numConfirmedAccounts );
 
 	// Given a path to a map (relative to the game dir) returns a publish file id if its a UGC file known by the server, or 0 otherwise.
-	virtual PublishedFileId_t GetUGCMapFileID( const char* szMapPath );
+	//virtual PublishedFileId_t GetUGCMapFileID( const char* szMapPath );
 
 	// Query steam for the latest file info, download new version if needed.
-	virtual bool GetNewestSubscribedFiles( void );
+	//virtual bool GetNewestSubscribedFiles( void );
 
 	// Same as above but for a single ugc map
-	virtual void UpdateUGCMap( PublishedFileId_t id );
+	//virtual void UpdateUGCMap( PublishedFileId_t id );
 
 	// Returns true if we are currently downloading a new version of the map, or if there is a query pending to check for a newer version.
-	virtual bool HasPendingMapDownloads( void ) const;
+	//virtual bool HasPendingMapDownloads( void ) const;
 	
 	// Precaches particle systems defined in the specific file
 	virtual void PrecacheParticleSystemFile( const char *pParticleSystemFile );
 
 	// Matchmaking game data buffer to set into SteamGameServer()->SetGameData
-	virtual void			GetMatchmakingGameData( char *buf, size_t bufSize );
+	//virtual void			GetMatchmakingGameData( char *buf, size_t bufSize );
 
 	float	m_fAutoSaveDangerousTime;
 	float	m_fAutoSaveDangerousMinHealthToCommit;
@@ -172,35 +172,35 @@ public:
 	virtual void			GameServerSteamAPIActivated( bool bActive );
 
 	// Returns which encryption key to use for messages to be encrypted for TV
-	virtual EncryptedMessageKeyType_t GetMessageEncryptionKey( INetMessage *pMessage );
+	//virtual EncryptedMessageKeyType_t GetMessageEncryptionKey( INetMessage *pMessage );
 
 	// If server game dll needs more time before server process quits then
 	// it should return true to hold game server reservation from this interface method.
 	// If this method returns false then the server process will clear the reservation
 	// and might shutdown to meet uptime or memory limit requirements.
-	virtual bool ShouldHoldGameServerReservation( float flTimeElapsedWithoutClients );
+	//virtual bool ShouldHoldGameServerReservation( float flTimeElapsedWithoutClients );
 
 	// Pure server validation failed for the given client, client supplied
 	// data is included in the payload
-	virtual void OnPureServerFileValidationFailure( edict_t *edictClient, const char *path, const char *fileName, uint32 crc, int32 hashType, int32 len, int packNumber, int packFileID );
+	//virtual void OnPureServerFileValidationFailure( edict_t *edictClient, const char *path, const char *fileName, uint32 crc, int32 hashType, int32 len, int packNumber, int packFileID );
 
 	// Last chance validation on connect packet for the client, non-NULL return value
 	// causes the client connect to be aborted with the provided error
-	virtual char const * ClientConnectionValidatePreNetChan( bool bGameServer, char const *adr, int nAuthProtocol, uint64 ullSteamID );
+	//virtual char const * ClientConnectionValidatePreNetChan( bool bGameServer, char const *adr, int nAuthProtocol, uint64 ullSteamID );
 
 	// validate if player is a caster and add them to the active caster list
-	virtual bool ValidateAndAddActiveCaster( const CSteamID &steamID );
+	//virtual bool ValidateAndAddActiveCaster( const CSteamID &steamID );
 
 	// Network channel notification from engine to game server code
-	virtual void OnEngineClientNetworkEvent( edict_t *edictClient, uint64 ullSteamID, int nEventType, void *pvParam ) OVERRIDE;
+	//virtual void OnEngineClientNetworkEvent( edict_t *edictClient, uint64 ullSteamID, int nEventType, void *pvParam ) OVERRIDE;
 	
-	virtual void EngineGotvSyncPacket( const CEngineGotvSyncPacket *pPkt ) OVERRIDE;
+	//virtual void EngineGotvSyncPacket( const CEngineGotvSyncPacket *pPkt ) OVERRIDE;
 
 	// GOTV client attempt redirect over SDR
-	virtual bool OnEngineClientProxiedRedirect( uint64 ullClient, const char *adrProxiedRedirect, const char *adrRegular ) OVERRIDE;
+	//virtual bool OnEngineClientProxiedRedirect( uint64 ullClient, const char *adrProxiedRedirect, const char *adrRegular ) OVERRIDE;
 
 	// Tell server about a line we will write to the log file which may be sent to remote listeners
-	bool LogForHTTPListeners( const char* szLogLine ) OVERRIDE;
+	//bool LogForHTTPListeners( const char* szLogLine ) OVERRIDE;
 private:
 
 	// This can just be a wrapper on MapEntity_ParseAllEntities, but CS does some tricks in here
