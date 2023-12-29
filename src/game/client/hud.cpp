@@ -804,6 +804,19 @@ CHudElement *CHud::FindElement( const char *pName )
 }
 
 //-----------------------------------------------------------------------------
+// Purpose: returns a pointer to an icon in the list
+//-----------------------------------------------------------------------------
+CHudTexture *CHud::GetIcon(const char *szIcon)
+{
+	int i = m_Icons.Find(szIcon);
+	if (i == m_Icons.InvalidIndex())
+		return NULL;
+
+	return m_Icons[i];
+}
+// TODO make icons actually get added to m_Icons if they are important
+
+//-----------------------------------------------------------------------------
 // Purpose: Adds a member to the HUD
 //-----------------------------------------------------------------------------
 void CHud::AddHudElement( CHudElement *pHudElement ) 

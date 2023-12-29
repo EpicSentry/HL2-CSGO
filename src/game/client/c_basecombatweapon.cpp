@@ -506,7 +506,9 @@ int C_BaseCombatWeapon::DrawModel(int flags)
 			return false;
 	}
 
-	return BaseClass::DrawModel(flags);
+	RenderableInstance_t instance;
+
+	BaseClass::DrawModel(flags, instance);
 }
 
 /* conn - comment out stupid csgo bullshit that for some reason is in base class?

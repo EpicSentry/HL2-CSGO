@@ -153,6 +153,9 @@ void C_BaseHLPlayer::Zoom( float FOVOffset, float time )
 //-----------------------------------------------------------------------------
 int C_BaseHLPlayer::DrawModel( int flags )
 {
+	//TODO is this enough to fix instance_t missing in DrawModel without messing with the base function?
+	RenderableInstance_t instance_t;
+
 	// Not pitch for player
 	QAngle saveAngles = GetLocalAngles();
 
@@ -161,7 +164,7 @@ int C_BaseHLPlayer::DrawModel( int flags )
 
 	SetLocalAngles( useAngles );
 
-	int iret = BaseClass::DrawModel( flags );
+	int iret = BaseClass::DrawModel( flags, instance_t );
 
 	SetLocalAngles( saveAngles );
 

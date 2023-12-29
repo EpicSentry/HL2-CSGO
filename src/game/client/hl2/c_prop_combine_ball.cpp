@@ -259,7 +259,9 @@ int C_PropCombineBall::DrawModel( int flags )
 		// Always orient towards the camera!
 		SetAbsAngles( angles );
 
-		BaseClass::DrawModel( flags );
+		RenderableInstance_t instance;
+
+		BaseClass::DrawModel( flags, instance );
 	}
 	else
 	{

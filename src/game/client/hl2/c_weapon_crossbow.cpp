@@ -125,7 +125,9 @@ int C_CrossbowBolt::DrawModel( int flags )
 	}
 
 	// Draw the normal portion
-	return BaseClass::DrawModel( flags );
+	RenderableInstance_t instance;
+
+	BaseClass::DrawModel(flags, instance);
 }
 
 //-----------------------------------------------------------------------------

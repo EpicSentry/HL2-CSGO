@@ -170,5 +170,7 @@ int C_RollerMine::DrawModel( int flags )
 		}
 	}
 
-	return BaseClass::DrawModel( flags );
+	RenderableInstance_t instance;
+
+	BaseClass::DrawModel(flags, instance);
 }

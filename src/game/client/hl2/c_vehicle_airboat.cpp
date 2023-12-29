@@ -80,7 +80,7 @@ public:
 public:
 
 	// C_BaseEntity
-	virtual void Simulate();
+	bool Simulate();
 
 	// IClientVehicle
 	virtual void UpdateViewAngles( C_BasePlayer *pLocalPlayer, CUserCmd *pCmd );
@@ -242,7 +242,6 @@ void C_PropAirboat::DrawHudElements( )
 	BaseClass::DrawHudElements();
 
 	MDLCACHE_CRITICAL_SECTION();
-
 	CHudTexture *pIcon = GetHud().GetIcon(IsX360() ? "crosshair_default" : "plushair");
 	if ( pIcon != NULL )
 	{
@@ -250,7 +249,7 @@ void C_PropAirboat::DrawHudElements( )
 		Vector screen;
 
 		int vx, vy, vw, vh;
-		vgui::surface()->GetFullscreenViewport( vx, vy, vw, vh );
+		vgui::surface()->GetAbsoluteWindowBounds( vx, vy, vw, vh );
 		float screenWidth = vw;
 		float screenHeight = vh;
 		
@@ -492,12 +491,13 @@ void C_PropAirboat::OnEnteredVehicle( C_BasePlayer *pPlayer )
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-void C_PropAirboat::Simulate()
+bool C_PropAirboat::Simulate()
 {
 	UpdateHeadlight();
 	UpdateWake();
 
 	BaseClass::Simulate();
+	return true;
 }
 
 
@@ -921,7 +921,8 @@ int C_PropAirboat::DrawWake( void )
 //-----------------------------------------------------------------------------
 int C_PropAirboat::DrawModel( int flags )
 {
-	if ( BaseClass::DrawModel( flags ) == false )
+	RenderableInstance_t instance;
+	if ( BaseClass::DrawModel( flags, instance ) == false )
 		return 0;
 	
 	if ( !m_bReadyToDraw )

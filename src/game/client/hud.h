@@ -168,7 +168,11 @@ public:
 	void						RemoveHudElement( CHudElement *pHudElement );
 	// Search list for "name" and return the hud element if it exists
 	CHudElement					*FindElement( const char *pName );
-	
+
+	// Global list of known icons
+	CUtlDict< CHudTexture *, int >		m_Icons;
+	CHudTexture					*GetIcon(const char *szIcon);
+
 	bool						IsHidden( int iHudFlags );
 
 	float						GetSensitivity();
