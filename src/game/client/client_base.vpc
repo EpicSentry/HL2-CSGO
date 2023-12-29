@@ -300,7 +300,7 @@ $Project
 		$File	"$SRCDIR\game\shared\gamestringpool.cpp"
 		$File	"gametrace_client.cpp"
 		$File	"$SRCDIR\game\shared\gamevars_shared.cpp"
-		$File	"glow_outline_effect.cpp"
+//		$File	"glow_outline_effect.cpp"
 		$File	"glow_overlay.cpp"
 		$File	"$SRCDIR\game\shared\hintmessage.cpp"
 		$File	"$SRCDIR\game\shared\hintsystem.cpp"
