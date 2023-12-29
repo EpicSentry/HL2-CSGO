@@ -151,7 +151,7 @@ bool CRemoteServer::ProcessServerResponse()
 		int requestID = buf.GetInt();
 		int responseType = buf.GetInt();
 		char variable[64];
-		buf.GetString(variable);
+		buf.GetString(variable, 64);
 
 		switch (responseType)
 		{

@@ -102,6 +102,7 @@ $Group "csgo_partner"
 	"matchmaking"
 	"matchmakingbase"
 	"matchmakingbase_ds"
+	"adminserver"
 // Uncomment and re-vpc if you want a bad time.
 //	"havana_constraints"
 //	"hk_base"
@@ -109,6 +110,8 @@ $Group "csgo_partner"
 //	"ivp_compactbuilder"
 //	"ivp_physics"
 //	"vphysics"
+//	"vaudio_speex"
+//	"vaudio_celt"
 }
 
 $Group "csgo_partner_linux"

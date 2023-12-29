@@ -830,6 +830,7 @@ $Project "matchmaking"
 //	"matchmaking/matchmaking_dota.vpc" [($WINDOWS || $X360) && $DOTA]
 //	"matchmaking/matchmaking_tf.vpc" [($WINDOWS || $X360) && $TF]
 //	"matchmaking/matchmaking_episodic.vpc" [($WINDOWS || $X360) && $EPISODIC]
+//	"matchmaking/matchmaking_hl2.vpc" [($WINDOWS || $X360) && $HL2]
 //	"matchmaking/matchmaking_cstrike.vpc" [($WINDOWS || $X360) && $CSTRIKE]
 	"matchmaking/matchmaking_cstrike15.vpc" [($OSXALL || $WINDOWS || $X360 || $PS3 ||$POSIX)) && $CSGO]
 }
@@ -845,7 +846,8 @@ $Project "matchmaking_ds"
 //	"matchmaking/matchmaking_swarm_ds.vpc" [$WINDOWS && $SWARM]
 //	"matchmaking/matchmaking_dota_ds.vpc" [$WINDOWS && $DOTA]
 //	"matchmaking/matchmaking_tf_ds.vpc" [$WINDOWS && $TF]
-//	"matchmaking/matchmaking_episodic_ds.vpc" [$WINDOWS && $EPISODIC]
+	"matchmaking/matchmaking_episodic_ds.vpc" [$WINDOWS && $EPISODIC]
+//	"matchmaking/matchmaking_hl2_ds.vpc" [$WINDOWS && $HL2]
 //	"matchmaking/matchmaking_cstrike_ds.vpc" [$WINDOWS && $CSTRIKE]
 	"matchmaking/matchmaking_cstrike15_ds.vpc" [($OSXALL || $DEDICATED || $WINDOWS||$POSIX)) && $CSGO]
 }

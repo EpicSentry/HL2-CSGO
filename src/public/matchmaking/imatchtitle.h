@@ -156,7 +156,7 @@ public:
 	virtual void ExtendGameSettingsForLobbyTransition( KeyValues *pSettings, KeyValues *pSettingsUpdate, bool bEndGame ) = 0;
 
 	// Adds data for datacenter reporting
-	virtual void ExtendDatacenterReport( KeyValues *pReportMsg, char const *szReason ) = 0;
+	//virtual void ExtendDatacenterReport( KeyValues *pReportMsg, char const *szReason ) = 0;
 
 
 	// Rolls up game details for matches grouping
