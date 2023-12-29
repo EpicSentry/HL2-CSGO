@@ -23,7 +23,7 @@
 #include "fx_water.h"
 #include "engine/ivdebugoverlay.h"
 #include "view.h"
-#include "clienteffectprecachesystem.h"
+#include "precache_register.h"
 #include "c_basehlplayer.h"
 #include "vgui_controls/Controls.h"
 #include "vgui/ISurface.h"

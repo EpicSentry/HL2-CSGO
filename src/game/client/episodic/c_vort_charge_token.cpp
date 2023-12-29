@@ -10,7 +10,7 @@
 #include "particles_attractor.h"
 #include "iefx.h"
 #include "dlight.h"
-#include "clienteffectprecachesystem.h"
+#include "precache_register.h"
 #include "c_te_effect_dispatch.h"
 #include "fx_quad.h"
 
@@ -478,7 +478,7 @@ void DispelCallback( const CEffectData &data )
 	}
 }
 
-DECLARE_CLIENT_EFFECT( "VortDispel", DispelCallback );
+DECLARE_CLIENT_EFFECT( VortDispel, DispelCallback );
 
 //-----------------------------------------------------------------------------
 // Purpose: Used for emissive lightning layer on vort

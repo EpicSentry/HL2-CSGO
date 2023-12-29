@@ -38,7 +38,7 @@ public:
 	void Reset( void );
 	void VidInit( void );
 	void OnThink( void );
-	void MsgFunc_Battery(bf_read &msg );
+	//void MsgFunc_Battery(const CUsrMsg_Battery &msg); TODO IMPLEMENT CUsrMsg_Battery!!
 	bool ShouldDraw();
 	
 private:
@@ -46,8 +46,8 @@ private:
 	int		m_iNewBat;
 };
 
-DECLARE_HUDELEMENT( CHudBattery );
-DECLARE_HUD_MESSAGE( CHudBattery, Battery );
+//DECLARE_HUDELEMENT( CHudBattery );
+//DECLARE_HUD_MESSAGE( CHudBattery, Battery );
 
 //-----------------------------------------------------------------------------
 // Purpose: Constructor
@@ -62,7 +62,7 @@ CHudBattery::CHudBattery( const char *pElementName ) : BaseClass(NULL, "HudSuit"
 //-----------------------------------------------------------------------------
 void CHudBattery::Init( void )
 {
-	HOOK_HUD_MESSAGE( CHudBattery, Battery);
+	//HOOK_HUD_MESSAGE( CHudBattery, Battery);
 	Reset();
 	m_iBat		= INIT_BAT;
 	m_iNewBat   = 0;
@@ -141,7 +141,9 @@ void CHudBattery::OnThink( void )
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-void CHudBattery::MsgFunc_Battery( bf_read &msg )
+/*
+void CHudBattery::MsgFunc_Battery( const CUsrMsg_Battery &msg )
 {
 	m_iNewBat = msg.ReadShort();
-}
+} TODO IMPLEMENT CUsrMsg_Battery!!
+*/

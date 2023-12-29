@@ -9,6 +9,8 @@
 #include "decals.h"
 #include "fx_quad.h"
 #include "fx_sparks.h"
+#include "c_te_effect_dispatch.h"
+#include "precache_register.h"
 
 #include "tier0/vprof.h"
 
@@ -45,7 +47,7 @@ void ImpactJeepCallback( const CEffectData &data )
 	PlayImpactSound( pEntity, tr, vecOrigin, nSurfaceProp );
 }
 
-DECLARE_CLIENT_EFFECT( "ImpactJeep", ImpactJeepCallback );
+DECLARE_CLIENT_EFFECT( ImpactJeep, ImpactJeepCallback );
 
 
 //-----------------------------------------------------------------------------
@@ -78,7 +80,7 @@ void ImpactGaussCallback( const CEffectData &data )
 	PlayImpactSound( pEntity, tr, vecOrigin, nSurfaceProp );
 }
 
-DECLARE_CLIENT_EFFECT( "ImpactGauss", ImpactGaussCallback );
+DECLARE_CLIENT_EFFECT( ImpactGauss, ImpactGaussCallback );
 
 //-----------------------------------------------------------------------------
 // Purpose: Handle weapon impacts
@@ -112,7 +114,7 @@ void ImpactCallback( const CEffectData &data )
 	PlayImpactSound( pEntity, tr, vecOrigin, nSurfaceProp );
 }
 
-DECLARE_CLIENT_EFFECT( "Impact", ImpactCallback );
+DECLARE_CLIENT_EFFECT( Impact, ImpactCallback );
 
 //-----------------------------------------------------------------------------
 // Purpose: 
@@ -231,7 +233,7 @@ void ImpactAirboatGunCallback( const CEffectData &data )
 #endif
 }
 
-DECLARE_CLIENT_EFFECT( "AirboatGunImpact", ImpactAirboatGunCallback );
+DECLARE_CLIENT_EFFECT( AirboatGunImpact, ImpactAirboatGunCallback );
 
 
 //-----------------------------------------------------------------------------
@@ -271,5 +273,5 @@ void ImpactHelicopterCallback( const CEffectData &data )
 	PlayImpactSound( pEntity, tr, vecOrigin, nSurfaceProp );
 }
 
-DECLARE_CLIENT_EFFECT( "HelicopterImpact", ImpactHelicopterCallback );
+DECLARE_CLIENT_EFFECT( HelicopterImpact, ImpactHelicopterCallback );
 

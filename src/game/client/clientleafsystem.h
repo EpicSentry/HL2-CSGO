@@ -47,6 +47,7 @@ enum RenderGroup_t
 	RENDER_GROUP_TRANSLUCENT_IGNOREZ,
 	RENDER_GROUP_TRANSLUCENT_ENTITY,
 	RENDER_GROUP_OPAQUE_ENTITY,
+	RENDER_GROUP_TWOPASS,
 	RENDER_GROUP_COUNT, // Indicates the groups above are real and used for bucketing a scene
 };
 

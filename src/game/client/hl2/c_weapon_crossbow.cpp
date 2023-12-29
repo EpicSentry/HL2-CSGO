@@ -6,14 +6,14 @@
 
 #include "cbase.h"
 #include "model_types.h"
-#include "clienteffectprecachesystem.h"
+#include "precache_register.h"
 #include "fx.h"
 #include "c_te_effect_dispatch.h"
 #include "beamdraw.h"
 
-CLIENTEFFECT_REGISTER_BEGIN( PrecacheEffectCrossbow )
-CLIENTEFFECT_MATERIAL( "effects/muzzleflash1" )
-CLIENTEFFECT_REGISTER_END()
+PRECACHE_REGISTER_BEGIN( GLOBAL, PrecacheEffectCrossbow )
+PRECACHE(MATERIAL, "effects/muzzleflash1" )
+PRECACHE_REGISTER_END()
 
 //
 // Crossbow bolt
@@ -156,4 +156,4 @@ void CrosshairLoadCallback( const CEffectData &data )
 	}
 }
 
-DECLARE_CLIENT_EFFECT( "CrossbowLoad", CrosshairLoadCallback );
+DECLARE_CLIENT_EFFECT( CrossbowLoad, CrosshairLoadCallback );

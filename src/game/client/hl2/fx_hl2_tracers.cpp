@@ -13,7 +13,8 @@
 #include "particles_localspace.h"
 #include "dlight.h"
 #include "iefx.h"
-#include "clienteffectprecachesystem.h"
+//#include "clienteffectprecachesystem.h"
+#include "precache_register.h" //NEW! csgo loves to change stuff doesnt it
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -23,12 +24,22 @@ extern void FX_TracerSound( const Vector &start, const Vector &end, int iTracerT
 
 extern ConVar muzzleflash_light;
 
-
+/* OLD
 CLIENTEFFECT_REGISTER_BEGIN( PrecacheTracers )
 CLIENTEFFECT_MATERIAL( "effects/gunshiptracer" )
 CLIENTEFFECT_MATERIAL( "effects/combinemuzzle1" )
 CLIENTEFFECT_MATERIAL( "effects/combinemuzzle2_nocull" )
 CLIENTEFFECT_REGISTER_END()
+*/
+
+PRECACHE_REGISTER_BEGIN(GLOBAL, PrecacheTracers)
+//PRECACHE(PARTICLE_SYSTEM, "effects/gunshiptracer")
+//PRECACHE(PARTICLE_SYSTEM, "effects/combinemuzzle1")
+//PRECACHE(PARTICLE_SYSTEM, "effects/combinemuzzle2_nocull") //should do it?
+PRECACHE(MATERIAL, "effects/gunshiptracer") 
+PRECACHE(MATERIAL, "effects/combinemuzzle1")
+PRECACHE(MATERIAL, "effects/combinemuzzle2_nocull")
+PRECACHE_REGISTER_END()
 
 //-----------------------------------------------------------------------------
 // Purpose: Gunship's Tracer
@@ -40,7 +51,7 @@ void GunshipTracerCallback( const CEffectData &data )
 	FX_GunshipTracer( (Vector&)data.m_vStart, (Vector&)data.m_vOrigin, flVelocity, bWhiz );
 }
 
-DECLARE_CLIENT_EFFECT( "GunshipTracer", GunshipTracerCallback );
+DECLARE_CLIENT_EFFECT( GunshipTracer, GunshipTracerCallback ); //all i did is remove quotations because csgo doesnt use them anymore, seriously?
 
 
 //-----------------------------------------------------------------------------
@@ -53,7 +64,7 @@ void StriderTracerCallback( const CEffectData &data )
 	FX_StriderTracer( (Vector&)data.m_vStart, (Vector&)data.m_vOrigin, flVelocity, bWhiz );
 }
 
-DECLARE_CLIENT_EFFECT( "StriderTracer", StriderTracerCallback );
+DECLARE_CLIENT_EFFECT( StriderTracer, StriderTracerCallback );
 
 
 //-----------------------------------------------------------------------------
@@ -66,7 +77,7 @@ void HunterTracerCallback( const CEffectData &data )
 	FX_HunterTracer( (Vector&)data.m_vStart, (Vector&)data.m_vOrigin, flVelocity, bWhiz );
 }
 
-DECLARE_CLIENT_EFFECT( "HunterTracer", HunterTracerCallback );
+DECLARE_CLIENT_EFFECT( HunterTracer, HunterTracerCallback );
 
 
 //-----------------------------------------------------------------------------
@@ -79,7 +90,7 @@ void GaussTracerCallback( const CEffectData &data )
 	FX_GaussTracer( (Vector&)data.m_vStart, (Vector&)data.m_vOrigin, flVelocity, bWhiz );
 }
 
-DECLARE_CLIENT_EFFECT( "GaussTracer", GaussTracerCallback );
+DECLARE_CLIENT_EFFECT( GaussTracer, GaussTracerCallback );
 
 
 //-----------------------------------------------------------------------------
@@ -113,7 +124,7 @@ void AirboatGunHeavyTracerCallback( const CEffectData &data )
 	FX_AddDiscreetLine( vecStart, vecShotDir, flVelocity, flLength, flTotalDist, 5.0f, flLife, "effects/gunshiptracer" );
 }
 
-DECLARE_CLIENT_EFFECT( "AirboatGunHeavyTracer", AirboatGunHeavyTracerCallback );
+DECLARE_CLIENT_EFFECT( AirboatGunHeavyTracer, AirboatGunHeavyTracerCallback );
 
 //-----------------------------------------------------------------------------
 // Purpose: Airboat gun tracers 
@@ -146,7 +157,7 @@ void AirboatGunTracerCallback( const CEffectData &data )
 	FX_AddDiscreetLine( vecStart, vecShotDir, flVelocity, flLength, flTotalDist, 2.0f, flLife, "effects/gunshiptracer" );
 }
 
-DECLARE_CLIENT_EFFECT( "AirboatGunTracer", AirboatGunTracerCallback );
+DECLARE_CLIENT_EFFECT( AirboatGunTracer, AirboatGunTracerCallback );
 
 
 //-----------------------------------------------------------------------------
@@ -185,7 +196,7 @@ void HelicopterTracerCallback( const CEffectData &data )
 	}
 }
 
-DECLARE_CLIENT_EFFECT( "HelicopterTracer", HelicopterTracerCallback );
+DECLARE_CLIENT_EFFECT( HelicopterTracer, HelicopterTracerCallback );
 
 //-----------------------------------------------------------------------------
 // Purpose: 
@@ -296,7 +307,7 @@ void AR2TracerCallback( const CEffectData &data )
 	FX_AR2Tracer( (Vector&)vecStart, (Vector&)data.m_vOrigin, flVelocity, bWhiz );
 }
 
-DECLARE_CLIENT_EFFECT( "AR2Tracer", AR2TracerCallback );
+DECLARE_CLIENT_EFFECT( AR2Tracer, AR2TracerCallback );
 
 //-----------------------------------------------------------------------------
 // Purpose: 
@@ -376,7 +387,7 @@ void AR2ExplosionCallback( const CEffectData &data )
 	FX_AddLine( lineData );
 }
 
-DECLARE_CLIENT_EFFECT( "AR2Explosion", AR2ExplosionCallback );
+DECLARE_CLIENT_EFFECT( AR2Explosion, AR2ExplosionCallback );
 
 //-----------------------------------------------------------------------------
 // Purpose: 
@@ -400,7 +411,7 @@ void AR2ImpactCallback( const CEffectData &data )
 				(FXQUAD_BIAS_SCALE|FXQUAD_BIAS_ALPHA) );
 }
 
-DECLARE_CLIENT_EFFECT( "AR2Impact", AR2ImpactCallback );
+DECLARE_CLIENT_EFFECT( AR2Impact, AR2ImpactCallback );
 
 //-----------------------------------------------------------------------------
 // Creates a muzzleflash elight
@@ -441,7 +452,7 @@ void MuzzleFlash_Airboat( ClientEntityHandle_t hEntity, int attachmentIndex )
 	SimpleParticle *pParticle;
 	Vector			forward(1,0,0), offset; //NOTENOTE: All coords are in local space
 
-	float flScale = random->RandomFloat( 0.75f, IsXbox() ? 2.0f : 2.5f );
+	float flScale = random->RandomFloat( 0.75f, IsX360() ? 2.0f : 2.5f );
 
 	PMaterialHandle pMuzzle[2];
 	pMuzzle[0] = pSimple->GetPMaterial( "effects/combinemuzzle1" );
@@ -458,7 +469,7 @@ void MuzzleFlash_Airboat( ClientEntityHandle_t hEntity, int attachmentIndex )
 			return;
 
 		pParticle->m_flLifetime		= 0.0f;
-		pParticle->m_flDieTime		= IsXbox() ? 0.0001f : 0.01f;
+		pParticle->m_flDieTime		= IsX360() ? 0.0001f : 0.01f;
 
 		pParticle->m_vecVelocity.Init();
 
@@ -510,7 +521,7 @@ void MuzzleFlash_Airboat( ClientEntityHandle_t hEntity, int attachmentIndex )
 		if ( FX_GetAttachmentTransform( hEntity, attachmentIndex, matAttachment ) )
 		{
 			Vector		origin;
-			MatrixGetColumn( matAttachment, 3, &origin );
+			MatrixGetColumn( matAttachment, 3, origin );
 			CreateMuzzleflashELight( origin, 5, 64, 128, hEntity );
 		}
 	}
@@ -525,7 +536,7 @@ void AirboatMuzzleFlashCallback( const CEffectData &data )
 	MuzzleFlash_Airboat( data.m_hEntity, data.m_nAttachmentIndex );
 }
 
-DECLARE_CLIENT_EFFECT( "AirboatMuzzleFlash", AirboatMuzzleFlashCallback );
+DECLARE_CLIENT_EFFECT( AirboatMuzzleFlash, AirboatMuzzleFlashCallback );
 
 
 //-----------------------------------------------------------------------------
@@ -577,7 +588,7 @@ void MuzzleFlash_Chopper( ClientEntityHandle_t hEntity, int attachmentIndex )
 	
 	// Grab the origin out of the transform for the attachment
 	Vector		origin;
-	MatrixGetColumn( matAttachment, 3, &origin );	
+	MatrixGetColumn( matAttachment, 3, origin );	
 	CreateMuzzleflashELight( origin, 6, 128, 256, hEntity );
 }
 
@@ -590,7 +601,7 @@ void ChopperMuzzleFlashCallback( const CEffectData &data )
 	MuzzleFlash_Chopper( data.m_hEntity, data.m_nAttachmentIndex );
 }
 
-DECLARE_CLIENT_EFFECT( "ChopperMuzzleFlash", ChopperMuzzleFlashCallback );
+DECLARE_CLIENT_EFFECT( ChopperMuzzleFlash, ChopperMuzzleFlashCallback );
 
 
 //-----------------------------------------------------------------------------
@@ -638,7 +649,7 @@ void MuzzleFlash_Gunship( ClientEntityHandle_t hEntity, int attachmentIndex )
 	
 	// Grab the origin out of the transform for the attachment
 	Vector		origin;
-	MatrixGetColumn( matAttachment, 3, &origin );	
+	MatrixGetColumn( matAttachment, 3, origin );	
 	CreateMuzzleflashELight( origin, 6, 128, 256, hEntity );
 }
 
@@ -651,7 +662,7 @@ void GunshipMuzzleFlashCallback( const CEffectData &data )
 	MuzzleFlash_Gunship( data.m_hEntity, data.m_nAttachmentIndex );
 }
 
-DECLARE_CLIENT_EFFECT( "GunshipMuzzleFlash", GunshipMuzzleFlashCallback );
+DECLARE_CLIENT_EFFECT( GunshipMuzzleFlash, GunshipMuzzleFlashCallback );
 
 
 //-----------------------------------------------------------------------------
@@ -668,7 +679,7 @@ void MuzzleFlash_Hunter( ClientEntityHandle_t hEntity, int attachmentIndex )
 
 	// Grab the origin out of the transform for the attachment
 	Vector		origin;
-	MatrixGetColumn( matAttachment, 3, &origin );	
+	MatrixGetColumn( matAttachment, 3, origin );	
 	
 	dlight_t *el = effects->CL_AllocElight( LIGHT_INDEX_MUZZLEFLASH );
 	el->origin = origin;// + Vector( 12.0f, 0, 0 );
@@ -692,4 +703,4 @@ void HunterMuzzleFlashCallback( const CEffectData &data )
 	MuzzleFlash_Hunter( data.m_hEntity, data.m_nAttachmentIndex );
 }
 
-DECLARE_CLIENT_EFFECT( "HunterMuzzleFlash", HunterMuzzleFlashCallback );
+DECLARE_CLIENT_EFFECT( HunterMuzzleFlash, HunterMuzzleFlashCallback );

@@ -10,7 +10,7 @@
 #include "beam_shared.h"
 #include "materialsystem/imaterial.h"
 #include "model_types.h"
-#include "clienteffectprecachesystem.h"
+#include "precache_register.h"
 #include "beamdraw.h"
 
 class C_RollerMine : public C_AI_BaseNPC

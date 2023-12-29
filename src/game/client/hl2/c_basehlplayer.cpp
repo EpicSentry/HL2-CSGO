@@ -644,6 +644,6 @@ bool C_BaseHLPlayer::CreateMove( float flInputSampleTime, CUserCmd *pCmd )
 void C_BaseHLPlayer::BuildTransformations( CStudioHdr *hdr, Vector *pos, Quaternion q[], const matrix3x4_t& cameraTransform, int boneMask, CBoneBitList &boneComputed )
 {
 	BaseClass::BuildTransformations( hdr, pos, q, cameraTransform, boneMask, boneComputed );
-	BuildFirstPersonMeathookTransformations( hdr, pos, q, cameraTransform, boneMask, boneComputed, "ValveBiped.Bip01_Head1" );
+	//BuildFirstPersonMeathookTransformations( hdr, pos, q, cameraTransform, boneMask, boneComputed, "ValveBiped.Bip01_Head1" );
 }
 

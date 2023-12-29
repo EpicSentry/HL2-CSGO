@@ -172,10 +172,12 @@ int CMultiplayRules::Damage_GetShowOnHud( void )
 	return iDamage;
 }
 
+#ifdef GAME_DLL
 bool CMultiplayRules::PlayerCanHearChat(CBasePlayer *pListener, CBasePlayer *pSpeaker, bool bTeamOnly)
 {
 	return !bTeamOnly || PlayerRelationship(pListener, pSpeaker) == GR_TEAMMATE;
 }
+#endif
 
 //-----------------------------------------------------------------------------
 // Purpose: 

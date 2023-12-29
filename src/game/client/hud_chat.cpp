@@ -11,6 +11,8 @@
 #include "vguicenterprint.h"
 #include "hud_basechat.h"
 #include <vgui/ILocalize.h>
+#include "c_playerresource.h"
+#include "hl2_usermessages.pb.h"
 
 // NOTE: This has to be the last file included!
 #include "tier0/memdbgon.h"
@@ -18,9 +20,9 @@
 
 DECLARE_HUDELEMENT_FLAGS( CHudChat, HUDELEMENT_SS_FULLSCREEN_ONLY );
 
-DECLARE_HUD_MESSAGE( CHudChat, SayText );
-DECLARE_HUD_MESSAGE( CHudChat, SayText2 );
-DECLARE_HUD_MESSAGE( CHudChat, TextMsg );
+//DECLARE_HUD_MESSAGE( CHudChat, SayText ); No longer needed
+//DECLARE_HUD_MESSAGE( CHudChat, SayText2 );
+//DECLARE_HUD_MESSAGE( CHudChat, TextMsg );
 
 //=====================
 //CHudChat
@@ -35,14 +37,15 @@ void CHudChat::Init( void )
 {
 	BaseClass::Init();
 
-	HOOK_HUD_MESSAGE( CHudChat, SayText );
-	HOOK_HUD_MESSAGE( CHudChat, SayText2 );
-	HOOK_HUD_MESSAGE( CHudChat, TextMsg );
+	//HOOK_HUD_MESSAGE( CHudChat, SayText ); No longer needed
+	//HOOK_HUD_MESSAGE( CHudChat, SayText2 );
+	//HOOK_HUD_MESSAGE( CHudChat, TextMsg );
 }
 
 //-----------------------------------------------------------------------------
 // Purpose: Reads in a player's Chat text from the server
 //-----------------------------------------------------------------------------
+/* OLD Implementation.
 void CHudChat::MsgFunc_SayText2( bf_read &msg )
 {
 	int client = msg.ReadByte();
@@ -76,20 +79,85 @@ void CHudChat::MsgFunc_SayText2( bf_read &msg )
 		ChatPrintf( client, CHAT_FILTER_NONE, "%s", ansiString );
 	}
 }
+*/
+bool CHudChat::MsgFunc_SayText2(const CUsrMsg_SayText2 &msg)
+{
+	if (CDemoPlaybackParameters_t const *pParameters = engine->GetDemoPlaybackParameters())
+	{
+		if (pParameters->m_bAnonymousPlayerIdentity)
+			return true; // cannot print potentially personal details
+	}
 
+	int client = msg.ent_idx();
+	bool bWantsToChat = msg.chat() != 0;
+
+	wchar_t szBuf[6][256];
+	char untranslated_msg_text[256];
+	wchar_t *msg_text = ReadLocalizedString(msg.msg_name().c_str(), szBuf[0], sizeof(szBuf[0]), false, untranslated_msg_text, sizeof(untranslated_msg_text));
+
+	// keep reading strings and using C format strings for subsituting the strings into the localised text string
+	ReadChatTextString(msg.params(0).c_str(), szBuf[1], sizeof(szBuf[1]));		// player name
+	ReadChatTextString(msg.params(1).c_str(), szBuf[2], sizeof(szBuf[2]), true);	// location
+	ReadLocalizedString(msg.params(2).c_str(), szBuf[3], sizeof(szBuf[3]), true);	// radio text
+	ReadLocalizedString(msg.params(3).c_str(), szBuf[4], sizeof(szBuf[4]), true);	// unused :(
+
+	//if (V_strcmp(msg.params(3).c_str(), "auto") != 0 && (GetClientVoiceMgr()->IsPlayerBlocked(client) || GetClientVoiceMgr()->ShouldHideCommunicationFromPlayer(client)))
+	//	bWantsToChat = false;
+
+	g_pVGuiLocalize->ConstructString(szBuf[5], sizeof(szBuf[5]), msg_text, 4, szBuf[1], szBuf[2], szBuf[3], szBuf[4]);
+
+	char ansiString[512];
+	g_pVGuiLocalize->ConvertUnicodeToANSI(ConvertCRtoNL(szBuf[5]), ansiString, sizeof(ansiString));
+
+	if (bWantsToChat)
+	{
+		int iFilter = CHAT_FILTER_NONE;
+		bool playChatSound = true;
+
+		if (client > 0 && g_PR && (g_PR->GetTeam(client) != g_PR->GetTeam(GetLocalPlayerIndex())))
+		{
+			iFilter = CHAT_FILTER_PUBLICCHAT;
+			if (!(iFilter & GetFilterFlags()))
+			{
+				playChatSound = false;
+			}
+		}
+
+		// print raw chat text
+		ChatPrintf(client, iFilter, "%s", ansiString);
+
+		Msg("%s\n", RemoveColorMarkup(ansiString));
+
+		if (playChatSound)
+		{
+			CLocalPlayerFilter filter;
+			C_BaseEntity::EmitSound(filter, -1, "HudChat.Message"); //SOUND_FROM_LOCAL_PLAYER is defined in iEngineAudio.h afaik and its just pointed to -1 so thats what ill make it here
+		}
+	}
+	else
+	{
+	//	if (!GetClientVoiceMgr()->IsPlayerBlocked(client) && !GetClientVoiceMgr()->ShouldHideCommunicationFromPlayer(client))
+	//	{
+	//		// print raw chat text
+	//		ChatPrintf(client, GetFilterForString(untranslated_msg_text), "%s", ansiString);
+	//	}
+	}
+
+	return true;
+}
 //-----------------------------------------------------------------------------
 // Purpose: 
 // Input  : *pszName - 
 //			iSize - 
 //			*pbuf - 
 //-----------------------------------------------------------------------------
-void CHudChat::MsgFunc_SayText( bf_read &msg )
+void CHudChat::MsgFunc_SayText(bf_read &msg)
 {
 	char szString[256];
 
 	msg.ReadByte(); // client ID
-	msg.ReadString( szString, sizeof(szString) );
-	Printf( CHAT_FILTER_NONE, "%s", szString );
+	msg.ReadString(szString, sizeof(szString));
+	Printf(CHAT_FILTER_NONE, "%s", szString);
 }
 
 

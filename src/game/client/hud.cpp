@@ -876,15 +876,15 @@ bool CHud::IsHidden( int iHudFlags )
 		return true;
 
 	// Grab the local or observed player
-	C_BasePlayer *pPlayer = GetHudPlayer();
+	//C_BasePlayer *pPlayer = GetHudPlayer();
 
 	// Grab the local player
 	C_BasePlayer *localPlayer = C_BasePlayer::GetLocalPlayer();
 
-	if ( !pPlayer )
-		return true;
+	//if ( !pPlayer )
+	//	return true;
 
-	int iHideHud = pPlayer->m_Local.m_iHideHUD;
+	int iHideHud = localPlayer->m_Local.m_iHideHUD;
 	ConVarRef hidehudref( "hidehud" );
 	if ( hidehudref.GetInt() )
 	{
@@ -914,11 +914,11 @@ bool CHud::IsHidden( int iHudFlags )
 		return true;
 
 	// Local player dead?
-	if ( ( iHudFlags & HIDEHUD_PLAYERDEAD ) && ( pPlayer->GetHealth() <= 0 ) )
+	if ( ( iHudFlags & HIDEHUD_PLAYERDEAD ) && ( localPlayer->GetHealth() <= 0 ) )
 		return true;
 
 	// Need the HEV suit ( HL2 )
-	if ( ( iHudFlags & HIDEHUD_NEEDSUIT ) && ( !pPlayer->IsSuitEquipped() ) )
+	if ( ( iHudFlags & HIDEHUD_NEEDSUIT ) && ( !localPlayer->IsSuitEquipped() ) )
 		return true;
 
 #if defined( CSTRIKE15 )

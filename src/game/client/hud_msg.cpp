@@ -24,6 +24,7 @@
 bool CHud::MsgFunc_ResetHUD(const CUsrMsg_ResetHud& msg)
 {
 	ResetHUD();
+	return true;
 }
 
 void CHud::ResetHUD()
@@ -55,9 +56,7 @@ void CHud::ResetHUD()
 
 bool CHud::MsgFunc_SendAudio(const CUsrMsg_SendAudio& msg)
 {
-	char szString[2048];
-	msg.ReadString( szString, sizeof( szString ) );
-
 	CLocalPlayerFilter filter;
-	C_BaseEntity::EmitSound( filter, SOUND_FROM_LOCAL_PLAYER, szString );
+	C_BaseEntity::EmitSound(filter, SOUND_FROM_LOCAL_PLAYER, msg.radio_sound().c_str());
+	return true;
 }

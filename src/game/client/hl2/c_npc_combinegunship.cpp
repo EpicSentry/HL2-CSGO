@@ -14,7 +14,7 @@
 #include "iefx.h"
 #include "dlight.h"
 #include "c_sprite.h"
-#include "clienteffectprecachesystem.h"
+#include "precache_register.h"
 #include <bitbuf.h>
 
 // memdbgon must be the last include file in a .cpp file!!!
@@ -26,9 +26,9 @@
 
 #define	GUNSHIPFX_BIG_SHOT_TIME			3.0f
 
-CLIENTEFFECT_REGISTER_BEGIN( PrecacheGunshipFX )
-CLIENTEFFECT_MATERIAL( "sprites/bluelaser1" )
-CLIENTEFFECT_REGISTER_END()
+PRECACHE_REGISTER_BEGIN(GLOBAL, PrecacheGunshipFX)
+PRECACHE(MATERIAL, "sprites/bluelaser1")
+PRECACHE_REGISTER_END()
 
 //-----------------------------------------------------------------------------
 // Big belly shot FX
@@ -436,7 +436,7 @@ public:
 		}
 		else
 		{
-			return BaseClass::GetRenderGroup();
+			return RENDER_GROUP_OPAQUE_ENTITY;
 		}
 	}
 
@@ -472,5 +472,5 @@ void ImpactGunshipCallback( const CEffectData &data )
 	PlayImpactSound( pEntity, tr, vecOrigin, nSurfaceProp );
 }
 
-DECLARE_CLIENT_EFFECT( "ImpactGunship", ImpactGunshipCallback );
+DECLARE_CLIENT_EFFECT( ImpactGunship, ImpactGunshipCallback );
 

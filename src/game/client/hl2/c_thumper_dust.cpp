@@ -167,4 +167,4 @@ void ThumperDustCallback( const CEffectData &data )
 	FX_ThumperDust( data );
 }
 
-DECLARE_CLIENT_EFFECT( "ThumperDust", ThumperDustCallback );
+DECLARE_CLIENT_EFFECT( ThumperDust, ThumperDustCallback );

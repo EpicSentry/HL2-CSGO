@@ -331,4 +331,4 @@ void AntlionGibCallback( const CEffectData &data )
 	FX_AntlionGib( data.m_vOrigin, data.m_vNormal, data.m_flScale );
 }
 
-DECLARE_CLIENT_EFFECT( "AntlionGib", AntlionGibCallback );
+DECLARE_CLIENT_EFFECT( AntlionGib, AntlionGibCallback );

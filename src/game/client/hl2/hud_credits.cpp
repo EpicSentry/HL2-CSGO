@@ -165,6 +165,7 @@ void CHudCredits::PrepareCredits( const char *pKeyName )
 using namespace vgui;
 
 DECLARE_HUDELEMENT( CHudCredits );
+//TODO IMPLEMENT THESE USERMESSAGES
 DECLARE_HUD_MESSAGE( CHudCredits, CreditsMsg );
 DECLARE_HUD_MESSAGE( CHudCredits, LogoTimeMsg );
 

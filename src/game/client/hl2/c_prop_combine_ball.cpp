@@ -12,21 +12,21 @@
 #include "c_te_effect_dispatch.h"
 #include "fx_quad.h"
 #include "fx.h"
-#include "clienteffectprecachesystem.h"
+#include "precache_register.h"
 #include "view.h"
 #include "view_scene.h"
 #include "beamdraw.h"
 
 // Precache our effects
-CLIENTEFFECT_REGISTER_BEGIN( PrecacheEffectCombineBall )
-CLIENTEFFECT_MATERIAL( "effects/ar2_altfire1" )
-CLIENTEFFECT_MATERIAL( "effects/ar2_altfire1b" )
-CLIENTEFFECT_MATERIAL( "effects/combinemuzzle1_nocull" )
-CLIENTEFFECT_MATERIAL( "effects/combinemuzzle2_nocull" )
-CLIENTEFFECT_MATERIAL( "effects/combinemuzzle1" )
-CLIENTEFFECT_MATERIAL( "effects/ar2_altfire1" )
-CLIENTEFFECT_MATERIAL( "effects/ar2_altfire1b" )
-CLIENTEFFECT_REGISTER_END()
+PRECACHE_REGISTER_BEGIN(GLOBAL, PrecacheEffectCombineBall)
+PRECACHE(MATERIAL, "effects/ar2_altfire1" )
+PRECACHE(MATERIAL, "effects/ar2_altfire1b" )
+PRECACHE(MATERIAL, "effects/combinemuzzle1_nocull" )
+PRECACHE(MATERIAL, "effects/combinemuzzle2_nocull" )
+PRECACHE(MATERIAL, "effects/combinemuzzle1" )
+PRECACHE(MATERIAL, "effects/ar2_altfire1" )
+PRECACHE(MATERIAL, "effects/ar2_altfire1b" )
+PRECACHE_REGISTER_END()
 
 IMPLEMENT_CLIENTCLASS_DT( C_PropCombineBall, DT_PropCombineBall, CPropCombineBall )
 	RecvPropBool( RECVINFO( m_bEmit ) ),
@@ -323,7 +323,7 @@ void CombineBallImpactCallback( const CEffectData &data )
 	FX_ElectricSpark( data.m_vOrigin, 2, 1, &data.m_vNormal );
 }
 
-DECLARE_CLIENT_EFFECT( "cball_bounce", CombineBallImpactCallback );
+DECLARE_CLIENT_EFFECT( cball_bounce, CombineBallImpactCallback );
 
 //-----------------------------------------------------------------------------
 // Purpose: 
@@ -337,4 +337,4 @@ void CombineBallExplosionCallback( const CEffectData &data )
 	FX_ElectricSpark( data.m_vOrigin, 4, 1, &normal );
 }
 
-DECLARE_CLIENT_EFFECT( "cball_explode", CombineBallExplosionCallback );
+DECLARE_CLIENT_EFFECT( cball_explode, CombineBallExplosionCallback );

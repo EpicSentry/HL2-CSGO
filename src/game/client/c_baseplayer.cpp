@@ -3640,6 +3640,7 @@ bool C_BasePlayer::GetSteamID( CSteamID *pID )
 	return false;
 }
 
+
 void CC_DumpClientSoundscapeData( const CCommand& args )
 {
 	C_BasePlayer *pPlayer = C_BasePlayer::GetLocalPlayer();

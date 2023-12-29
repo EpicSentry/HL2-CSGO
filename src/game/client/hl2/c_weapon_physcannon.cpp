@@ -40,7 +40,6 @@ private:
 	CSmartPtr<CSimpleEmitter>		m_pEmitter;
 	CSmartPtr<CParticleAttractor>	m_pAttractor;
 };
-
 STUB_WEAPON_CLASS_IMPLEMENT( weapon_physcannon, C_WeaponPhysCannon );
 
 IMPLEMENT_CLIENTCLASS_DT( C_WeaponPhysCannon, DT_WeaponPhysCannon, CWeaponPhysCannon )

@@ -29,7 +29,7 @@
 #include "iefx.h"
 #include "c_te_effect_dispatch.h"
 #include "tier0/vprof.h"
-#include "clienteffectprecachesystem.h"
+#include "precache_register.h"
 #include <bitbuf.h>
 #include "fx_water.h"
 
@@ -922,7 +922,7 @@ void MuzzleFlash_Strider( ClientEntityHandle_t hEntity, int attachmentIndex )
 	pParticle->m_flRollDelta	= 0.0f;
 
 	Vector		origin;
-	MatrixGetColumn( matAttachment, 3, &origin );
+	MatrixGetColumn( matAttachment, 3, origin );
 
 	int entityIndex = ClientEntityList().HandleToEntIndex( hEntity );
 	if ( entityIndex >= 0 )
@@ -951,7 +951,7 @@ void StriderMuzzleFlashCallback( const CEffectData &data )
 	MuzzleFlash_Strider( data.m_hEntity, data.m_nAttachmentIndex );
 }
 
-DECLARE_CLIENT_EFFECT( "StriderMuzzleFlash", StriderMuzzleFlashCallback );
+DECLARE_CLIENT_EFFECT( StriderMuzzleFlash, StriderMuzzleFlashCallback );
 
 #define	BLOOD_MIN_SPEED	64.0f*2.0f
 #define BLOOD_MAX_SPEED 256.0f*8.0f
@@ -1044,5 +1044,5 @@ void StriderBloodCallback( const CEffectData &data )
 	StriderBlood( data.m_vOrigin, data.m_vNormal, data.m_flScale );
 }
 
-DECLARE_CLIENT_EFFECT( "StriderBlood", StriderBloodCallback );
+DECLARE_CLIENT_EFFECT( StriderBlood, StriderBloodCallback );
 

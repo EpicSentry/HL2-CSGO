@@ -23,7 +23,7 @@ public:
 	virtual void	Init( void );
 
 	void			MsgFunc_SayText(bf_read &msg);
-	void			MsgFunc_SayText2( bf_read &msg );
+	bool			MsgFunc_SayText2( const CUsrMsg_SayText2 &msg);
 	void			MsgFunc_TextMsg(bf_read &msg);
 };
 
