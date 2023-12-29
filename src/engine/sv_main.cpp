@@ -1091,11 +1091,27 @@ void SV_InitGameDLL( void )
 
     COM_TimestampedLog( "serverGameDLL->DLLInit - Start" );
 
-    // Tell the game DLL to start up
-    if ( !serverGameDLL->DLLInit( g_GameSystemFactory, g_AppSystemFactory, g_AppSystemFactory, &g_ServerGlobalVariables ) )
-    {
-        Sys_Error( "serverGameDLL->DLLInit() failed.\n");
-    }
+	// Tell the game DLL to start up
+	if (!serverGameDLL->DLLInit(g_GameSystemFactory, g_AppSystemFactory, g_AppSystemFactory, &g_ServerGlobalVariables))
+	{
+		if (!g_GameSystemFactory)
+		{
+			Sys_Error("Game system factory is NULL. DLLInit failed.\n");
+		}
+		else if (!g_AppSystemFactory)
+		{
+			Sys_Error("App system factory is NULL. DLLInit failed.\n");
+		}
+		else if (!&g_ServerGlobalVariables)
+		{
+			Sys_Error("Server global variables are NULL. DLLInit failed.\n");
+		}
+		else
+		{
+			Sys_Error("serverGameDLL->DLLInit - Failed.\n");
+		}
+	}
+
 
     COM_TimestampedLog( "serverGameDLL->DLLInit - Finish" );
 
