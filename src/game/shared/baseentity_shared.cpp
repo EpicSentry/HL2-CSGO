@@ -2328,17 +2328,18 @@ ITraceFilter* CBaseEntity::GetBeamTraceFilter( void )
 
 //TODO FIX ME
 
-//void CBaseEntity::DispatchTraceAttack(const CTakeDamageInfo &info, const Vector &vecDir, trace_t *ptr/*, CDmgAccumulator *pAccumulator*/)
-//{
-//#ifdef GAME_DLL
+void CBaseEntity::DispatchTraceAttack(const CTakeDamageInfo &info, const Vector &vecDir, trace_t *ptr/*, CDmgAccumulator *pAccumulator*/)
+{
+#ifdef GAME_DLL
 	// Make sure our damage filter allows the damage.
-//	if (!PassesDamageFilter(info))
-//	{
-//		return;
-//	}
-//#endif
-//	TraceAttack(info, vecDir, ptr/*, pAccumulator*/);
-//}
+	if (!PassesDamageFilter(info))
+	{
+		return;
+	}
+#endif
+	CDmgAccumulator *pAccumulator;
+	TraceAttack(info, vecDir, ptr, pAccumulator);
+}
 
 void CBaseEntity::TraceAttack(const CTakeDamageInfo &info, const Vector &vecDir, trace_t *ptr, CDmgAccumulator *pAccumulator)
 {

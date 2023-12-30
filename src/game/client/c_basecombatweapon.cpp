@@ -478,6 +478,19 @@ IClientModelRenderable*	C_BaseCombatWeapon::GetClientModelRenderable()
 	return BaseClass::GetClientModelRenderable();
 }
 
+//-----------------------------------------------------------------------------
+// Purpose: Gets the local client's active weapon, if any.
+//-----------------------------------------------------------------------------
+C_BaseCombatWeapon *GetActiveWeapon(void)
+{
+	C_BasePlayer *player = C_BasePlayer::GetLocalPlayer();
+
+	if (!player)
+		return NULL;
+
+	return player->GetActiveWeapon();
+}
+
 
 //-----------------------------------------------------------------------------
 // Purpose: Render the weapon. Draw the Viewmodel if the weapon's being carried
