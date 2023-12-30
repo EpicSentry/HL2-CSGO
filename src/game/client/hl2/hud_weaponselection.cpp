@@ -457,7 +457,7 @@ void CHudWeaponSelection::Paint()
 		CMatRenderContextPtr pRenderContext( materials );
 		if( pRenderContext->GetRenderTarget() )
 		{
-			surface()->PushFullscreenViewport();
+//			surface()->PushFullscreenViewport(); this is fucked
 			bPushedViewport = true;
 		}
 	}
@@ -741,7 +741,7 @@ void CHudWeaponSelection::Paint()
 
 	if( bPushedViewport )
 	{
-		surface()->PopFullscreenViewport();
+//		surface()->PopFullscreenViewport(); fucked
 	}
 }
 

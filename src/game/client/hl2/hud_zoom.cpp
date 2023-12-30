@@ -101,10 +101,10 @@ void CHudZoom::ApplySchemeSettings( vgui::IScheme *scheme )
 	SetPaintBorderEnabled(false);
 	SetFgColor(scheme->GetColor("ZoomReticleColor", GetFgColor()));
 
-	SetForceStereoRenderToFrameBuffer( true );
+//	SetForceStereoRenderToFrameBuffer( true ); these are fucked 
 	int x, y;
 	int screenWide, screenTall;
-	surface()->GetFullscreenViewport( x, y, screenWide, screenTall );
+	surface()->GetAbsoluteWindowBounds( x, y, screenWide, screenTall );
 	SetBounds(0, 0, screenWide, screenTall);
 }
 

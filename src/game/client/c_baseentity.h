@@ -1654,13 +1654,13 @@ public:
 
 	// Entity flags that are only for the client (ENTCLIENTFLAG_ defines).
 	unsigned short					m_EntClientFlags;
+	CNetworkColor32(m_clrRender);
 
 
 private:
 	
 	// Model for rendering
 	const model_t					*model;
-	CNetworkColor32( m_clrRender );
 
 public:
 protected: // Cell data is available to derived classes for RecvProxy issues

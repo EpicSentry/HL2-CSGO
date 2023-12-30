@@ -242,7 +242,6 @@ void CHUDQuickInfo::Paint()
 	C_BasePlayer *player = C_BasePlayer::GetLocalPlayer();
 	if ( player == NULL )
 		return;
-
 	C_BaseCombatWeapon *pWeapon = GetActiveWeapon();
 	if ( pWeapon == NULL )
 		return;
@@ -371,7 +370,7 @@ void CHUDQuickInfo::Paint()
 			ammoPerc = clamp( ammoPerc, 0.0f, 1.0f );
 		}
 
-		Color ammoColor = m_warnAmmo ? gHUD.m_clrCaution : gHUD.m_clrNormal;
+		Color ammoColor = m_warnAmmo ? GetHud().m_clrCaution : GetHud().m_clrNormal;
 		
 		if ( m_warnAmmo )
 		{
@@ -382,7 +381,7 @@ void CHUDQuickInfo::Paint()
 			ammoColor[3] = 255 * scalar;
 		}
 		
-		gHUD.DrawIconProgressBar( xCenter + m_icon_rb->Width(), yCenter, m_icon_rb, m_icon_rbe, ammoPerc, ammoColor, CHud::HUDPB_VERTICAL );
+		GetHud().DrawIconProgressBar( xCenter + m_icon_rb->Width(), yCenter, m_icon_rb, m_icon_rbe, ammoPerc, ammoColor, CHud::HUDPB_VERTICAL );
 	}
 }
 

@@ -30,8 +30,10 @@ struct BeamSeg_t
 {
 	VectorAligned	m_vPos;
 	color32			m_color;
+	Vector			m_vColor;
 	float			m_flTexCoord;	// Y texture coordinate
 	float			m_flWidth;
+	float			m_flAlpha;
 
 	void SetColor( float r, float g, float b, float a )
 	{

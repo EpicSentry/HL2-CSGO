@@ -173,4 +173,5 @@ int C_RollerMine::DrawModel( int flags )
 	RenderableInstance_t instance;
 
 	BaseClass::DrawModel(flags, instance);
+	return true;
 }

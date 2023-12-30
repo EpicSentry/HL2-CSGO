@@ -335,6 +335,7 @@ void DrawSegs( int noise_divisions, float *prgNoise, const model_t* spritemodel,
 	{
 		Assert( noiseIndex < (noise_divisions<<16) );
 		BeamSeg_t curSeg;
+		curSeg.m_flAlpha = 1;
 
 		fraction = i * div;
 
@@ -373,6 +374,8 @@ void DrawSegs( int noise_divisions, float *prgNoise, const model_t* spritemodel,
 		Vector vecTemp;
 		VectorScale( *((Vector*)color), brightness, vecTemp );
 		curSeg.SetColor( vecTemp, 1.0f );
+
+		VectorScale(*((Vector*)color), brightness, curSeg.m_vColor);
 
 		// UNDONE: Make this a spline instead of just a line?
 		VectorMA( source, fraction, delta, curSeg.m_vPos );
@@ -543,6 +546,7 @@ void DrawTeslaSegs( int noise_divisions, float *prgNoise, const model_t* spritem
 	for ( i = 0; i < segments; i++ )
 	{
 		BeamSeg_t curSeg;
+		curSeg.m_flAlpha = 1;
 
 		fraction = i * div;
 
@@ -581,6 +585,8 @@ void DrawTeslaSegs( int noise_divisions, float *prgNoise, const model_t* spritem
 		Vector vecTemp;
 		VectorScale( *((Vector*)color), brightness, vecTemp );
 		curSeg.SetColor( vecTemp, 1.0f );
+
+		VectorScale(*((Vector*)color), brightness, curSeg.m_vColor);
 
 		CalcSegOrigin( &curSeg.m_vPos, i, noise_divisions, prgNoise, source, delta, perp, segments, freq, scale, fraction, flags );
 
@@ -800,9 +806,12 @@ void DrawSplineSegs( int noise_divisions, float *prgNoise,
 			brightness = 0;
 
 		BeamSeg_t seg;
+		seg.m_flAlpha = 1;
 
 		VectorScale( color, brightness, scaledColor );
 		seg.SetColor( scaledColor[0], scaledColor[1], scaledColor[2], 1.0f );
+
+		seg.m_vColor.Init(scaledColor[0], scaledColor[1], scaledColor[2]);
 		
 
 		// -------------------------------------------------
@@ -1496,6 +1505,7 @@ void DrawBeamQuadratic( const Vector &start, const Vector &control, const Vector
 	beamDraw.Start( pRenderContext, subdivisions+1, NULL );
 
 	BeamSeg_t seg;
+	seg.m_flAlpha = 1;
 	seg.m_flWidth = width;
 	
 	float t = 0;
@@ -1515,10 +1525,12 @@ void DrawBeamQuadratic( const Vector &start, const Vector &control, const Vector
 			// HACK: fade out the ends a bit
 			seg.m_color.r = seg.m_color.g = seg.m_color.b = 0;
 			seg.m_color.a = 255;
+			seg.m_vColor = vec3_origin;
 		}
 		else
 		{
 			seg.SetColor( color, 1.0f );
+			seg.m_vColor = color;
 		}
 		beamDraw.NextSeg( &seg );
 	}
