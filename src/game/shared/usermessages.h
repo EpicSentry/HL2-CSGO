@@ -134,7 +134,7 @@ private:
 			{
 				return NULL;
 			}
-
+			/*
 			extern int CL_GetHltvReplayDelay();
 			if ( CL_GetHltvReplayDelay() )
 			{
@@ -145,7 +145,7 @@ private:
 					return NULL;
 				}
 			}
-
+			*/
 			::google::protobuf::Message *pMsg = new PB_OBJECT_TYPE();
 
 			if ( !pMsg->ParseFromArray( msg, size ) )
