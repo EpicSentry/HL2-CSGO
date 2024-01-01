@@ -19,6 +19,7 @@
 #include "tier0/memdbgon.h"
 
 ConVar player_squad_transient_commands( "player_squad_transient_commands", "1", FCVAR_REPLICATED );
+CUserMessageBinder m_UMCMsgSquadMemberDied;
 
 //-----------------------------------------------------------------------------
 // Purpose: Shows the sprint power bar

@@ -1148,9 +1148,9 @@ public:
 	// an error message of up to length bytes should be returned in errorMsg.
 	virtual bool			CanStopRecordDemo( char *errorMsg, int length ) const = 0;
 
-	virtual void OnHltvReplay( const CSVCMsg_HltvReplay &msg ) = 0;
-	virtual void OnHltvReplayTick() = 0;
-	virtual int GetHltvReplayDelay() = 0;
+	//virtual void OnHltvReplay( const CSVCMsg_HltvReplay &msg ) = 0;
+	//virtual void OnHltvReplayTick() = 0;
+	//virtual int GetHltvReplayDelay() = 0;
 
 	virtual void OnDemoPlaybackTimeJump() = 0;
 	virtual void OnCommandDuringPlayback( char const *cmd ) = 0;

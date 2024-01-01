@@ -44,12 +44,6 @@ DECLARE_HUD_COMMAND_NAME(CBaseHudWeaponSelection, LastWeapon, "CHudWeaponSelecti
 DECLARE_HUD_COMMAND_NAME(CBaseHudWeaponSelection, NextGrenadeWeapon, "CHudWeaponSelection");
 DECLARE_HUD_COMMAND_NAME(CBaseHudWeaponSelection, NextItemWeapon, "CHudWeaponSelection");
 DECLARE_HUD_COMMAND_NAME(CBaseHudWeaponSelection, NextNonGrenadeWeapon, "CHudWeaponSelection");
-DECLARE_HUD_COMMAND_NAME(CBaseHudWeaponSelection, GamePadSlot1, "CHudWeaponSelection");
-DECLARE_HUD_COMMAND_NAME(CBaseHudWeaponSelection, GamePadSlot2, "CHudWeaponSelection");
-DECLARE_HUD_COMMAND_NAME(CBaseHudWeaponSelection, GamePadSlot3, "CHudWeaponSelection");
-DECLARE_HUD_COMMAND_NAME(CBaseHudWeaponSelection, GamePadSlot4, "CHudWeaponSelection");
-DECLARE_HUD_COMMAND_NAME(CBaseHudWeaponSelection, GamePadSlot5, "CHudWeaponSelection");
-DECLARE_HUD_COMMAND_NAME(CBaseHudWeaponSelection, GamePadSlot6, "CHudWeaponSelection");
 
 HOOK_COMMAND( slot1, Slot1 );
 HOOK_COMMAND( slot2, Slot2 );
@@ -70,12 +64,6 @@ HOOK_COMMAND( lastinv, LastWeapon );
 HOOK_COMMAND( invnextgrenade, NextGrenadeWeapon);
 HOOK_COMMAND( invnextitem, NextItemWeapon);
 HOOK_COMMAND( invnextnongrenade, NextNonGrenadeWeapon);
-HOOK_COMMAND( gamepadslot1, GamePadSlot1 );
-HOOK_COMMAND( gamepadslot2, GamePadSlot2 );
-HOOK_COMMAND( gamepadslot3, GamePadSlot3 );
-HOOK_COMMAND( gamepadslot4, GamePadSlot4 );
-HOOK_COMMAND( gamepadslot5, GamePadSlot5 );
-HOOK_COMMAND( gamepadslot6, GamePadSlot6 );
 
 // instance info
 CBaseHudWeaponSelection *CBaseHudWeaponSelection::s_pInstance[MAX_SPLITSCREEN_PLAYERS];
@@ -518,7 +506,7 @@ void CBaseHudWeaponSelection::UserCmd_NextGrenadeWeapon(void)
 	if ( !BaseClass::ShouldDraw() )
 		return;
 
-	CycleToNextGrenadeOrBomb();
+	//CycleToNextGrenadeOrBomb();
 #if !defined ( CSTRIKE15 )
 	if( hud_fastswitch.GetInt() > 0 )
 #endif
@@ -537,7 +525,7 @@ void CBaseHudWeaponSelection::UserCmd_NextItemWeapon(void)
 	if ( !BaseClass::ShouldDraw() )
 		return;
 
-	CycleToNextGrenadeBombOrMelee();
+	//CycleToNextGrenadeBombOrMelee();
 #if !defined ( CSTRIKE15 )
 	if( hud_fastswitch.GetInt() > 0 )
 #endif
@@ -556,7 +544,7 @@ void CBaseHudWeaponSelection::UserCmd_NextNonGrenadeWeapon(void)
 	if ( !BaseClass::ShouldDraw() )
 		return;
 
-	CycleToNextNonGrenadeOrBomb();
+	//CycleToNextNonGrenadeOrBomb();
 #if !defined ( CSTRIKE15 )
 	if( hud_fastswitch.GetInt() > 0 )
 #endif

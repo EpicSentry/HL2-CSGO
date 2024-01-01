@@ -3397,7 +3397,7 @@ void CViewRender::RenderView( const CViewSetup &view, const CViewSetup &hudViewS
 		#endif
 
 
-		GetClientMode()->DoPostScreenSpaceEffects( &view );
+		//GetClientMode()->DoPostScreenSpaceEffects( &view );
 
 		CleanupMain3DView( view );
 

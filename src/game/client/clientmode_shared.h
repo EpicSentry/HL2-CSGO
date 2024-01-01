@@ -124,6 +124,8 @@ protected:
 
 	int			GetSplitScreenPlayerSlot() const;
 
+	void OnColorCorrectionWeightsReset( void );
+
 private:
 	// Message mode handling
 	// All modes share a common chat interface

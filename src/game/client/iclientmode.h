@@ -121,12 +121,12 @@ public:
 	virtual wchar_t*	GetMapName( void ) = 0;
 	virtual void		SetMapName( wchar_t *name ) = 0;
 
-	virtual void	OnColorCorrectionWeightsReset( void ) = 0;
-	virtual float	GetColorCorrectionScale( void ) const = 0;
+	//virtual void	OnColorCorrectionWeightsReset( void ) = 0;
+	//virtual float	GetColorCorrectionScale( void ) const = 0;
 
 	virtual int		HudElementKeyInput( int down, ButtonCode_t keynum, const char *pszCurrentBinding ) = 0;
 
-	virtual void	DoPostScreenSpaceEffects( const CViewSetup *pSetup ) = 0;
+	//virtual void	DoPostScreenSpaceEffects( const CViewSetup *pSetup ) = 0;
 
 	virtual void	UpdateCameraManUIState( int iType, int nOptionalParam, uint64 xuid ) = 0;
 	virtual void	ScoreboardOff( void ) = 0;

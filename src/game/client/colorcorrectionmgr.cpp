@@ -207,8 +207,8 @@ void CColorCorrectionMgr::UpdateColorCorrection()
 		return;
 	}
 
-	pClientMode->OnColorCorrectionWeightsReset();
-	float ccScale = pClientMode->GetColorCorrectionScale();
+	//pClientMode->OnColorCorrectionWeightsReset();
+	float ccScale = 1.0f; // conn: originally called a cstrike15 game function GetColorCorrectionScale, and all it did was return 1.0f
 
 	UpdateColorCorrectionEntities( pPlayer, ccScale, g_ColorCorrectionList.Base(), g_ColorCorrectionList.Count() );
 	UpdateColorCorrectionVolumes( pPlayer, ccScale, g_ColorCorrectionVolumeList.Base(), g_ColorCorrectionVolumeList.Count() );

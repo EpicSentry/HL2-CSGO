@@ -4262,6 +4262,8 @@ float CHLClient::GetUGCFileDownloadProgress( PublishedFileId_t id )
 {
 #if !defined ( NO_STEAM ) && defined( CSTRIKE15 )
 	return g_CSGOWorkshopMaps.GetFileDownloadProgress( id );
+#else
+	return 0.0f;
 #endif
 }
 
@@ -4287,6 +4289,7 @@ float CHLClient::FindInventoryItemWithMaxAttributeValue( char const *szItemType,
 {
 	//CCSPlayerInventory *pLocalInv = CSInventoryManager()->GetLocalCSInventory();
 	//return pLocalInv ? pLocalInv->FindInventoryItemWithMaxAttributeValue( szItemType, szAttrClass ) : -1.0f;
+	return 0.0f;
 }
 
 void CHLClient::DetermineSubscriptionKvToAdvertise( KeyValues *kvLocalPlayer )
