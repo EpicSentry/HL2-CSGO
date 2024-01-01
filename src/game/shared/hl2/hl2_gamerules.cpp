@@ -39,7 +39,7 @@ BEGIN_NETWORK_TABLE_NOBASE( CHalfLife2, DT_HL2GameRules )
 END_NETWORK_TABLE()
 
 
-LINK_ENTITY_TO_CLASS( hl2_gamerules, CHalfLife2Proxy );
+//LINK_ENTITY_TO_CLASS( hl2_gamerules, CHalfLife2Proxy ); TODO: revisit this, why is it broken?
 IMPLEMENT_NETWORKCLASS_ALIASED( HalfLife2Proxy, DT_HalfLife2Proxy )
 
 

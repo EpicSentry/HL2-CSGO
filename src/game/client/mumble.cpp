@@ -167,19 +167,10 @@ void CMumbleSystem::PostRender()
 	Vector vecOriginPlayer, vecOriginCamera = MainViewOrigin( 0 );
 	QAngle anglesPlayer, anglesCamera = MainViewAngles( 0 );
 
-	C_BasePlayer *pPlayer = C_BasePlayer::GetLocalPlayer();
+	C_BasePlayer* pPlayer = C_BasePlayer::GetLocalPlayer();
 	if ( pPlayer )
 	{
-		bool bIsOnTeam = pPlayer->GetTeamNumber() == TEAM_TERRORIST || pPlayer->GetTeamNumber() == TEAM_CT;
-		if ( pPlayer->IsAlive() && bIsOnTeam )
-		{
-			vecOriginPlayer = pPlayer->EyePosition();
-		}
-		else
-		{
-			// a zero player origin disables positional audio
-			vecOriginPlayer = vec3_origin;
-		}
+		vecOriginPlayer = pPlayer->EyePosition();
 		anglesPlayer = pPlayer->GetAbsAngles();
 	}
 	else

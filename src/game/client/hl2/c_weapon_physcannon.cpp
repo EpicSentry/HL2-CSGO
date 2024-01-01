@@ -40,7 +40,7 @@ private:
 	CSmartPtr<CSimpleEmitter>		m_pEmitter;
 	CSmartPtr<CParticleAttractor>	m_pAttractor;
 };
-STUB_WEAPON_CLASS_IMPLEMENT( weapon_physcannon, C_WeaponPhysCannon );
+//STUB_WEAPON_CLASS_IMPLEMENT( weapon_physcannon, C_WeaponPhysCannon ); TODO: revisit this
 
 IMPLEMENT_CLIENTCLASS_DT( C_WeaponPhysCannon, DT_WeaponPhysCannon, CWeaponPhysCannon )
 	RecvPropBool( RECVINFO( m_bIsCurrentlyUpgrading ) ),
