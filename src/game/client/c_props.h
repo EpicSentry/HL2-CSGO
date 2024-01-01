@@ -3,7 +3,7 @@
 // Purpose: 
 //
 //=============================================================================
-#include "glow_outline_effect.h"
+//#include "glow_outline_effect.h"
 
 #ifndef C_PROPS_H
 #define C_PROPS_H
@@ -37,10 +37,6 @@ public:
 	bool TestBoneFollowers( const Ray_t &ray, unsigned int fContentsMask, trace_t& tr );
 	bool TestCollision( const Ray_t &ray, unsigned int fContentsMask, trace_t& tr );
 
-	void ForceTurnOffGlow( void );
-	void UpdateGlow( void );
-	CGlowObject m_GlowObject;
-
 private:
 	C_DynamicProp( const C_DynamicProp & );
 
@@ -48,11 +44,6 @@ private:
 	int		m_iCachedFrameCount;
 	Vector	m_vecCachedRenderMins;
 	Vector	m_vecCachedRenderMaxs;
-
-	float		m_flGlowMaxDist;
-	bool		m_bShouldGlow;
-	color32		m_clrGlow;
-	int			m_nGlowStyle;
 };
 
 //-----------------------------------------------------------------------------

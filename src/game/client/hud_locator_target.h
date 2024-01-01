@@ -39,7 +39,7 @@
 #include "tier1/utlsymbol.h"
 
 // See comments in UtlSymbol on why this is useful
-DECLARE_PRIVATE_SYMBOLTYPE( CGameInstructorSymbol );
+//DECLARE_PRIVATE_SYMBOLTYPE( CGameInstructorSymbol );
 
 //-----------------------------------------------------------------------------
 // This class represents a single target to be tracked by the locator
@@ -126,9 +126,9 @@ public:
 	void UpdateVguiTarget( void );
 	vgui::Panel *GetVguiTarget( void );
 	void SetVguiTargetName( const char *pchVguiTargetName );
-	const char *GetVguiTargetName( void ) { return m_szVguiTargetName.String(); }
+	//const char *GetVguiTargetName( void ) { return m_szVguiTargetName.String(); }
 	void SetVguiTargetLookup( const char *pchVguiTargetLookup );
-	const char *GetVguiTargetLookup( void ) { return m_szVguiTargetLookup.String(); }
+	//const char *GetVguiTargetLookup( void ) { return m_szVguiTargetLookup.String(); }
 	void SetVguiTargetEdge( int nVguiEdge );
 	int GetVguiTargetEdge( void ) const { return m_nVguiTargetEdge; }
 
@@ -139,9 +139,9 @@ public:
 	const char *UseBindingImage( char *pchIconTextureName, size_t bufSize );
 	void SetIconNoTarget( bool bIconNoTarget ) { m_bIconNoTarget = bIconNoTarget; }
 
-	const char *GetOnscreenIconTextureName()	{ return m_szOnscreenTexture.String(); }
-	const char *GetOffscreenIconTextureName()	{ return m_szOffscreenTexture.String(); }
-	const char *GetBinding()			{ return m_szBinding.String(); }
+	//const char *GetOnscreenIconTextureName()	{ return m_szOnscreenTexture.String(); }
+	//const char *GetOffscreenIconTextureName()	{ return m_szOffscreenTexture.String(); }
+	//const char *GetBinding()			{ return m_szBinding.String(); }
 
 	void SetVisible( bool bVisible );
 	bool IsVisible( void );
@@ -161,14 +161,14 @@ public:
 
 
 private:
-	CGameInstructorSymbol		m_szVguiTargetName;
-	CGameInstructorSymbol		m_szVguiTargetLookup;
+	/*CGameInstructorSymbol		m_szVguiTargetName;
+	CGameInstructorSymbol		m_szVguiTargetLookup;*/
 	vgui::DHANDLE<vgui::Panel>	m_hVguiTarget;
 	int							m_nVguiTargetEdge;
 
-	CGameInstructorSymbol	m_szOnscreenTexture;
+	/*CGameInstructorSymbol	m_szOnscreenTexture;
 	CGameInstructorSymbol	m_szOffscreenTexture;
-	CGameInstructorSymbol	m_szBinding;
+	CGameInstructorSymbol	m_szBinding;*/
 
 	bool		m_bWasControllerLast;
 	bool		m_bWasSteamControllerLast;

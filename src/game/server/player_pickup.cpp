@@ -16,6 +16,7 @@
 #include "tier0/memdbgon.h"
 
 // player pickup utility routine
+#ifdef GAME_DLL
 void Pickup_ForcePlayerToDropThisObject( CBaseEntity *pTarget )
 {
 	if ( pTarget == NULL )
@@ -32,6 +33,7 @@ void Pickup_ForcePlayerToDropThisObject( CBaseEntity *pTarget )
 		pPlayer->ForceDropOfCarriedPhysObjects( pTarget );
 	}
 }
+#endif
 
 
 void Pickup_OnPhysGunDrop( CBaseEntity *pDroppedObject, CBasePlayer *pPlayer, PhysGunDrop_t Reason )

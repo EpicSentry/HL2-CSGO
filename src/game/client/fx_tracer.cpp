@@ -16,7 +16,7 @@
 ConVar r_drawtracers( "r_drawtracers", "1", FCVAR_CHEAT );
 ConVar r_drawtracers_firstperson( "r_drawtracers_firstperson", "1", FCVAR_ARCHIVE | FCVAR_RELEASE, "Toggle visibility of first person weapon tracers" );
 ConVar r_drawtracers_movetonotintersect( "r_drawtracers_movetonotintersect", "1", FCVAR_CHEAT, "" );
-extern ConVar cl_righthand;
+//extern ConVar cl_righthand;
 void FormatViewModelAttachment( C_BasePlayer *pPlayer, Vector &vOrigin, bool bInverse );
 
 #define	TRACER_SPEED			5000 
@@ -190,7 +190,7 @@ void ParticleTracerCallback( const CEffectData &data )
 				engine->GetViewAngles( vangles );
 				AngleVectors( vangles, &vforward, &vright, &vup );
 
-				VectorMA( vecStart, cl_righthand.GetBool() ? 2.5 : -2.5, vright, vecStart );
+				VectorMA( vecStart, 1 ? 2.5 : -2.5, vright, vecStart );
 				VectorMA( vecStart, 10, vforward, vecStart );
 				vecStart[2] -= 2.5f;
 			}

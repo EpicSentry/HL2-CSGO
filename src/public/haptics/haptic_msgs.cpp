@@ -24,12 +24,12 @@ extern vgui::IInputInternal *g_InputInternal;
 
 void RegisterHapticMessages(void)
 {
-	usermessages->Register( "SPHapWeapEvent", 4 );
-	usermessages->Register( "HapDmg", -1 );
-	usermessages->Register( "HapPunch", -1 );
-	usermessages->Register( "HapSetDrag", -1 );
-	usermessages->Register( "HapSetConst", -1 );
-	usermessages->Register( "HapMeleeContact", 0);
+//	usermessages->Register( "SPHapWeapEvent", 4 );
+//	usermessages->Register( "HapDmg", -1 );
+//	usermessages->Register( "HapPunch", -1 );
+//	usermessages->Register( "HapSetDrag", -1 );
+//	usermessages->Register( "HapSetConst", -1 );
+//	usermessages->Register( "HapMeleeContact", 0);
 }
 
 //-----------------------------------------------------------------------------
@@ -109,12 +109,12 @@ void HapticMsg_MeleeContact(CBasePlayer* pPlayer)
 #ifdef CLIENT_DLL
 void HookHapticMessages(void)
 {
-	HOOK_MESSAGE(SPHapWeapEvent);
-	HOOK_MESSAGE(HapDmg);
-	HOOK_MESSAGE(HapPunch);
-	HOOK_MESSAGE(HapSetDrag);
-	HOOK_MESSAGE(HapSetConst);
-	HOOK_MESSAGE(HapMeleeContact);
+//	HOOK_MESSAGE(SPHapWeapEvent);
+//	HOOK_MESSAGE(HapDmg);
+//	HOOK_MESSAGE(HapPunch);
+//	HOOK_MESSAGE(HapSetDrag);
+//	HOOK_MESSAGE(HapSetConst);
+//	HOOK_MESSAGE(HapMeleeContact);
 
 }
 

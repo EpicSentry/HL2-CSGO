@@ -28,7 +28,7 @@
 	#include "view.h"
 	#include "c_physicsprop.h"
 	#include "c_physbox.h"
-	#include "haptics\haptic_utils.h"
+	//#include "haptics\haptic_utils.h"
 
 #if defined( CSTRIKE15 )
 	#include "weapon_selection.h"
@@ -2407,8 +2407,8 @@ void CBasePlayer::SharedSpawn()
 	SetBloodColor(BLOOD_COLOR_RED);
 	// NVNT inform haptic dll we have just spawned local player
 #ifdef CLIENT_DLL
-	if (IsLocalPlayer() && haptics)
-		haptics->LocalPlayerReset();
+//	if (IsLocalPlayer() && haptics)
+	//	haptics->LocalPlayerReset();
 #endif
 }
 

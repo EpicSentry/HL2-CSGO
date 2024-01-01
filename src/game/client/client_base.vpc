@@ -130,8 +130,8 @@ $Project
 		$File	"c_basedoor.cpp"
 		$File	"c_baseentity.cpp"
 		$File	"c_baseflex.cpp"
-		$File	"c_baselesson.cpp"
-		$File	"c_baselesson.h"
+//		$File	"c_baselesson.cpp"
+//		$File	"c_baselesson.h"
 		$File	"c_baseplayer.cpp"
 		$File	"c_basetoggle.cpp"
 		$File	"c_basetoggle.h"
@@ -185,7 +185,7 @@ $Project
 		$File	"C_MaterialModifyControl.cpp"
 		$File	"c_memorylog.cpp"								[$X360||$PS3]
 		$File	"c_memorylog.h"									[$X360||$PS3]
-		$File	"c_mod_lesson_stubs.cpp"
+//		$File	"c_mod_lesson_stubs.cpp"
 		$File	"c_movie_display.cpp"
 		$File	"c_particle_system.cpp"
 		$File	"c_physbox.cpp"

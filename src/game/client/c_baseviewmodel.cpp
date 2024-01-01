@@ -393,9 +393,9 @@ void C_BaseViewModel::ApplyBoneMatrixTransform( matrix3x4_t& transform )
 
 	C_BasePlayer *pPlayer = ToBasePlayer( GetOwner() );
 
-	bool bUsingMotionController = pPlayer && PlatformInputDevice::IsInputDeviceAPointer( g_pInputSystem->GetCurrentInputDevice() );
+	//bool bUsingMotionController = pPlayer && PlatformInputDevice::IsInputDeviceAPointer( g_pInputSystem->GetCurrentInputDevice() );
 
-	if ( ShouldFlipModel() || bUsingMotionController )
+	if ( ShouldFlipModel() /*|| bUsingMotionController*/ )
 	{
 		matrix3x4_t viewMatrix, viewMatrixInverse;
 
@@ -428,7 +428,7 @@ void C_BaseViewModel::ApplyBoneMatrixTransform( matrix3x4_t& transform )
 
 		}
 
-		if ( bUsingMotionController )
+		/*if ( bUsingMotionController )
 		{
 			matrix3x4_t localAngleMatrix;
 			QAngle localAngles = pPlayer->GetEyeAngleOffset();
@@ -457,7 +457,7 @@ void C_BaseViewModel::ApplyBoneMatrixTransform( matrix3x4_t& transform )
 			// We want to tweak the transform so that we include the angles for the pointer.
 			// Do this by pre multiplying the angle tweaks.
 			ConcatTransforms( localAngleMatrix, temp, temp );
-		}
+		}*/
 
 		// Transform back out of view space.
 		ConcatTransforms( viewMatrixInverse, temp, transform );

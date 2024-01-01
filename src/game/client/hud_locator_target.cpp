@@ -234,12 +234,12 @@ void CLocatorTarget::Deactivate( bool bNoFade )
 		m_bIsDrawing = false;
 		m_bVisible = false;
 
-		m_szVguiTargetName = "";
-		m_szVguiTargetLookup = "";
+		//m_szVguiTargetName = "";
+		//m_szVguiTargetLookup = "";
 		m_hVguiTarget = NULL;
 		m_nVguiTargetEdge = vgui::Label::a_northwest;
 
-		m_szBinding = "";
+		//m_szBinding = "";
 		m_iBindingTick = 0;
 		m_flNextBindingTick = 0.0f;
 		m_flNextOcclusionTest = 0.0f;
@@ -462,20 +462,20 @@ void CLocatorTarget::EndPresent()
 
 void CLocatorTarget::UpdateVguiTarget( void )
 {
-	const char *pchVguiTargetName = m_szVguiTargetName.String();
+	//const char *pchVguiTargetName = m_szVguiTargetName.String();
 
-	if ( !pchVguiTargetName || pchVguiTargetName[ 0 ] == '\0' )
-	{
-		m_hVguiTarget = NULL;
-		return;
-	}
+	//if ( !pchVguiTargetName || pchVguiTargetName[ 0 ] == '\0' )
+	//{
+	//	m_hVguiTarget = NULL;
+	//	return;
+	//}
 
 	// Get the appropriate token based on the binding
-	if ( m_iBindingChoicesCount > 0 )
-	{
-		int nTagetToken = m_iBindChoicesOriginalToken[ m_iBindingTick % m_iBindingChoicesCount ];
+//	if ( m_iBindingChoicesCount > 0 )
+//	{
+//		int nTagetToken = m_iBindChoicesOriginalToken[ m_iBindingTick % m_iBindingChoicesCount ];
 
-		for ( int nToken = 0; nToken < nTagetToken && pchVguiTargetName; ++nToken )
+		/*for ( int nToken = 0; nToken < nTagetToken && pchVguiTargetName; ++nToken )
 		{
 			pchVguiTargetName = strchr( pchVguiTargetName, ';' );
 
@@ -492,22 +492,22 @@ void CLocatorTarget::UpdateVguiTarget( void )
 		}
 	}
 
-	m_hVguiTarget = GetClientMode()->GetPanelFromViewport( pchVguiTargetName );
+	m_hVguiTarget = GetClientMode()->GetPanelFromViewport( pchVguiTargetName );*/
 }
 
 void CLocatorTarget::SetVguiTargetName( const char *pchVguiTargetName )
 {
-	if ( Q_strcmp( m_szVguiTargetName.String(), pchVguiTargetName ) == 0 )
-		return;
+	//if ( Q_strcmp( m_szVguiTargetName.String(), pchVguiTargetName ) == 0 )
+	//	return;
 
-	m_szVguiTargetName = pchVguiTargetName;
+	//m_szVguiTargetName = pchVguiTargetName;
 
 	UpdateVguiTarget();
 }
 
 void CLocatorTarget::SetVguiTargetLookup( const char *pchVguiTargetLookup )
 {
-	m_szVguiTargetLookup = pchVguiTargetLookup;
+	//m_szVguiTargetLookup = pchVguiTargetLookup;
 }
 
 void CLocatorTarget::SetVguiTargetEdge( int nVguiEdge )
@@ -523,10 +523,10 @@ vgui::Panel *CLocatorTarget::GetVguiTarget( void )
 //------------------------------------
 void CLocatorTarget::SetOnscreenIconTextureName( const char *pszTexture )
 {
-	if ( Q_strcmp( m_szOnscreenTexture.String(), pszTexture ) == 0 )
-		return;
+//	if ( Q_strcmp( m_szOnscreenTexture.String(), pszTexture ) == 0 )
+//		return;
 
-	m_szOnscreenTexture = pszTexture;
+	//m_szOnscreenTexture = pszTexture;
 	m_pIcon_onscreen = NULL; // Dirty the onscreen icon so that the Locator will look up the new icon by name.
 
 	m_pulseStart = gpGlobals->curtime;
@@ -535,10 +535,10 @@ void CLocatorTarget::SetOnscreenIconTextureName( const char *pszTexture )
 //------------------------------------
 void CLocatorTarget::SetOffscreenIconTextureName( const char *pszTexture )
 {
-	if ( Q_strcmp( m_szOffscreenTexture.String(), pszTexture ) == 0 )
-		return;
+	//if ( Q_strcmp( m_szOffscreenTexture.String(), pszTexture ) == 0 )
+	//	return;
 
-	m_szOffscreenTexture = pszTexture;
+	//m_szOffscreenTexture = pszTexture;
 	m_pIcon_offscreen = NULL; // Ditto
 
 	m_pulseStart = gpGlobals->curtime;
@@ -569,16 +569,16 @@ void CLocatorTarget::SetBinding( const char *pszBinding )
 #endif
 	{
 		// We haven't toggled joystick enabled recently, so if it's the same bind, bail
-		if ( Q_strcmp( m_szBinding.String(), pszBinding ) == 0 )
-		{
-			return;
-		}
+	//	if ( Q_strcmp( m_szBinding.String(), pszBinding ) == 0 )
+	//	{
+	//		return;
+	//	}
 	}
 
 	m_bWasControllerLast = bIsControllerNow;
 	m_bWasSteamControllerLast = g_pInputSystem->IsSteamControllerActive();
 
-	m_szBinding = pszBinding;
+	//m_szBinding = pszBinding;
 	m_pIcon_onscreen = NULL; // Dirty the onscreen icon so that the Locator will look up the new icon by name.
 	m_pIcon_offscreen = NULL; // ditto.
 	m_flNextBindingTick = gpGlobals->curtime + 0.75f;
@@ -588,10 +588,10 @@ void CLocatorTarget::SetBinding( const char *pszBinding )
 
 	// Tokenize the binding name (could be more than one binding)
 	int nOriginalToken = 0;
-	const char	*pchToken = m_szBinding.String();
+	//const char	*pchToken = m_szBinding.String();
 	char		szToken[ 128 ];
 
-	pchToken = nexttoken( szToken, pchToken, ';' );
+	/*pchToken = nexttoken( szToken, pchToken, ';' );
 	{
 			// Get the first parameter
 			int iTokenBindingCount = 0;
@@ -609,7 +609,7 @@ void CLocatorTarget::SetBinding( const char *pszBinding )
 	}
 
 		nOriginalToken++;
-		pchToken = nexttoken( szToken, pchToken, ';' );
+		pchToken = nexttoken( szToken, pchToken, ';' );*/
 
 
 	//Msg("    m_iBindingChoicesCount   : %d\n", m_iBindingChoicesCount );
@@ -1447,22 +1447,22 @@ bool CLocatorPanel::ValidateTargetTextures( CLocatorTarget *pTarget )
 		pTarget->UpdateVguiTarget();
 	}
 
-	bool bUsesBinding = ( Q_stricmp( pTarget->GetOnscreenIconTextureName(), "use_binding" ) == 0 );
+	//bool bUsesBinding = ( Q_stricmp( pTarget->GetOnscreenIconTextureName(), "use_binding" ) == 0 );
 
-	if( !pTarget->m_pIcon_onscreen || !pTarget->m_pIcon_offscreen || ( bUsesBinding && bBindingTick ) )
+	if( !pTarget->m_pIcon_onscreen || !pTarget->m_pIcon_offscreen /*|| ( bUsesBinding && bBindingTick )*/ )
 	{
 		char szIconTextureName[ 256 ];
-		if ( bUsesBinding )
-		{
-			const char *pchDrawBindingName = pTarget->UseBindingImage( szIconTextureName, sizeof( szIconTextureName ) );
-			pTarget->m_bDrawControllerButton = ( Q_strcmp( szIconTextureName, "icon_blank" ) == 0 ) || ( Q_strcmp( szIconTextureName, "icon_blank_wide" ) == 0 );
-
-			pTarget->DrawBindingName( pchDrawBindingName );
-		}
-		else
+		//if ( bUsesBinding )
+		//{
+		//	const char *pchDrawBindingName = pTarget->UseBindingImage( szIconTextureName, sizeof( szIconTextureName ) );
+		//	pTarget->m_bDrawControllerButton = ( Q_strcmp( szIconTextureName, "icon_blank" ) == 0 ) || ( Q_strcmp( szIconTextureName, "icon_blank_wide" ) == 0 );
+//
+//			pTarget->DrawBindingName( pchDrawBindingName );
+	//	}
+		//else
 		{
 			pTarget->m_bDrawControllerButton = false;
-			V_strcpy_safe( szIconTextureName, pTarget->GetOnscreenIconTextureName() );
+			//V_strcpy_safe( szIconTextureName, pTarget->GetOnscreenIconTextureName() );
 			pTarget->DrawBindingName( NULL );
 		}
 
@@ -1489,17 +1489,17 @@ bool CLocatorPanel::ValidateTargetTextures( CLocatorTarget *pTarget )
 			}
 		}
 
-		if ( Q_stricmp( pTarget->GetOffscreenIconTextureName() , "use_binding" ) == 0 )
-		{
-			const char *pchDrawBindingName = pTarget->UseBindingImage( szIconTextureName, sizeof( szIconTextureName ) );
-			pTarget->m_bDrawControllerButtonOffscreen = ( Q_strcmp( szIconTextureName, "icon_blank" ) == 0 );
-
-			pTarget->DrawBindingNameOffscreen( pchDrawBindingName );
-		}
-		else
+	//	if ( Q_stricmp( pTarget->GetOffscreenIconTextureName() , "use_binding" ) == 0 )
+	//	{
+	//		const char *pchDrawBindingName = pTarget->UseBindingImage( szIconTextureName, sizeof( szIconTextureName ) );
+	//		pTarget->m_bDrawControllerButtonOffscreen = ( Q_strcmp( szIconTextureName, "icon_blank" ) == 0 );
+//
+//			pTarget->DrawBindingNameOffscreen( pchDrawBindingName );
+//		}
+	//	else
 		{
 			pTarget->m_bDrawControllerButtonOffscreen = false;
-			V_strcpy_safe( szIconTextureName, pTarget->GetOffscreenIconTextureName() );
+//			V_strcpy_safe( szIconTextureName, pTarget->GetOffscreenIconTextureName() );
 			pTarget->DrawBindingNameOffscreen( NULL );
 		}
 

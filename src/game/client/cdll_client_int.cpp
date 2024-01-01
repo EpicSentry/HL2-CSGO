@@ -372,7 +372,7 @@ public:
 
 ISaveRestoreBlockHandler *GetEntitySaveRestoreBlockHandler();
 ISaveRestoreBlockHandler *GetViewEffectsRestoreBlockHandler();
-ISaveRestoreBlockHandler *GetGameInstructorRestoreBlockHandler();
+//ISaveRestoreBlockHandler *GetGameInstructorRestoreBlockHandler();
 
 CUtlLinkedList<CDataChangedEvent, unsigned short> g_DataChangedEvents;
 CUtlLinkedList<CDataChangedEvent, unsigned short> g_DataChangedPostEvents;
@@ -1337,7 +1337,7 @@ bool InitGameSystems( CreateInterfaceFn appSystemFactory )
 	g_pGameSaveRestoreBlockSet->AddBlockHandler( GetEntitySaveRestoreBlockHandler() );
 	g_pGameSaveRestoreBlockSet->AddBlockHandler( GetPhysSaveRestoreBlockHandler() );
 	g_pGameSaveRestoreBlockSet->AddBlockHandler( GetViewEffectsRestoreBlockHandler() );
-	g_pGameSaveRestoreBlockSet->AddBlockHandler( GetGameInstructorRestoreBlockHandler() );
+	//g_pGameSaveRestoreBlockSet->AddBlockHandler( GetGameInstructorRestoreBlockHandler() );
 
 	ClientWorldFactoryInit();
 
@@ -1665,12 +1665,12 @@ int CHLClient::Init( CreateInterfaceFn appSystemFactory, CGlobalVarsBase *pGloba
 	//
 	// Censoring banlist loads here
 	//
-	bool bLoadBannedWords = !!CommandLine()->FindParm( "-perfectworld" );
+	/*bool bLoadBannedWords = !!CommandLine()->FindParm( "-perfectworld" );
 	bLoadBannedWords |= !!CommandLine()->FindParm( "-usebanlist" );
 	if ( bLoadBannedWords )
 	{
 		g_BannedWords.InitFromFile( "banlist.res" );
-	}
+	}*/
 
 	COM_TimestampedLog( "ClientDLL Init - Finish" );
 	return true;
@@ -1730,7 +1730,7 @@ void CHLClient::Shutdown( void )
 	C_BaseAnimating::ShutdownBoneSetupThreadPool();
 	ClientWorldFactoryShutdown();
 
-	g_pGameSaveRestoreBlockSet->RemoveBlockHandler( GetGameInstructorRestoreBlockHandler() );
+	//g_pGameSaveRestoreBlockSet->RemoveBlockHandler( GetGameInstructorRestoreBlockHandler() );
 	g_pGameSaveRestoreBlockSet->RemoveBlockHandler( GetViewEffectsRestoreBlockHandler() );
 	g_pGameSaveRestoreBlockSet->RemoveBlockHandler( GetPhysSaveRestoreBlockHandler() );
 	g_pGameSaveRestoreBlockSet->RemoveBlockHandler( GetEntitySaveRestoreBlockHandler() );

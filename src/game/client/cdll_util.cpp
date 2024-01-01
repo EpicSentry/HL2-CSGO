@@ -134,8 +134,8 @@ bool CanToggleXRayView( void )
 	if ( !pPlayer )
 		return false;
 
-	if ( CanSeeSpectatorOnlyTools() )
-		return true;
+	//if ( CanSeeSpectatorOnlyTools() )
+	//	return true;
 
 	return false;
 }

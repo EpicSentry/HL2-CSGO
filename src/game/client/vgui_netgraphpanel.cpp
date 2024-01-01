@@ -338,6 +338,7 @@ CNetGraphPanel::~CNetGraphPanel( void )
 	g_pNetGraphPanel = NULL;
 }
 
+/*
 extern ConVar sv_max_allowed_net_graph;
 void NetgraphChangeCallback( IConVar *var, const char *pOldValue, float flOldValue )
 {
@@ -352,6 +353,7 @@ void NetgraphChangeCallback( IConVar *var, const char *pOldValue, float flOldVal
 		g_pNetGraphPanel->OnFontChanged();
 	}
 }
+*/
 
 void CNetGraphPanel::OnFontChanged()
 {
@@ -1058,7 +1060,7 @@ int CNetGraphPanel::GraphValue( void )
 	// With +graph key, use max area
 	if ( !graphtype )
 	{
-		graphtype = Min( sv_max_allowed_net_graph.GetInt(), 3 );
+		graphtype = Min( 10, 3 ); //TODO we might need to alter this eventually idk
 	}
 
 	return graphtype;

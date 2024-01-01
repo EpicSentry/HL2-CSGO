@@ -729,9 +729,11 @@ EXPOSE_MATERIAL_PROXY(CStickerPeelProxy, StickerPeel);
 //-----------------------------------------------------------------------------
 // CrosshairColor proxy
 //-----------------------------------------------------------------------------
+#ifdef HL2MP
 extern ConVar cl_crosshaircolor_r;
 extern ConVar cl_crosshaircolor_g;
 extern ConVar cl_crosshaircolor_b;
+
 class CCrossHairColorProxy : public CResultProxy
 {
 public:
@@ -767,7 +769,7 @@ void CCrossHairColorProxy::OnBind(void *pC_BaseEntity)
 }
 
 EXPOSE_MATERIAL_PROXY(CCrossHairColorProxy, CrossHairColor);
-
+#endif
 
 float g_flEconInspectPreviewTime = 0;
 

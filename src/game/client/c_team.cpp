@@ -166,7 +166,7 @@ char *C_Team::Get_ClanName( void )
 			return "";
 	}
 
-	g_BannedWords.CensorBannedWordsInplace( m_szClanTeamname );
+	//g_BannedWords.CensorBannedWordsInplace( m_szClanTeamname );
 
 	return m_szClanTeamname;
 }

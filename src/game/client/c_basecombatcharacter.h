@@ -69,7 +69,7 @@ public:
 
 	virtual C_BaseCombatWeapon*	Weapon_OwnsThisType( const char *pszWeapon, int iSubType = 0 ) const;  // True if already owns a weapon of this class
 	virtual C_BaseCombatWeapon *Weapon_GetSlot( int slot ) const;
-	virtual C_BaseCombatWeapon *Weapon_GetPosition( int pos ) const;
+	//virtual C_BaseCombatWeapon *Weapon_GetPosition( int pos ) const;
 
 	virtual	bool		Weapon_Switch( C_BaseCombatWeapon *pWeapon, int viewmodelindex = 0 );
 	virtual bool		Weapon_CanSwitchTo(C_BaseCombatWeapon *pWeapon);

@@ -54,6 +54,83 @@ CHudCrosshair::CHudCrosshair( const char *pElementName ) :
 	SetHiddenBits( HIDEHUD_PLAYERDEAD | HIDEHUD_CROSSHAIR );
 }
 
+void CHudCrosshair::GetDrawPosition(float *pX, float *pY, bool *pbBehindCamera, QAngle angleCrosshairOffset)
+{
+	QAngle curViewAngles = CurrentViewAngles();
+	Vector curViewOrigin = CurrentViewOrigin();
+
+	int vx, vy, vw, vh;
+	//vgui::surface()->GetFullscreenViewport(vx, vy, vw, vh);
+	GetHudSize(vw, vh);
+
+	float screenWidth = vw;
+	float screenHeight = vh;
+
+	float x = screenWidth / 2;
+	float y = screenHeight / 2;
+
+	bool bBehindCamera = false;
+
+	C_BasePlayer* pPlayer = C_BasePlayer::GetLocalPlayer();
+	if ((pPlayer != NULL) && (pPlayer->GetObserverMode() == OBS_MODE_NONE))
+	{
+		bool bUseOffset = false;
+
+		Vector vecStart;
+		Vector vecEnd;
+
+#ifdef SIXENSE
+		// TODO: actually test this Sixsense code interaction with things like HMDs & stereo.
+		if (g_pSixenseInput->IsEnabled() && !UseVR())
+		{
+			// Never autoaim a predicted weapon (for now)
+			vecStart = pPlayer->Weapon_ShootPosition();
+			Vector aimVector;
+			AngleVectors(CurrentViewAngles() - g_pSixenseInput->GetViewAngleOffset(), &aimVector);
+			// calculate where the bullet would go so we can draw the cross appropriately
+			vecEnd = vecStart + aimVector * MAX_TRACE_LENGTH;
+			bUseOffset = true;
+		}
+#endif
+
+		if (bUseOffset)
+		{
+			trace_t tr;
+			UTIL_TraceLine(vecStart, vecEnd, MASK_SHOT, pPlayer, COLLISION_GROUP_NONE, &tr);
+
+			Vector screen;
+			screen.Init();
+			bBehindCamera = ScreenTransform(tr.endpos, screen) != 0;
+
+			x = 0.5f * (1.0f + screen[0]) * screenWidth + 0.5f;
+			y = 0.5f * (1.0f - screen[1]) * screenHeight + 0.5f;
+		}
+	}
+
+	// MattB - angleCrosshairOffset is the autoaim angle.
+	// if we're not using autoaim, just draw in the middle of the 
+	// screen
+	if (angleCrosshairOffset != vec3_angle)
+	{
+		QAngle angles;
+		Vector forward;
+		Vector point, screen;
+
+		// this code is wrong
+		angles = curViewAngles + angleCrosshairOffset;
+		AngleVectors(angles, &forward);
+		VectorAdd(curViewOrigin, forward, point);
+		ScreenTransform(point, screen);
+
+		x += 0.5f * screen[0] * screenWidth + 0.5f;
+		y += 0.5f * screen[1] * screenHeight + 0.5f;
+	}
+
+	*pX = x;
+	*pY = y;
+	*pbBehindCamera = bBehindCamera;
+}
+
 void CHudCrosshair::ApplySchemeSettings( IScheme *scheme )
 {
 	BaseClass::ApplySchemeSettings( scheme );

@@ -42,7 +42,9 @@ enum PhysGunForce_t
 };
 
 void PlayerPickupObject( CBasePlayer *pPlayer, CBaseEntity *pObject );
+#ifdef GAME_DLL
 void Pickup_ForcePlayerToDropThisObject( CBaseEntity *pTarget );
+#endif
 
 void Pickup_OnPhysGunDrop( CBaseEntity *pDroppedObject, CBasePlayer *pPlayer, PhysGunDrop_t reason );
 void Pickup_OnPhysGunPickup( CBaseEntity *pPickedUpObject, CBasePlayer *pPlayer, PhysGunPickup_t reason = PICKED_UP_BY_CANNON );

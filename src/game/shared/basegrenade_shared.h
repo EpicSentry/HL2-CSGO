@@ -16,7 +16,7 @@
 #define CBaseGrenade C_BaseGrenade
 
 #include "c_basecombatcharacter.h"
-#include "glow_outline_effect.h"
+//#include "glow_outline_effect.h"
 
 #else
 
@@ -131,7 +131,7 @@ public:
 	float				m_flWarnAITime;				// Time at which to warn the AI
 
 #if defined( CLIENT_DLL )
-	CGlowObject			m_GlowObject;
+	//CGlowObject			m_GlowObject;
 #endif
 
 protected:

@@ -25,17 +25,17 @@ IMPLEMENT_NETWORKCLASS_ALIASED( DynamicProp, DT_DynamicProp )
 BEGIN_NETWORK_TABLE( CDynamicProp, DT_DynamicProp )
 	RecvPropBool(RECVINFO(m_bUseHitboxesForRenderBox)),
 
-	RecvPropFloat( RECVINFO(m_flGlowMaxDist) ),
-	RecvPropBool(RECVINFO(m_bShouldGlow)),
-	RecvPropInt( RECVINFO(m_clrGlow), 0, RecvProxy_Int32ToColor32 ),
-	RecvPropInt( RECVINFO(m_nGlowStyle) ),
+	//RecvPropFloat( RECVINFO(m_flGlowMaxDist) ),
+	//RecvPropBool(RECVINFO(m_bShouldGlow)),
+	//RecvPropInt( RECVINFO(m_clrGlow), 0, RecvProxy_Int32ToColor32 ),
+	//RecvPropInt( RECVINFO(m_nGlowStyle) ),
 END_NETWORK_TABLE()
 
-C_DynamicProp::C_DynamicProp( void ) : 
+/*C_DynamicProp::C_DynamicProp( void ) : 
 m_GlowObject( this, Vector( 1.0f, 1.0f, 1.0f ), 0.0f, false, false )
 {
 	m_iCachedFrameCount = -1;
-}
+}*/
 
 C_DynamicProp::~C_DynamicProp( void )
 {
@@ -80,9 +80,9 @@ void C_DynamicProp::ClientThink( void )
 {
 	BaseClass::ClientThink();
 
-	UpdateGlow();
+	//UpdateGlow();
 }
-
+/*
 void C_DynamicProp::UpdateGlow( void )
 {
 	if ( m_bShouldGlow == false )
@@ -124,7 +124,7 @@ void C_DynamicProp::UpdateGlow( void )
 
 	SetNextClientThink( gpGlobals->curtime + 0.1f );
 }
-
+*/
 //-----------------------------------------------------------------------------
 // implements these so ragdolls can handle frustum culling & leaf visibility
 //-----------------------------------------------------------------------------
@@ -172,14 +172,14 @@ unsigned int C_DynamicProp::ComputeClientSideAnimationFlags()
 	// no sequence or no cycle rate, don't do any per-frame calcs
 	return 0;
 }
-
+/*
 void C_DynamicProp::ForceTurnOffGlow( void )
 {
 	m_bShouldGlow = false;
 
 	UpdateGlow();
 }
-
+*/
 void C_DynamicProp::OnDataChanged( DataUpdateType_t type )
 {
 	BaseClass::OnDataChanged( type );
@@ -188,7 +188,7 @@ void C_DynamicProp::OnDataChanged( DataUpdateType_t type )
 	{
 //		if ( m_bShouldGlow )
 		{
-			UpdateGlow();
+		//	UpdateGlow();
 		}
 	}
 }

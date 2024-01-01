@@ -577,7 +577,7 @@ CBaseGrenade::~CBaseGrenade(void)
 //-----------------------------------------------------------------------------
 CBaseGrenade::CBaseGrenade(void)
 #ifdef CLIENT_DLL
-	:m_GlowObject( this, Vector( 1.0f, 1.0f, 1.0f ), 0.0f, false, false )
+//	:m_GlowObject( this, Vector( 1.0f, 1.0f, 1.0f ), 0.0f, false, false )
 #endif
 {
 	m_hThrower			= NULL;
