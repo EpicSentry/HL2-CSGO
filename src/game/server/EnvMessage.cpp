@@ -12,6 +12,7 @@
 #include "filesystem.h"
 #include "color.h"
 #include "GameStats.h"
+#include "hl2_usermessages.pb.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -236,14 +237,18 @@ void CCredits::RollOutroCredits()
 	sv_unlockedchapters.SetValue( "15" );
 
 	// Gurjeets - Not used in CSGO
-	//CBasePlayer *pPlayer = UTIL_GetLocalPlayer();
+	CBasePlayer *pPlayer = UTIL_GetLocalPlayer();
 
-	//CSingleUserRecipientFilter user( pPlayer );
-	//user.MakeReliable();
+	CSingleUserRecipientFilter user( pPlayer );
+	user.MakeReliable();
 
 	//UserMessageBegin( user, "CreditsMsg" );
 	//	WRITE_BYTE( 3 );
 	//MessageEnd();
+
+	CUsrMsg_CreditsMsg msg;
+	msg.set_creditstype(3);
+	SendUserMessage(user, UM_CreditsMsg, msg);
 }
 
 void CCredits::InputRollOutroCredits( inputdata_t &inputdata )
@@ -260,26 +265,32 @@ void CCredits::InputRollOutroCredits( inputdata_t &inputdata )
 
 void CCredits::InputShowLogo( inputdata_t &inputdata )
 {
-	ASSERT(0);
+	//ASSERT(0);
 
 	// Gurjeets - Not used in CSGO
-	//CBasePlayer *pPlayer = UTIL_GetLocalPlayer();
+	CBasePlayer *pPlayer = UTIL_GetLocalPlayer();
 
-	//CSingleUserRecipientFilter user( pPlayer );
-	//user.MakeReliable();
+	CSingleUserRecipientFilter user( pPlayer );
+	user.MakeReliable();
 
-	//if ( m_flLogoLength )
-	//{
+	if ( m_flLogoLength )
+	{
 	//	UserMessageBegin( user, "LogoTimeMsg" );
 	//		WRITE_FLOAT( m_flLogoLength );
 	//	MessageEnd();
-	//}
-	//else
-	//{
+		CUsrMsg_LogoTimeMsg msg;
+		msg.set_logotime(m_flLogoLength);
+		SendUserMessage(user, UM_LogoTimeMsg, msg);
+	}
+	else
+	{
 	//	UserMessageBegin( user, "CreditsMsg" );
 	//		WRITE_BYTE( 1 );
 	//	MessageEnd();
-	//}
+		CUsrMsg_CreditsMsg msg;
+		msg.set_creditstype(1);
+		SendUserMessage(user, UM_CreditsMsg, msg);
+	}
 }
 
 void CCredits::InputSetLogoLength( inputdata_t &inputdata )
@@ -290,14 +301,17 @@ void CCredits::InputSetLogoLength( inputdata_t &inputdata )
 void CCredits::InputRollCredits( inputdata_t &inputdata )
 {
 	// Gurjeets - Not used in CSGO
-	//CBasePlayer *pPlayer = UTIL_GetLocalPlayer();
+	CBasePlayer *pPlayer = UTIL_GetLocalPlayer();
 
-	//CSingleUserRecipientFilter user( pPlayer );
-	//user.MakeReliable();
+	CSingleUserRecipientFilter user( pPlayer );
+	user.MakeReliable();
 
 	//UserMessageBegin( user, "CreditsMsg" );
 	//	WRITE_BYTE( 2 );
 	//MessageEnd();
+	CUsrMsg_CreditsMsg msg;
+	msg.set_creditstype(2);
+	SendUserMessage(user, UM_CreditsMsg, msg);
 }
 
 //-----------------------------------------------------------------------------

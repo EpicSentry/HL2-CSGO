@@ -249,7 +249,8 @@ void C_PropAirboat::DrawHudElements( )
 		Vector screen;
 
 		int vx, vy, vw, vh;
-		vgui::surface()->GetAbsoluteWindowBounds( vx, vy, vw, vh );
+		//vgui::surface()->GetAbsoluteWindowBounds( vx, vy, vw, vh );
+		GetHudSize(vw, vh);
 		float screenWidth = vw;
 		float screenHeight = vh;
 		

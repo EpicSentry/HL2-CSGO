@@ -308,7 +308,7 @@ void C_Flare::Update( float timeDelta )
 		{
 			Vector	smokeOrg = GetAbsOrigin();
 
-			Vector	flareScreenDir = ( smokeOrg - MainViewOrigin(1) ); //TODO figure out what "slot" to use (currently 1 as a guess)
+			Vector	flareScreenDir = ( smokeOrg - MainViewOrigin(0) );
 			VectorNormalize( flareScreenDir );
 
 			smokeOrg = smokeOrg + ( flareScreenDir * 2.0f );

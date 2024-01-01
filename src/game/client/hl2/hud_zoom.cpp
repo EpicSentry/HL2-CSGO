@@ -104,7 +104,8 @@ void CHudZoom::ApplySchemeSettings( vgui::IScheme *scheme )
 //	SetForceStereoRenderToFrameBuffer( true ); these are fucked 
 	int x, y;
 	int screenWide, screenTall;
-	surface()->GetAbsoluteWindowBounds( x, y, screenWide, screenTall );
+//	surface()->GetFullscreenViewport( x, y, screenWide, screenTall ); old way of doing it
+	GetHudSize(screenWide, screenTall); //apparently new, found in swarm
 	SetBounds(0, 0, screenWide, screenTall);
 }
 

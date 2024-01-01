@@ -3242,6 +3242,9 @@ void CHL2_Player::UpdateClientData( void )
 		msg.set_armor(m_DmgSave);
 		msg.set_damagetaken(m_DmgTake);
 		msg.set_bitsdamage(visibleDamageBits);
+		msg.set_damageoriginx(damageOrigin.x);
+		msg.set_damageoriginy(damageOrigin.y);
+		msg.set_damageoriginz(damageOrigin.z);
 		SendUserMessage(user, UM_Damage, msg);
 
 		m_DmgTake = 0;

@@ -42,7 +42,7 @@ public:
 	virtual bool ShouldDraw( void );
 
 	// Handler for our message
-	void MsgFunc_Damage( bf_read &msg );
+	void MsgFunc_Damage( const CUsrMsg_Damage &msg );
 
 private:
 	virtual void Paint();
@@ -71,7 +71,7 @@ private:
 };
 
 DECLARE_HUDELEMENT( CHudDamageIndicator );
-DECLARE_HUD_MESSAGE( CHudDamageIndicator, Damage );
+//DECLARE_HUD_MESSAGE( CHudDamageIndicator, Damage );
 
 enum
 {
@@ -144,7 +144,7 @@ void CHudDamageIndicator::Reset( void )
 
 void CHudDamageIndicator::Init( void )
 {
-	HOOK_HUD_MESSAGE( CHudDamageIndicator, Damage );
+//	HOOK_HUD_MESSAGE( CHudDamageIndicator, Damage );
 }
 
 //-----------------------------------------------------------------------------
@@ -325,17 +325,17 @@ void CHudDamageIndicator::Paint()
 //-----------------------------------------------------------------------------
 // Purpose: Message handler for Damage message
 //-----------------------------------------------------------------------------
-void CHudDamageIndicator::MsgFunc_Damage( bf_read &msg )
+void CHudDamageIndicator::MsgFunc_Damage( const CUsrMsg_Damage &msg )
 {
-	int armor = msg.ReadByte();	// armor
-	int damageTaken = msg.ReadByte();	// health
-	long bitsDamage = msg.ReadLong(); // damage bits
+	int armor = msg.armor();	// armor
+	int damageTaken = msg.damagetaken();	// health
+	long bitsDamage = msg.bitsdamage(); // damage bits
 
 	Vector vecFrom;
 
-	vecFrom.x = msg.ReadFloat();
-	vecFrom.y = msg.ReadFloat();
-	vecFrom.z = msg.ReadFloat();
+	vecFrom.x = msg.damageoriginx();
+	vecFrom.y = msg.damageoriginy();
+	vecFrom.z = msg.damageoriginz();
 
 	C_BasePlayer *pPlayer = C_BasePlayer::GetLocalPlayer();
 	if ( !pPlayer )
@@ -354,7 +354,7 @@ void CHudDamageIndicator::MsgFunc_Damage( bf_read &msg )
 	if ( vecFrom == vec3_origin && !(bitsDamage & DMG_DROWN))
 		return;
 
-	Vector vecDelta = (vecFrom - MainViewOrigin(1));
+	Vector vecDelta = (vecFrom - MainViewOrigin(0));
 	VectorNormalize( vecDelta );
 
 	int highDamage = DAMAGE_LOW;
@@ -410,8 +410,8 @@ void CHudDamageIndicator::GetDamagePosition( const Vector &vecDelta, float *flRo
 	float flRadius = 360.0f;
 
 	// Player Data
-	Vector playerPosition = MainViewOrigin(1);
-	QAngle playerAngles = MainViewAngles(1);
+	Vector playerPosition = MainViewOrigin(0);
+	QAngle playerAngles = MainViewAngles(0);
 
 	Vector forward, right, up(0,0,1);
 	AngleVectors (playerAngles, &forward, NULL, NULL );

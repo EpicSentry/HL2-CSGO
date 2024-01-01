@@ -49,7 +49,7 @@ public:
 	virtual void VidInit( void );
 	virtual void Reset( void );
 	virtual void OnThink();
-			void MsgFunc_Damage( bf_read &msg );
+			void MsgFunc_Damage(const CUsrMsg_Damage &msg);
 
 private:
 	// old variables
@@ -59,7 +59,7 @@ private:
 };	
 
 DECLARE_HUDELEMENT( CHudHealth );
-DECLARE_HUD_MESSAGE( CHudHealth, Damage );
+//DECLARE_HUD_MESSAGE( CHudHealth, Damage );
 
 //-----------------------------------------------------------------------------
 // Purpose: Constructor
@@ -74,7 +74,7 @@ CHudHealth::CHudHealth( const char *pElementName ) : CHudElement( pElementName )
 //-----------------------------------------------------------------------------
 void CHudHealth::Init()
 {
-	HOOK_HUD_MESSAGE( CHudHealth, Damage );
+	//HOOK_HUD_MESSAGE( CHudHealth, Damage );
 	Reset();
 }
 
@@ -144,19 +144,20 @@ void CHudHealth::OnThink()
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-void CHudHealth::MsgFunc_Damage( bf_read &msg )
+void CHudHealth::MsgFunc_Damage(const CUsrMsg_Damage &msg)
 {
 
-	int armor = msg.ReadByte();	// armor
-	int damageTaken = msg.ReadByte();	// health
-	long bitsDamage = msg.ReadLong(); // damage bits
+	//int armor = msg.ReadByte();	// armor
+	int armor = msg.armor();
+	int damageTaken = msg.damagetaken();	// health
+	long bitsDamage = msg.bitsdamage(); // damage bits
 	bitsDamage; // variable still sent but not used
 
 	Vector vecFrom;
 
-	vecFrom.x = msg.ReadBitCoord();
-	vecFrom.y = msg.ReadBitCoord();
-	vecFrom.z = msg.ReadBitCoord();
+	vecFrom.x = msg.damageoriginx();
+	vecFrom.y = msg.damageoriginy();
+	vecFrom.z = msg.damageoriginz();
 
 	// Actually took damage?
 	if ( damageTaken > 0 || armor > 0 )

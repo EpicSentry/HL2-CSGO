@@ -240,6 +240,9 @@ message CUsrMsg_Damage
 	optional int32 armor = 1;
 	optional int32 damageTaken = 2;
 	optional int32 bitsDamage = 3;
+	optional float damageOriginX = 4;
+	optional float damageOriginY = 5;
+	optional float damageOriginZ = 6;
 }
 
 message CUsrMsg_HintText
@@ -289,8 +292,15 @@ message CUsrMsg_AmmoDenied
 	optional int32 ammoIdx = 1;
 }
 
+message CUsrMsg_CreditsMsg
+{
+	optional int32 creditstype = 1;
+}
 
-
+message CUsrMsg_LogoTimeMsg
+{
+	optional float logotime = 3;
+}
 //=============================================================================
 // Messages where the data seems to be irrelevant
 //=============================================================================
