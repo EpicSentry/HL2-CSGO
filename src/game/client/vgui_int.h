@@ -29,7 +29,7 @@ void VGUI_CreateClientDLLRootPanel( void );
 void VGUI_DestroyClientDLLRootPanel( void );
 void VGui_PreRender();
 void VGui_PostRender();
-void VGui_GetPanelList( CUtlVector< vgui::Panel * > &list );
+//void VGui_GetPanelList( CUtlVector< vgui::Panel * > &list );
 void VGui_GetPanelBounds( int slot, int &x, int &y, int &w, int &h );
 // If the engine is inset from the VGui_GetPanelBounds due to splitscreen aspect ratio fixups...
 void VGui_GetEngineRenderBounds( int slot, int &x, int &y, int &w, int &h, int &insetX, int &insetY );

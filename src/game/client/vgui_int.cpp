@@ -520,7 +520,7 @@ void VGui_PreRender()
 	int nSlot = GET_ACTIVE_SPLITSCREEN_SLOT();
 
 	CUtlVector< Panel * > list;
-	VGui_GetPanelList( list );
+//	VGui_GetPanelList( list );
 	for ( int i = 0; i < list.Count() ; ++i )
 	{
 		list[ i ]->SetVisible( i == nSlot );
@@ -531,7 +531,7 @@ void VGui_PostRender()
 {
 	int w, h;
 	CUtlVector< Panel * > list;
-	VGui_GetPanelList( list );
+//	VGui_GetPanelList( list );
 	FOR_EACH_VALID_SPLITSCREEN_PLAYER( i )
 	{
 		int x, y;
@@ -804,7 +804,7 @@ bool g_bSuppressConfigSystemLevelDueToPIPTransitions;
 void VGui_OnSplitScreenStateChanged()
 {
 	CUtlVector< Panel * > list;
-	VGui_GetPanelList( list );
+	//VGui_GetPanelList( list );
 
 	g_SplitScreenPlayers.ClearAll();
 	g_nNumSplits = 0;
@@ -1000,7 +1000,7 @@ void VGui_GetHudBounds( int slot, int &x, int &y, int &w, int &h )
 int VGUI_FindSlotForRootPanel( vgui::Panel *pRoot )
 {
 	CUtlVector< Panel * > list;
-	VGui_GetPanelList( list );
+	//VGui_GetPanelList( list );
 	int slot =  list.Find( pRoot ) ;
 	if ( slot == list.InvalidIndex() )
 		return 0;

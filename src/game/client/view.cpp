@@ -1047,8 +1047,8 @@ void CViewRender::Render( vrect_t *rect )
 
 	m_bAllowViewAccess = true;
 
-	CUtlVector< vgui::Panel * > roots;
-	VGui_GetPanelList( roots );
+	//CUtlVector< vgui::Panel * > roots;
+	//VGui_GetPanelList( roots );
 
 	// Stub out the material system if necessary.
 	CMatStubHandler matStub;

@@ -40,8 +40,8 @@ public:
 	
 	virtual bool			ShouldCollide( int collisionGroup0, int collisionGroup1 );
 	virtual bool			ShouldUseRobustRadiusDamage(CBaseEntity *pEntity);
-	virtual bool			PlayerCanHearChat(CBasePlayer *pListener, CBasePlayer *pSpeaker);
 #ifndef CLIENT_DLL
+	virtual bool			PlayerCanHearChat(CBasePlayer *pListener, CBasePlayer *pSpeaker);
 	virtual bool			ShouldAutoAim( CBasePlayer *pPlayer, edict_t *target );
 	virtual float			GetAutoAimScale( CBasePlayer *pPlayer );
 	virtual float			GetAmmoQuantityScale( int iAmmoIndex );

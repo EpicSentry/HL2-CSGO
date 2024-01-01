@@ -338,22 +338,22 @@ CNetGraphPanel::~CNetGraphPanel( void )
 	g_pNetGraphPanel = NULL;
 }
 
-/*
-extern ConVar sv_max_allowed_net_graph;
+
+//extern ConVar sv_max_allowed_net_graph;
 void NetgraphChangeCallback( IConVar *var, const char *pOldValue, float flOldValue )
-{
+{/*
 	if ( net_graph.GetInt() > sv_max_allowed_net_graph.GetInt() )
 	{
 		net_graph.SetValue( sv_max_allowed_net_graph.GetInt() );
 		Msg( "Server does not allow net_graph values above %d\n", sv_max_allowed_net_graph.GetInt() );
-	}
+	}*/
 	
 	if ( g_pNetGraphPanel )
 	{
 		g_pNetGraphPanel->OnFontChanged();
 	}
 }
-*/
+
 
 void CNetGraphPanel::OnFontChanged()
 {

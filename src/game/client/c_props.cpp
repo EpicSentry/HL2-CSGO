@@ -31,11 +31,11 @@ BEGIN_NETWORK_TABLE( CDynamicProp, DT_DynamicProp )
 	//RecvPropInt( RECVINFO(m_nGlowStyle) ),
 END_NETWORK_TABLE()
 
-/*C_DynamicProp::C_DynamicProp( void ) : 
-m_GlowObject( this, Vector( 1.0f, 1.0f, 1.0f ), 0.0f, false, false )
+C_DynamicProp::C_DynamicProp( void ) /*: 
+m_GlowObject( this, Vector( 1.0f, 1.0f, 1.0f ), 0.0f, false, false )*/
 {
 	m_iCachedFrameCount = -1;
-}*/
+}
 
 C_DynamicProp::~C_DynamicProp( void )
 {

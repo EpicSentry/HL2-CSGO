@@ -4296,6 +4296,11 @@ void CHLClient::DetermineSubscriptionKvToAdvertise( KeyValues *kvLocalPlayer )
 {
 	/* Removed for partner depot */
 }
+char const * CHLClient::GetRichPresenceStatusString()
+{
+	//useless, just making the compiler shut up
+	return "fixme";
+}
 /*
 class CHLClientAutoRichPresenceUpdateOnConnect
 {
@@ -4738,15 +4743,15 @@ void CHLClient::OnCommandDuringPlayback( char const *cmd )
 
 void CHLClient::RetireAllPlayerDecals( bool bRenderContextValid )
 {
-	extern void OnPlayerDecalsLevelShutdown();
-	OnPlayerDecalsLevelShutdown();
+	//extern void OnPlayerDecalsLevelShutdown();
+	//OnPlayerDecalsLevelShutdown();
 
 	if ( bRenderContextValid )
 	{
 		// If the render context is valid (i.e. manual r_cleardecals)
 		// then we should immediately update and reapply to avoid flickers
-		extern void OnPlayerDecalsUpdate();
-		OnPlayerDecalsUpdate();
+		//extern void OnPlayerDecalsUpdate();
+		//OnPlayerDecalsUpdate();
 	}
 }
 
