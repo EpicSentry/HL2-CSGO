@@ -71,6 +71,11 @@ void CHLModeManager::LevelShutdown( void )
 	g_pClientMode->LevelShutdown();
 }
 
+IClientMode* GetClientMode()
+{
+	ASSERT_LOCAL_PLAYER_RESOLVABLE();
+	return g_pClientMode;
+}
 
 static CHLModeManager g_HLModeManager;
 IVModeManager *modemanager = &g_HLModeManager;
