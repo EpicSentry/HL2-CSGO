@@ -312,7 +312,7 @@ bool CClientState::NETMsg_Tick( const CNETMsg_Tick& msg )
 			// we're starting replay. Clean up decals from the future
 			R_DecalTermNew( host_state.worldmodel->brush.pShared, tick );
 		}
-		g_ClientDLL->OnHltvReplayTick();
+		//g_ClientDLL->OnHltvReplayTick();
 		s_bClientWaitingForHltvReplayTick = false;
 	}
 
@@ -978,7 +978,7 @@ bool CClientState::SVCMsg_HltvReplay( const CSVCMsg_HltvReplay &msg )
 	}
 	if ( g_ClientDLL )
 	{
-		g_ClientDLL->OnHltvReplay( msg );
+//		g_ClientDLL->OnHltvReplay( msg );
 		s_bClientWaitingForHltvReplayTick = true; // waiting for a tick message after the hltv replay either starts or stops: it will carry the new tick to time replay fades etc.
 	}
 	if ( !m_nHltvReplayDelay != !nWasDelay )

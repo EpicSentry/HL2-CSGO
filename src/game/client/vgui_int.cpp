@@ -835,7 +835,7 @@ void VGui_OnSplitScreenStateChanged()
 
 	for ( int i = 0; i < MAX_SPLITSCREEN_PLAYERS; ++i )
 	{
-		list[ i ]->SetVisible( IsValidSplitScreenSlot( i ) );
+//		list[ i ]->SetVisible( IsValidSplitScreenSlot( i ) );
 	}
 
 	// Now tile, etc. the rest of them
@@ -867,7 +867,7 @@ void VGui_OnSplitScreenStateChanged()
 		// The actual viewport panels are all at the top left of the screen, but sized appropriately
 		int x, y, w, h;
 		VGui_GetHudBounds( i, x, y, w, h);
-		list[ i ]->SetBounds( x, y, w, h );
+//		list[ i ]->SetBounds( x, y, w, h );
 
 		surface()->SetAbsPosForContext( i, x, y );
 	}

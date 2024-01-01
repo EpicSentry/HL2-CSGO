@@ -1927,7 +1927,7 @@ enum EyelidType_t
 //-----------------------------------------------------------------------------
 // Used to point to the current s_model_t when loading QcModelElements from DMX
 //-----------------------------------------------------------------------------
-extern s_model_t *g_pCurrentModel;
+//extern s_model_t *g_pCurrentModel;
 
 
 #endif // STUDIOMDL_H

@@ -832,7 +832,7 @@ void CClientState::StopHltvReplay()
 	if ( g_ClientDLL )
 	{
 		CSVCMsg_HltvReplay msg;
-		g_ClientDLL->OnHltvReplay( msg );
+//		g_ClientDLL->OnHltvReplay( msg );
 	}
 }
 

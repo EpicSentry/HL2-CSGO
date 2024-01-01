@@ -103,6 +103,7 @@ $Group "csgo_partner"
 	"matchmakingbase"
 	"matchmakingbase_ds"
 	"adminserver"
+	"studiomdl"
 // Uncomment and re-vpc if you want a bad time.
 //	"havana_constraints"
 //	"hk_base"

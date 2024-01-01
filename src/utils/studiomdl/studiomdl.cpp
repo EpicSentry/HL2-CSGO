@@ -70,7 +70,7 @@
 #include "KeyValues.h"
 #include "compileclothproxy.h"
 #include "movieobjects/dmemodel.h"
-#include "fbxutils/dmfbxserializer.h"
+//#include "fbxutils/dmfbxserializer.h"
 #include "mathlib/dynamictree.h"
 #include "movieobjects/dmemesh.h"
 #include "tier1/fmtstr.h"
@@ -1421,12 +1421,12 @@ void ProcessOptionStudio( s_model_t *pmodel, const char *pFullPath, float flScal
 		pmodel->scale = g_currentscale = g_defaultscale;
 	}
 
-	g_pCurrentModel = pmodel;
+	//g_pCurrentModel = pmodel;
 
 	// load source
 	pmodel->source = Load_Source( pmodel->filename, "", bFlipTriangles, true );
 
-	g_pCurrentModel = NULL;
+	//g_pCurrentModel = NULL;
 
 	// Reset currentscale to whatever global we currently have set
 	// g_defaultscale gets set in Cmd_ScaleUp everytime the $scale command is used.
@@ -3737,8 +3737,8 @@ s_source_t *Load_Source( const char *name, const char *ext, bool reverse, bool i
 	pSource->scale = 1.0f;
 	pSource->rotation = g_defaultrotation;
 
-	const char * load_extensions[] = { "fbx", "vrm", "dmx", "mpp", "smd", "sma", "phys", "vta", "obj", "xml", "fbx" };
-	int( *load_procs[] )( s_source_t * ) = { Load_FBX, Load_VRM, Load_DMX, Load_DMX, Load_SMD, Load_SMD, Load_SMD, Load_VTA, Load_OBJ, Load_DMX, Load_FBX };
+	const char * load_extensions[] = { "vrm", "smd", "sma", "phys", "vta", "obj" };
+	int( *load_procs[] )( s_source_t * ) = { Load_VRM, Load_SMD, Load_SMD, Load_SMD, Load_VTA, Load_OBJ };
    	COMPILE_TIME_ASSERT( ARRAYSIZE(load_extensions) == ARRAYSIZE(load_procs) );
 	for ( int kk = ( g_bPreferFbx ? 0 : 1 ); kk < ARRAYSIZE( load_extensions ); ++ kk )
 	{
@@ -11472,6 +11472,7 @@ void ParseScript ( const char *pExt )
 // For preprocessed files, all data lies in the g_fullpath. 
 // The DMX loader will take care of it.
 //-----------------------------------------------------------------------------
+/*
 bool ParsePreprocessedFile( const char *pFullPath )
 {
 	char pFullPathBuf[ MAX_PATH ];
@@ -11525,7 +11526,7 @@ bool ParsePreprocessedFile( const char *pFullPath )
 	}
 
 	return true;
-}
+}*/
 
 
 // Used by the CheckSurfaceProps.py script.
@@ -12385,7 +12386,8 @@ int CStudioMDLApp::Main()
 	//
 	ClearModel();
 
-//	strcpy( g_pPlatformName, "" );
+//	strcpy( g_pPlatformName, "" )
+/*
 	if ( bLoadingPreprocessedFile )
 	{
 		if ( !ParsePreprocessedFile( g_fullpath ) )
@@ -12393,8 +12395,8 @@ int CStudioMDLApp::Main()
 			MdlError( "Invalid MPP File: %s\n", g_path );
 			return 1;
 		}
-	}
-	else
+	}*/
+	//else
 	{
 		ParseScript( pExt );
 	}

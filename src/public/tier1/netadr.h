@@ -75,7 +75,7 @@ public:
 	bool	IsValid() const;	// ip & port != 0
 	bool	IsBaseAdrValid() const;	// ip != 0
 
-	void    SetFromSocket( int hSocket );
+	//void    SetFromSocket( int hSocket );
 
 	bool	Unserialize( bf_read &readBuf );
 	bool	Serialize( bf_write &writeBuf );

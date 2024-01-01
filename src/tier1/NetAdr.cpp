@@ -16,6 +16,8 @@
 #if defined( _WIN32 ) && !defined( _X360 )
 #define WIN32_LEAN_AND_MEAN
 #include <winsock.h>
+#pragma comment(lib, "ws2_32.lib")
+
 typedef int socklen_t;
 #elif !defined( _X360 )
 #include <netinet/in.h> // ntohs()
@@ -356,7 +358,7 @@ bool netadr_t::operator<(const netadr_t &netadr) const
 	return ( netadr.port < port );
 }
 
-
+/**
 void netadr_t::SetFromSocket( int hSocket )
 {	
 	// dgoodenough - since this is skipped on X360, seems reasonable to skip as well on PS3
@@ -376,3 +378,4 @@ void netadr_t::SetFromSocket( int hSocket )
 	Assert(0);
 #endif
 }
+*/

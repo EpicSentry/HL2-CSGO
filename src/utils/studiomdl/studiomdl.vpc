@@ -23,7 +23,6 @@ $Configuration
 	$Linker
 	{
 		$AdditionalDependencies			"$BASE winmm.lib libedgegeomtool.Release.Win32.vs8.lib"
-		$AdditionalLibraryDirectories   	"$BASE;$SRCDIR\ps3sdk\cell\host-win32\lib"
 	}
 }
 
@@ -37,7 +36,7 @@ $Project "Studiomdl"
 		$File	"collisionmodelsource.cpp"
 //		$File   "physics2collision.cpp"
 		$File	"$SRCDIR\public\collisionutils.cpp"
-		$File	"dmxsupport.cpp"
+//		$File	"dmxsupport.cpp"
 		$File	"$SRCDIR\public\filesystem_helpers.cpp"
 		$File	"$SRCDIR\public\filesystem_init.cpp"
 		$File	"..\common\filesystem_tools.cpp"
