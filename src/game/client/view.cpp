@@ -94,13 +94,20 @@ IViewRender *view = NULL;	// set in cldll_client_init.cpp if no mod creates thei
 #if _DEBUG
 bool g_bRenderingCameraView = false;
 #endif
-
+/*
 static Vector g_vecRenderOrigin[ MAX_SPLITSCREEN_PLAYERS ];
 static QAngle g_vecRenderAngles[ MAX_SPLITSCREEN_PLAYERS ];
 static Vector g_vecPrevRenderOrigin[ MAX_SPLITSCREEN_PLAYERS ];	// Last frame's render origin
 static QAngle g_vecPrevRenderAngles[ MAX_SPLITSCREEN_PLAYERS ]; // Last frame's render angles
 static Vector g_vecVForward[ MAX_SPLITSCREEN_PLAYERS ], g_vecVRight[ MAX_SPLITSCREEN_PLAYERS ], g_vecVUp[ MAX_SPLITSCREEN_PLAYERS ];
 static VMatrix g_matCamInverse[ MAX_SPLITSCREEN_PLAYERS ];
+*/
+static Vector g_vecRenderOrigin[1];
+static QAngle g_vecRenderAngles[1];
+static Vector g_vecPrevRenderOrigin[1];	// Last frame's render origin
+static QAngle g_vecPrevRenderAngles[1]; // Last frame's render angles
+static Vector g_vecVForward[1], g_vecVRight[1], g_vecVUp[1];
+static VMatrix g_matCamInverse[1];
 
 extern ConVar cl_forwardspeed;
 
@@ -172,7 +179,7 @@ CViewSetup &CViewRender::GetView(int nSlot /*= -1*/)
 	if ( nSlot == -1 )
 	{
 		ASSERT_LOCAL_PLAYER_RESOLVABLE();
-		return m_UserView[ GET_ACTIVE_SPLITSCREEN_SLOT() ];
+		return m_UserView[ 0 ];
 	}
 	return m_UserView[ nSlot ];
 }
@@ -183,7 +190,7 @@ const CViewSetup &CViewRender::GetView(int nSlot /*= -1*/) const
 	if ( nSlot == -1 )
 	{
 		ASSERT_LOCAL_PLAYER_RESOLVABLE();
-		return m_UserView[ GET_ACTIVE_SPLITSCREEN_SLOT() ];
+		return m_UserView[ 0 ];
 	}
 	return m_UserView[ nSlot ];
 }
@@ -300,7 +307,7 @@ void CViewRender::Init( void )
 	extern CMaterialReference g_material_WriteZ;
 	g_material_WriteZ.Init( "engine/writez", TEXTURE_GROUP_OTHER );
 
-	for ( int i = 0; i < MAX_SPLITSCREEN_PLAYERS ; ++i )
+	for ( int i = 0; i < 1 ; ++i )
 	{
 		g_vecRenderOrigin[ i ].Init();
 		g_vecRenderAngles[ i ].Init();
@@ -329,7 +336,7 @@ void CViewRender::LevelInit( void )
 	m_BuildWorldListsNumber = 0;
 	m_BuildRenderableListsNumber = 0;
 
-	for ( int i = 0 ; i < MAX_SPLITSCREEN_PLAYERS; ++i )
+	for ( int i = 0 ; i < 1; ++i )
 	{
 		m_FreezeParams[ i ].m_bTakeFreezeFrame = false;
 		m_FreezeParams[ i ].m_flFreezeFrameUntil = 0;
@@ -489,91 +496,58 @@ void CViewRender::DriftPitch (void)
 void CViewRender::OnRenderStart()
 {
 	VPROF_("CViewRender::OnRenderStart", 2, VPROF_BUDGETGROUP_OTHER_UNACCOUNTED, false, 0);
-	IterateRemoteSplitScreenViewSlots_Push( true );
-	FOR_EACH_VALID_SPLITSCREEN_PLAYER( hh )
+
+	SetUpView();
+
+	// Adjust mouse sensitivity based upon the current FOV
+	C_BasePlayer *player = C_BasePlayer::GetLocalPlayer();
+	if (player)
 	{
-		ACTIVE_SPLITSCREEN_PLAYER_GUARD_VGUI( hh );
+		default_fov.SetValue(player->m_iDefaultFOV);
 
-		// This will fill in one of the m_UserView[ hh ] slots
-		SetUpView();
+		//Update our FOV, including any zooms going on
+		int iDefaultFOV = default_fov.GetInt();
+		int	localFOV = player->GetFOV();
+		int min_fov = player->GetMinFOV();
 
-		// Adjust mouse sensitivity based upon the current FOV
-#if defined( CSTRIKE15 )
-		C_CSPlayer *player = C_CSPlayer::GetLocalCSPlayer();
-#else
-		C_BasePlayer *player = C_BasePlayer::GetLocalPlayer();
-#endif
-		if ( player )
+		// Don't let it go too low
+		localFOV = MAX(min_fov, localFOV);
+
+		GetHud().m_flFOVSensitivityAdjust = 1.0f;
+#ifndef _XBOX
+		if (GetHud().m_flMouseSensitivityFactor)
 		{
-			default_fov.SetValue( player->m_iDefaultFOV );
-
-			//Update our FOV, including any zooms going on
-			int iDefaultFOV = default_fov.GetInt();
-			int	localFOV	= player->GetFOV();
-			int min_fov		= player->GetMinFOV();
-			bool bZoomed = (  player->GetFOV() != player->GetDefaultFOV() );
-
-			// 'scoped' mode is handled by the ironsight system
-/*
-#if defined( CSTRIKE15 )
-			bool bScoped = player->m_bIsScoped;
-#else
-			bool bScoped = bZoomed;
+			GetHud().m_flMouseSensitivity = sensitivity.GetFloat() * GetHud().m_flMouseSensitivityFactor;
+		}
+		else
 #endif
-*/
-
-			// Don't let it go too low
-			localFOV = MAX( min_fov, localFOV );
-
-			GetHud().m_flFOVSensitivityAdjust = 1.0f;
-
-			if ( GetHud().m_flMouseSensitivityFactor )
+		{
+			// No override, don't use huge sensitivity
+			if (localFOV == iDefaultFOV)
 			{
-				GetHud().m_flMouseSensitivity = sensitivity.GetFloat() * GetHud().m_flMouseSensitivityFactor;
+#ifndef _XBOX
+				// reset to saved sensitivity
+				GetHud().m_flMouseSensitivity = 0;
+#endif
 			}
 			else
 			{
-				// No override, don't use huge sensitivity
-				if ( bZoomed == false /*&& bScoped == false*/ )
+				// Set a new sensitivity that is proportional to the change from the FOV default and scaled
+				//  by a separate compensating factor
+				if (iDefaultFOV == 0)
 				{
-					// reset to saved sensitivity
-					GetHud().m_flMouseSensitivity = 0;
+					Assert(0); // would divide by zero, something is broken with iDefatulFOV
+					iDefaultFOV = 1;
 				}
-				else
-				{  
-					// Set a new sensitivity that is proportional to the change from the FOV default and scaled
-					//  by a separate compensating factor
-					if ( iDefaultFOV == 0 )
-					{
-						Assert(0); // would divide by zero, something is broken with iDefatulFOV
-						iDefaultFOV = 1;
-					}
-					float zoomSensitivity = zoom_sensitivity_ratio_mouse.GetFloat();
-					if( input->ControllerModeActive() )
-					{
-						zoomSensitivity = zoom_sensitivity_ratio_joystick.GetFloat();
-					}
-
-					GetHud().m_flFOVSensitivityAdjust = 
-						((float)localFOV / (float)iDefaultFOV) * // linear fov downscale
-						zoomSensitivity; // sensitivity scale factor
-					GetHud().m_flMouseSensitivity = GetHud().m_flFOVSensitivityAdjust * sensitivity.GetFloat(); // regular sensitivity
-				}
+				GetHud().m_flFOVSensitivityAdjust =
+					((float)localFOV / (float)iDefaultFOV) * // linear fov downscale
+					zoom_sensitivity_ratio_mouse.GetFloat(); // sensitivity scale factor
+#ifndef _XBOX
+				GetHud().m_flMouseSensitivity = GetHud().m_flFOVSensitivityAdjust * sensitivity.GetFloat(); // regular sensitivity
+#endif
 			}
 		}
 	}
-
-	// Setup the frustum cache for this frame.
-	m_bAllowViewAccess = true;
-	FOR_EACH_VALID_SPLITSCREEN_PLAYER( iSlot )
-	{
-		const CViewSetup &view = GetView( iSlot );
-		FrustumCache()->Add( &view, iSlot );
-	}
-	FrustumCache()->SetUpdated();
-	m_bAllowViewAccess = false;
-
-	IterateRemoteSplitScreenViewSlots_Pop();
 }
 
 
@@ -593,12 +567,12 @@ const CViewSetup *CViewRender::GetViewSetup( void ) const
 const CViewSetup *CViewRender::GetPlayerViewSetup( int nSlot /*= -1*/ ) const
 {   
 	// NOTE:  This code path doesn't require m_bAllowViewAccess == true!!!
-	if ( nSlot == -1 )
-	{
-		ASSERT_LOCAL_PLAYER_RESOLVABLE();
-		return &m_UserView[ GET_ACTIVE_SPLITSCREEN_SLOT() ];
-	}
-	return &m_UserView[ nSlot ];
+	//if ( nSlot == -1 )
+	//{
+	//	ASSERT_LOCAL_PLAYER_RESOLVABLE();
+	//	return &m_UserView[ GET_ACTIVE_SPLITSCREEN_SLOT() ];
+	//}
+	return &m_UserView[ 0 ];
 }
 
 //-----------------------------------------------------------------------------
@@ -668,7 +642,7 @@ float CViewRender::GetZFar()
 void CViewRender::SetUpView()
 {
 	ASSERT_LOCAL_PLAYER_RESOLVABLE();
-	int nSlot = GET_ACTIVE_SPLITSCREEN_SLOT();
+	int nSlot = 0;
 
 	m_bAllowViewAccess = true;
 	VPROF("CViewRender::SetUpView");
@@ -699,10 +673,10 @@ void CViewRender::SetUpView()
 		bNoViewEnt = true;
 	}
 
-	if ( g_bEngineIsHLTV )
-	{
-		HLTVCamera()->CalcView( view.origin, view.angles, view.fov );
-	}
+	//if ( g_bEngineIsHLTV )
+	//{
+	//	HLTVCamera()->CalcView( view.origin, view.angles, view.fov );
+	//}
 #if defined( REPLAY_ENABLED )
 	else if ( engine->IsReplay() )
 	{
@@ -1065,20 +1039,20 @@ void CViewRender::Render( vrect_t *rect )
 	ToolFramework_AdjustEngineViewport( engineRect.x, engineRect.y, engineRect.width, engineRect.height );
 
 	IterateRemoteSplitScreenViewSlots_Push( true );
-	FOR_EACH_VALID_SPLITSCREEN_PLAYER( hh )
-	{
-		ACTIVE_SPLITSCREEN_PLAYER_GUARD_VGUI( hh );
+	//FOR_EACH_VALID_SPLITSCREEN_PLAYER( hh )
+	//{
+		//ACTIVE_SPLITSCREEN_PLAYER_GUARD_VGUI( hh );
 
-		CViewSetup &view = GetView( hh );
+		CViewSetup &view = GetView( 0 );
 
 		float engineAspectRatio = engine->GetScreenAspectRatio( view.width, view.height );
 
-		Assert( s_DbgSetupOrigin[ hh ] == view.origin );
-		Assert( s_DbgSetupAngles[ hh ] == view.angles );
+		Assert( s_DbgSetupOrigin[ 0 ] == view.origin );
+		Assert( s_DbgSetupAngles[ 0 ] == view.angles );
 
 		// Using this API gives us a chance to "inset" the 3d views as needed for splitscreen
 		int insetX, insetY;
-		VGui_GetEngineRenderBounds( hh, view.x, view.y, view.width, view.height, insetX, insetY );
+		VGui_GetEngineRenderBounds( 0, view.x, view.y, view.width, view.height, insetX, insetY );
 			
 		float aspectRatio = engineAspectRatio * 0.75f;	 // / (4/3)
 		view.fov = ScaleFOVByWidthRatio( view.fov,  aspectRatio );
@@ -1148,17 +1122,17 @@ void CViewRender::Render( vrect_t *rect )
 		}
 
 		// This is the hook for per-split screen player views
-		C_BaseEntity::PreRenderEntities( hh );
+		C_BaseEntity::PreRenderEntities( 0 );
 
-		if ( ( ss_debug_draw_player.GetInt() < 0 ) || ( hh == ss_debug_draw_player.GetInt() ) )
+		if ( ( ss_debug_draw_player.GetInt() < 0 ) || ( 0 == ss_debug_draw_player.GetInt() ) )
 		{
 			CViewSetup hudViewSetup;
-			VGui_GetHudBounds( hh, hudViewSetup.x, hudViewSetup.y, hudViewSetup.width, hudViewSetup.height );
+			VGui_GetHudBounds( 0, hudViewSetup.x, hudViewSetup.y, hudViewSetup.width, hudViewSetup.height );
 			RenderView( view, hudViewSetup, nClearFlags, flags );
 		}
 
 		GetClientMode()->PostRender();
-	}
+	
 	IterateRemoteSplitScreenViewSlots_Pop();
 
 	engine->EngineStats_EndFrame();
@@ -1225,7 +1199,7 @@ void CViewRender::Render( vrect_t *rect )
 			render->VGui_Paint( PAINT_UIPANELS );
 			{
 				// The engine here is trying to access CurrentView() etc. which is bogus
-				ACTIVE_SPLITSCREEN_PLAYER_GUARD( 0 );
+				//ACTIVE_SPLITSCREEN_PLAYER_GUARD( 0 );
 				render->PopView( pRenderContext, GetFrustum() );
 			}
 			pRenderContext->Flush();
@@ -1256,7 +1230,7 @@ void CViewRender::Render( vrect_t *rect )
 
 static void GetPos( const CCommand &args, Vector &vecOrigin, QAngle &angles )
 {
-	int nSlot = GET_ACTIVE_SPLITSCREEN_SLOT();
+	int nSlot = 0;
 	vecOrigin = MainViewOrigin(nSlot);
 	angles = MainViewAngles(nSlot);
 	if ( ( args.ArgC() == 2 && atoi( args[1] ) == 2 ) || FStrEq( args[0], "getpos_exact" ) )

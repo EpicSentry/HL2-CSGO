@@ -183,7 +183,7 @@ protected:
 	uint32 m_nExperimentalEvents;
 
 	float m_flFreeCachedRagdollBonesTime; // time (when not replaying) to destroy cached-off ragdoll bones
-	CUtlHashtable< int, CachedRagdollBones_t* > m_mapCachedRagdollBones;
+//	CUtlHashtable< int, CachedRagdollBones_t* > m_mapCachedRagdollBones;
 };
 
 extern CHltvReplaySystem g_HltvReplaySystem;

@@ -2212,6 +2212,7 @@ void CHLClient::InvalidateMdlCache()
 //-----------------------------------------------------------------------------
 void CHLClient::View_Fade( ScreenFade_t *pSF )
 {
+	/*
 	if ( pSF != NULL )
 	{
 		FOR_EACH_VALID_SPLITSCREEN_PLAYER( hh )
@@ -2219,7 +2220,9 @@ void CHLClient::View_Fade( ScreenFade_t *pSF )
 			ACTIVE_SPLITSCREEN_PLAYER_GUARD( hh );
 			GetViewEffects()->Fade( *pSF );
 		}
-	}
+	}*/
+	if (pSF != NULL)
+		GetViewEffects()->Fade(*pSF);
 }
 
 // CPU level
@@ -2405,10 +2408,10 @@ void ConfigureCurrentSystemLevel()
 #endif
 
 	bool bVGUIIsSplitscreen = VGui_IsSplitScreen();
-	if ( cl_disable_splitscreen_cpu_level_cfgs_in_pip.GetBool() && bVGUIIsSplitscreen && VGui_IsSplitScreenPIP() )
-	{
+	//if ( cl_disable_splitscreen_cpu_level_cfgs_in_pip.GetBool() && bVGUIIsSplitscreen && VGui_IsSplitScreenPIP() )
+	//{
 		bVGUIIsSplitscreen = false;
-	}
+	//}
 	
 	UpdateSystemLevel( nCPULevel, nGPULevel, nMemLevel, nGPUMemLevel, bVGUIIsSplitscreen, szModName );
 
@@ -2443,11 +2446,11 @@ void CHLClient::LevelInitPreEntity( char const* pMapName )
 
 	input->LevelInit();
 
-	for ( int hh = 0; hh < MAX_SPLITSCREEN_PLAYERS; ++hh )
-	{
-		ACTIVE_SPLITSCREEN_PLAYER_GUARD( hh );
+	//for ( int hh = 0; hh < MAX_SPLITSCREEN_PLAYERS; ++hh )
+	//{
+	//	ACTIVE_SPLITSCREEN_PLAYER_GUARD( hh );
 		GetViewEffects()->LevelInit();
-	}
+	//}
 
 	// Tell mode manager that map is changing
 	modemanager->LevelInit( pMapName );
@@ -2464,11 +2467,11 @@ void CHLClient::LevelInitPreEntity( char const* pMapName )
 	clienteffects->Flush();
 	view->LevelInit();
 	tempents->LevelInit();
-	for ( int hh = 0; hh < MAX_SPLITSCREEN_PLAYERS; ++hh )
-	{
-		ACTIVE_SPLITSCREEN_PLAYER_GUARD( hh );
+	//for ( int hh = 0; hh < MAX_SPLITSCREEN_PLAYERS; ++hh )
+	//{
+	//	ACTIVE_SPLITSCREEN_PLAYER_GUARD( hh );
 		ResetToneMapping(1.0);
-	}
+	//}
 
 	IGameSystem::LevelInitPreEntityAllSystems(pMapName);
 
@@ -2509,9 +2512,9 @@ void CHLClient::LevelInitPreEntity( char const* pMapName )
 	// Check low violence settings for this map
 	g_RagdollLVManager.SetLowViolence( pMapName );
 
-	for ( int hh = 0; hh < MAX_SPLITSCREEN_PLAYERS; ++hh )
-	{
-		ACTIVE_SPLITSCREEN_PLAYER_GUARD( hh );
+	//for ( int hh = 0; hh < MAX_SPLITSCREEN_PLAYERS; ++hh )
+	//{
+		//ACTIVE_SPLITSCREEN_PLAYER_GUARD( hh );
 
 		engine->TickProgressBar();
 
@@ -2521,7 +2524,7 @@ void CHLClient::LevelInitPreEntity( char const* pMapName )
 		{
 			GetViewPortInterface()->LevelInit();
 		}
-	}
+	//}
 
 #if defined( REPLAY_ENABLED )
 	// Initialize replay ragdoll recorder
@@ -2536,6 +2539,7 @@ void CHLClient::LevelInitPreEntity( char const* pMapName )
 //-----------------------------------------------------------------------------
 // Purpose: Per level init
 //-----------------------------------------------------------------------------
+/*
 void CHLClient::LevelInitPostEntity( )
 {
 	ABS_QUERY_GUARD( true );
@@ -2551,6 +2555,12 @@ void CHLClient::LevelInitPostEntity( )
 	}
 
 	//g_HltvReplaySystem.OnLevelInit();
+}*/
+void CHLClient::LevelInitPostEntity()
+{
+	IGameSystem::LevelInitPostEntityAllSystems();
+	C_PhysPropClientside::RecreateAll();
+	GetCenterPrint()->Clear();
 }
 
 //-----------------------------------------------------------------------------
@@ -2619,22 +2629,22 @@ void CHLClient::LevelShutdown( void )
 	beams->ClearBeams();
 	ParticleMgr()->RemoveAllEffects();
 	
-	for ( int hh = 0; hh < MAX_SPLITSCREEN_PLAYERS; ++hh )
-	{
-		StopAllRumbleEffects( hh );
-	}
+	//for ( int hh = 0; hh < MAX_SPLITSCREEN_PLAYERS; ++hh )
+	//{
+		StopAllRumbleEffects( /*hh*/0 );
+	//}
 
-	for ( int hh = 0; hh < MAX_SPLITSCREEN_PLAYERS; ++hh )
-	{
-		ACTIVE_SPLITSCREEN_PLAYER_GUARD( hh );
+	//for ( int hh = 0; hh < MAX_SPLITSCREEN_PLAYERS; ++hh )
+	//{
+	//	ACTIVE_SPLITSCREEN_PLAYER_GUARD( hh );
 		GetHud().LevelShutdown();
-	}
+	//}
 
-	for ( int hh = 0; hh < MAX_SPLITSCREEN_PLAYERS; ++hh )
-	{
-		ACTIVE_SPLITSCREEN_PLAYER_GUARD( hh );
+	//for ( int hh = 0; hh < MAX_SPLITSCREEN_PLAYERS; ++hh )
+	//{
+	//	ACTIVE_SPLITSCREEN_PLAYER_GUARD( hh );
 		GetCenterPrint()->Clear();
-	}
+	//}
 
 	ClientVoiceMgr_LevelShutdown();
 
@@ -3217,11 +3227,11 @@ void OnRenderStart()
 
 	// Make sure the camera simulation happens before OnRenderStart, where it's used.
 	// NOTE: the only thing that happens in CAM_Think is thirdperson related code.
-	for ( int hh = 0; hh < MAX_SPLITSCREEN_PLAYERS; ++hh )
-	{
-		ACTIVE_SPLITSCREEN_PLAYER_GUARD( hh );
+	//for ( int hh = 0; hh < MAX_SPLITSCREEN_PLAYERS; ++hh )
+	//{
+	//	ACTIVE_SPLITSCREEN_PLAYER_GUARD( hh );
 		input->CAM_Think();
-	}
+	//}
 
 	C_BaseAnimating::PopBoneAccess( "OnRenderStart->CViewRender::SetUpView" ); // pops the (true, false) bone access set in OnRenderStart
 
@@ -3538,7 +3548,7 @@ void CHLClient::DispatchOnRestore()
 void CHLClient::WriteSaveGameScreenshot( const char *pFilename )
 {
 	// Single player doesn't support split screen yet!!!
-	ACTIVE_SPLITSCREEN_PLAYER_GUARD( 0 );
+	//ACTIVE_SPLITSCREEN_PLAYER_GUARD( 0 );
 	view->WriteSaveGameScreenshot( pFilename );
 }
 
@@ -3918,11 +3928,11 @@ int CHLClient::GetSpectatorTarget( ClientDLLObserverMode_t* pObserverMode )
 
 void CHLClient::CenterStringOff()
 {
-	FOR_EACH_VALID_SPLITSCREEN_PLAYER( i )
-	{
-		ACTIVE_SPLITSCREEN_PLAYER_GUARD( i );
+	//FOR_EACH_VALID_SPLITSCREEN_PLAYER( i )
+	//{
+	//	ACTIVE_SPLITSCREEN_PLAYER_GUARD( i );
 		GetCenterPrint()->Clear();
-	}
+	//}
 
 }
 
@@ -4058,11 +4068,11 @@ void CHLClient::OnKeyBindingChanged( ButtonCode_t buttonCode, char const *pchKey
 
 void CHLClient::SetBlurFade( float scale )
 {
-	FOR_EACH_VALID_SPLITSCREEN_PLAYER( hh )
-	{
-		ACTIVE_SPLITSCREEN_PLAYER_GUARD( hh );
+	//FOR_EACH_VALID_SPLITSCREEN_PLAYER( hh )
+	//{
+	//	ACTIVE_SPLITSCREEN_PLAYER_GUARD( hh );
 		GetClientMode()->SetBlurFade( scale );
-	}
+	//}
 }
 
 void CHLClient::ResetHudCloseCaption()
