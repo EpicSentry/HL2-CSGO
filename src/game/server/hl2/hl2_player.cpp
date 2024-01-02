@@ -30,7 +30,7 @@
 #include "effect_color_tables.h"
 #include "vphysics/player_controller.h"
 #include "player_pickup.h"
-#include "weapon_physcannon.h"
+//#include "weapon_physcannon.h"
 #include "script_intro.h"
 #include "effect_dispatch_data.h"
 #include "te_effect_dispatch.h" 
@@ -1398,7 +1398,7 @@ bool CHL2_Player::CommanderFindGoal( commandgoal_t *pGoal )
 	
 	//---------------------------------
 	// MASK_SHOT on purpose! So that you don't hit the invisible hulls of the NPCs.
-	CTraceFilterSkipTwoEntities filter( this, PhysCannonGetHeldEntity( GetActiveWeapon() ), COLLISION_GROUP_INTERACTIVE_DEBRIS );
+	CTraceFilterSkipTwoEntities filter( this, GetActiveWeapon(), COLLISION_GROUP_INTERACTIVE_DEBRIS );
 
 	UTIL_TraceLine( EyePosition(), EyePosition() + forward * MAX_COORD_RANGE, MASK_SHOT, &filter, &tr );
 
@@ -3105,11 +3105,11 @@ bool CHL2_Player::Weapon_CanSwitchTo( CBaseCombatWeapon *pWeapon )
 
 	if ( GetActiveWeapon() )
 	{
-		if ( PhysCannonGetHeldEntity( GetActiveWeapon() ) == pWeapon && 
+		/*if ( PhysCannonGetHeldEntity( GetActiveWeapon() ) == pWeapon && 
 			Weapon_OwnsThisType( pWeapon->GetClassname(), pWeapon->GetSubType()) )
 		{
 			return true;
-		}
+		}*/
 
 		if ( !GetActiveWeapon()->CanHolster() )
 			return false;
@@ -3134,7 +3134,7 @@ void CHL2_Player::PickupObject( CBaseEntity *pObject, bool bLimitMassAndSize )
 	if ( pObject->HasNPCsOnIt() )
 		return;
 
-	PlayerPickupObject( this, pObject );
+	//PlayerPickupObject( this, pObject );
 }
 
 //-----------------------------------------------------------------------------
@@ -3143,17 +3143,19 @@ void CHL2_Player::PickupObject( CBaseEntity *pObject, bool bLimitMassAndSize )
 //-----------------------------------------------------------------------------
 bool CHL2_Player::IsHoldingEntity( CBaseEntity *pEnt )
 {
-	return PlayerPickupControllerIsHoldingEntity( m_hUseEntity, pEnt );
+	//return PlayerPickupControllerIsHoldingEntity( m_hUseEntity, pEnt );
+	return false;
 }
 
 float CHL2_Player::GetHeldObjectMass( IPhysicsObject *pHeldObject )
 {
-	float mass = PlayerPickupGetHeldObjectMass( m_hUseEntity, pHeldObject );
-	if ( mass == 0.0f )
-	{
-		mass = PhysCannonGetHeldObjectMass( GetActiveWeapon(), pHeldObject );
-	}
-	return mass;
+	//float mass = PlayerPickupGetHeldObjectMass( m_hUseEntity, pHeldObject );
+	//if ( mass == 0.0f )
+	//{
+	//	mass = PhysCannonGetHeldObjectMass( GetActiveWeapon(), pHeldObject );
+	//}
+	//return mass;
+	return 0.0f;
 }
 
 //-----------------------------------------------------------------------------
@@ -3183,7 +3185,7 @@ void CHL2_Player::ForceDropOfCarriedPhysObjects( CBaseEntity *pOnlyIfHoldingThis
 	ClearUseEntity();
 
 	// Then force the physcannon to drop anything it's holding, if it's our active weapon
-	PhysCannonForceDrop( GetActiveWeapon(), NULL );
+	//PhysCannonForceDrop( GetActiveWeapon(), NULL );
 }
 
 void CHL2_Player::InputForceDropPhysObjects( inputdata_t &data )

@@ -40,7 +40,9 @@
 #endif
 
 #ifdef HL2_DLL
+#ifdef PHYSCANNON
 #include "weapon_physcannon.h"
+#endif
 #endif
 
 // memdbgon must be the last include file in a .cpp file!!!
@@ -1088,8 +1090,10 @@ void CC_Player_PhysSwap( void )
 
 			if ( !Q_stricmp( strWeaponName, "weapon_physcannon" ) )
 			{
+#ifdef PHYSCANNON
 				PhysCannonForceDrop( pWeapon, NULL );
 				pPlayer->SelectLastItem();
+#endif
 			}
 			else
 			{

@@ -1388,9 +1388,13 @@ protected:
 bool CWeaponPhysCannon::m_sbStaticPoseParamsLoaded = false;
 int CWeaponPhysCannon::m_poseActive = 0;
 
+/*
 IMPLEMENT_SERVERCLASS_ST(CWeaponPhysCannon, DT_WeaponPhysCannon)
 	SendPropBool( SENDINFO( m_bIsCurrentlyUpgrading ) ),
 	SendPropFloat( SENDINFO( m_flTimeForceView ) ),
+END_SEND_TABLE()*/
+
+IMPLEMENT_SERVERCLASS_ST(CWeaponPhysCannon, DT_WeaponPhysCannon)
 END_SEND_TABLE()
 
 LINK_ENTITY_TO_CLASS( weapon_physcannon, CWeaponPhysCannon );

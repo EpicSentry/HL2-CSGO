@@ -38,7 +38,7 @@ const char *GetMassEquivalent(float flMass);
 //Debug visualization
 ConVar	g_debug_turret( "g_debug_turret", "0" );
 
-extern ConVar physcannon_tracelength;
+//extern ConVar physcannon_tracelength;
 
 // Interactions
 int	g_interactionTurretStillStanding	= 0;
@@ -567,6 +567,7 @@ bool CNPC_FloorTurret::HasPreferredCarryAnglesForPlayer( CBasePlayer *pPlayer )
 //-----------------------------------------------------------------------------
 bool CNPC_FloorTurret::OnAttemptPhysGunPickup( CBasePlayer *pPhysGunUser, PhysGunPickup_t reason )
 {
+#ifdef PHYSCANNON
 	// Prevent players pulling enemy turrets from afar if they're in front of the turret
 	if ( reason == PICKED_UP_BY_CANNON && IRelationType( pPhysGunUser ) == D_HT )
 	{
@@ -583,6 +584,7 @@ bool CNPC_FloorTurret::OnAttemptPhysGunPickup( CBasePlayer *pPhysGunUser, PhysGu
 				return false;
 		}
 	}
+#endif
 
 	return true;
 }

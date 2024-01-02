@@ -506,7 +506,8 @@ void CNPC_Manhack::TakeDamageFromPhysicsImpact( int index, gamevcollisionevent_t
 	CBaseEntity *pHitEntity = pEvent->pEntities[!index];
 
 	// NOTE: Bypass the normal impact energy scale here.
-	float flDamageScale = PlayerHasMegaPhysCannon() ? 10.0f : 1.0f;
+	//float flDamageScale = PlayerHasMegaPhysCannon() ? 10.0f : 1.0f;
+	float flDamageScale = 1.0f;
 	int damageType = 0;
 	float damage = CalculateDefaultPhysicsDamage( index, pEvent, flDamageScale, true, damageType );
 	if ( damage == 0 )

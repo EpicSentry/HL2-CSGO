@@ -467,7 +467,8 @@ void CNPC_BaseScanner::TakeDamageFromPhysicsImpact( int index, gamevcollisioneve
 	CBaseEntity *pHitEntity = pEvent->pEntities[!index];
 
 	// NOTE: Augment the normal impact energy scale here.
-	float flDamageScale = PlayerHasMegaPhysCannon() ? 10.0f : 5.0f;
+	//float flDamageScale = PlayerHasMegaPhysCannon() ? 10.0f : 5.0f;
+	float flDamageScale = 5.0f;
 
 	// Scale by the mapmaker's energyscale
 	flDamageScale *= m_impactEnergyScale;

@@ -436,7 +436,7 @@ bool CHLTVClientState::SVCMsg_ClassInfo( const CSVCMsg_ClassInfo& msg )
 #endif
 	if ( !RecvTable_CreateDecoders( serverGameDLL->GetStandardSendProxies(), bAllowMismatches ) ) // create receive table decoders
 	{
-		Host_EndGame( true, "CL_ParseClassInfo_EndClasses: CreateDecoders failed.\n" );
+	//	Host_EndGame( true, "CL_ParseClassInfo_EndClasses: CreateDecoders failed.\n" );
 		return false;
 	}
 

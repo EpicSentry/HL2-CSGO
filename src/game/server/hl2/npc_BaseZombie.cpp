@@ -44,7 +44,7 @@
 #include "engine/IEngineSound.h"
 #include "props.h"
 #include "hl2_gamerules.h"
-#include "weapon_physcannon.h"
+//#include "weapon_physcannon.h"
 #include "ammodef.h"
 #include "vehicle_base.h"
  
@@ -543,20 +543,20 @@ int CNPC_BaseZombie::MeleeAttack1Conditions ( float flDot, float flDist )
 				Assert( pPlayer != NULL );
 
 				// Is the player carrying something?
-				CBaseEntity *pObject = GetPlayerHeldEntity(pPlayer);
+				//CBaseEntity *pObject = GetPlayerHeldEntity(pPlayer);
 
-				if( !pObject )
-				{
-					pObject = PhysCannonGetHeldEntity( pPlayer->GetActiveWeapon() );
-				}
+				//if( !pObject )
+				//{
+				//	pObject = PhysCannonGetHeldEntity( pPlayer->GetActiveWeapon() );
+				//}
 
-				if( pObject )
-				{
-					float flDist = pObject->WorldSpaceCenter().DistTo( WorldSpaceCenter() );
-
-					if( flDist <= GetClawAttackRange() )
-						return COND_CAN_MELEE_ATTACK1;
-				}
+				//if( pObject )
+				//{
+				//	float flDist = pObject->WorldSpaceCenter().DistTo( WorldSpaceCenter() );
+//
+//					if( flDist <= GetClawAttackRange() )
+//						return COND_CAN_MELEE_ATTACK1;
+//				}
 			}
 #endif
 		}

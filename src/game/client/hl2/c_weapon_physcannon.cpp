@@ -18,8 +18,8 @@ class C_WeaponPhysCannon: public C_BaseHLCombatWeapon
 public:
 	C_WeaponPhysCannon( void );
 
-	DECLARE_CLIENTCLASS();
-	DECLARE_PREDICTABLE();
+	//DECLARE_CLIENTCLASS();
+	//DECLARE_PREDICTABLE();
 
 	virtual void OnDataChanged( DataUpdateType_t updateType );
 	virtual int DrawModel( int flags );
@@ -42,9 +42,11 @@ private:
 };
 //STUB_WEAPON_CLASS_IMPLEMENT( weapon_physcannon, C_WeaponPhysCannon ); TODO: revisit this
 
-IMPLEMENT_CLIENTCLASS_DT( C_WeaponPhysCannon, DT_WeaponPhysCannon, CWeaponPhysCannon )
-	RecvPropBool( RECVINFO( m_bIsCurrentlyUpgrading ) ),
-	RecvPropFloat( RECVINFO( m_flTimeForceView) ), 
+//IMPLEMENT_CLIENTCLASS_DT( C_WeaponPhysCannon, DT_WeaponPhysCannon, CWeaponPhysCannon )
+//	RecvPropBool( RECVINFO( m_bIsCurrentlyUpgrading ) ),
+//	RecvPropFloat( RECVINFO( m_flTimeForceView) ), 
+//END_RECV_TABLE()
+IMPLEMENT_CLIENTCLASS_DT(C_WeaponPhysCannon, DT_WeaponPhysCannon, CWeaponPhysCannon)
 END_RECV_TABLE()
 
 //-----------------------------------------------------------------------------

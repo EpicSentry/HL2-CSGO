@@ -529,6 +529,7 @@ void VGui_PreRender()
 
 void VGui_PostRender()
 {
+	/*
 	int w, h;
 	CUtlVector< Panel * > list;
 //	VGui_GetPanelList( list );
@@ -541,6 +542,7 @@ void VGui_PostRender()
 
 		surface()->SetAbsPosForContext( i, x, y );
 	}
+	*/
 }
 
 //-----------------------------------------------------------------------------

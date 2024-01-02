@@ -12,7 +12,9 @@
 #include "ai_tacticalservices.h"
 #include "npc_manhack.h"
 #include "npc_metropolice.h"
+#ifdef STUNSTICK
 #include "weapon_stunstick.h"
+#endif
 #include "basegrenade_shared.h"
 #include "ai_route.h"
 #include "hl2_player.h"
@@ -2885,13 +2887,14 @@ void CNPC_MetroPolice::OnAnimEventShove( void )
 void CNPC_MetroPolice::OnAnimEventBatonOn( void )
 {
 #ifndef HL2MP
-
+#ifdef STUNSTICK
 	CWeaponStunStick *pStick = dynamic_cast<CWeaponStunStick *>(GetActiveWeapon());
 
 	if ( pStick )
 	{
 		pStick->SetStunState( true );
 	}
+#endif
 #endif
 
 }
@@ -2902,13 +2905,14 @@ void CNPC_MetroPolice::OnAnimEventBatonOn( void )
 void CNPC_MetroPolice::OnAnimEventBatonOff( void )
 {
 #ifndef HL2MP
-
+#ifdef STUNSTICK
 	CWeaponStunStick *pStick = dynamic_cast<CWeaponStunStick *>(GetActiveWeapon());
 	
 	if ( pStick )
 	{
 		pStick->SetStunState( false );
 	}
+#endif
 #endif
 }
 
@@ -5053,11 +5057,12 @@ bool CNPC_MetroPolice::HasBaton( void )
 bool CNPC_MetroPolice::BatonActive( void )
 {
 #ifndef HL2MP
-
+#ifdef STUNSTICK
 	CWeaponStunStick *pStick = dynamic_cast<CWeaponStunStick *>(GetActiveWeapon());
 
 	if ( pStick )
 		return pStick->GetStunState();
+#endif
 #endif
 
 	return false;

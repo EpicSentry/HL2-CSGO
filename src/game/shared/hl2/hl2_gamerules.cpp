@@ -1413,7 +1413,7 @@ ConVar  alyx_darkness_force( "alyx_darkness_force", "0", FCVAR_CHEAT | FCVAR_REP
 				{
 					CBaseCombatWeapon *pCannon = assert_cast <CBaseCombatWeapon*>(pWeapon);
 
-					if( pCannon )
+/*					if( pCannon )
 					{
 						if( PhysCannonAccountableForObject(pCannon, info.GetInflictor() ) )
 						{
@@ -1423,7 +1423,7 @@ ConVar  alyx_darkness_force( "alyx_darkness_force", "0", FCVAR_CHEAT | FCVAR_REP
 
   							return false;
 						}
-					}
+					}*/
 				}
 			}
 		}

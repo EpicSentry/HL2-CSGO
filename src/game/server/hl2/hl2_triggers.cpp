@@ -39,7 +39,9 @@ public:
 private:
 
 	COutputEvent	m_OnDissolveWeapon;
+#ifdef PHYSCANNON
 	COutputEvent	m_OnChargingPhyscannon;
+#endif
 
 	CUtlVector< CHandle<CBaseCombatWeapon> >	m_pWeapons;
 	CUtlVector< CHandle<CBaseEntity> >			m_pConduitPoints;
@@ -57,7 +59,9 @@ BEGIN_DATADESC( CTriggerWeaponDissolve )
 	DEFINE_FIELD( m_spriteTexture,		FIELD_MODELINDEX ),
 
 	DEFINE_OUTPUT( m_OnDissolveWeapon, "OnDissolveWeapon" ),
+#ifdef PHYSCANNON
 	DEFINE_OUTPUT( m_OnChargingPhyscannon, "OnChargingPhyscannon" ),
+#endif
 
 	DEFINE_INPUTFUNC( FIELD_VOID, "StopSound", InputStopSound ),
 
@@ -244,9 +248,10 @@ void CTriggerWeaponDissolve::DissolveThink( void )
 			{
 				CreateBeam( m_pConduitPoints[i]->GetAbsOrigin(), pWeapon, 4.0f );
 			}
-
+#ifdef PHYSCANNON
 			PhysCannonBeginUpgrade( pWeapon );
 			m_OnChargingPhyscannon.FireOutput( this, this );
+#endif
 
 			EmitSound( "WeaponDissolve.Beam" );
 
@@ -458,11 +463,13 @@ void CTriggerPhysicsTrap::Touch( CBaseEntity *pOther )
 
 #ifdef HL2_DLL
 	// HACK: Upgrade the physcannon
+#ifdef PHYSCANNON
 	if ( FClassnameIs( pAnim, "weapon_physcannon" ) )
 	{
 		PhysCannonBeginUpgrade( pAnim );
 		return;
 	}
+#endif
 #endif
 
 	pAnim->Dissolve( NULL, gpGlobals->curtime, false, m_nDissolveType );

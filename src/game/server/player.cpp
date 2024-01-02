@@ -84,7 +84,7 @@
 
 #ifdef HL2_DLL
 #include "combine_mine.h"
-#include "weapon_physcannon.h"
+//#include "weapon_physcannon.h"
 #endif
 
 #ifdef CSTRIKE_DLL
@@ -6929,8 +6929,8 @@ bool CBasePlayer::BumpWeapon( CBaseCombatWeapon *pWeapon )
 			}
 
 			// Always switch to a newly-picked up weapon
-			if ( !PlayerHasMegaPhysCannon() )
-			{
+			//if ( !PlayerHasMegaPhysCannon() )
+			//{
 				// If it uses clips, load it full. (this is the first time you've picked up this type of weapon)
 				if ( pWeapon->UsesClipsForAmmo1() )
 				{
@@ -6938,7 +6938,7 @@ bool CBasePlayer::BumpWeapon( CBaseCombatWeapon *pWeapon )
 				}
 
 				Weapon_Switch( pWeapon );
-			}
+			//}
 #endif
 		}
 		return true;
@@ -7655,7 +7655,7 @@ void CBasePlayer::Weapon_Equip( CBaseCombatWeapon *pWeapon )
 	bool bShouldSwitch = g_pGameRules->FShouldSwitchWeapon( this, pWeapon );
 
 #ifdef HL2_DLL
-	if ( bShouldSwitch == false && PhysCannonGetHeldEntity( GetActiveWeapon() ) == pWeapon && 
+	if ( bShouldSwitch == false && /*PhysCannonGetHeldEntity( */GetActiveWeapon()  == pWeapon && 
 		 Weapon_OwnsThisType( pWeapon->GetClassname(), pWeapon->GetSubType()) )
 	{
 		bShouldSwitch = true;

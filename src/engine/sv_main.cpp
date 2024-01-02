@@ -2701,6 +2701,7 @@ bool SV_ActivateServer()
             serverGameDLL->GameServerSteamAPIActivated( true );
         }
     }
+	/*
 
 	// HLTV setup
 	for ( int nHltvServerIndex = 0; nHltvServerIndex < HLTV_SERVER_MAX_COUNT; ++nHltvServerIndex )
@@ -2760,7 +2761,7 @@ bool SV_ActivateServer()
         if ( Steam3Server().SteamGameServer() )
             Steam3Server().SteamGameServer()->ForceHeartbeat();
 	}
-	#endif
+	#endif*/
 
 //	if ( serverGameDLL && Steam3Server().GetGSSteamID().IsValid() )
 //		serverGameDLL->UpdateGCInformation();

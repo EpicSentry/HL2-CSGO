@@ -281,7 +281,7 @@ void CNPC_CombineS::OnListened()
 void CNPC_CombineS::Event_Killed( const CTakeDamageInfo &info )
 {
 	// Don't bother if we've been told not to, or the player has a megaphyscannon
-	if ( combine_spawn_health.GetBool() == false || PlayerHasMegaPhysCannon() )
+	if ( combine_spawn_health.GetBool() == false || /*PlayerHasMegaPhysCannon()*/ false )
 	{
 		BaseClass::Event_Killed( info );
 		return;

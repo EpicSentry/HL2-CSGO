@@ -325,6 +325,7 @@ CHostState::CHostState()
 
 void CHostState::Init()
 {
+	/*
 	// This can occur if user pressed close button during opening cinematic
 	if ( m_nextState != HS_SHUTDOWN )
 	{
@@ -337,6 +338,10 @@ void CHostState::Init()
 			SetState( HS_RUN, true );
 		}
 	}
+	*/
+	SetState( HS_RUN, true );
+	m_currentState = HS_RUN;
+	m_nextState = HS_RUN;
 	m_bLetToolsOverrideLoadGameEnts = false;
 	m_activeGame = false;
 	m_levelName[0] = 0;
@@ -574,45 +579,53 @@ static bool IsClientConnected()
 static bool s_bFirstRunFrame = true;
 
 
-void CHostState::State_Run( float frameTime )
+void CHostState::State_Run(float frameTime)
 {
-	//materials->OnDebugEvent( "CHostState::State_Run" );
-	if ( m_flShortFrameTime > 0 )
+	static bool s_bFirstRunFrame = true;
+
+	if (m_flShortFrameTime > 0)
 	{
-		if ( IsClientActive() )
+		if (IsClientActive())
 		{
-			m_flShortFrameTime = (m_flShortFrameTime > frameTime) ? (m_flShortFrameTime-frameTime) : 0;
+			m_flShortFrameTime = (m_flShortFrameTime > frameTime) ? (m_flShortFrameTime - frameTime) : 0;
 		}
 		// Only clamp time if client is in process of connecting or is already connected.
-		if ( IsClientConnected() )
+		if (IsClientConnected())
 		{
-			frameTime = MIN( frameTime, host_state.interval_per_tick );
+			frameTime = min(frameTime, host_state.interval_per_tick);
 		}
 	}
-	int nTimerWait = 15;
-	if ( s_bFirstRunFrame )									// the first frame can take a while especially during fork startup
+
+	// Nice big timeout to play it safe while still ensuring that we don't get stuck in
+	// infinite loops.
+	int nTimerWaitSeconds = 60;
+	if (s_bFirstRunFrame)
 	{
+		// The first frame can take a while especially during fork startup.
 		s_bFirstRunFrame = false;
-		nTimerWait *= 2;
+		nTimerWaitSeconds *= 2;
 	}
-	if ( sv.IsDedicated() )
-		BeginWatchdogTimer( nTimerWait );
-	Host_RunFrame( frameTime );								// 5 seconds allowed unless map load
-	if ( sv.IsDedicated() )
-		EndWatchdogTimer();
+	if (sv.IsDedicated())
+	{
+		//Plat_BeginWatchdogTimer(nTimerWaitSeconds);
+	}
 
-	g_HostState.SetNextState( HS_CHANGE_LEVEL_MP );
-	g_HostState.m_bWorkshopMapDownloadPending = false;
+	Host_RunFrame(frameTime);
 
-	switch( m_nextState )
+	if (sv.IsDedicated())
+	{
+		//Plat_EndWatchdogTimer();
+	}
+
+	switch (m_nextState)
 	{
 	case HS_RUN:
 		break;
 
 	case HS_LOAD_GAME:
 	case HS_NEW_GAME:
-#if !defined( DEDICATED )
-		SCR_BeginLoadingPlaque( m_levelName );
+#if !defined( SWDS )
+		SCR_BeginLoadingPlaque();
 #endif
 		// FALL THROUGH INTENTIONALLY TO SHUTDOWN
 
@@ -623,16 +636,16 @@ void CHostState::State_Run( float frameTime )
 		// This is done here instead of pathfinding through a state transition graph.
 		// That would be equivalent as the only way to get from HS_RUN to HS_LOAD_GAME is through HS_GAME_SHUTDOWN.
 	case HS_GAME_SHUTDOWN:
-		SetState( HS_GAME_SHUTDOWN, false );
+		SetState(HS_GAME_SHUTDOWN, false);
 		break;
 
 	case HS_CHANGE_LEVEL_MP:
 	case HS_CHANGE_LEVEL_SP:
-		SetState( m_nextState, true );
+		SetState(m_nextState, true);
 		break;
 
 	default:
-		SetState( HS_RUN, true );
+		SetState(HS_RUN, true);
 		break;
 	}
 }

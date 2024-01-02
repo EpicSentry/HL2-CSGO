@@ -430,7 +430,8 @@ bool CClientState::SVCMsg_ClassInfo( const CSVCMsg_ClassInfo& msg )
 		CBaseClientState::SVCMsg_ClassInfo( msg );
 	}
 	
-	bool bAllowMismatches = ( g_pClientDemoPlayer && g_pClientDemoPlayer->IsPlayingBack() );
+	//bool bAllowMismatches = ( g_pClientDemoPlayer && g_pClientDemoPlayer->IsPlayingBack() );
+	bool bAllowMismatches = true;
 	if ( !RecvTable_CreateDecoders( serverGameDLL->GetStandardSendProxies(), bAllowMismatches ) ) // create receive table decoders
 	{
 		Host_EndGame( true, "CL_ParseClassInfo_EndClasses: CreateDecoders failed.\n" );
