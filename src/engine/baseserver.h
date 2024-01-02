@@ -90,7 +90,7 @@ public: // IServer implementation
 	virtual	bool	GetPlayerInfo( int nClientIndex, player_info_t *pinfo );
 	virtual float	GetCPUUsage( void ) { return m_fCPUPercent; }
 		
-	virtual bool	IsActive(void) const { return ss_active;/*m_State >= ss_active;*/ }
+	virtual bool	IsActive(void) const { return m_State >= ss_active; }
 	virtual bool	IsLoading( void ) const { return m_State == ss_loading; }
 	virtual bool	IsDedicated( void ) const { return m_bIsDedicated; }
 	FORCEINLINE bool IsDedicatedForXbox( void ) const { return m_bIsDedicatedForXbox; }

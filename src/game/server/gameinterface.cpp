@@ -3656,6 +3656,7 @@ bool CServerGameClients::ClientReplayEvent( edict_t *pEdict, const ClientReplayE
 	if ( pPlayer )
 	{
 //		return pPlayer->StartHltvReplayEvent( params );
+		return 0.0f; //fix not all control paths return a value, this should be removed or made useful
 	}
 	else
 	{
@@ -3762,7 +3763,7 @@ int CServerGameClients::GetMaxHumanPlayers()
 	{
 		//return g_pGameRules->GetMaxHumanPlayers();
 	}
-	return -1;
+	return 32;
 }
 
 // The client has submitted a keyvalues command
