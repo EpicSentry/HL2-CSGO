@@ -104,12 +104,12 @@ public:
 
 	virtual int GetViewEntity( int nSlot )
 	{
-		if ( g_ClientDLL != nullptr )
-		{
-			const int nInEyeEntity = g_ClientDLL->GetInEyeEntity();
-			if (nInEyeEntity >= 0)
-				return nInEyeEntity;
-		}
+//		if ( g_ClientDLL != nullptr )
+//		{
+//			const int nInEyeEntity = g_ClientDLL->GetInEyeEntity();
+//			if (nInEyeEntity >= 0)
+//				return nInEyeEntity;
+//		}
 
 		return GetLocalClient( nSlot ).GetViewEntity();
 	}
