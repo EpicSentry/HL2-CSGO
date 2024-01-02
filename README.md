@@ -2,7 +2,8 @@
 
 This project is aimed to port HL2 to the leaked CSGO engine while keeping the benefits of the CSGO branch (such as the better lighting).<br>
 
-You can compile both client and server DLLs however you can't get in game (likely because of game DLL).
+### HL2GO doesn't actually work, see below as to why.
+You can compile both client and server DLLs and you can get in game, but you'll only see a black screen and nothing else. You can see a row of pixels verically along the left side of the window moving based on player activity, so something works at least. If anyone knows how to fix this that would be great.<br>
 
 Partially used code from https://github.com/SwagSoftware/Kisak-Strike (some econ stuff, weapon recoil).
 Forked from https://github.com/SourceSDK2013Ports/csgo-src.
