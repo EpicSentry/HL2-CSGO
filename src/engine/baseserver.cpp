@@ -3448,7 +3448,7 @@ CBaseClient *CBaseServer::CreateFakeClient(const char *name)
 	fakeclient->SetUserCVar( "cl_interp_ratio", "1.0" );
 	fakeclient->SetUserCVar( "cl_interp", "0.1" );
 	fakeclient->SetUserCVar( "cl_interpolate", "0" );
-	fakeclient->SetUserCVar( "cl_predict", "1" );
+	fakeclient->SetUserCVar( "cl_predict", "0" );
 	fakeclient->SetUserCVar( "cl_predictweapons", "1" );
 	fakeclient->SetUserCVar( "cl_lagcompensation", "1" );
 	fakeclient->SetUserCVar( "closecaption","0" );

@@ -2481,7 +2481,7 @@ void CHLClient::LevelInitPreEntity( char const* pMapName )
 
 	//[msmith] Portal 2 wanted to turn off prediction for local clients.
 	//         We want to keep it for CStrike15 (and probably other games) because of the noticable lag without it, particularly when firing a weapon.
-#if defined( PORTAL2 )
+#if defined( HL2_CLIENT_DLL )
 	
 	// don't do prediction if single player!
 	// don't set direct because of FCVAR_USERINFO

@@ -32,7 +32,8 @@
 #endif
 
 // This enables the l4d style of culling all cvars that are not marked FCVAR_RELEASE :
-#define CULL_ALL_CVARS_NOT_FCVAR_RELEASE
+//#define CULL_ALL_CVARS_NOT_FCVAR_RELEASE
+#define ALLOW_DEVELOPMENT_CVARS
 
 //-----------------------------------------------------------------------------
 // Statically constructed list of ConCommandBases, 

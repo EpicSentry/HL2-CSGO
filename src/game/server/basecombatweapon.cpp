@@ -139,10 +139,13 @@ void CBaseCombatWeapon::Operator_FrameUpdate( CBaseCombatCharacter *pOperator )
 	// if they're the same, which is the preferred behavior in general.
 	CStudioHdr *w_hdr = GetModelPtr();
 	CStudioHdr *v_hdr = vm->GetModelPtr();
-	if ( w_hdr->GetRenderHdr() != v_hdr->GetRenderHdr() )
+	if (w_hdr != nullptr)
 	{
-		// Animation events are passed back to the weapon's owner/operator
-		DispatchAnimEvents( pOperator );
+		if (w_hdr->GetRenderHdr() != v_hdr->GetRenderHdr())
+		{
+			// Animation events are passed back to the weapon's owner/operator
+			DispatchAnimEvents(pOperator);
+		}
 	}
 
 	// Update and dispatch the viewmodel events
