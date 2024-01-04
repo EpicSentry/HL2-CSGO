@@ -55,13 +55,13 @@ void Pickup_OnPhysGunPickup( CBaseEntity *pPickedUpObject, CBasePlayer *pPlayer,
 	}
 
 	// send phys gun pickup item event, but only in single player
-	if ( !g_pGameRules->IsMultiplayer() )
+	if (!g_pGameRules->IsMultiplayer())
 	{
-		IGameEvent *event = gameeventmanager->CreateEvent( "physgun_pickup" );
-		if ( event )
+		IGameEvent *event = gameeventmanager->CreateEvent("physgun_pickup");
+		if (event)
 		{
-			event->SetInt( "entindex", pPickedUpObject->entindex() );
-			gameeventmanager->FireEvent( event );
+			event->SetInt("entindex", pPickedUpObject->entindex());
+			gameeventmanager->FireEvent(event);
 		}
 	}
 }

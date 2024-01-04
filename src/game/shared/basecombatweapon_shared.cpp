@@ -603,76 +603,58 @@ void CBaseCombatWeapon::GiveDefaultAmmo( void )
 //-----------------------------------------------------------------------------
 // Purpose: Set mode to world model and start falling to the ground
 //-----------------------------------------------------------------------------
-void CBaseCombatWeapon::Spawn( void )
+void CBaseCombatWeapon::Spawn(void)
 {
 	Precache();
 
-	SetSolid( SOLID_BBOX );
+	BaseClass::Spawn();
+
+	SetSolid(SOLID_BBOX);
 	m_flNextEmptySoundTime = 0.0f;
 
 	// Weapons won't show up in trace calls if they are being carried...
-	RemoveEFlags( EFL_USE_PARTITION_WHEN_NOT_SOLID );
+	RemoveEFlags(EFL_USE_PARTITION_WHEN_NOT_SOLID);
 
 	m_iState = WEAPON_NOT_CARRIED;
-	SetGlobalFadeScale( 0.0f );
-
 	// Assume 
 	m_nViewModelIndex = 0;
 
-	m_iWeaponModule = MODULAR_BODYGROUPS_DEFAULT_NONE_SET;
-
 	GiveDefaultAmmo();
 
-	//VerifyAndSetContextSensitiveWeaponModel();
-
-#if !defined( CLIENT_DLL )
-	if ( GetWpnData().szAIAddOn[ 0 ] != '\0' )
+	if (GetWorldModel())
 	{
-		SetAIAddOn( AllocPooledString( GetWpnData().szAIAddOn ) );
+		SetModel(GetWorldModel());
 	}
 
-	if( IsGameConsole() )
+#if !defined( CLIENT_DLL )
+	if (IsX360())
 	{
-		AddEffects( EF_ITEM_BLINK );
+		AddEffects(EF_ITEM_BLINK);
 	}
 
 	FallInit();
-	SetCollisionGroup( COLLISION_GROUP_WEAPON );
+	SetCollisionGroup(COLLISION_GROUP_WEAPON);
 	m_takedamage = DAMAGE_EVENTS_ONLY;
 
-	SetBlocksLOS( false );
+	SetBlocksLOS(false);
 
 	// Default to non-removeable, because we don't want the
 	// game_weapon_manager entity to remove weapons that have
 	// been hand-placed by level designers. We only want to remove
 	// weapons that have been dropped by NPC's.
-	SetRemoveable( false );
-
-	//SetWeaponModules();
-	CreateWeaponWorldModel();
-
+	SetRemoveable(false);
 #endif
 
 	// Bloat the box for player pickup
-	CollisionProp()->UseTriggerBounds( true, 36 );
+	CollisionProp()->UseTriggerBounds(true, 36);
 
 	// Use more efficient bbox culling on the client. Otherwise, it'll setup bones for most
 	// characters even when they're not in the frustum.
-	AddEffects( EF_BONEMERGE_FASTCULL );
+	AddEffects(EF_BONEMERGE_FASTCULL);
 
 	m_iReloadHudHintCount = 0;
 	m_iAltFireHudHintCount = 0;
 	m_flHudHintMinDisplayTime = 0;
-	m_iReloadActivityIndex = ACT_VM_RELOAD;
-
-	m_iNumEmptyAttacks = 0;
-	m_iPrimaryReserveAmmoCount = 0;		// amount of reserve ammo. This used to be on the player ( m_iAmmo ) but we're moving it to the weapon.
-	m_iSecondaryReserveAmmoCount = 0;	// amount of reserve ammo. This used to be on the player ( m_iAmmo ) but we're moving it to the weapon.
-
-	#ifndef CLIENT_DLL
-	m_flLastTimeInAir = 0;
-	#endif
-
 }
 
 #ifndef CLIENT_DLL

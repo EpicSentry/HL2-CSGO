@@ -12,6 +12,10 @@
 #pragma once
 #endif
 
+//Experimental Physcannon and Stunstick implementations (this just allows the exclusive functions for these to exist)
+#define PHYSCANNON
+#define STUNSTICK
+
 // the command line param that tells the engine to use steam
 #define STEAM_PARM					"-steam"
 // the command line param to tell dedicated server to restart 

@@ -386,6 +386,9 @@ void PerformCustomEffects( const Vector &vecOrigin, trace_t &tr, const Vector &s
 //-----------------------------------------------------------------------------
 void PlayImpactSound( CBaseEntity *pEntity, trace_t &tr, Vector &vecServerOrigin, int nServerSurfaceProp )
 {
+	if (!pEntity)
+		return;
+
 	VPROF( "PlayImpactSound" );
 	surfacedata_t *pdata;
 	Vector vecOrigin;

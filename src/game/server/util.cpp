@@ -1403,7 +1403,8 @@ static void SetMinMaxSize (CBaseEntity *pEnt, const Vector& mins, const Vector& 
 	{
 		if ( mins[i] > maxs[i] )
 		{
-			Error( "%s: backwards mins/maxs", ( pEnt ) ? pEnt->GetDebugName() : "<NULL>" );
+			//Error( "%s: backwards mins/maxs", ( pEnt ) ? pEnt->GetDebugName() : "<NULL>" ); HACK!
+			Msg("%s: backwards mins/maxs", (pEnt) ? pEnt->GetDebugName() : "<NULL>");
 		}
 	}
 

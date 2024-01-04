@@ -38,7 +38,7 @@ const char *GetMassEquivalent(float flMass);
 //Debug visualization
 ConVar	g_debug_turret( "g_debug_turret", "0" );
 
-//extern ConVar physcannon_tracelength;
+extern ConVar physcannon_tracelength;
 
 // Interactions
 int	g_interactionTurretStillStanding	= 0;

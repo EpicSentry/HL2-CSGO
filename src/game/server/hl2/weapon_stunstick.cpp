@@ -22,12 +22,9 @@ extern ConVar metropolice_move_and_melee;
 //-----------------------------------------------------------------------------
 // CWeaponStunStick
 //-----------------------------------------------------------------------------
-/*
-IMPLEMENT_SERVERCLASS_ST(CWeaponStunStick, DT_WeaponStunStick)
-	SendPropInt( SENDINFO( m_bActive ), 1, SPROP_UNSIGNED ),
-END_SEND_TABLE()*/
 
 IMPLEMENT_SERVERCLASS_ST(CWeaponStunStick, DT_WeaponStunStick)
+	SendPropInt( SENDINFO( m_bActive ), 1, SPROP_UNSIGNED ),
 END_SEND_TABLE()
 
 #ifndef HL2MP

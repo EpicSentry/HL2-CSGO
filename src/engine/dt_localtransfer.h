@@ -1,4 +1,4 @@
-//========= Copyright © 1996-2005, Valve Corporation, All rights reserved. ============//
+ï»¿//========= Copyright ï¿½ 1996-2005, Valve Corporation, All rights reserved. ============//
 //
 // Purpose: 
 //
@@ -28,33 +28,33 @@ class CBaseEdict;
 
 // This sets up the ability to copy an entity with the specified SendTable directly
 // into an entity with the specified RecvTable, thus avoiding compression overhead.
-void LocalTransfer_InitFastCopy( 
-	const SendTable *pSendTable, 
+void LocalTransfer_InitFastCopy(
+	const SendTable *pSendTable,
 	const CStandardSendProxies *pSendProxies,
 	RecvTable *pRecvTable,
 	const CStandardRecvProxies *pRecvProxies,
 	int &nSlowCopyProps,		// These are incremented to tell you how many fast copy props it found.
 	int &nFastCopyProps
-	);
+);
 
 // Transfer the data from pSrcEnt to pDestEnt using the specified SendTable and RecvTable.
-void LocalTransfer_TransferEntity( 
-	const CBaseEdict *pEdict, 
-	const SendTable *pSendTable, 
-	const void *pSrcEnt, 
-	RecvTable *pRecvTable, 
+void LocalTransfer_TransferEntity(
+	const CBaseEdict *pEdict,
+	const SendTable *pSendTable,
+	const void *pSrcEnt,
+	RecvTable *pRecvTable,
 	void *pDestEnt,
 	bool bNewlyCreated,
 	bool bJustEnteredPVS,
-	int objectID );
+	int objectID);
 
 // This returns at most MAX_PROP_OFFSET_TO_INDICES_RESULTS results into pOut, so make sure it has at least that much room.
-int MapPropOffsetsToIndices( 
+int MapPropOffsetsToIndices(
 	const CBaseEdict *pEdict,
-	CSendTablePrecalc *pPrecalc, 
+	CSendTablePrecalc *pPrecalc,
 	const unsigned short *pOffsets,
 	unsigned short nOffsets,
-	unsigned short *pOut );
+	unsigned short *pOut);
 
 
 // Call this after packing all the entities in a frame.

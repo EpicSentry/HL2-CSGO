@@ -558,7 +558,8 @@ public:
 	void					ItemPreFrame( void );
 	virtual void			ItemPostFrame( void );
 
-	virtual CBaseEntity		*GiveNamedItem( const char *pchName, int iSubType = 0, CEconItemView *pScriptItem = NULL, bool bForce = false );
+	//virtual CBaseEntity		*GiveNamedItem( const char *pchName, int iSubType = 0,/* CEconItemView *pScriptItem = NULL, */bool bForce = false );
+	virtual CBaseEntity        *GiveNamedItem(const char *szName, int iSubType = 0);
 
 	void					EnableControl(bool fControl);
 	virtual void			CheckTrainUpdate( void );

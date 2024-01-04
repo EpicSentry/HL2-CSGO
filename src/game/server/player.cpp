@@ -84,7 +84,7 @@
 
 #ifdef HL2_DLL
 #include "combine_mine.h"
-//#include "weapon_physcannon.h"
+#include "weapon_physcannon.h"
 #endif
 
 #ifdef CSTRIKE_DLL
@@ -5790,37 +5790,37 @@ void CBloodSplat::Think( void )
 //-----------------------------------------------------------------------------
 // Purpose: Create and give the named item to the player. Then return it.
 //-----------------------------------------------------------------------------
-CBaseEntity	*CBasePlayer::GiveNamedItem( const char *pchName, int iSubType /*= 0*/, CEconItemView *pScriptItem /*= NULL*/, bool bForce /*= false*/ )
+CBaseEntity    *CBasePlayer::GiveNamedItem(const char *pszName, int iSubType)
 {
 	// If I already own this type don't create one
-	if ( Weapon_OwnsThisType( pchName, iSubType ) )
+	if (Weapon_OwnsThisType(pszName, iSubType))
 		return NULL;
 
 	// Msg( "giving %s\n", pszName );
 
 	EHANDLE pent;
 
-	pent = CreateEntityByName( pchName );
-	if ( pent == NULL )
+	pent = CreateEntityByName(pszName);
+	if (pent == NULL)
 	{
-		Msg( "NULL Ent in GiveNamedItem!\n" );
+		Msg("NULL Ent in GiveNamedItem!\n");
 		return NULL;
 	}
 
-	pent->SetLocalOrigin( GetLocalOrigin() );
-	pent->AddSpawnFlags( SF_NORESPAWN );
+	pent->SetLocalOrigin(GetLocalOrigin());
+	pent->AddSpawnFlags(SF_NORESPAWN);
 
-	CBaseCombatWeapon *pWeapon = dynamic_cast<CBaseCombatWeapon*>( (CBaseEntity*)pent );
-	if ( pWeapon )
+	CBaseCombatWeapon *pWeapon = dynamic_cast<CBaseCombatWeapon*>((CBaseEntity*)pent);
+	if (pWeapon)
 	{
-		pWeapon->SetSubType( iSubType );
+		pWeapon->SetSubType(iSubType);
 	}
 
-	DispatchSpawn( pent );
+	DispatchSpawn(pent);
 
-	if ( pent != NULL && !(pent->IsMarkedForDeletion()) ) 
+	if (pent != NULL && !(pent->IsMarkedForDeletion()))
 	{
-		pent->Touch( this );
+		pent->Touch(this);
 	}
 
 	return pent;

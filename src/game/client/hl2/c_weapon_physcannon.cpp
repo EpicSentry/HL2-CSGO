@@ -18,8 +18,8 @@ class C_WeaponPhysCannon: public C_BaseHLCombatWeapon
 public:
 	C_WeaponPhysCannon( void );
 
-	//DECLARE_CLIENTCLASS();
-	//DECLARE_PREDICTABLE();
+	DECLARE_CLIENTCLASS();
+	DECLARE_PREDICTABLE();
 
 	virtual void OnDataChanged( DataUpdateType_t updateType );
 	virtual int DrawModel( int flags );
@@ -40,14 +40,16 @@ private:
 	CSmartPtr<CSimpleEmitter>		m_pEmitter;
 	CSmartPtr<CParticleAttractor>	m_pAttractor;
 };
-//STUB_WEAPON_CLASS_IMPLEMENT( weapon_physcannon, C_WeaponPhysCannon ); TODO: revisit this
+//STUB_WEAPON_CLASS_IMPLEMENT( weapon_physcannon, C_WeaponPhysCannon ); //Legacy way of doing client side weapon classes
 
-//IMPLEMENT_CLIENTCLASS_DT( C_WeaponPhysCannon, DT_WeaponPhysCannon, CWeaponPhysCannon )
-//	RecvPropBool( RECVINFO( m_bIsCurrentlyUpgrading ) ),
-//	RecvPropFloat( RECVINFO( m_flTimeForceView) ), 
-//END_RECV_TABLE()
-IMPLEMENT_CLIENTCLASS_DT(C_WeaponPhysCannon, DT_WeaponPhysCannon, CWeaponPhysCannon)
+IMPLEMENT_CLIENTCLASS_DT( C_WeaponPhysCannon, DT_WeaponPhysCannon, CWeaponPhysCannon )
+	RecvPropBool( RECVINFO( m_bIsCurrentlyUpgrading ) ),
+	RecvPropFloat( RECVINFO( m_flTimeForceView) ), 
 END_RECV_TABLE()
+
+BEGIN_PREDICTION_DATA(C_WeaponPhysCannon)
+END_PREDICTION_DATA()
+LINK_ENTITY_TO_CLASS_CLIENTONLY(weapon_physcannon, C_WeaponPhysCannon); //Dumb csgo method
 
 //-----------------------------------------------------------------------------
 // Constructor

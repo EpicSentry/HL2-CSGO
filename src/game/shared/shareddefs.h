@@ -539,6 +539,7 @@ enum
 	OBS_MODE_FIXED,		// view from a fixed camera position
 	OBS_MODE_IN_EYE,	// follow a player in first person view
 	OBS_MODE_CHASE,		// follow a player in third person view
+	OBS_MODE_POI,
 	OBS_MODE_ROAMING,	// free roaming
 
 	NUM_OBSERVER_MODES,

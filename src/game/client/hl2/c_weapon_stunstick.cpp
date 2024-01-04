@@ -24,7 +24,7 @@ class C_WeaponStunStick : public C_BaseHLBludgeonWeapon
 	DECLARE_CLASS( C_WeaponStunStick, C_BaseHLBludgeonWeapon );
 public:
 	DECLARE_CLIENTCLASS();
-	//DECLARE_PREDICTABLE();
+	DECLARE_PREDICTABLE();
 
 	int DrawModel( int flags )
 	{
@@ -179,9 +179,12 @@ void RecvProxy_StunActive( const CRecvProxyData *pData, void *pStruct, void *pOu
 	*(bool *)pOut = state;
 }
 
-//STUB_WEAPON_CLASS_IMPLEMENT( weapon_stunstick, C_WeaponStunStick );
+BEGIN_PREDICTION_DATA(C_WeaponStunStick)
+END_PREDICTION_DATA()
+LINK_ENTITY_TO_CLASS_CLIENTONLY(weapon_stunstick, C_WeaponStunStick);
 
-IMPLEMENT_CLIENTCLASS_DT( C_WeaponStunStick, DT_WeaponStunStick, CWeaponStunStick )
-//	RecvPropInt( RECVINFO(m_bActive), 0, RecvProxy_StunActive ),
+
+IMPLEMENT_CLIENTCLASS_DT(C_WeaponStunStick, DT_WeaponStunStick, CWeaponStunStick)
+RecvPropInt(RECVINFO(m_bActive), 0, RecvProxy_StunActive),
 END_RECV_TABLE()
 

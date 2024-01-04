@@ -432,9 +432,9 @@ const QAngle &CBasePlayer::LocalEyeAngles()
 //-----------------------------------------------------------------------------
 // Actual Eye position + angles
 //-----------------------------------------------------------------------------
-Vector CBasePlayer::EyePosition( )
+Vector CBasePlayer::EyePosition()
 {
-	if ( GetVehicle() != NULL )
+	if (GetVehicle() != NULL)
 	{
 		// Return the cached result
 		CacheVehicleView();
@@ -443,45 +443,20 @@ Vector CBasePlayer::EyePosition( )
 	else
 	{
 #ifdef CLIENT_DLL
-		if ( IsObserver() )
+		if (IsObserver())
 		{
-			if ( m_iObserverMode == OBS_MODE_CHASE )
+			if (GetObserverMode() == OBS_MODE_CHASE || GetObserverMode() == OBS_MODE_POI)
 			{
-				if ( IsLocalPlayer( this ) )
+				if (IsLocalPlayer())
 				{
-					return MainViewOrigin(GetSplitScreenPlayerSlot());
+					return MainViewOrigin(0);
 				}
 			}
 		}
 #endif
-		// if in camera mode, use that
-		if ( GetViewEntity() != NULL )
-		{
-			return GetViewEntity()->EyePosition();
-		}
-
-#ifdef CLIENT_DLL
-		if ( !IsLocalPlayer( this ) && IsAlive() )
-		{
-			if( ( GetFlags() & FL_DUCKING ) || m_Local.m_bDucked )
-			{
-				return GetAbsOrigin() + VEC_DUCK_VIEW;
-			}
-			else
-			{
-				return GetAbsOrigin() + VEC_VIEW;
-			}
-		}
-		else
-		{
-			return BaseClass::EyePosition();
-		}
-#else
 		return BaseClass::EyePosition();
-#endif
 	}
 }
-
 
 //-----------------------------------------------------------------------------
 // Purpose: 
@@ -2792,20 +2767,23 @@ bool CBasePlayer::ClearUseEntity()
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-bool CBasePlayer::CanPickupObject( CBaseEntity *pObject, float massLimit, float sizeLimit )
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+bool CBasePlayer::CanPickupObject(CBaseEntity *pObject, float massLimit, float sizeLimit)
 {
 	// UNDONE: Make this virtual and move to HL2 player
-#if defined( HL2_DLL ) || defined( PORTAL2 )
+#ifdef HL2_DLL
 	//Must be valid
-	if ( pObject == NULL )
+	if (pObject == NULL)
 		return false;
 
 	//Must move with physics
-	if ( pObject->GetMoveType() != MOVETYPE_VPHYSICS )
+	if (pObject->GetMoveType() != MOVETYPE_VPHYSICS)
 		return false;
 
 	IPhysicsObject *pList[VPHYSICS_MAX_OBJECT_LIST_COUNT];
-	int count = pObject->VPhysicsGetObjectList( pList, ARRAYSIZE(pList) );
+	int count = pObject->VPhysicsGetObjectList(pList, ARRAYSIZE(pList));
 
 	//Must have a physics object
 	if (!count)
@@ -2813,16 +2791,16 @@ bool CBasePlayer::CanPickupObject( CBaseEntity *pObject, float massLimit, float 
 
 	float objectMass = 0;
 	bool checkEnable = false;
-	for ( int i = 0; i < count; i++ )
+	for (int i = 0; i < count; i++)
 	{
 		objectMass += pList[i]->GetMass();
-		if ( !pList[i]->IsMoveable() )
+		if (!pList[i]->IsMoveable())
 		{
 			checkEnable = true;
 		}
-		if ( pList[i]->GetGameFlags() & FVPHYSICS_NO_PLAYER_PICKUP )
+		if (pList[i]->GetGameFlags() & FVPHYSICS_NO_PLAYER_PICKUP)
 			return false;
-		if ( pList[i]->IsHinged() )
+		if (pList[i]->IsHinged())
 			return false;
 	}
 
@@ -2830,30 +2808,33 @@ bool CBasePlayer::CanPickupObject( CBaseEntity *pObject, float massLimit, float 
 	//Msg( "Target mass: %f\n", pPhys->GetMass() );
 
 	//Must be under our threshold weight
-	if ( massLimit > 0 && objectMass > massLimit )
+	if (massLimit > 0 && objectMass > massLimit)
 		return false;
 
-	if ( checkEnable )
+	if (checkEnable)
 	{
+		// Allowing picking up of bouncebombs.
+		//CBounceBomb *pBomb = dynamic_cast<CBounceBomb*>(pObject);
+		//if (pBomb)
+		//	return true;
+
 		// Allow pickup of phys props that are motion enabled on player pickup
 		CPhysicsProp *pProp = dynamic_cast<CPhysicsProp*>(pObject);
 		CPhysBox *pBox = dynamic_cast<CPhysBox*>(pObject);
-		if ( !pProp && !pBox )
+		if (!pProp && !pBox)
 			return false;
 
-#if !defined ( CLIENT_DLL )
-		if ( pProp && !(pProp->HasSpawnFlags( SF_PHYSPROP_ENABLE_ON_PHYSCANNON )) )
+		if (pProp && !(pProp->HasSpawnFlags(SF_PHYSPROP_ENABLE_ON_PHYSCANNON)))
 			return false;
 
-		if ( pBox && !(pBox->HasSpawnFlags( SF_PHYSBOX_ENABLE_ON_PHYSCANNON )) )
+		if (pBox && !(pBox->HasSpawnFlags(SF_PHYSBOX_ENABLE_ON_PHYSCANNON)))
 			return false;
-#endif 
 	}
 
-	if ( sizeLimit > 0 )
+	if (sizeLimit > 0)
 	{
 		const Vector &size = pObject->CollisionProp()->OBBSize();
-		if ( size.x > sizeLimit || size.y > sizeLimit || size.z > sizeLimit )
+		if (size.x > sizeLimit || size.y > sizeLimit || size.z > sizeLimit)
 			return false;
 	}
 

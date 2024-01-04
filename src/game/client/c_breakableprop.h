@@ -10,12 +10,12 @@
 #pragma once
 #endif
 
-#include "player_pickup.h" 
+//#include "player_pickup.h" 
 
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-class C_BreakableProp : public C_BaseAnimating, public CDefaultPlayerPickupVPhysics
+class C_BreakableProp : public C_BaseAnimating/*, public CDefaultPlayerPickupVPhysics*/
 {
 public:
 	DECLARE_CLASS( C_BreakableProp, C_BaseAnimating );
