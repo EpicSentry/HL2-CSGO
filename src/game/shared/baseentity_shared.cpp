@@ -1604,6 +1604,10 @@ bool CBaseEntity::CreateVPhysics()
 
 bool CBaseEntity::IsStandable() const
 {
+	// Crossbow crash
+	if (this == NULL)
+		return false;
+
 	if (GetSolidFlags() & FSOLID_NOT_STANDABLE) 
 		return false;
 

@@ -1071,7 +1071,7 @@ protected:
 	CNetworkVar( bool, m_bCameraManXRay );			// XRay state for cameraman
 	CNetworkVar( bool, m_bCameraManOverview );		// Overview state for cameraman
 	CNetworkVar( bool, m_bCameraManScoreBoard );	// ScoreBoard state for cameraman
-	CNetworkVar( uint8, m_uCameraManGraphs );		// Graphs state for cameraman
+	CNetworkVar( int, m_uCameraManGraphs );		// Graphs state for cameraman
 	CNetworkVar( int,	m_iFOV );			// field of view
 	CNetworkVar( int,	m_iDefaultFOV );	// default field of view
 	CNetworkVar( int,	m_iFOVStart );		// What our FOV started at

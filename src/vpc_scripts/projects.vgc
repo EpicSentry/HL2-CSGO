@@ -1385,6 +1385,11 @@ $Project "soundtest"
 	"unittests/soundtest/soundtest.vpc" [$WINDOWS]
 }
 
+$Project "sourcevr"
+{
+	"sourcevr\sourcevr.vpc"
+}
+
 $Project "vaudio_speex"
 {
 	"engine/voice_codecs/speex/vaudio_speex.vpc" [$WINDOWS||$POSIX]

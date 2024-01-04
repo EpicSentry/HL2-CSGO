@@ -154,6 +154,7 @@ CGameRules::CGameRules() : CAutoGameSystemPerFrame("CGameRules")
 	ClearMultiDamage();
 
 	m_flNextVerboseLogOutput = 0.0f;
+	RefreshSkillData(true);
 }
 
 //-----------------------------------------------------------------------------

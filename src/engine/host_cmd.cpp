@@ -1243,17 +1243,20 @@ void Host_Map_Helper( const CCommand &args, EMapFlags flags )
 		return;
 	}
 
-	if ( ( sv.IsActive() && !sv.IsSinglePlayerGame() && !sv.IsLevelMainMenuBackground() ) ||
-		 ( sv.IsActive() && sv.IsDedicated() ) )
+	bool bBackground = (flags & EMAP_BACKGROUND) != 0;
+	bool bSplitScreenConnect = (flags & EMAP_SPLITSCREEN) != 0;
+
+	//if ( ( sv.IsActive() && !sv.IsSinglePlayerGame() && !sv.IsLevelMainMenuBackground() ) ||
+	//	 ( sv.IsActive() && sv.IsDedicated() ) )
 	{
-		// Using the 'map' command while in a map disconnects all players.
-		// Ease the pain of this common error by forwarding to the correct command.
-		Host_Changelevel_f( args );
+		char szMapName[MAX_QPATH] = { 0 };
+		V_strncpy(szMapName, args[1], sizeof(szMapName));
+
+		Host_Disconnect(false);	// stop old game
+
+		HostState_NewGame(szMapName, false, bBackground, bSplitScreenConnect);
 		return;
 	}
-	
-	bool bBackground = ( flags & EMAP_BACKGROUND ) != 0;
-	bool bSplitScreenConnect = ( flags & EMAP_SPLITSCREEN ) != 0;
 
 	char ppath[ MAX_QPATH ];
 

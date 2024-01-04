@@ -1441,6 +1441,12 @@ const CBaseHandle& C_BaseEntity::GetRefEHandle() const
 //-----------------------------------------------------------------------------
 void C_BaseEntity::Release()
 {
+	if (IsPlayer())
+	{
+		// If it's a player, return immediately to prevent a crash
+		return;
+	}
+
 	{
 		C_BaseAnimating::AutoAllowBoneAccess boneaccess( true, true );
 		UnlinkFromHierarchy();

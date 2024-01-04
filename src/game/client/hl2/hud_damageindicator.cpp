@@ -20,7 +20,7 @@
 #include "IEffects.h"
 #include "hudelement.h"
 #include "precache_register.h"
-//#include "sourcevr/isourcevirtualreality.h"
+#include "sourcevr/isourcevirtualreality.h"
 
 using namespace vgui;
 
