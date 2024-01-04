@@ -648,8 +648,6 @@ $Project "job_gcmstateflush"
 	"vjobs/graphics/job_gcmstateflush/job_gcmstateflush.vpc" [$PS3]
 }
 
-
-
 $Project "job_edgegeom"
 {
 	"vjobs/graphics/job_edgegeom/job_edgegeom.vpc" [$PS3]

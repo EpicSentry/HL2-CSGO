@@ -1451,7 +1451,7 @@ FORCEINLINE BOOL TerminateThread( HANDLE hThread, DWORD dwExitCode ) { return fa
 
 FORCEINLINE BOOL HttpQueryInfo( HINTERNET hRequest, DWORD dwInfoLevel, LPVOID lpBuffer, LPDWORD lpdwBufferLength, LPDWORD lpdwIndex ) { return false; }
 
-FORCEINLINE struct hostent FAR * _stdcall FAR gethostbyname( const char FAR * name ) { return NULL; }
+//FORCEINLINE struct hostent FAR * _stdcall FAR gethostbyname( const char FAR * name ) { return NULL; }
 
 FORCEINLINE BOOL InternetReadFile(HINTERNET hFile, LPVOID lpBuffer, DWORD dwNumberOfBytesToRead, LPDWORD lpdwNumberOfBytesRead ) { return false; }
 

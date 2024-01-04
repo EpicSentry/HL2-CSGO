@@ -3565,6 +3565,7 @@ CrossPlayPlatform_t C_BasePlayer::GetCrossPlayPlatform( void ) const
 
 bool C_BasePlayer::ShouldRegenerateOriginFromCellBits() const
 {
+	/*
 	// Don't use cell bits for local players
 	if ( 
 #ifdef PORTAL2
@@ -3597,7 +3598,7 @@ bool C_BasePlayer::ShouldRegenerateOriginFromCellBits() const
 	{
 		return false;
 	}*/
-
+	return true;
 	return BaseClass::ShouldRegenerateOriginFromCellBits();
 }
 

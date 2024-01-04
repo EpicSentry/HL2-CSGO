@@ -22,7 +22,7 @@ $Configuration
 
 	$Linker
 	{
-		$AdditionalDependencies			"$BASE winmm.lib libedgegeomtool.Release.Win32.vs8.lib"
+		$AdditionalDependencies			"$BASE winmm.lib"
 	}
 }
 
