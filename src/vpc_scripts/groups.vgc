@@ -105,6 +105,8 @@ $Group "csgo_partner"
 	"adminserver"
 	"studiomdl"
 	"hlfaceposer"
+	"vfont"
+	"vfont_decompiler"
 // Uncomment and re-vpc if you want a bad time.
 //	These dont work for one reason or another but do compile/link
 //	"sourcevr"
