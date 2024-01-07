@@ -944,7 +944,8 @@ public:
 				if ( m_DataType == MDLCACHE_STUDIOHDR ) 
 				{
 					studiohdr_t* pStudioHdr = ( studiohdr_t* ) buf.Base();
-					if ( pStudioHdr->studiohdr2index == 0 )
+//					if ( pStudioHdr->studiohdr2index == 0 )
+					if (pStudioHdr && pStudioHdr->studiohdr2index == 0)
 					{
 						// We always need this now, so make room for it in the buffer now.
 						int bufferContentsEnd = buf.TellMaxPut();

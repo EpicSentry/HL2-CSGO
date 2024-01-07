@@ -2041,6 +2041,7 @@ void CHL2_Player::FlashlightTurnOn( void )
 
 	AddEffects( EF_DIMLIGHT );
 	EmitSound( "HL2Player.FlashLightOn" );
+	Msg("Flashlight");
 
 	variant_t flashlighton;
 	flashlighton.SetFloat( m_HL2Local.m_flSuitPower / 100.0f );

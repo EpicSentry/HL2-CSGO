@@ -353,7 +353,11 @@ static void PerformNewCustomEffects( const Vector &vecOrigin, trace_t &tr, const
 #endif
 
 	CSmartPtr<CNewParticleEffect> pEffect = CNewParticleEffect::CreateOrAggregatePrecached( NULL, nEffectIndex, vecImpactPoint );
+	if (pEffect == NULL)
+		return;
 	if ( !pEffect->IsValid() )
+		return;
+	if (pEffect->IsValid())
 		return;
 
 	SetImpactControlPoint( pEffect.GetObject(), 0, vecImpactPoint, tr.plane.normal, tr.m_pEnt ); 

@@ -6,6 +6,7 @@
 //
 //=============================================================================//
 // vvis_launcher.cpp : Defines the entry point for the console application.
+#pragma check_stack(off)  // place at top header to cover all the functions
 //
 
 #include "stdafx.h"

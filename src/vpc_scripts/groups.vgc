@@ -107,19 +107,17 @@ $Group "csgo_partner"
 	"hlfaceposer"
 	"vfont"
 	"vfont_decompiler"
+	"havana_constraints"
+	"hk_base"
+	"hk_math"
+	"ivp_compactbuilder"
+	"ivp_physics"
+	"vphysics"
 // Uncomment and re-vpc if you want a bad time.
 //	These dont work for one reason or another but do compile/link
 //	"sourcevr"
 //
 //	These do compile fine however without vphysics theyre useless (unless you want to make your own)
-//	"havana_constraints"
-//	"hk_base"
-//	"hk_math"
-//	"ivp_compactbuilder"
-//	"ivp_physics"
-//
-//
-//	"vphysics"
 //	"vaudio_speex"
 //	"vaudio_celt"
 }
