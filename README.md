@@ -17,6 +17,7 @@ Partially used code from https://github.com/SwagSoftware/Kisak-Strike (some econ
 - Random vphysics.dll crashes.
 - Crouching doesn't work.
 - Flashlight doesn't work.
+- Physics save/restore is broken, play with ``save_disable 1`` for the time being.
 
 **Using and building HL2GO:**
 1. You must have the 2017 CSGO depot downloaded as you need a few resources from it.<br>
