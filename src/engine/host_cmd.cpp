@@ -1246,13 +1246,14 @@ void Host_Map_Helper( const CCommand &args, EMapFlags flags )
 	bool bBackground = (flags & EMAP_BACKGROUND) != 0;
 	bool bSplitScreenConnect = (flags & EMAP_SPLITSCREEN) != 0;
 
-	//if ( ( sv.IsActive() && !sv.IsSinglePlayerGame() && !sv.IsLevelMainMenuBackground() ) ||
-	//	 ( sv.IsActive() && sv.IsDedicated() ) )
+//	if ( ( sv.IsActive() && !sv.IsLevelMainMenuBackground() ) ||
+//		 ( sv.IsActive() && sv.IsDedicated() ) ) this is still broken, whatever.
 	{
 		char szMapName[MAX_QPATH] = { 0 };
 		V_strncpy(szMapName, args[1], sizeof(szMapName));
 
 		Host_Disconnect(false);	// stop old game
+		EngineVGui()->HideConsole(); // fix open console freezing the player on spawn
 
 		HostState_NewGame(szMapName, false, bBackground, bSplitScreenConnect);
 		return;

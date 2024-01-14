@@ -1202,6 +1202,11 @@ $Project "scenefilecache"
 	"scenefilecache/scenefilecache.vpc" [$WINDOWS || $X360 || $DEDICATED || $PS3 || $POSIX]
 }
 
+$Project "scaleformui"
+{
+	"scaleformui/scaleformui.vpc" [$WINDOWS||$POSIX]
+}
+
 $Project "scenemanager"
 {
 	"utils/scenemanager/scenemanager.vpc" [$WINDOWS]
@@ -1848,6 +1853,11 @@ $Project "vice"
 $Project "videocfg"
 {
 	"videocfg/videocfg.vpc" 	[$WINDOWS||$X360||$LINUX||$OSX32||$OSX64||$PS3]
+}
+
+$Project "video_services"
+{
+	"video_services/video_services.vpc"	[$WINDOWS||$LINUX]
 }
 
 //$Project "viewphys"

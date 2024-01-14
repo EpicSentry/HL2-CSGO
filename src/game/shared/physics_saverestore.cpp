@@ -418,6 +418,7 @@ public:
 	
 	void QueueSave( CBaseEntity *pOwner, typedescription_t *pTypeDesc, void **ppPhysObj, PhysInterfaceId_t type )
 	{
+		/*
 		if ( !pOwner )
 			return;
 
@@ -470,7 +471,8 @@ public:
 			}
 		}
 
-		m_QueuedSaves.Insert( item );
+		m_QueuedSaves.Insert( item );*/
+		return; // Physics save/restore is fucked. I don't realy know why.
 	}
 
 	//---------------------------------

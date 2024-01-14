@@ -1,4 +1,4 @@
-//========= Copyright © 1996-2005, Valve Corporation, All rights reserved. ============//
+//========= Copyright Valve Corporation, All rights reserved. ============//
 //
 // Purpose: 
 //
@@ -16,11 +16,11 @@
 
 CLocalNetworkBackdoor *g_pLocalNetworkBackdoor = NULL;
 
-#ifndef DEDICATED
+#ifndef SWDS
 // This is called 
 void CLocalNetworkBackdoor::InitFastCopy()
 {
-	if ( !GetBaseLocalClient().m_NetChannel->IsLoopback() )
+	if (!GetBaseLocalClient().m_NetChannel->IsLoopback())
 		return;
 
 
@@ -30,15 +30,15 @@ void CLocalNetworkBackdoor::InitFastCopy()
 	int nFastCopyProps = 0;
 	int nSlowCopyProps = 0;
 
-	for ( int iClass=0; iClass < GetBaseLocalClient().m_nServerClasses; iClass++ )
+	for (int iClass = 0; iClass < GetBaseLocalClient().m_nServerClasses; iClass++)
 	{
 		ClientClass *pClientClass = GetBaseLocalClient().GetClientClass(iClass);
-		if ( !pClientClass ) 
-			Error( "InitFastCopy - missing client class %d (Should be equivelent of server class: %s)", iClass, GetBaseLocalClient().m_pServerClasses[iClass].m_ClassName );
+		if (!pClientClass)
+			Error("InitFastCopy - missing client class %d (Should be equivelent of server class: %s)", iClass, GetBaseLocalClient().m_pServerClasses[iClass].m_ClassName);
 
-		ServerClass *pServerClass = SV_FindServerClass( pClientClass->GetName() );
-		if ( !pServerClass )
-			Error( "InitFastCopy - missing server class %s", pClientClass->GetName() );
+		ServerClass *pServerClass = SV_FindServerClass(pClientClass->GetName());
+		if (!pServerClass)
+			Error("InitFastCopy - missing server class %s", pClientClass->GetName());
 
 		LocalTransfer_InitFastCopy(
 			pServerClass->m_pTable,
@@ -47,20 +47,20 @@ void CLocalNetworkBackdoor::InitFastCopy()
 			pRecvProxies,
 			nSlowCopyProps,
 			nFastCopyProps
-			);
+		);
 	}
 
-	int percentFast = (nFastCopyProps * 100 ) / (nSlowCopyProps + nFastCopyProps + 1);
-	if ( percentFast <= 45 )
+	int percentFast = (nFastCopyProps * 100) / (nSlowCopyProps + nFastCopyProps + 1);
+	if (percentFast <= 55)
 	{
 		// This may not be a real problem, but at the time this code was added, 67% of the
 		// properties were able to be copied without proxies. If percentFast goes to 0 or some
 		// really low number suddenly, then something probably got screwed up.
-		Assert( false );
-		Warning( "InitFastCopy: only %d%% fast props. Bug?\n", percentFast );
+		Assert(false);
+		Warning("InitFastCopy: only %d%% fast props. Bug?\n", percentFast);
 	}
-} 
-#endif //DEDICATED
+}
+#endif
 
 void CLocalNetworkBackdoor::StartEntityStateUpdate()
 {
@@ -69,68 +69,71 @@ void CLocalNetworkBackdoor::StartEntityStateUpdate()
 	m_nEntsChanged = 0;
 
 	// signal client that we start updating entities
-	ClientDLL_FrameStageNotify( FRAME_NET_UPDATE_START );
+	ClientDLL_FrameStageNotify(FRAME_NET_UPDATE_START);
 }
 
 void CLocalNetworkBackdoor::EndEntityStateUpdate()
 {
-	MDLCACHE_CRITICAL_SECTION_( g_pMDLCache );
-	ClientDLL_FrameStageNotify( FRAME_NET_UPDATE_POSTDATAUPDATE_START );
+	ClientDLL_FrameStageNotify(FRAME_NET_UPDATE_POSTDATAUPDATE_START);
 
 	// Handle entities created.
 	int i;
-	for ( i=0; i < m_nEntsCreated; i++ )
+	for (i = 0; i < m_nEntsCreated; i++)
 	{
+		MDLCACHE_CRITICAL_SECTION_(g_pMDLCache);
+
 		int iEdict = m_EntsCreatedIndices[i];
 		CCachedEntState *pCached = &m_CachedEntState[iEdict];
 		IClientNetworkable *pNet = pCached->m_pNetworkable;
 
-		pNet->PostDataUpdate( DATA_UPDATE_CREATED );
-		pNet->NotifyShouldTransmit( SHOULDTRANSMIT_START );
+		pNet->PostDataUpdate(DATA_UPDATE_CREATED);
+		pNet->NotifyShouldTransmit(SHOULDTRANSMIT_START);
 		pCached->m_bDormant = false;
 	}
 
 	// Handle entities changed.
-	for ( i=0; i < m_nEntsChanged; i++ )
+	for (i = 0; i < m_nEntsChanged; i++)
 	{
+		MDLCACHE_CRITICAL_SECTION_(g_pMDLCache);
+
 		int iEdict = m_EntsChangedIndices[i];
-		m_CachedEntState[iEdict].m_pNetworkable->PostDataUpdate( DATA_UPDATE_DATATABLE_CHANGED );
+		m_CachedEntState[iEdict].m_pNetworkable->PostDataUpdate(DATA_UPDATE_DATATABLE_CHANGED);
 	}
 
-	ClientDLL_FrameStageNotify( FRAME_NET_UPDATE_POSTDATAUPDATE_END );
+	ClientDLL_FrameStageNotify(FRAME_NET_UPDATE_POSTDATAUPDATE_END);
 
 	// Handle entities removed (= SV_WriteDeletions() in normal mode)
 	int nDWords = m_PrevEntsAlive.GetNumDWords();
 
 	// Handle entities removed.
-	for ( i=0; i < nDWords; i++ )
+	for (i = 0; i < nDWords; i++)
 	{
-		unsigned long prevEntsAlive = m_PrevEntsAlive.GetDWord( i );
-		unsigned long entsAlive = m_EntsAlive.GetDWord( i );
+		unsigned long prevEntsAlive = m_PrevEntsAlive.GetDWord(i);
+		unsigned long entsAlive = m_EntsAlive.GetDWord(i);
 		unsigned long toDelete = (prevEntsAlive ^ entsAlive) & prevEntsAlive;
 
-		if ( toDelete )
+		if (toDelete)
 		{
-			for ( int iBit=0; iBit < 32; iBit++ )
+			for (int iBit = 0; iBit < 32; iBit++)
 			{
-				if ( toDelete & (1 << iBit) )
+				if (toDelete & (1 << iBit))
 				{
-					int iEdict = (i<<5) + iBit;
-					if ( iEdict < MAX_EDICTS )
+					int iEdict = (i << 5) + iBit;
+					if (iEdict >= 0 && iEdict < MAX_EDICTS)
 					{
-						if ( m_CachedEntState[iEdict].m_pNetworkable )
+						if (m_CachedEntState[iEdict].m_pNetworkable)
 						{
 							m_CachedEntState[iEdict].m_pNetworkable->Release();
-//							m_CachedEntState[iEdict].m_pNetworkable = NULL;
+							m_CachedEntState[iEdict].m_pNetworkable = NULL;
 						}
 						else
 						{
-							AssertOnce( !"EndEntityStateUpdate:  Would have crashed with NULL m_pNetworkable\n" );
+							AssertOnce(!"EndEntityStateUpdate:  Would have crashed with NULL m_pNetworkable\n");
 						}
 					}
 					else
 					{
-						AssertOnce( !"EndEntityStateUpdate:  Would have crashed with entity out of range\n" );
+						AssertOnce(!"EndEntityStateUpdate:  Would have crashed with entity out of range\n");
 					}
 				}
 			}
@@ -141,7 +144,7 @@ void CLocalNetworkBackdoor::EndEntityStateUpdate()
 	m_PrevEntsAlive = m_EntsAlive;
 
 	// end of all entity update activity
-	ClientDLL_FrameStageNotify( FRAME_NET_UPDATE_END );
+	ClientDLL_FrameStageNotify(FRAME_NET_UPDATE_END);
 
 	/*
 	#ifdef _DEBUG
@@ -156,7 +159,7 @@ void CLocalNetworkBackdoor::EndEntityStateUpdate()
 	Assert( FindInList( m_EntsCreatedIndices, m_nEntsCreated, i ) );
 	}
 
-	if ( (m_EntsAlive[i>>5] & (1 << (i & 31))) && 
+	if ( (m_EntsAlive[i>>5] & (1 << (i & 31))) &&
 	!(m_EntsCreated[i>>5] & (1 << (i & 31))) &&
 	(m_EntsChanged[i>>5] & (1 << (i & 31)))
 	)
@@ -168,24 +171,24 @@ void CLocalNetworkBackdoor::EndEntityStateUpdate()
 	*/
 }
 
-void CLocalNetworkBackdoor::EntityDormant( int iEnt, int iSerialNum )
+void CLocalNetworkBackdoor::EntityDormant(int iEnt, int iSerialNum)
 {
 	CCachedEntState *pCached = &m_CachedEntState[iEnt];
 
 	IClientNetworkable *pNet = pCached->m_pNetworkable;
-	Assert( pNet == entitylist->GetClientNetworkable( iEnt ) );
-	if ( pNet )
+	Assert(pNet == entitylist->GetClientNetworkable(iEnt));
+	if (pNet)
 	{
-		Assert( pCached->m_iSerialNumber == pNet->GetIClientUnknown()->GetRefEHandle().GetSerialNumber() );
-		if ( pCached->m_iSerialNumber == iSerialNum )
+		Assert(pCached->m_iSerialNumber == pNet->GetIClientUnknown()->GetRefEHandle().GetSerialNumber());
+		if (pCached->m_iSerialNumber == iSerialNum)
 		{
-			m_EntsAlive.Set( iEnt );
+			m_EntsAlive.Set(iEnt);
 
 			// Tell the game code that this guy is now dormant.
-			Assert( pCached->m_bDormant == pNet->IsDormant() );
-			if ( !pCached->m_bDormant )
+			Assert(pCached->m_bDormant == pNet->IsDormant());
+			if (!pCached->m_bDormant)
 			{
-				pNet->NotifyShouldTransmit( SHOULDTRANSMIT_END );
+				pNet->NotifyShouldTransmit(SHOULDTRANSMIT_END);
 				pCached->m_bDormant = true;
 			}
 		}
@@ -193,76 +196,75 @@ void CLocalNetworkBackdoor::EntityDormant( int iEnt, int iSerialNum )
 		{
 			pNet->Release();
 			pCached->m_pNetworkable = NULL;
-			m_PrevEntsAlive.Clear( iEnt ); 
+			m_PrevEntsAlive.Clear(iEnt);
 		}
 	}
 }
 
 
-void CLocalNetworkBackdoor::AddToPendingDormantEntityList( unsigned short iEdict )
+void CLocalNetworkBackdoor::AddToPendingDormantEntityList(unsigned short iEdict)
 {
 	edict_t *e = &sv.edicts[iEdict];
-	if ( !( e->m_fStateFlags & FL_EDICT_PENDING_DORMANT_CHECK ) )
+	if (!(e->m_fStateFlags & FL_EDICT_PENDING_DORMANT_CHECK))
 	{
 		e->m_fStateFlags |= FL_EDICT_PENDING_DORMANT_CHECK;
-		m_PendingDormantEntities.AddToTail( iEdict );
+		m_PendingDormantEntities.AddToTail(iEdict);
 	}
-}		
+}
 
 void CLocalNetworkBackdoor::ProcessDormantEntities()
 {
-	FOR_EACH_LL( m_PendingDormantEntities, i )
+	FOR_EACH_LL(m_PendingDormantEntities, i)
 	{
 		int iEdict = m_PendingDormantEntities[i];
 		edict_t *e = &sv.edicts[iEdict];
 
 		// Make sure the entity still exists and stil has the dontsend flag set.
-		if ( e->IsFree() || !(e->m_fStateFlags & FL_EDICT_DONTSEND) )
+		if (e->IsFree() || !(e->m_fStateFlags & FL_EDICT_DONTSEND))
 		{
 			e->m_fStateFlags &= ~FL_EDICT_PENDING_DORMANT_CHECK;
 			continue;
 		}
 
-		EntityDormant( iEdict, e->m_NetworkSerialNumber );
+		EntityDormant(iEdict, e->m_NetworkSerialNumber);
 		e->m_fStateFlags &= ~FL_EDICT_PENDING_DORMANT_CHECK;
 	}
 	m_PendingDormantEntities.Purge();
 }
 
-void CLocalNetworkBackdoor::EntState( 
-					 int iEnt, 
-					 int iSerialNum, 
-					 int iClass, 
-					 const SendTable *pSendTable, 
-					 const void *pSourceEnt,
-					 bool bChanged,
-					 bool bShouldTransmit )
+void CLocalNetworkBackdoor::EntState(
+	int iEnt,
+	int iSerialNum,
+	int iClass,
+	const SendTable *pSendTable,
+	const void *pSourceEnt,
+	bool bChanged,
+	bool bShouldTransmit)
 {
-#ifndef DEDICATED
 	CCachedEntState *pCached = &m_CachedEntState[iEnt];
 
 	// Remember that this ent is alive.
 	m_EntsAlive.Set(iEnt);
 
 	ClientClass *pClientClass = GetBaseLocalClient().GetClientClass(iClass);
-	if ( !pClientClass )
-		Error( "CLocalNetworkBackdoor::EntState - missing client class %d", iClass );
+	if (!pClientClass)
+		Error("CLocalNetworkBackdoor::EntState - missing client class %d", iClass);
 
 	IClientNetworkable *pNet = pCached->m_pNetworkable;
-	Assert( pNet == entitylist->GetClientNetworkable( iEnt ) );
+	Assert(pNet == entitylist->GetClientNetworkable(iEnt));
 
-	if ( !bShouldTransmit )
+	if (!bShouldTransmit)
 	{
-		if ( pNet )
+		if (pNet)
 		{
-			Assert( pCached->m_iSerialNumber == pNet->GetIClientUnknown()->GetRefEHandle().GetSerialNumber() );
-			if ( pCached->m_iSerialNumber == iSerialNum )
+			Assert(pCached->m_iSerialNumber == pNet->GetIClientUnknown()->GetRefEHandle().GetSerialNumber());
+			if (pCached->m_iSerialNumber == iSerialNum)
 			{
 				// Tell the game code that this guy is now dormant.
-				Assert( pCached->m_bDormant == pNet->IsDormant() );
-				if ( !pCached->m_bDormant )
+				Assert(pCached->m_bDormant == pNet->IsDormant());
+				if (!pCached->m_bDormant)
 				{
-					pNet->NotifyShouldTransmit( SHOULDTRANSMIT_END );
+					pNet->NotifyShouldTransmit(SHOULDTRANSMIT_END);
 					pCached->m_bDormant = true;
 				}
 			}
@@ -273,22 +275,22 @@ void CLocalNetworkBackdoor::EntState(
 				pCached->m_pNetworkable = NULL;
 				// Since we set this above, need to clear it now to avoid assertion in EndEntityStateUpdate()
 				m_EntsAlive.Clear(iEnt);
-				m_PrevEntsAlive.Clear( iEnt ); 
+				m_PrevEntsAlive.Clear(iEnt);
 			}
 		}
 		else
 		{
-			m_EntsAlive.Clear( iEnt );
+			m_EntsAlive.Clear(iEnt);
 		}
 		return;
 	}
 	// Do we have an entity here already?
 	bool bExistedAndWasDormant = false;
-	if ( pNet )
+	if (pNet)
 	{
 		// If the serial numbers are different, make it recreate the ent.
-		Assert( pCached->m_iSerialNumber == pNet->GetIClientUnknown()->GetRefEHandle().GetSerialNumber() );
-		if ( iSerialNum == pCached->m_iSerialNumber )
+		Assert(pCached->m_iSerialNumber == pNet->GetIClientUnknown()->GetRefEHandle().GetSerialNumber());
+		if (iSerialNum == pCached->m_iSerialNumber)
 		{
 			bExistedAndWasDormant = pCached->m_bDormant;
 		}
@@ -303,14 +305,14 @@ void CLocalNetworkBackdoor::EntState(
 	// Create the entity?
 	bool bCreated = false;
 	DataUpdateType_t updateType;
-	if ( pNet )
+	if (pNet)
 	{
 		updateType = DATA_UPDATE_DATATABLE_CHANGED;
 	}
-	else		
+	else
 	{
 		updateType = DATA_UPDATE_CREATED;
-		pNet = pClientClass->m_pCreateFn( iEnt, iSerialNum );
+		pNet = pClientClass->m_pCreateFn(iEnt, iSerialNum);
 		bCreated = true;
 		m_EntsCreatedIndices[m_nEntsCreated++] = iEnt;
 
@@ -323,43 +325,42 @@ void CLocalNetworkBackdoor::EntState(
 		pCached->m_bDormant = pNet->IsDormant();
 	}
 
-	if ( bChanged || bCreated || bExistedAndWasDormant )
+	if (bChanged || bCreated || bExistedAndWasDormant)
 	{
-		pNet->PreDataUpdate( updateType );
+		pNet->PreDataUpdate(updateType);
 
-		Assert( pCached->m_pDataPointer == pNet->GetDataTableBasePtr() );
+		Assert(pCached->m_pDataPointer == pNet->GetDataTableBasePtr());
 
-		LocalTransfer_TransferEntity( 
-			&sv.edicts[iEnt], 
-			pSendTable, 
-			pSourceEnt, 
-			pClientClass->m_pRecvTable, 
-			pCached->m_pDataPointer, 
-			bCreated, 
+		LocalTransfer_TransferEntity(
+			&sv.edicts[iEnt],
+			pSendTable,
+			pSourceEnt,
+			pClientClass->m_pRecvTable,
+			pCached->m_pDataPointer,
+			bCreated,
 			bExistedAndWasDormant,
-			iEnt );
+			iEnt);
 
-		if ( bExistedAndWasDormant )
+		if (bExistedAndWasDormant)
 		{
 			// Set this so we use DATA_UPDATE_CREATED logic
 			m_EntsCreatedIndices[m_nEntsCreated++] = iEnt;
 		}
 		else
 		{
-			if ( !bCreated )
+			if (!bCreated)
 			{
 				m_EntsChangedIndices[m_nEntsChanged++] = iEnt;
 			}
 		}
 	}
-#endif
 }
-	
+
 
 void CLocalNetworkBackdoor::ClearState()
 {
 	// Clear the cache for all the entities.
-	for ( int i=0; i < MAX_EDICTS; i++ )
+	for (int i = 0; i < MAX_EDICTS; i++)
 	{
 		CCachedEntState &ces = m_CachedEntState[i];
 
@@ -372,38 +373,11 @@ void CLocalNetworkBackdoor::ClearState()
 	m_PrevEntsAlive.ClearAll();
 }
 
-void CLocalNetworkBackdoor::StartBackdoorMode() 
-{ 
-	ClearState();
-
-	for ( int i=0; i < MAX_EDICTS; i++ )
-	{
-		IClientNetworkable *pNet = entitylist->GetClientNetworkable( i );
-
-		CCachedEntState &ces = m_CachedEntState[i];
-
-		if ( pNet )
-		{
-			ces.m_pNetworkable = pNet;
-			ces.m_iSerialNumber = pNet->GetIClientUnknown()->GetRefEHandle().GetSerialNumber();
-			ces.m_bDormant = pNet->IsDormant();
-			ces.m_pDataPointer = pNet->GetDataTableBasePtr();
-			m_PrevEntsAlive.Set( i );
-		}
-	}
-}
-
-void CLocalNetworkBackdoor::StopBackdoorMode()
-{
-	ClearState();
-}
-
-
-void CLocalNetworkBackdoor::ForceFlushEntity( int iEntity )
+void CLocalNetworkBackdoor::ForceFlushEntity(int iEntity)
 {
 	CCachedEntState *pCached = &m_CachedEntState[iEntity];
-	
-	if ( pCached->m_pNetworkable )
+
+	if (pCached->m_pNetworkable)
 		pCached->m_pNetworkable->Release();
 
 	pCached->m_pNetworkable = NULL;
@@ -412,3 +386,28 @@ void CLocalNetworkBackdoor::ForceFlushEntity( int iEntity )
 	pCached->m_pDataPointer = NULL;
 }
 
+void CLocalNetworkBackdoor::StartBackdoorMode()
+{
+	ClearState();
+
+	for (int i = 0; i < MAX_EDICTS; i++)
+	{
+		IClientNetworkable *pNet = entitylist->GetClientNetworkable(i);
+
+		CCachedEntState &ces = m_CachedEntState[i];
+
+		if (pNet)
+		{
+			ces.m_pNetworkable = pNet;
+			ces.m_iSerialNumber = pNet->GetIClientUnknown()->GetRefEHandle().GetSerialNumber();
+			ces.m_bDormant = pNet->IsDormant();
+			ces.m_pDataPointer = pNet->GetDataTableBasePtr();
+			m_PrevEntsAlive.Set(i);
+		}
+	}
+}
+
+void CLocalNetworkBackdoor::StopBackdoorMode()
+{
+	ClearState();
+}

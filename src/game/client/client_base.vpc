@@ -515,7 +515,6 @@ $Project
 				"hud_lcd.cpp"										\
 				"in_mouse.cpp"										\
 				"in_steamcontroller.cpp"							\
-				"mumble.cpp"										\
 				"rendertexture.cpp"									\
 				"render_to_rt_helper.cpp"							
 				{

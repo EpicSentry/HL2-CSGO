@@ -116,10 +116,12 @@ $Group "csgo_partner"
 // Uncomment and re-vpc if you want a bad time.
 //	These dont work for one reason or another but do compile/link
 //	"sourcevr"
+//	"video_services"
 //
-//	These do compile fine however without vphysics theyre useless (unless you want to make your own)
+//	These dont compile/link
 //	"vaudio_speex"
 //	"vaudio_celt"
+//	"scaleformui"
 }
 
 $Group "csgo_partner_linux"
