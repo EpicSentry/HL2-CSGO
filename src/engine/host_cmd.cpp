@@ -637,11 +637,13 @@ void Host_PrintStatus( cmd_source_t commandSource, void ( *print )(const char *f
 			}
 		}
 		print( "udp/ip  : %s:%i%s\n", net_local_adr.ToString(true), sv.GetUDPPort(), sPublicIPInfo.String() );
+#ifdef USE_STEAM_DATAGRAM
 		static ConVarRef sv_steamdatagramtransport_port( "sv_steamdatagramtransport_port" );
 		if ( bWithAddresses && sv_steamdatagramtransport_port.GetInt() > 0 )
 		{
 			print( "sdt     : =%s on port %d\n", Steam3Server().GetGSSteamID().Render(), sv_steamdatagramtransport_port.GetInt() );
 		}
+#endif
 
 		const char *osType =
 #if defined( WIN32 )

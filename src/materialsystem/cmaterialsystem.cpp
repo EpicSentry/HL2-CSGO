@@ -776,30 +776,30 @@ void CMaterialSystem::SetShaderAPI( char const *pShaderAPIDLL )
 //-----------------------------------------------------------------------------
 // Connect/disconnect
 //-----------------------------------------------------------------------------
-bool CMaterialSystem::Connect( CreateInterfaceFn factory )
+bool CMaterialSystem::Connect(CreateInterfaceFn factory)
 {
-	if ( !factory )
+	if (!factory)
 		return false;
 
-	if ( !BaseClass::Connect( factory ) )
+	if (!BaseClass::Connect(factory))
 		return false;
 
-	if ( !g_pFullFileSystem )
+	if (!g_pFullFileSystem)
 	{
-		Warning( "The material system requires the filesystem to run!\n" );
+		Warning("The material system requires the filesystem to run!\n");
 		return false;
 	}
-	
-	g_pVJobs = ( IVJobs* )factory( VJOBS_INTERFACE_VERSION, NULL );
+
+	g_pVJobs = (IVJobs*)factory(VJOBS_INTERFACE_VERSION, NULL);
 
 	// Get at the interfaces exported by the shader DLL
 
 #ifndef _OSX
-	g_pShaderDeviceMgr = (IShaderDeviceMgr*)m_ShaderAPIFactory( SHADER_DEVICE_MGR_INTERFACE_VERSION, 0 );
-	if ( !g_pShaderDeviceMgr )
+	g_pShaderDeviceMgr = (IShaderDeviceMgr*)m_ShaderAPIFactory(SHADER_DEVICE_MGR_INTERFACE_VERSION, 0);
+	if (!g_pShaderDeviceMgr)
 		return false;
-	g_pHWConfig = (IHardwareConfigInternal*)m_ShaderAPIFactory( MATERIALSYSTEM_HARDWARECONFIG_INTERFACE_VERSION, 0 );
-	if ( !g_pHWConfig )
+	g_pHWConfig = (IHardwareConfigInternal*)m_ShaderAPIFactory(MATERIALSYSTEM_HARDWARECONFIG_INTERFACE_VERSION, 0);
+	if (!g_pHWConfig)
 		return false;
 #endif
 
@@ -810,8 +810,8 @@ bool CMaterialSystem::Connect( CreateInterfaceFn factory )
 	g_pHWConfig = g_pHardwareConfig;
 #endif
 
-	g_pLauncherMgr = (ILauncherMgr *)factory( "SDLMgrInterface001", NULL );
-	if ( !g_pLauncherMgr )
+	g_pLauncherMgr = (ILauncherMgr *)factory("SDLMgrInterface001", NULL);
+	if (!g_pLauncherMgr)
 		return false;
 
 #elif defined( _PS3 )
@@ -825,15 +825,15 @@ bool CMaterialSystem::Connect( CreateInterfaceFn factory )
 	// error: declaration of C function ‘OSErr CreateThreadPool(ThreadStyle, SInt16, Size)’
 #define  COCOAMGR_INTERFACE_VERSION "CocoaMgrInterface006"
 
-	g_pLauncherMgr = (ILauncherMgr *)factory( COCOAMGR_INTERFACE_VERSION, NULL );		
-	if ( !g_pLauncherMgr )
+	g_pLauncherMgr = (ILauncherMgr *)factory(COCOAMGR_INTERFACE_VERSION, NULL);
+	if (!g_pLauncherMgr)
 		return false;
 
 #elif defined(_WIN32)
 
 #else
 
-	#error
+#error
 
 #endif
 
@@ -841,14 +841,14 @@ bool CMaterialSystem::Connect( CreateInterfaceFn factory )
 
 #ifndef _OSX
 	// FIXME: ShaderAPI, ShaderDevice, and ShaderShadow should only come in after setting mode
-	g_pShaderAPI = (IShaderAPI*)m_ShaderAPIFactory( SHADERAPI_INTERFACE_VERSION, 0 );
-	if ( !g_pShaderAPI )
+	g_pShaderAPI = (IShaderAPI*)m_ShaderAPIFactory(SHADERAPI_INTERFACE_VERSION, 0);
+	if (!g_pShaderAPI)
 		return false;
-	g_pShaderDevice = (IShaderDevice*)m_ShaderAPIFactory( SHADER_DEVICE_INTERFACE_VERSION, 0 );
-	if ( !g_pShaderDevice )
+	g_pShaderDevice = (IShaderDevice*)m_ShaderAPIFactory(SHADER_DEVICE_INTERFACE_VERSION, 0);
+	if (!g_pShaderDevice)
 		return false;
-	g_pShaderShadow = (IShaderShadow*)m_ShaderAPIFactory( SHADERSHADOW_INTERFACE_VERSION, 0 );
-	if ( !g_pShaderShadow )
+	g_pShaderShadow = (IShaderShadow*)m_ShaderAPIFactory(SHADERSHADOW_INTERFACE_VERSION, 0);
+	if (!g_pShaderShadow)
 		return false;
 #endif
 
@@ -856,11 +856,12 @@ bool CMaterialSystem::Connect( CreateInterfaceFn factory )
 	g_fnMatSystemConnectCreateInterface = factory;
 
 #if defined( INCLUDE_SCALEFORM )
-	g_pScaleformUI = ( IScaleformUI* ) factory( SCALEFORMUI_INTERFACE_VERSION, 0 );
+	g_pScaleformUI = (IScaleformUI*)factory(SCALEFORMUI_INTERFACE_VERSION, 0);
 #endif
 
-	return g_pShaderDeviceMgr->Connect( ShaderFactory );	
+	return g_pShaderDeviceMgr->Connect(ShaderFactory);
 }
+
 
 void CMaterialSystem::Disconnect()
 {

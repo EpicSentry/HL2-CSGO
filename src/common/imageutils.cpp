@@ -6,6 +6,8 @@
 //=======================================================================================//
 
 // @note Tom Bui: we need to use fopen below in the jpeg code, so we can't have this on...
+
+// Why are my jpegs not working? said the 64bit user, do a quick search for PLATFORM_64BITS and youll see why. if anyone has a **working** library for this shit let me know.
 #ifdef PROTECTED_THINGS_ENABLE
 #undef fopen
 #endif
@@ -163,7 +165,9 @@ public:
 		(*cinfo->err->output_message) (cinfo);
 
 		/* Let the memory manager delete any temp files before we die */
+#ifndef PLATFORM_64BITS
 		jpeg_destroy(cinfo);
+#endif
 
 		//exit( EXIT_FAILURE );
 		// FIXME: Can't we get a better error than this?
@@ -225,45 +229,59 @@ ConversionErrorType ImgUtl_ConvertJPEGToTGA( const char *jpegpath, const char *t
 	}
 
 	// setup error to print to stderr.
+#ifndef PLATFORM_64BITS
 	jpegInfo.err = jpeg_std_error(&jerr.m_Base);
 
 	jpegInfo.err->error_exit = &ValveJpegErrorHandler;
 
 	// create the decompress struct.
+
 	jpeg_create_decompress(&jpegInfo);
+#endif
 
 	if ( setjmp( jerr.m_ErrorContext ) )
 	{
 		// Get here if there is any error
+#ifndef PLATFORM_64BITS
 		jpeg_destroy_decompress( &jpegInfo );
+#endif
 
 		fclose(infile);
 
 		return CE_ERROR_PARSING_SOURCE;
 	}
 
+#ifndef PLATFORM_64BITS
 	jpeg_stdio_src(&jpegInfo, infile);
+#endif 
 
 	// read in the jpeg header and make sure that's all good.
+#ifndef PLATFORM_64BITS
 	if (jpeg_read_header(&jpegInfo, TRUE) != JPEG_HEADER_OK)
 	{
 		fclose(infile);
 		return CE_ERROR_PARSING_SOURCE;
 	}
 
+
 	// start the decompress with the jpeg engine.
+#ifndef PLATFORM_64BITS
 	if ( !jpeg_start_decompress(&jpegInfo) )
 	{
 		jpeg_destroy_decompress(&jpegInfo);
 		fclose(infile);
 		return CE_ERROR_PARSING_SOURCE;
 	}
+#endif
+#endif
 
 	// Check for valid width and height (ie. power of 2 and print out an error and exit if not).
 	if ( bRequirePowerOfTwo && ( !IsPowerOfTwo(jpegInfo.image_height) || !IsPowerOfTwo(jpegInfo.image_width) ) 
 		|| jpegInfo.output_components != 3 )
 	{
+#ifndef PLATFORM_64BITS
 		jpeg_destroy_decompress(&jpegInfo);
+#endif
 		fclose( infile );
 		return CE_SOURCE_FILE_SIZE_NOT_SUPPORTED;
 	}
@@ -279,13 +297,16 @@ ConversionErrorType ImgUtl_ConvertJPEGToTGA( const char *jpegpath, const char *t
 	unsigned char *buf = (unsigned char *)malloc(mem_required);
 	if (buf == NULL)
 	{
+#ifndef PLATFORM_64BITS
 		jpeg_destroy_decompress(&jpegInfo);
+#endif
 		fclose(infile);
 		return CE_MEMORY_ERROR;
 	}
 
 	// read in all the scan lines of the image into our image data buffer.
 	bool working = true;
+#ifndef PLATFORM_64BITS
 	while (working && (jpegInfo.output_scanline < jpegInfo.output_height))
 	{
 		row_pointer[0] = &(buf[cur_row * row_stride]);
@@ -295,16 +316,21 @@ ConversionErrorType ImgUtl_ConvertJPEGToTGA( const char *jpegpath, const char *t
 		}
 		++cur_row;
 	}
+#endif
 
 	if (!working)
 	{
 		free(buf);
+#ifndef PLATFORM_64BITS
 		jpeg_destroy_decompress(&jpegInfo);
+#endif 
 		fclose(infile);
 		return CE_ERROR_PARSING_SOURCE;
 	}
 
+#ifndef PLATFORM_64BITS
 	jpeg_finish_decompress(&jpegInfo);
+#endif
 
 	fclose(infile);
 	
@@ -586,17 +612,22 @@ unsigned char *ImgUtl_ReadJPEGAsRGBA( const char *jpegPath, int &width, int &hei
 
 	// setup error to print to stderr.
 	memset( &jpegInfo, 0, sizeof( jpegInfo ) );
+#ifndef PLATFORM_64BITS
 	jpegInfo.err = jpeg_std_error(&jerr.m_Base);
 
 	jpegInfo.err->error_exit = &ValveJpegErrorHandler;
 
 	// create the decompress struct.
+
 	jpeg_create_decompress(&jpegInfo);
+#endif
 
 	if ( setjmp( jerr.m_ErrorContext ) )
 	{
 		// Get here if there is any error
+#ifndef PLATFORM_64BITS
 		jpeg_destroy_decompress( &jpegInfo );
+#endif
 
 		fclose( infile );
 		//g_pFullFileSystem->Close( fileHandle );
@@ -605,10 +636,13 @@ unsigned char *ImgUtl_ReadJPEGAsRGBA( const char *jpegPath, int &width, int &hei
 		return NULL;
 	}
 
+#ifndef PLATFORM_64BITS
 	jpeg_stdio_src(&jpegInfo, infile);
+#endif
 	//jpegInfo.src = &src;
 
 	// read in the jpeg header and make sure that's all good.
+#ifndef PLATFORM_64BITS
 	if (jpeg_read_header(&jpegInfo, TRUE) != JPEG_HEADER_OK)
 	{
 		fclose( infile );
@@ -626,11 +660,14 @@ unsigned char *ImgUtl_ReadJPEGAsRGBA( const char *jpegPath, int &width, int &hei
 		errcode = CE_ERROR_PARSING_SOURCE;
 		return NULL;
 	}
+#endif
 
 	// We only support 24-bit JPEG's
 	if ( jpegInfo.out_color_space != JCS_RGB || jpegInfo.output_components != 3 )
 	{
+#ifndef PLATFORM_64BITS
 		jpeg_destroy_decompress(&jpegInfo);
+#endif
 		fclose( infile );
 		//g_pFullFileSystem->Close( fileHandle );
 		errcode = CE_SOURCE_FILE_SIZE_NOT_SUPPORTED;
@@ -648,7 +685,9 @@ unsigned char *ImgUtl_ReadJPEGAsRGBA( const char *jpegPath, int &width, int &hei
 	unsigned char *buf = (unsigned char *)malloc(mem_required);
 	if (buf == NULL)
 	{
+#ifndef PLATFORM_64BITS
 		jpeg_destroy_decompress(&jpegInfo);
+#endif
 		fclose( infile );
 		//g_pFullFileSystem->Close( fileHandle );
 		errcode = CE_MEMORY_ERROR;
@@ -661,10 +700,12 @@ unsigned char *ImgUtl_ReadJPEGAsRGBA( const char *jpegPath, int &width, int &hei
 	{
 		unsigned char *pRow = &(buf[cur_row * row_stride]);
 		row_pointer[0] = pRow;
+#ifndef PLATFORM_64BITS
 		if ( !jpeg_read_scanlines(&jpegInfo, row_pointer, 1) )
 		{
 			working = false;
 		}
+#endif
 
 		// Expand the row RGB -> RGBA
 		for ( int x = image_width-1 ; x >= 0 ; --x )
@@ -681,7 +722,9 @@ unsigned char *ImgUtl_ReadJPEGAsRGBA( const char *jpegPath, int &width, int &hei
 	// Clean up
 	fclose( infile );
 	//g_pFullFileSystem->Close( fileHandle );
+#ifndef PLATFORM_64BITS
 	jpeg_destroy_decompress(&jpegInfo);
+#endif
 
 	// Check success status
 	if (!working)
@@ -716,16 +759,22 @@ ConversionErrorType ImgUtl_ReadJPEGAsRGBA( CUtlBuffer &srcBuf, CUtlBuffer &dstBu
 	struct ValveJpegErrorHandler_t jerr;
 
 	memset( &jpegInfo, 0, sizeof( jpegInfo ) );
+#ifndef PLATFORM_64BITS
 	jpegInfo.err = jpeg_std_error(&jerr.m_Base);
+#endif
 	jpegInfo.err->error_exit = &ValveJpegErrorHandler;
 
 	// create the decompress struct.
+#ifndef PLATFORM_64BITS
 	jpeg_create_decompress(&jpegInfo);
+#endif
 
 	if ( setjmp( jerr.m_ErrorContext ) )
 	{
 		// Get here if there is any error
+#ifndef PLATFORM_64BITS
 		jpeg_destroy_decompress( &jpegInfo );
+#endif
 		return CE_ERROR_PARSING_SOURCE;
 	}
 
@@ -733,6 +782,7 @@ ConversionErrorType ImgUtl_ReadJPEGAsRGBA( CUtlBuffer &srcBuf, CUtlBuffer &dstBu
 	jpegInfo.src = &jpgMgr;
 	
 	// read in the jpeg header and make sure that's all good.
+#ifndef PLATFORM_64BITS
 	if (jpeg_read_header(&jpegInfo, TRUE) != JPEG_HEADER_OK)
 	{
 		//fclose( infile );
@@ -743,14 +793,19 @@ ConversionErrorType ImgUtl_ReadJPEGAsRGBA( CUtlBuffer &srcBuf, CUtlBuffer &dstBu
 	// start the decompress with the jpeg engine.
 	if ( !jpeg_start_decompress(&jpegInfo) )
 	{
+#ifndef PLATFORM_64BITS
 		jpeg_destroy_decompress(&jpegInfo);
+#endif
 		return CE_ERROR_PARSING_SOURCE;
 	}
+#endif
 
 	// We only support 24-bit JPEG's
 	if ( jpegInfo.out_color_space != JCS_RGB || jpegInfo.output_components != 3 )
 	{
+#ifndef PLATFORM_64BITS
 		jpeg_destroy_decompress(&jpegInfo);
+#endif
 		return CE_SOURCE_FILE_SIZE_NOT_SUPPORTED;
 	}
 
@@ -779,10 +834,12 @@ ConversionErrorType ImgUtl_ReadJPEGAsRGBA( CUtlBuffer &srcBuf, CUtlBuffer &dstBu
 	{
 		unsigned char *pRow = &(pDstBuf[cur_row * row_stride]);
 		row_pointer[0] = pRow;
+#ifndef PLATFORM_64BITS
 		if ( !jpeg_read_scanlines(&jpegInfo, row_pointer, 1) )
 		{
 			working = false;
 		}
+#endif
 
 		// Expand the row RGB -> RGBA
 		for ( int x = image_width-1 ; x >= 0 ; --x )
@@ -799,7 +856,9 @@ ConversionErrorType ImgUtl_ReadJPEGAsRGBA( CUtlBuffer &srcBuf, CUtlBuffer &dstBu
 	// Clean up
 	//fclose( infile );
 	//g_pFullFileSystem->Close( fileHandle );
+#ifndef PLATFORM_64BITS
 	jpeg_destroy_decompress(&jpegInfo);
+#endif
 
 	// Check success status
 	if ( !working )
@@ -2178,10 +2237,13 @@ bool ImgUtl_WriteRGBToJPEG( unsigned char *pSrcBuf, unsigned int nSrcWidth, unsi
 	row_stride = nSrcWidth * 3; // JSAMPLEs per row in image_buffer
 
 	// point at stderr
+#ifndef PLATFORM_64BITS
 	cinfo.err = jpeg_std_error(&jerr);
 
 	// create compressor
+
 	jpeg_create_compress(&cinfo);
+#endif
 
 	// Hook CUtlBuffer to compression
 	jpeg_UtlBuffer_dest(&cinfo, &dstBuf );
@@ -2195,11 +2257,15 @@ bool ImgUtl_WriteRGBToJPEG( unsigned char *pSrcBuf, unsigned int nSrcWidth, unsi
 	cinfo.in_color_space = JCS_RGB;
 
 	// Apply settings
+#ifndef PLATFORM_64BITS
 	jpeg_set_defaults(&cinfo);
 	jpeg_set_quality(&cinfo, 100, TRUE );
+#endif
 
 	// Start compressor
+#ifndef PLATFORM_64BITS
 	jpeg_start_compress(&cinfo, TRUE);
+
 
 	// Write scanlines
 	while ( cinfo.next_scanline < cinfo.image_height ) 
@@ -2209,10 +2275,12 @@ bool ImgUtl_WriteRGBToJPEG( unsigned char *pSrcBuf, unsigned int nSrcWidth, unsi
 	}
 
 	// Finalize image
+
 	jpeg_finish_compress(&cinfo);
 
 	// Cleanup
 	jpeg_destroy_compress(&cinfo);
+#endif
 	
 	return CE_SUCCESS;
 }
@@ -2233,10 +2301,13 @@ ConversionErrorType ImgUtl_WriteRGBAAsJPEGToBuffer( const unsigned char *pRGBADa
 	row_stride = nWidth * 4;
 
 	// point at stderr
+#ifndef PLATFORM_64BITS
 	cinfo.err = jpeg_std_error(&jerr);
 
 	// create compressor
+
 	jpeg_create_compress(&cinfo);
+#endif
 
 	// Hook CUtlBuffer to compression
 	jpeg_UtlBuffer_dest(&cinfo, &bufOutData );
@@ -2250,11 +2321,13 @@ ConversionErrorType ImgUtl_WriteRGBAAsJPEGToBuffer( const unsigned char *pRGBADa
 	cinfo.in_color_space = JCS_RGB;
 
 	// Apply settings
+#ifndef PLATFORM_64BITS
 	jpeg_set_defaults(&cinfo);
 	jpeg_set_quality(&cinfo, 100, TRUE );
 
 	// Start compressor
 	jpeg_start_compress(&cinfo, TRUE);
+#endif
 
 	// Write scanlines
 	unsigned char *pDstRow = (unsigned char *)malloc( sizeof(unsigned char) * nWidth * 4 );
@@ -2269,14 +2342,18 @@ ConversionErrorType ImgUtl_WriteRGBAAsJPEGToBuffer( const unsigned char *pRGBADa
 			pDstRow[x*3] = pSrcRow[x*4];
 		}
 		row_pointer[ 0 ] = pDstRow;
+#ifndef PLATFORM_64BITS
 		jpeg_write_scanlines( &cinfo, row_pointer, 1 );
+#endif
 	}
 
 	// Finalize image
+#ifndef PLATFORM_64BITS
 	jpeg_finish_compress(&cinfo);
 
 	// Cleanup
 	jpeg_destroy_compress(&cinfo);
+#endif
 
 	free( pDstRow );
 
@@ -2460,12 +2537,15 @@ ConversionErrorType ImgUtl_ReadJPEGToRGB( CUtlBuffer &srcBuf, CUtlBuffer &dstBuf
 	struct jpeg_error_mgr jerr;
 
 	memset( &jpegInfo, 0, sizeof( jpegInfo ) );
+#ifndef PLATFORM_64BITS
 	jpegInfo.err = jpeg_std_error(&jerr);
+
 	jpeg_create_decompress(&jpegInfo);
+#endif
 	jpegInfo.src = &jpgMgr;
 
 	jpegInfo.err->error_exit = &ValveJpegErrorHandler;
-
+#ifndef PLATFORM_64BITS
 	if ( jpeg_read_header( &jpegInfo, TRUE ) != JPEG_HEADER_OK)
 		return CE_ERROR_PARSING_SOURCE;
 
@@ -2475,6 +2555,7 @@ ConversionErrorType ImgUtl_ReadJPEGToRGB( CUtlBuffer &srcBuf, CUtlBuffer &dstBuf
 		jpeg_destroy_decompress(&jpegInfo);
 		return CE_ERROR_PARSING_SOURCE;
 	}
+#endif
 
 	// now that we've started the decompress with the jpeg lib, we have the attributes of the
 	// image ready to be read out of the decompress struct.
@@ -2495,20 +2576,26 @@ ConversionErrorType ImgUtl_ReadJPEGToRGB( CUtlBuffer &srcBuf, CUtlBuffer &dstBuf
 	while (working && (jpegInfo.output_scanline < jpegInfo.output_height))
 	{
 		row_pointer[0] = &(pDstBuf[cur_row * row_stride]);
+#ifndef PLATFORM_64BITS
 		if (!jpeg_read_scanlines(&jpegInfo, row_pointer, 1) )
 		{
 			working = false;
 		}
+#endif
 		++cur_row;
 	}
 
 	if (!working)
 	{
+#ifndef PLATFORM_64BITS
 		jpeg_destroy_decompress(&jpegInfo);
+#endif
 		return CE_ERROR_PARSING_SOURCE;
 	}
 
+#ifndef PLATFORM_64BITS
 	jpeg_finish_decompress(&jpegInfo);
+#endif
 
 	// Place our read point at the end of the file
 	dstBuf.SeekPut( CUtlBuffer::SEEK_CURRENT, mem_required );
@@ -2556,11 +2643,14 @@ bool ImgUtl_WriteRGBAToJPEG( unsigned char *pSrcBuf, unsigned int nSrcWidth, uns
 	row_stride = nSrcWidth * 3; // JSAMPLEs per row in image_buffer
 
 	struct ValveJpegErrorHandler_t jerr;
+#ifndef PLATFORM_64BITS
 	cinfo.err = jpeg_std_error(&jerr.m_Base);
 	cinfo.err->error_exit = &ValveJpegErrorHandler;
 
 	// create compressor
+
 	jpeg_create_compress(&cinfo);
+#endif
 
 	// Hook CUtlBuffer to compression
 	jpeg_UtlBuffer_dest(&cinfo, &dstBuf );
@@ -2581,24 +2671,32 @@ bool ImgUtl_WriteRGBAToJPEG( unsigned char *pSrcBuf, unsigned int nSrcWidth, uns
 	cinfo.in_color_space = JCS_RGB;
 
 	// Apply settings
+#ifndef PLATFORM_64BITS
 	jpeg_set_defaults(&cinfo);
 	jpeg_set_quality(&cinfo, 100, TRUE );
 
 	// Start compressor
 	jpeg_start_compress(&cinfo, TRUE);
+#endif 
 
 	// Write scanlines
 	while ( cinfo.next_scanline < cinfo.image_height ) 
 	{
 		row_pointer[ 0 ] = &pConvBuf[ cinfo.next_scanline * row_stride ];
+#ifndef PLATFORM_64BITS
 		jpeg_write_scanlines( &cinfo, row_pointer, 1 );
+#endif
 	}
 
 	// Finalize image
+#ifndef PLATFORM_64BITS
 	jpeg_finish_compress(&cinfo);
+#endif
 
 	// Cleanup
+#ifndef PLATFORM_64BITS
 	jpeg_destroy_compress(&cinfo);
+#endif
 
 	free( pConvBuf );
 

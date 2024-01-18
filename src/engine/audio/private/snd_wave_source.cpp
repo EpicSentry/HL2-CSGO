@@ -1086,6 +1086,7 @@ CAudioMixer *CAudioSourceMemWave::CreateMixer( int initialStreamPosition, int sk
 		pHRTFVector = nullptr;
 	}
 
+#ifndef PLATFORM_64BITS
 	CAudioMixer *pMixer = CreateWaveMixer( CreateWaveDataHRTF(CreateWaveDataMemory(*this), pHRTFVector), m_format, pHRTFVector ? 2 : m_channels, m_bits, initialStreamPosition, skipInitialSamples, bUpdateDelayForChoreo );
 	if ( pMixer )
 	{
@@ -1093,10 +1094,15 @@ CAudioMixer *CAudioSourceMemWave::CreateMixer( int initialStreamPosition, int sk
 		soundError = SE_OK;
 	}
 	else
+#endif
 	{
 		soundError = SE_CANT_CREATE_MIXER;
 	}
+#ifndef PLATFORM_64BITS
 	return pMixer;
+#else
+	return NULL;
+#endif
 }
 
 //-----------------------------------------------------------------------------
@@ -1745,6 +1751,7 @@ CAudioMixer *CAudioSourceStreamWave::CreateMixer( int initialStreamPosition, int
 		pHRTFVec = nullptr;
 	}
 
+#ifndef PLATFORM_64BITS
 	// BUGBUG: Source constructs the IWaveData, mixer frees it, fix this?
 	IWaveData *pWaveData = CreateWaveDataHRTF(CreateWaveDataStream( *this, static_cast<IWaveStreamSource *>(this), pFileName, m_dataStart, m_dataSize, m_pSfx, initialStreamPosition, skipInitialSamples, soundError ), pHRTFVec);
 	if ( pWaveData )
@@ -1759,6 +1766,7 @@ CAudioMixer *CAudioSourceStreamWave::CreateMixer( int initialStreamPosition, int
 		// no mixer, delete the stream buffer/instance
 		delete pWaveData;
 	}
+#endif
 
 	return NULL;
 }

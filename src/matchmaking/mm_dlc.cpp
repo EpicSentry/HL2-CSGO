@@ -92,6 +92,7 @@ void CDlcManager::Update()
 		if ( m_bNeedToUpdateFileSystem )
 		{
 			m_bNeedToUpdateFileSystem = false;
+//			g_pFullFileSystem->DiscoverDLC( XBX_GetPrimaryUserId() );
 		}
 	}
 }

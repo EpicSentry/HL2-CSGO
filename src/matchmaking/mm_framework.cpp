@@ -624,6 +624,16 @@ void CMatchSteamInviteListener::Steam_OnGameLobbyJoinRequested( GameLobbyJoinReq
 	XBX_SetInvitedUserId( XBX_GetPrimaryUserId() );
 	#endif
 
+	// Whether we have to make invite go pending
+	char chBuffer[2] = {};
+	if ( g_pMatchExtensions->GetIVEngineClient()->IsDrawingLoadingImage() ||
+		( g_pMatchEventsSubscription && g_pMatchEventsSubscription->IsBroacasting() ) )// ||
+//		( g_pMatchExtensions->GetIBaseClientDLL()->GetStatus( chBuffer, 2 ), ( chBuffer[0] != '+' ) ) )
+	{
+		m_msgPending = *pJoinInvite;
+		return;
+	}
+
 	// Invite accepted logic after globals have been setup
 	OnInviteAccepted();
 }

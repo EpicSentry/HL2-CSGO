@@ -273,6 +273,9 @@ bool CMatchTitle::StartServerMap( KeyValues *pSettings )
 	if ( !Q_stricmp( "commentary", pSettings->GetString( "options/play", "" ) ) )
 		pGameDllReserve->SetString( "map/mapcommand", "map_commentary" );
 
+	// Run map based off the faked reservation packet
+//	g_pMatchExtensions->GetIVEngineClient()->StartLoadingScreenForKeyValues( pGameDllReserve );
+
 	return true;
 }
 

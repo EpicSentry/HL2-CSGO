@@ -30,7 +30,7 @@
 #include "OptionsSubPortal.h"
 #ifdef WIN32
 // NVNT haptic configuration dialog
-#include "OptionsSubHaptics.h"
+//#include "OptionsSubHaptics.h"
 #endif
 #include "ModInfo.h"
 
@@ -59,7 +59,7 @@ COptionsDialog::COptionsDialog(vgui::Panel *parent) : PropertyDialog(parent, "Op
 	checkHap.Init("hap_HasDevice",true);
 	if(checkHap.GetBool())
 	{
-		AddPage(new COptionsSubHaptics(this), "#GameUI_Haptics_TabTitle");
+		//AddPage(new COptionsSubHaptics(this), "#GameUI_Haptics_TabTitle");
 	}
 	// NVNT END
 #endif

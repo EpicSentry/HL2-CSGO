@@ -96,7 +96,7 @@ bool CConnectionlessLanMgr::ProcessConnectionlessPacket( netpacket_t *packet )
 		
 	MEM_ALLOC_CREDIT();
 	KeyValues *notify = new KeyValues( "OnNetLanConnectionlessPacket" );
-	notify->SetString( "from", ns_address_render( packet->from ).String() );
+	//notify->SetString( "from", ns_address_render( packet->from ).String() );
 	notify->AddSubKey( pMsg );
 	
 	g_pMatchEventsSubscription->BroadcastEvent( notify );

@@ -602,6 +602,9 @@ void CMatchSessionOnlineHost::OnRunCommand_QueueConnect( KeyValues *pCommand )
 
 	// Determine reservation settings required
 	g_pMatchExtensions->GetINetSupport()->UpdateClientReservation( uiReservationId, 0ull );
+
+	// Issue the connect command
+//	g_pMatchExtensions->GetIVEngineClient()->StartLoadingScreenForCommand( CFmtStr( "connect %s", szConnectAddress ) );
 }
 
 void CMatchSessionOnlineHost::ConnectGameServer( CDsSearcher::DsResult_t *pDsResult )
@@ -653,6 +656,9 @@ void CMatchSessionOnlineHost::ConnectGameServer( CDsSearcher::DsResult_t *pDsRes
 
 	// Mark gameplay state as active
 	SetSessionActiveGameplayState( true, msInfo.m_szSecureServerAddress );
+
+	// Issue the connect command
+//	g_pMatchExtensions->GetIVEngineClient()->StartLoadingScreenForCommand( msInfo.m_szConnectCmd );	
 
 	// Tell the rest of the team
 	InviteTeam();

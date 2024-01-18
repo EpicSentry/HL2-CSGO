@@ -1063,7 +1063,9 @@ void S_Init( void )
 
 void DumpFilePaths(const char *filename);
 
+#ifndef PLATFORM_64BITS
 void ShutdownPhononThread();
+#endif
 
 // =======================================================================
 // Shutdown sound engine
@@ -1120,7 +1122,9 @@ void S_Shutdown(void)
 
 		S_StopAllSounds( true );
 		S_ShutdownMixThread();
+#ifndef PLATFORM_64BITS
 		ShutdownPhononThread();
+#endif
 
 
 
@@ -9069,13 +9073,17 @@ void S_ShutdownMixThread()
 	}
 }
 
+#ifndef PLATFORM_64BITS
 void StartPhononThread();
+#endif
 
 void S_Update_( float mixAheadTime )
 {
 	if (snd_use_hrtf.GetBool())
 	{
+#ifndef PLATFORM_64BITS
 		StartPhononThread();
+#endif
 	}
 
 	if ( !snd_mix_async.GetBool() )
