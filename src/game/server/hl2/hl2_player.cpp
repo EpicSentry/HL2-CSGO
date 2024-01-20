@@ -159,6 +159,7 @@ static impactdamagetable_t gCappedPlayerImpactDamageTable =
 // Flashlight utility
 bool g_bCacheLegacyFlashlightStatus = true;
 bool g_bUseLegacyFlashlight;
+bool m_bFlashlightIsOn;
 bool Flashlight_UseLegacyVersion( void )
 {
 	// If this is the first run through, cache off what the answer should be (cannot change during a session)
@@ -1117,6 +1118,7 @@ void CHL2_Player::Spawn(void)
 #endif
 
 	BaseClass::Spawn();
+	m_bFlashlightIsOn = false;
 
 	//
 	// Our player movement speed is set once here. This will override the cl_xxxx
@@ -2041,13 +2043,12 @@ void CHL2_Player::FlashlightTurnOn( void )
 
 	AddEffects( EF_DIMLIGHT );
 	EmitSound( "HL2Player.FlashLightOn" );
-	Msg("Flashlight");
 
 	variant_t flashlighton;
 	flashlighton.SetFloat( m_HL2Local.m_flSuitPower / 100.0f );
 	FirePlayerProxyOutput( "OnFlashlightOn", flashlighton, this, this );
+	m_bFlashlightIsOn = true;
 }
-
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
@@ -2065,7 +2066,27 @@ void CHL2_Player::FlashlightTurnOff( void )
 	variant_t flashlightoff;
 	flashlightoff.SetFloat( m_HL2Local.m_flSuitPower / 100.0f );
 	FirePlayerProxyOutput( "OnFlashlightOff", flashlightoff, this, this );
+	m_bFlashlightIsOn = false;
 }
+
+static void CC_FlashlightToggle(const CCommand& args)
+{
+	if (m_bFlashlightIsOn)
+	{
+		CHL2_Player* pPlayer = dynamic_cast<CHL2_Player*>(UTIL_GetLocalPlayer());
+		if (!pPlayer)
+			return;
+		pPlayer->FlashlightTurnOff();
+	}
+	else
+	{
+		CHL2_Player* pPlayer = dynamic_cast<CHL2_Player*>(UTIL_GetLocalPlayer());
+		if (!pPlayer)
+			return;
+		pPlayer->FlashlightTurnOn();
+	}
+}
+static ConCommand flashlightToggleCommand("toggleflashlight", CC_FlashlightToggle, "Toggle flashlight on and off", FCVAR_CLIENTCMD_CAN_EXECUTE);
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------

@@ -325,7 +325,7 @@ int ParseDirective( const char *pText )
 			{
 				for ( int i = 0; i < 4; ++i )
 				{
-//					gMessageParms.boxcolor[ i ] = (byte)(int)tempFloat[ i ];
+					gMessageParms.boxcolor[ i ] = (byte)(int)tempFloat[ i ];
 				}
 			}
 		}
