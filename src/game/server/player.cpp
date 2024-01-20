@@ -43,6 +43,7 @@
 #include "iservervehicle.h"
 #include "movevars_shared.h"
 #include "vcollide_parse.h"
+#include "hl2_player.h"
 #include "player_command.h"
 #include "vehicle_base.h"
 #include "ai_criteria.h"
@@ -296,7 +297,6 @@ BEGIN_DATADESC( CBasePlayer )
 	DEFINE_FIELD( m_vecCameraPVSOrigin, FIELD_POSITION_VECTOR ),
 
 	DEFINE_FIELD( m_bDropEnabled, FIELD_BOOLEAN ),
-	DEFINE_FIELD( m_bDuckEnabled, FIELD_BOOLEAN ),
 	DEFINE_FIELD( m_hUseEntity, FIELD_EHANDLE ),
 	DEFINE_FIELD( m_iTrain, FIELD_INTEGER ),
 	DEFINE_FIELD( m_iRespawnFrames, FIELD_FLOAT ),
@@ -457,7 +457,6 @@ BEGIN_DATADESC( CBasePlayer )
 	DEFINE_INPUTFUNC( FIELD_STRING, "SetFogController", InputSetFogController ),
 
 	DEFINE_FIELD( m_nNumCrouches, FIELD_INTEGER ),
-	DEFINE_FIELD( m_bDuckToggled, FIELD_BOOLEAN ),
 	DEFINE_FIELD( m_flForwardMove, FIELD_FLOAT ),
 	DEFINE_FIELD( m_flSideMove, FIELD_FLOAT ),
 	DEFINE_FIELD( m_vecPreviouslyPredictedOrigin, FIELD_POSITION_VECTOR ), 
@@ -469,8 +468,7 @@ BEGIN_DATADESC( CBasePlayer )
 	DEFINE_EMBEDDED( m_PlayerFog ),
 
 
-	DEFINE_FIELD( m_flDuckAmount, FIELD_FLOAT ),
-	DEFINE_FIELD( m_flDuckSpeed, FIELD_FLOAT ),
+
 
 	// DEFINE_FIELD( m_nBodyPitchPoseParam, FIELD_INTEGER ),
 	// DEFINE_ARRAY( m_StepSoundCache, StepSoundCache_t,  2  ),
@@ -661,7 +659,6 @@ CBasePlayer::CBasePlayer()
 	m_autoKickDisabled = false;
 
 	m_nNumCrouches = 0;
-	m_bDuckToggled = false;
 	m_bPhysicsWasFrozen = false;
 
 	// Used to mask off buttons
@@ -1909,11 +1906,7 @@ void CBasePlayer::SetAnimation( PLAYER_ANIM playerAnim )
 	
 	if (idealActivity == ACT_RANGE_ATTACK1)
 	{
-		if ( GetFlags() & FL_DUCKING )	// crouching
-		{
-			Q_strncpy( szAnim, "crouch_shoot_" ,sizeof(szAnim));
-		}
-		else
+		
 		{
 			Q_strncpy( szAnim, "ref_shoot_" ,sizeof(szAnim));
 		}
@@ -1940,11 +1933,7 @@ void CBasePlayer::SetAnimation( PLAYER_ANIM playerAnim )
 	{
 		if (GetActivity() != ACT_RANGE_ATTACK1 || IsActivityFinished())
 		{
-			if ( GetFlags() & FL_DUCKING )	// crouching
-			{
-				Q_strncpy( szAnim, "crouch_aim_" ,sizeof(szAnim));
-			}
-			else
+
 			{
 				Q_strncpy( szAnim, "ref_aim_" ,sizeof(szAnim));
 			}
@@ -2215,11 +2204,7 @@ void CBasePlayer::PlayerDeathThink(void)
 	
 	int fAnyButtonDown = (m_nButtons & ~IN_SCORE);
 	
-	// Strip out the duck key from this check if it's toggled
-	if ( (fAnyButtonDown & IN_DUCK) && GetToggledDuckState())
-	{
-		fAnyButtonDown &= ~IN_DUCK;
-	}
+
 
 	// wait for all buttons released
 	if (m_lifeState == LIFE_DEAD)
@@ -2367,9 +2352,7 @@ bool CBasePlayer::StartObserverMode(int mode)
 
 	SetGroundEntity( (CBaseEntity *)NULL );
 	
-	RemoveFlag( FL_DUCKING | FL_ANIMDUCKING );
-	m_Local.m_bDucking = m_Local.m_bDucked = false;
-	m_flDuckAmount = 0.0f;
+
 	
     AddSolidFlags( FSOLID_NOT_SOLID );
 
@@ -2583,16 +2566,10 @@ void CBasePlayer::CheckObserverSettings()
 
 		if ( target && m_iObserverMode == OBS_MODE_IN_EYE )
 		{
-			int flagMask =	FL_ONGROUND | FL_DUCKING ;
 
-			int flags = target->GetFlags() & flagMask;
 
-			if ( (GetFlags() & flagMask) != flags )
-			{
-				flags |= GetFlags() & (~flagMask); // keep other flags
-				ClearFlags();
-				AddFlag( flags );
-			}
+
+
 
 			if ( target->GetViewOffset() != GetViewOffset()	)
 			{
@@ -2884,7 +2861,7 @@ bool CBasePlayer::SetObserverTarget(CBaseEntity *target)
 		VectorMA( start, -64.0f, dir, end );
 
 		Ray_t ray;
-		ray.Init( start, end, VEC_DUCK_HULL_MIN	, VEC_DUCK_HULL_MAX );
+
 
 		trace_t	tr;
 		MDLCACHE_CRITICAL_SECTION();
@@ -3085,16 +3062,18 @@ void CBasePlayer::Jump()
 {
 }
 
-void CBasePlayer::Duck( )
+void CBasePlayer::Duck()
 {
-	if (m_nButtons & IN_DUCK) 
+	if (m_nButtons & IN_DUCK)
 	{
-		if ( m_Activity != ACT_LEAP )
+		if (m_Activity != ACT_LEAP)
 		{
-			SetAnimation( PLAYER_WALK );
+			SetAnimation(PLAYER_WALK);
 		}
 	}
 }
+
+
 
 //
 // ID's player as such.
@@ -3841,8 +3820,7 @@ void CBasePlayer::DumpPerfToRecipient( CBasePlayer *pRecipient, int nMaxRecords 
 	}
 }
 
-// Duck debouncing code to stop menu changes from disallowing crouch/uncrouch
-ConVar xc_crouch_debounce( "xc_crouch_debounce", "0", FCVAR_NONE );
+
 
 //-----------------------------------------------------------------------------
 // Purpose: 
@@ -3878,30 +3856,7 @@ void CBasePlayer::PlayerRunCommand(CUserCmd *ucmd, IMoveHelper *moveHelper)
 		ucmd->impulse = 0;
 		VectorCopy ( pl.v_angle, ucmd->viewangles );
 	}
-	else if( !m_bDuckEnabled )
-	{
-		ucmd->buttons &= ~IN_DUCK;
-		m_bDuckToggled = false;
-	}
-	else
-	{
-		// Force a duck if we're toggled
-		if ( GetToggledDuckState() )
-		{
-			// If this is set, we've altered our menu options and need to debounce the duck
-			if ( xc_crouch_debounce.GetBool() )
-			{
-				ToggleDuck();
-				
-				// Mark it as handled
-				xc_crouch_debounce.SetValue( 0 );
-			}
-			else
-			{
-				ucmd->buttons |= IN_DUCK;
-			}
-		}
-	}
+
 	
 	PlayerMove()->RunCommand(this, ucmd, moveHelper);
 }
@@ -4064,9 +4019,7 @@ void CBasePlayer::PreThink(void)
 		Jump();
 	}
 
-	// If trying to duck, already ducked, or in the process of ducking
-	if ((m_nButtons & IN_DUCK) || (GetFlags() & FL_DUCKING) || (m_afPhysicsFlags & PFLAG_DUCKING) )
-		Duck();
+
 
 	//
 	// If we're not on the ground, we're falling. Update our falling velocity.
@@ -4636,46 +4589,7 @@ void CBasePlayer::UpdatePlayerSound ( void )
 	//Msg( "%d/%d\n", iVolume, m_iTargetVolume );
 }
 
-// This is a glorious hack to find free space when you've crouched into some solid space
-// Our crouching collisions do not work correctly for some reason and this is easier
-// than fixing the problem :(
-void FixPlayerCrouchStuck( CBasePlayer *pPlayer )
-{
-	trace_t trace;
 
-	// Move up as many as 18 pixels if the player is stuck.
-	int i;
-	Vector org = pPlayer->GetAbsOrigin();;
-	for ( i = 0; i < 18; i++ )
-	{
-		UTIL_TraceHull( pPlayer->GetAbsOrigin(), pPlayer->GetAbsOrigin(), 
-			VEC_DUCK_HULL_MIN, VEC_DUCK_HULL_MAX, MASK_PLAYERSOLID, pPlayer, COLLISION_GROUP_PLAYER_MOVEMENT, &trace );
-		if ( trace.startsolid )
-		{
-			Vector origin = pPlayer->GetAbsOrigin();
-			origin.z += 1.0f;
-			pPlayer->SetLocalOrigin( origin );
-		}
-		else
-			return;
-	}
-
-	pPlayer->SetAbsOrigin( org );
-
-	for ( i = 0; i < 18; i++ )
-	{
-		UTIL_TraceHull( pPlayer->GetAbsOrigin(), pPlayer->GetAbsOrigin(), 
-			VEC_DUCK_HULL_MIN, VEC_DUCK_HULL_MAX, MASK_PLAYERSOLID, pPlayer, COLLISION_GROUP_PLAYER_MOVEMENT, &trace );
-		if ( trace.startsolid )
-		{
-			Vector origin = pPlayer->GetAbsOrigin();
-			origin.z -= 1.0f;
-			pPlayer->SetLocalOrigin( origin );
-		}
-		else
-			return;
-	}
-}
 #define SMOOTHING_FACTOR 0.9
 extern CMoveData *g_pMoveData;
 
@@ -5117,8 +5031,6 @@ void CBasePlayer::Spawn(void)
 
 	g_pGameRules->GetPlayerSpawnSpot(this);
 
-	m_Local.m_bDucked = false;// This will persist over round restart if you hold duck otherwise. 
-	m_Local.m_bDucking = false;
 	SetViewOffset(VEC_VIEW_SCALED(this));
 	Precache();
 
@@ -5373,18 +5285,7 @@ int CBasePlayer::Restore( IRestore &restore )
 	// clear this - it will get reset by touching the trigger again
 	m_afPhysicsFlags &= ~PFLAG_VPHYSICS_MOTIONCONTROLLER;
 
-	if ( GetFlags() & FL_DUCKING ) 
-	{
-		// Use the crouch HACK
-		FixPlayerCrouchStuck( this );
-		UTIL_SetSize(this, VEC_DUCK_HULL_MIN, VEC_DUCK_HULL_MAX);
-		m_Local.m_bDucked = true;
-	}
-	else
-	{
-		m_Local.m_bDucked = false;
-		UTIL_SetSize(this, VEC_HULL_MIN, VEC_HULL_MAX);
-	}
+
 
 	// We need to get at m_vecAbsOrigin as it was restored but can't let it be
 	// recalculated by a call to GetAbsOrigin because hierarchy isn't fully restored yet,
@@ -5645,20 +5546,20 @@ bool CBasePlayer::GetInVehicle( IServerVehicle *pVehicle, int nRole )
 	SetParent( pEnt );
 
 	SetCollisionGroup( COLLISION_GROUP_IN_VEHICLE );
-	
+
 	// We cannot be ducking -- do all this before SetPassenger because it
 	// saves our view offset for restoration when we exit the vehicle.
-	RemoveFlag( FL_DUCKING | FL_ANIMDUCKING);
-	SetViewOffset( VEC_VIEW );
+	RemoveFlag(FL_DUCKING | FL_ANIMDUCKING);
+	SetViewOffset(VEC_VIEW);
 	m_flDuckAmount = 0.0f;
 	m_Local.m_bDucked = false;
-	m_Local.m_bDucking  = false;
+	m_Local.m_bDucking = false;
 	m_Local.m_nDuckTimeMsecs = 0;
 	m_Local.m_nDuckJumpTimeMsecs = 0;
 	m_Local.m_nJumpTimeMsecs = 0;
 
 	// Turn our toggled duck off
-	if ( GetToggledDuckState() )
+	if (GetToggledDuckState())
 	{
 		ToggleDuck();
 	}
@@ -5992,7 +5893,7 @@ ImpulseCommands
 ============
 */
 
-void CBasePlayer::ImpulseCommands( )
+void CBasePlayer::ImpulseCommands()
 {
 	int iImpulse = (int)m_nImpulse;
 	switch (iImpulse)
@@ -7973,7 +7874,6 @@ void CRevertSaved::LoadThink( void )
 #define SF_SPEED_MOD_SUPPRESS_WEAPONS	(1<<0)	// Take away weapons
 #define SF_SPEED_MOD_SUPPRESS_HUD		(1<<1)	// Take away the HUD
 #define SF_SPEED_MOD_SUPPRESS_JUMP		(1<<2)
-#define SF_SPEED_MOD_SUPPRESS_DUCK		(1<<3)
 #define SF_SPEED_MOD_SUPPRESS_USE		(1<<4)
 #define SF_SPEED_MOD_SUPPRESS_SPEED		(1<<5)
 #define SF_SPEED_MOD_SUPPRESS_ATTACK	(1<<6)
@@ -8004,11 +7904,6 @@ int CMovementSpeedMod::GetDisabledButtonMask( void )
 	if ( HasSpawnFlags( SF_SPEED_MOD_SUPPRESS_JUMP ) )
 	{
 		nMask |= IN_JUMP;
-	}
-	
-	if ( HasSpawnFlags( SF_SPEED_MOD_SUPPRESS_DUCK ) )
-	{
-		nMask |= IN_DUCK;
 	}
 
 	if ( HasSpawnFlags( SF_SPEED_MOD_SUPPRESS_USE ) )
@@ -8263,8 +8158,7 @@ REGISTER_SEND_PROXY_NON_MODIFIED_POINTER( SendProxy_SendNonLocalDataTable );
 		SendPropEHandle	(SENDINFO( m_hViewEntity)),
 		SendPropBool	(SENDINFO( m_bShouldDrawPlayerWhileUsingViewEntity )),
 
-		SendPropFloat	(SENDINFO(m_flDuckAmount), 0, SPROP_CHANGES_OFTEN ),
-		SendPropFloat	(SENDINFO(m_flDuckSpeed), 0, SPROP_CHANGES_OFTEN ),
+
 
 		// Data that only gets sent to the local player.
 		SendPropDataTable( "localdata", 0, &REFERENCE_SEND_TABLE(DT_LocalPlayerExclusive), SendProxy_SendLocalDataTable ),
@@ -8305,13 +8199,6 @@ void CBasePlayer::SetupVPhysicsShadow( const Vector &vecAbsOrigin, const Vector 
 	
 	// Give the controller a valid position so it doesn't do anything rash.
 	UpdatePhysicsShadowToPosition( vecAbsOrigin );
-
-	// init state
-	if ( GetFlags() & FL_DUCKING )
-	{
-		SetVCollisionState( vecAbsOrigin, vecAbsVelocity, VPHYS_CROUCH );
-	}
-	else
 	{
 		SetVCollisionState( vecAbsOrigin, vecAbsVelocity, VPHYS_WALK );
 	}
@@ -8357,9 +8244,9 @@ void CBasePlayer::InitVCollision( const Vector &vecAbsOrigin, const Vector &vecA
 		return;
 	
 	CPhysCollide *pModel = PhysCreateBbox( VEC_HULL_MIN, VEC_HULL_MAX );
-	CPhysCollide *pCrouchModel = PhysCreateBbox( VEC_DUCK_HULL_MIN, VEC_DUCK_HULL_MAX );
 
-	SetupVPhysicsShadow( vecAbsOrigin, vecAbsVelocity, pModel, "player_stand", pCrouchModel, "player_crouch" );
+
+
 }
 
 
@@ -8994,7 +8881,7 @@ CON_COMMAND( mp_disable_autokick, "Prevents a userid from being auto-kicked" )
 //-----------------------------------------------------------------------------
 // Purpose: Toggle between the duck being on and off
 //-----------------------------------------------------------------------------
-void CBasePlayer::ToggleDuck( void )
+void CBasePlayer::ToggleDuck(void)
 {
 	// Toggle the state
 	m_bDuckToggled = !m_bDuckToggled;

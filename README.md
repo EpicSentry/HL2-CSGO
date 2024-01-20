@@ -16,7 +16,6 @@ Partially used code from https://github.com/SwagSoftware/Kisak-Strike (some econ
 - sv_pure is most likely broken due to differences between CS:GO and TF2 implementations.
 - In game console is really unreliable and can only be opened if the pause menu is opened first.
 - Random vphysics.dll crashes.
-- Crouching doesn't work.
 - Flashlight doesn't work.
 - Physics save/restore is broken, play with ``save_disable 1`` for the time being.
 - 64-bit does not work, it crashes on the VGUI2 DLL for some unknown reason.
