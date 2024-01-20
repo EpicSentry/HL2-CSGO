@@ -1,4 +1,4 @@
-//========= Copyright © 1996-2005, Valve Corporation, All rights reserved. ============//
+//========= Copyright Valve Corporation, All rights reserved. ============//
 //
 // Purpose: 
 //
@@ -34,9 +34,6 @@ public:
 	virtual void OnWorkUnitsCompleted( uint64 numWorkUnits ) { return; }
 };
 
-// DistributeWork owns this packet ID.
-#define VMPI_DISTRIBUTEWORK_PACKETID			2
-
 
 enum EWorkUnitDistributor
 {
@@ -60,6 +57,10 @@ typedef void (*ProcessWorkUnitFn)( int iThread, uint64 iWorkUnit, MessageBuffer 
 typedef void (*ReceiveWorkUnitFn)( uint64 iWorkUnit, MessageBuffer *pBuf, int iWorker );
 
 
+// Use a CDispatchReg to register this function with whatever packet ID you give to DistributeWork.
+bool DistributeWorkDispatch( MessageBuffer *pBuf, int iSource, int iPacketID );
+
+
 
 // This is the function vrad and vvis use to divide the work units and send them out.
 // It maintains a sliding window of work units so it can always keep the clients busy.
@@ -73,6 +74,8 @@ typedef void (*ReceiveWorkUnitFn)( uint64 iWorkUnit, MessageBuffer *pBuf, int iW
 // Returns time it took to finish the work.
 double DistributeWork( 
 	uint64 nWorkUnits,				// how many work units to dole out
+	char cPacketID,					// This packet ID must be reserved for DistributeWork and DistributeWorkDispatch
+									// must be registered with it.
 	ProcessWorkUnitFn processFn,	// workers implement this to process a work unit and send results back
 	ReceiveWorkUnitFn receiveFn		// the master implements this to receive a work unit
 	);

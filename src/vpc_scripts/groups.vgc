@@ -113,6 +113,7 @@ $Group "csgo_partner"
 	"ivp_compactbuilder"
 	"ivp_physics"
 	"vphysics"
+	"vmpi" //required to generate a 64-bit lib for the map compilers
 // Uncomment and re-vpc if you want a bad time.
 //	These dont work for one reason or another but do compile/link
 //	"sourcevr"

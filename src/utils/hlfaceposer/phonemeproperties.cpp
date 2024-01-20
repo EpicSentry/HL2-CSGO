@@ -40,7 +40,11 @@ static BOOL CALLBACK PhonemeBtnProc( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM
 				HWND helpText = GetDlgItem( dialog, IDC_STATIC_HELPTEXT );
 				if ( helpText )
 				{
-					CExpression *exp = ( CExpression * )GetWindowLong( (HWND)hwnd, GWL_USERDATA );
+#ifdef PLATFORM_64BITS
+					CExpression *exp = ( CExpression * )GetWindowLongPtr( (HWND)hwnd, GWLP_USERDATA );
+#else
+					CExpression *exp = (CExpression *)GetWindowLong((HWND)hwnd, GWL_USERDATA);
+#endif
 					if ( exp )
 					{
 						SendMessage( helpText, WM_SETTEXT, 0, (LPARAM)exp->description );
@@ -53,7 +57,7 @@ static BOOL CALLBACK PhonemeBtnProc( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM
 		break;
 	}
 
-	return CallWindowProc( lpfnOldButtonProc, hwnd, uMsg, wParam, lParam );
+	return CallWindowProc((WNDPROC)lpfnOldButtonProc, hwnd, uMsg, wParam, lParam);
 }
 
 //-----------------------------------------------------------------------------
@@ -82,7 +86,11 @@ static void ClickedPhoneme( HWND hwndDlg, int phoneme )
 	}
 
 	HWND button = g_rgButtons[ phoneme ];
-	CExpression *exp = ( CExpression * )GetWindowLong( (HWND)button, GWL_USERDATA );
+#ifdef PLATFORM_64BITS
+	CExpression *exp = ( CExpression * )GetWindowLongPtr( (HWND)button, GWLP_USERDATA );
+#else
+	CExpression *exp = (CExpression *)GetWindowLong((HWND)button, GWL_USERDATA);
+#endif
 	if ( exp )
 	{
 		if ( strlen( g_Params.m_szName ) > 0 )
@@ -204,10 +212,19 @@ static void CreateAndLayoutControls( HWND hwndDlg, CPhonemeParams* params )
 			(HINSTANCE)GetModuleHandle( 0 ),
 			NULL );
 		Assert( button );
-		SetWindowLong( (HWND)button, GWL_USERDATA, (LONG)exp );
+#ifdef PLATFORM_64BITS
+		SetWindowLongPtr((HWND)button, GWLP_USERDATA, (LONG_PTR)exp);
+#else
+		SetWindowLong((HWND)button, GWL_USERDATA, (LONG)exp);
+#endif
+
 
 		// Subclass it
-		lpfnOldButtonProc = (WINPROCTYPE)SetWindowLong( (HWND)button, GWL_WNDPROC, (LONG)PhonemeBtnProc );
+#ifdef PLATFORM_64BITS
+		lpfnOldButtonProc = (WINPROCTYPE)SetWindowLongPtr( (HWND)button, GWLP_WNDPROC, (LONG_PTR)PhonemeBtnProc );
+#else
+		lpfnOldButtonProc = (WINPROCTYPE)SetWindowLong((HWND)button, GWL_WNDPROC, (LONG)PhonemeBtnProc);
+#endif
 
 		SendMessage ((HWND)button, WM_SETFONT, (WPARAM) (HFONT) GetStockObject (ANSI_VAR_FONT), MAKELPARAM (TRUE, 0));
 
