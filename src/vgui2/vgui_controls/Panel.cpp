@@ -880,7 +880,8 @@ const char *Panel::GetClassName()
 {
 	// loop up the panel map name
 	PanelMessageMap *panelMap = GetMessageMap();
-	if ( panelMap )
+	//if ( panelMap )
+	if (panelMap && panelMap->pfnClassName)
 	{
 		return panelMap->pfnClassName();
 	}
@@ -940,7 +941,10 @@ void Panel::SetSize(int wide, int tall)
 //-----------------------------------------------------------------------------
 void Panel::GetSize(int &wide, int &tall)
 {
-	ipanel()->GetSize(GetVPanel(), wide, tall);
+	if (this != nullptr)
+	{
+		ipanel()->GetSize(GetVPanel(), wide, tall);
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -3557,7 +3561,8 @@ void Panel::RequestFocus(int direction)
 //-----------------------------------------------------------------------------
 void Panel::OnRequestFocus(VPANEL subFocus, VPANEL defaultPanel)
 {
-	CallParentFunction(new KeyValues("OnRequestFocus", "subFocus", subFocus, "defaultPanel", defaultPanel));
+	//CallParentFunction(new KeyValues("OnRequestFocus", "subFocus", subFocus, "defaultPanel", defaultPanel));
+	CallParentFunction(new KeyValues("OnRequestFocus", "subFocus", ivgui()->PanelToHandle(subFocus), "defaultPanel", ivgui()->PanelToHandle(defaultPanel)));
 }
 
 //-----------------------------------------------------------------------------
@@ -3785,10 +3790,7 @@ void Panel::SetBuildGroup(BuildGroup* buildGroup)
 	//TODO: remove from old group
 
 	Assert(buildGroup != NULL);
-	
 	_buildGroup = buildGroup;
-
-	_buildGroup->PanelAdded(this);
 }
 
 bool Panel::IsBuildGroupEnabled()
@@ -5214,6 +5216,14 @@ void Panel::OnMessage(const KeyValues *params, VPANEL ifromPanel)
 						VPANEL vp = ivgui()->HandleToPanel( param1->GetInt() );
 						(this->*((MessageFunc_HandleConstCharPtr_t)pMap->func))( vp, param2->GetWString() );
 					}
+					else if ((DATATYPE_HANDLE == pMap->firstParamType) && (DATATYPE_HANDLE == pMap->secondParamType))
+					{
+						typedef void (Panel::*MessageFunc_HandleConstCharPtr_t)(VPANEL, VPANEL);
+						VPANEL vp1 = ivgui()->HandleToPanel(param1->GetInt());
+						//VPANEL vp2 = ivgui()->HandleToPanel(param1->GetInt());
+						VPANEL vp2 = ivgui()->HandleToPanel(param2->GetInt());
+						(this->*((MessageFunc_HandleConstCharPtr_t)pMap->func))(vp1, vp2);
+					}
 					else
 					{
 						// the message isn't handled
@@ -5595,7 +5605,8 @@ void Panel::OnDelete()
 // Purpose: Panel handle implementation
 //			Returns a pointer to a valid panel, NULL if the panel has been deleted
 //-----------------------------------------------------------------------------
-Panel *PHandle::Get() 
+//Panel *PHandle::Get() 
+Panel *PHandle::Get() const
 {
 	if (m_iPanelID != INVALID_PANEL)
 	{

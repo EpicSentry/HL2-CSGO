@@ -110,14 +110,14 @@ struct DemoImportantTick_t
 	bool bCanDirectSeek;
 	KeyValues *pKeys;
 };
-
+/*
 namespace vgui
 {
 	// handle to an internal vgui panel
 	// this is the only handle to a panel that is valid across dll boundaries
 	typedef uintp VPANEL;
 }
-
+*/
 //-----------------------------------------------------------------------------
 // Purpose: This data structure is filled in by the engine when the client .dll requests information about
 //  other players that the engine knows about
