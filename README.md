@@ -2,7 +2,7 @@
 
 This project is aimed to port HL2 to the leaked CSGO engine while keeping the benefits of the CSGO branch (such as the better lighting).<br>
 
-Partially used code from https://github.com/SwagSoftware/Kisak-Strike (some econ stuff, weapon recoil and IVP) and https://github.com/tupoy-ya/Kisak-Strike.
+Partially used code from https://github.com/tupoy-ya/Kisak-Strike and https://github.com/nillerusr/source-engine.
 
 **Features:**
 - Removed Scaleform.
@@ -11,6 +11,7 @@ Partially used code from https://github.com/SwagSoftware/Kisak-Strike (some econ
 - CSGO Usermessage system, everything now makes use of the CUsrMsg class.
 - VPhysics DLL code included.
 - 64-bit build support.<br>
+- CVAR culling disabled by default.
 
 **Currently known bugs:**
 - sv_pure is most likely broken due to differences between CS:GO and TF2 implementations.
@@ -21,6 +22,12 @@ Partially used code from https://github.com/SwagSoftware/Kisak-Strike (some econ
 - If you are building x64 you will lose out on:<br>
 HRTF Audio<br>
 Steam Datagram Sockets<br>
+
+**Differences/stuff removed in HL2GO:**<br>
+Unfortunately, in order to get certain features to work or to prevent crashes, the following have been removed completely:<br>
+- PNG and JPEG support in GameUI
+- SourceTV/GOTV
+
 
 **Using and building HL2GO:**
 1. You must have the 2017 CSGO depot downloaded as you need a few resources from it.<br>
