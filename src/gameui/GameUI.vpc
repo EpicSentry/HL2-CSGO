@@ -221,9 +221,8 @@ $Project "GameUI"
 		$Lib  	"$LIBCOMMON/libjpeg"		[!$DEDICATED]
 		$Implib	steam_api			[!$X360 && !$NO_STEAM && !$WIN64]
 		$Implib	steam_api64			[$WIN64]
-		$Lib libpng [!$VS2015&&!$DEDICATED]
-		$Lib $LIBCOMMON/libpng [$VS2015&&!$DEDICATED]
-		$Lib libz [!$DEDICATED]
+		$Lib libz [!$DEDICATED && !$WIN64]
+//		$Lib $LIBPUBLIC/x64/libz [!$DEDICATED && $WIN64]
 		$ImpLib SDL2 [$SDL]
 	}
 }

@@ -1,4 +1,4 @@
-//========= Copyright © 1996-2005, Valve Corporation, All rights reserved. ============//
+//========= Copyright Valve Corporation, All rights reserved. ============//
 //
 // Purpose: 
 //
@@ -37,7 +37,6 @@ typedef void (*VMPI_Disconnect_Handler)( int procID, const char *pReason );
 
 #define VMPI_TIMEOUT_INFINITE	0xFFFFFFFF
 
-#define VMPI_PACKET_SIZE	768
 
 // Instantiate one of these to register a dispatch.
 class CDispatchReg
@@ -169,9 +168,6 @@ void VMPI_FlushGroupedPackets( unsigned long msInterval=0 );
 // This registers a function that gets called when a connection is terminated ungracefully.
 void VMPI_AddDisconnectHandler( VMPI_Disconnect_Handler handler );
 
-// is this a valid process
-bool VMPI_IsProcValid( int procID );
-
 // Returns false if the process has disconnected ungracefully (disconnect handlers
 // would have been called for it too).
 bool VMPI_IsProcConnected( int procID );
@@ -216,28 +212,6 @@ bool VMPI_IsParamUsed( EVMPICmdLineParam eParam ); // Returns true if the specif
 
 // Can be called from error handlers and if -mpi_Restart is used, it'll automatically restart the process.
 bool VMPI_HandleAutoRestart();
-
-
-
-// These are optional debug helpers. When VMPI_SuperSpew is enabled, VMPI can spit out messages
-// with strings for packet IDs instead of numbers.
-#define VMPI_REGISTER_PACKET_ID( idDefine ) static CVMPIPacketIDReg g_VMPIPacketIDReg_##idDefine( idDefine, -1, #idDefine );
-#define VMPI_REGISTER_SUBPACKET_ID( idPacketIDDefine, idSubPacketIDDefine ) static CVMPIPacketIDReg g_VMPISubPacketIDReg_##idSubPacketIDDefine( idPacketIDDefine, idSubPacketIDDefine, #idSubPacketIDDefine );
-
-class CVMPIPacketIDReg
-{
-public:
-	CVMPIPacketIDReg( int nPacketID, int nSubPacketID, const char *pName );
-
-	static void Lookup( int nPacketID, int nSubPacketID, char *pPacketIDString, int nPacketIDStringSize, char *pSubPacketIDString, int nSubPacketIDStringSize );
-
-private:
-	int m_nPacketID;
-	int m_nSubPacketID;
-	const char *m_pName;
-	CVMPIPacketIDReg *m_pNext;
-};
-
 
 
 #endif // VMPI_H

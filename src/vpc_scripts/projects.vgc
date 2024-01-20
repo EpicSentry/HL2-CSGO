@@ -1407,7 +1407,7 @@ $Project "vaudio_celt"
 
 $Project "vaudio_minimp3"
 {
-	"engine\voice_codecs\minimp3\vaudio_minimp3.vpc" [$WIN32||$POSIX]
+	"engine\voice_codecs\minimp3\vaudio_minimp3.vpc" [$WINDOWS||$POSIX]
 }
 
 $Project "sqldb_mysql"

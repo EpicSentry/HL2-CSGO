@@ -903,6 +903,7 @@ static void ReadPNGData( png_structp png_ptr, png_bytep outBytes, png_size_t byt
 
 unsigned char *ImgUtl_ReadPNGAsRGBA( const char *pngPath, int &width, int &height, ConversionErrorType &errcode )
 {
+	/*
 #if !defined( _X360 )
 
 	// Just load the whole file into a memory buffer
@@ -920,10 +921,13 @@ unsigned char *ImgUtl_ReadPNGAsRGBA( const char *pngPath, int &width, int &heigh
 	errcode = CE_SOURCE_FILE_FORMAT_NOT_SUPPORTED;
 	return NULL;
 #endif
+*/
+	return NULL;
 }
 
 unsigned char		*ImgUtl_ReadPNGAsRGBAFromBuffer( CUtlBuffer &buffer, int &width, int &height, ConversionErrorType &errcode )
 {
+	/*
 #if !defined( _X360 ) && defined( WIN32 )
 
 	png_const_bytep pngData = (png_const_bytep)buffer.Base();
@@ -936,7 +940,6 @@ unsigned char		*ImgUtl_ReadPNGAsRGBAFromBuffer( CUtlBuffer &buffer, int &width, 
 	png_structp png_ptr = NULL;
 	png_infop info_ptr = NULL;
 
-    /* could pass pointers to user-defined error handlers instead of NULLs: */
 
     png_ptr = png_create_read_struct( PNG_LIBPNG_VER_STRING, NULL, NULL, NULL );
     if (!png_ptr)
@@ -965,8 +968,6 @@ fail:
         return NULL;
     }
 
-    /* setjmp() must be called in every function that calls a PNG-reading
-     * libpng function */
 
     if ( setjmp( png_ptr->png_jmpbuf) ) 
 	{
@@ -975,12 +976,10 @@ fail:
     }
 
 	png_set_read_fn( png_ptr, &buffer, ReadPNGData );
-    png_read_info( png_ptr, info_ptr );  /* read all PNG info up to image data */
+    png_read_info( png_ptr, info_ptr ); 
 
 
-    /* alternatively, could make separate calls to png_get_image_width(),
-     * etc., but want bit_depth and color_type for later [don't care about
-     * compression_type and filter_type => NULLs] */
+
 
 	int bit_depth;
 	int color_type;
@@ -994,9 +993,7 @@ fail:
 
     png_uint_32 rowbytes;
 
-    /* expand palette images to RGB, low-bit-depth grayscale images to 8 bits,
-     * transparency chunks to full alpha channel; strip 16-bit-per-sample
-     * images to 8 bits per sample; and convert grayscale to RGB[A] */
+
 
     if (color_type == PNG_COLOR_TYPE_PALETTE)
         png_set_expand( png_ptr );
@@ -1016,14 +1013,7 @@ fail:
 		png_set_add_alpha(png_ptr, 255, PNG_FILLER_AFTER);
 	}
 
-  /*
-	double gamma;
-  if (png_get_gAMA(png_ptr, info_ptr, &gamma))
-        png_set_gamma(png_ptr, display_exponent, gamma);
 
-*/
-    /* all transformations have been registered; now update info_ptr data,
-     * get rowbytes and channels, and allocate image memory */
 
     png_read_update_info( png_ptr, info_ptr );
 
@@ -1045,12 +1035,12 @@ fail:
         goto fail;
     }
 
-    /* set the individual row_pointers to point at the correct offsets */
+
 
     for ( int i = 0;  i < height;  ++i)
         row_pointers[i] = pResultData + i*rowbytes;
 
-    /* now we can go ahead and just read the whole image */
+
 
     png_read_image( png_ptr, row_pointers );
 
@@ -1072,6 +1062,8 @@ fail:
 	errcode = CE_SOURCE_FILE_FORMAT_NOT_SUPPORTED;
 	return NULL;
 #endif
+*/
+	return NULL;
 }
 
 unsigned char *ImgUtl_ReadBMPAsRGBA( const char *bmpPath, int &width, int &height, ConversionErrorType &errcode )
@@ -2051,6 +2043,7 @@ static void FlushPNGData( png_structp png_ptr )
 
 ConversionErrorType ImgUtl_WriteRGBAAsPNGToBuffer( const unsigned char *pRGBAData, int nWidth, int nHeight, CUtlBuffer &bufOutData, int nStride )
 {
+	/*
 #if !defined( _X360 ) && defined( WIN32 )
 	// Auto detect image stride
 	if ( nStride <= 0 )
@@ -2058,7 +2051,7 @@ ConversionErrorType ImgUtl_WriteRGBAAsPNGToBuffer( const unsigned char *pRGBADat
 		nStride = nWidth*4;
 	}
 
-    /* could pass pointers to user-defined error handlers instead of NULLs: */
+    /* could pass pointers to user-defined error handlers instead of NULLs: */ /*
 	png_structp png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING,
 		NULL, NULL, NULL);
 	if (png_ptr == NULL)
@@ -2113,14 +2106,14 @@ fail:
         goto fail;
     }
 
-    /* set the individual row_pointers to point at the correct offsets */
+    /* set the individual row_pointers to point at the correct offsets */ /*
     for ( int i = 0;  i < nHeight;  ++i)
         row_pointers[i] = const_cast<unsigned char *>(pRGBAData + i*nStride);
 
 	// Write the image
 	png_write_image(png_ptr, row_pointers);
 
-	/* It is REQUIRED to call this to finish writing the rest of the file */
+	/* It is REQUIRED to call this to finish writing the rest of the file */ /*
 	png_write_end(png_ptr, info_ptr);
 
 	// Clean up, and we're done
@@ -2131,6 +2124,8 @@ fail:
 #else
 	return CE_SOURCE_FILE_FORMAT_NOT_SUPPORTED;
 #endif
+	*/
+	return CE_MEMORY_ERROR;
 }
 
 //-----------------------------------------------------------------------------
