@@ -17,5 +17,7 @@ void VVIS_SetupMPI( int &argc, char **&argv );
 void RunMPIBasePortalVis();
 void RunMPIPortalFlow();
 
+// DistributeWork owns this packet ID.
+#define VMPI_DISTRIBUTEWORK_PACKETID			2
 
 #endif // MPIVIS_H

@@ -1,4 +1,4 @@
-//========= Copyright Valve Corporation, All rights reserved. ============//
+//========= Copyright © 1996-2005, Valve Corporation, All rights reserved. ============//
 //
 // Purpose: 
 //
@@ -27,10 +27,6 @@
 										// All application traffic must set its first byte to something other
 										// than this value.
 #define VMPI_SHARED_PACKET_ID		10
-
-
-// Turn this on, and the various service apps will log stuff.
-//#define VMPI_SERVICE_LOGS
 
 
 // This value is put in the RunningTimeMS until the job is finished. This is how

@@ -37,7 +37,7 @@ $Project "Shadercompile_dll"
 		$File	"subprocess.cpp"
 		$File	"cfgprocessor.cpp"
 		$File	"..\common\threads.cpp"
-		$File	"..\common\vmpi_tools_shared.cpp"
+//		$File	"..\common\vmpi_tools_shared.cpp"
 		$File	"..\common\tools_minidump.cpp"
 	}
 
@@ -58,7 +58,7 @@ $Project "Shadercompile_dll"
 	$Folder	"Link Libraries"
 	{
 		$File	"$SRCDIR\lib\public\tier2.lib"
-		$File	"$SRCDIR\lib\public\vmpi.lib"
+//		$File	"$SRCDIR\lib\public\vmpi.lib"
 		$File	"$SRCDIR\lib\common\vc8\lzma.lib"
 	}
 }

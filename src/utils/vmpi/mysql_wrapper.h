@@ -1,4 +1,4 @@
-//========= Copyright Valve Corporation, All rights reserved. ============//
+//========= Copyright © 1996-2005, Valve Corporation, All rights reserved. ============//
 //
 // Purpose: 
 //
@@ -25,7 +25,7 @@ friend class CMySQL;
 
 public:
 	// This is like a sprintf, but it will grow the string as necessary.
-	void				Format( PRINTF_FORMAT_STRING const char *pFormat, ... );
+	void				Format( const char *pFormat, ... );
 
 private:
 	CUtlVector<char>	m_QueryText;

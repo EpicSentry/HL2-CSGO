@@ -7,8 +7,8 @@
 //=============================================================================//
 
 #include "vrad.h"
-#include "vmpi.h"
-#ifdef MPI
+//#include "vmpi.h"
+#ifdef MPI_IS_NOT_SUPPORTED_DONT_DEFINE_THIS
 #include "messbuf.h"
 static MessageBuffer mb;
 #endif
@@ -504,11 +504,11 @@ BuildVisMatrix
 */
 void BuildVisMatrix (void)
 {
-	if ( g_bUseMPI )
+/*	if ( g_bUseMPI )
 	{
 		RunMPIBuildVisLeafs();
 	}
-	else 
+	else */
 	{
 		RunThreadsOn (dvis->numclusters, true, BuildVisLeafs);
 	}

@@ -35,8 +35,6 @@
 #include "tier3/tier3.h"
 
 #include "messbuf.h"
-#include "vmpi.h"
-#include "vmpi_distribute_work.h"
 #include "iscratchpad3d.h"
 //#include "glview_buffer.h"
 
@@ -1755,7 +1753,7 @@ void CVradStaticPropMgr::ComputeLighting( CStaticProp &prop, int iThread, int pr
 
 	nGatherFlags |= GATHERLFLAGS_STATICPROP;
 
-	VMPI_SetCurrentStage( "ComputeLighting" );
+	//VMPI_SetCurrentStage( "ComputeLighting" );
 
 	int numSampleNormals = (g_numVradStaticPropsLightingStreams > 1) ? (NUM_BUMP_VECTS + 1) : 1;
 	bool bCanUseTangents = dict.m_bHasBumpmap;
@@ -2184,7 +2182,7 @@ void CVradStaticPropMgr::VMPI_ProcessStaticProp( int iThread, int iStaticProp, M
 	CComputeStaticPropLightingResults results;
 	ComputeLighting( m_StaticProps[iStaticProp], iThread, iStaticProp, &results );
 
-	VMPI_SetCurrentStage( "EncodeLightingResults" );
+	//VMPI_SetCurrentStage( "EncodeLightingResults" );
 	
 	// Encode the results.
 	int nLists = results.m_ColorVertsArrays.Count();
@@ -2273,7 +2271,7 @@ void CVradStaticPropMgr::ComputeLighting( int iThread )
 	// ensure any traces against us are ignored because we have no inherit lighting contribution
 	m_bIgnoreStaticPropTrace = true;
 
-	if ( g_bUseMPI )
+/*	if ( g_bUseMPI )
 	{
 		// Distribute the work among the workers.
 		VMPI_SetCurrentStage( "CVradStaticPropMgr::ComputeLighting" );
@@ -2283,7 +2281,7 @@ void CVradStaticPropMgr::ComputeLighting( int iThread )
 			&CVradStaticPropMgr::VMPI_ProcessStaticProp_Static, 
 			&CVradStaticPropMgr::VMPI_ReceiveStaticPropResults_Static );
 	}
-	else
+	else*/
 	{
 		RunThreadsOn(count, true, ThreadComputeStaticPropLighting);
 	}
