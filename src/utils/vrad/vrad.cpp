@@ -12,7 +12,7 @@
 #include "physdll.h"
 #include "lightmap.h"
 #include "tier1/strtools.h"
-//#include "vmpi.h"
+#include "vmpi.h"
 #include "macro_texture.h"
 #include "vmpi_tools_shared.h"
 #include "leaf_ambient_lighting.h"
@@ -2069,7 +2069,7 @@ bool RadWorld_Go()
 	}
 
 	// build initial facelights
-/*	if (g_bUseMPI) 
+	if (g_bUseMPI) 
 	{
 		// RunThreadsOnIndividual (numfaces, true, BuildFacelights);
 		RunMPIBuildFacelights();
@@ -2078,7 +2078,7 @@ bool RadWorld_Go()
 			RunThreadsOnIndividual( g_Patches.Count(), true, BuildStaticPropPatchlights );
 		}
 	}
-	else */
+	else 
 	{
 		RunThreadsOnIndividual( numfaces, true, BuildFacelights );
 		if ( g_bStaticPropBounce )
@@ -2163,12 +2163,12 @@ bool RadWorld_Go()
 		StaticDispMgr()->EndTimer();
 
 		// blend bounced light into direct light and save
-/*		VMPI_SetCurrentStage( "FinalLightFace" );
+		VMPI_SetCurrentStage( "FinalLightFace" );
 		if ( !g_bUseMPI || g_bMPIMaster )
 			RunThreadsOnIndividual (numfaces, true, FinalLightFace);
 		
 		// Distribute the lighting data to workers.
-		VMPI_DistributeLightData();*/
+		VMPI_DistributeLightData();
 			
 		Msg("FinalLightFace Done\n"); fflush(stdout);
 	}
@@ -2225,13 +2225,13 @@ void VRAD_LoadBSP( char const *pFilename )
 	// so we prepend qdir here.
 	strcpy( source, ExpandPath( source ) );
 
-/*	if ( !g_bUseMPI )
+	if ( !g_bUseMPI )
 	{
 		// Setup the logfile.
 		char logFile[512];
 		_snprintf( logFile, sizeof(logFile), "%s.log", source );
 		g_CmdLibFileLoggingListener.Open( logFile );
-	}*/
+	}
 
 	LoadPhysicsDLL();
 
@@ -2265,7 +2265,7 @@ void VRAD_LoadBSP( char const *pFilename )
 	GetPlatformMapPath( source, platformPath, 0, MAX_PATH );
 
 	Msg( "Loading %s\n", platformPath );
-/*	VMPI_SetCurrentStage( "LoadBSPFile" );*/
+	VMPI_SetCurrentStage( "LoadBSPFile" );
 	LoadBSPFile (platformPath);
 	
 	// now, set whether or not static prop lighting is present
@@ -2408,7 +2408,7 @@ void VRAD_Finish()
 	}
 
 	Msg( "Writing %s\n", platformPath );
-	/*VMPI_SetCurrentStage( "WriteBSPFile" );*/
+	VMPI_SetCurrentStage( "WriteBSPFile" );
 	WriteBSPFile(platformPath);
 
 	if ( g_bDumpPatches )
@@ -2898,7 +2898,7 @@ int ParseCommandLine( int argc, char **argv, bool *onlydetail )
 		// NOTE: the -mpi checks must come last here because they allow the previous argument 
 		// to be -mpi as well. If it game before something else like -game, then if the previous
 		// argument was -mpi and the current argument was something valid like -game, it would skip it.
-/*		else if ( !Q_strncasecmp( argv[i], "-mpi", 4 ) || !Q_strncasecmp( argv[i-1], "-mpi", 4 ) )
+		else if ( !Q_strncasecmp( argv[i], "-mpi", 4 ) || !Q_strncasecmp( argv[i-1], "-mpi", 4 ) )
 		{
 			if ( stricmp( argv[i], "-mpi" ) == 0 )
 				g_bUseMPI = true;
@@ -2906,7 +2906,7 @@ int ParseCommandLine( int argc, char **argv, bool *onlydetail )
 			// Any other args that start with -mpi are ok too.
 			if ( i == argc - 1 && V_stricmp( argv[i], "-mpi_ListParams" ) != 0 )
 				break;
-		}*/
+		}
 		else if ( !Q_stricmp( argv[i], "-processheap" ) )
 		{
 			// ... Do nothing, just let this pass to the mem system
@@ -2950,7 +2950,7 @@ void PrintUsage( int argc, char **argv )
 		"  -finitefalloff  : use an alternative falloff model that falls off to exactly zero at the zero_percent_distance.\n"
 		"  -extrasky n     : trace N times as many rays for indirect light and sky ambient.\n"
 		"  -low            : Run as an idle-priority process.\n"
-//		"  -mpi            : Use VMPI to distribute computations.\n"
+		"  -mpi            : Use VMPI to distribute computations.\n"
 		"  -rederror       : Show errors in red.\n"
 		"\n"
 		"  -vproject <directory> : Override the VPROJECT environment variable.\n"
@@ -3066,7 +3066,7 @@ int RunVRAD( int argc, char **argv )
 
 	VRAD_Finish();
 
-//	VMPI_SetCurrentStage( "master done" );
+	VMPI_SetCurrentStage( "master done" );
 
 	DeleteCmdLine( argc, argv );
 	CmdLib_Cleanup();
@@ -3081,7 +3081,7 @@ int VRAD_Main(int argc, char **argv)
 	VRAD_Init();
 
 	// This must come first.
-//	VRAD_SetupMPI( argc, argv );
+	VRAD_SetupMPI( argc, argv );
 
 	// Initialize the filesystem, so additional commandline options can be loaded
 	Q_StripExtension( argv[ argc - 1 ], source, sizeof( source ) );
@@ -3089,11 +3089,11 @@ int VRAD_Main(int argc, char **argv)
 	Q_FileBase( source, source, sizeof( source ) );
 
 #if !defined( _DEBUG )
-/*	if ( g_bUseMPI && !g_bMPIMaster )
+	if ( g_bUseMPI && !g_bMPIMaster )
 	{
 		SetupToolsMinidumpHandler( VMPI_ExceptionFilter );
 	}
-	else*/
+	else
 #endif
 	{
 		LoadCmdLineFromFile( argc, argv, source, "vrad" ); // Don't do this if we're a VMPI worker..

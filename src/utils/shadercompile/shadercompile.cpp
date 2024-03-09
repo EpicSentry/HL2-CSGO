@@ -11,11 +11,11 @@
 #include <windows.h>
 #include <conio.h>
 #include <process.h>
-//#include "vmpi.h"
+#include "vmpi.h"
 #include "filesystem.h"
-//#include "vmpi_filesystem.h"
-//#include "vmpi_distribute_work.h"
-//#include "vmpi_tools_shared.h"
+#include "vmpi_filesystem.h"
+#include "vmpi_distribute_work.h"
+#include "vmpi_tools_shared.h"
 #include "cmdlib.h"
 #include "UtlVector.h"
 #include "Utlhash.h"
@@ -2358,7 +2358,7 @@ void CompileShaders_NoVMPI()
 }
 
 
-class CDistributeShaderCompileMaster/* : public IWorkUnitDistributorCallbacks*/
+class CDistributeShaderCompileMaster : public IWorkUnitDistributorCallbacks
 {
 public:
 	CDistributeShaderCompileMaster( void );
@@ -2483,7 +2483,7 @@ int ShaderCompile_Main( int argc, char* argv[] )
 
 	// g_bSuppressWarnings = g_bIsX360;
 
-/*	bool bShouldUseVMPI = ( CommandLine()->FindParm( "-nompi" ) == 0 );
+	bool bShouldUseVMPI = ( CommandLine()->FindParm( "-nompi" ) == 0 );
 	if ( bShouldUseVMPI )
 	{	
 		// Master, start accepting connections.
@@ -2500,17 +2500,17 @@ int ShaderCompile_Main( int argc, char* argv[] )
 
 		extern void VMPI_SetWorkUnitsPartitionSize( int numWusToDeal );
 		VMPI_SetWorkUnitsPartitionSize( 32 );
-	}*/
+	}
 
 	SetupPaths( argc, argv );
 
 	g_bSuppressPrintfOutput = false;
-//	DebugOut( "After VMPI_Init\n" );
+	DebugOut( "After VMPI_Init\n" );
 
 	// Setting up the minidump handlers
-/*	if ( bShouldUseVMPI && !g_bMPIMaster )
+	if ( bShouldUseVMPI && !g_bMPIMaster )
 		SetupToolsMinidumpHandler( VMPI_ExceptionFilter );
-	else*/
+	else
 		SetupDefaultToolsMinidumpHandler();
 
 	if ( CommandLine()->FindParm( "-game" ) == 0 )
@@ -2524,11 +2524,11 @@ int ShaderCompile_Main( int argc, char* argv[] )
 		FileSystem_Init( NULL, 0, FS_INIT_FULL );
 	}
 	
-//	DebugOut( "After VMPI_FileSystem_Init\n" );
+	DebugOut( "After VMPI_FileSystem_Init\n" );
 	Shared_ParseListOfCompileCommands();
 	DebugOut( "After Shared_ParseListOfCompileCommands\n" );
 
-/*	if ( bShouldUseVMPI )
+	if ( bShouldUseVMPI )
 	{
 		// Partition combos
 		g_nStaticCombosPerWorkUnit = 0;
@@ -2643,7 +2643,7 @@ int ShaderCompile_Main( int argc, char* argv[] )
 		g_bSuppressPrintfOutput = true;
 		g_bSuppressPrintfOutput = false;
 	}
-	else // no VMPI*/
+	else // no VMPI
 	{
 		Worker_GetLocalCopyOfShaders();
 		Worker_GetLocalCopyOfBinaries();
@@ -2659,7 +2659,7 @@ int ShaderCompile_Main( int argc, char* argv[] )
 	}
 
 	Msg( "\r                                                                \r" );
-	if ( g_bMPIMaster/* || !bShouldUseVMPI*/ )
+	if ( g_bMPIMaster || !bShouldUseVMPI )
 	{
 		char str[ 4096 ];
 
@@ -2798,12 +2798,12 @@ int ShaderCompile_Main( int argc, char* argv[] )
 		DebugOut( "%s elapsed\n", str );
 		DebugOut( "Precise timing = %.5f\n", ( end - g_flStartTime ) );
 
-/*		if ( bShouldUseVMPI )
+		if ( bShouldUseVMPI )
 		{
 			VMPI_FileSystem_Term();
 			DebugOut( "Before VMPI_Finalize\n" );
 			VMPI_Finalize();
-		}*/
+		}
 
 		if ( g_bIsPS3 && g_bGeneratePS3DebugInfo )
 		{

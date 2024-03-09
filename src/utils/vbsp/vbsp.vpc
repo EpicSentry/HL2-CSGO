@@ -124,7 +124,7 @@ $Project "Vbsp"
 			$File	"..\common\polylib.h"
 			$File	"$SRCDIR\public\tier2\tokenreader.h"
 			$File	"..\common\utilmatlib.h"
-//			$File	"..\vmpi\vmpi.h"
+			$File	"..\vmpi\vmpi.h"
 		}
 	}
 
@@ -174,16 +174,11 @@ $Project "Vbsp"
 
 	$Folder	"Link Libraries"
 	{
-		$File	"$SRCDIR\lib\public\mathlib.lib"	[!$WIN64]
-		$File	"$SRCDIR\lib\public\x64\mathlib.lib"	[$WIN64]
-		$File	"$SRCDIR\lib\public\tier2.lib"		[!$WIN64]
-		$File	"$SRCDIR\lib\public\x64\tier2.lib"	[$WIN64]
-		$File	"$SRCDIR\lib\public\bitmap.lib"		[!$WIN64]
-		$File	"$SRCDIR\lib\public\x64\bitmap.lib"	[$WIN64]
-		$File	"$SRCDIR\lib\public\fgdlib.lib"		[!$WIN64]
-		$File	"$SRCDIR\lib\public\x64\fgdlib.lib"	[$WIN64]
-		$File	"$SRCDIR\lib\public\vtf.lib"		[!$WIN64]
-		$File	"$SRCDIR\lib\public\x64\vtf.lib"	[$WIN64]
+		$File	"$SRCDIR\lib\public\bitmap.lib"
+		$File	"$SRCDIR\lib\public\fgdlib.lib"
+		$File	"$SRCDIR\lib\public\mathlib.lib"
+		$File	"$SRCDIR\lib\public\tier2.lib"
+		$File	"$SRCDIR\lib\public\vtf.lib"
 		$File	"$SRCDIR\lib\common\vc8\lzma.lib"
 		$File	"$SRCDIR\lib\common\vc8\libmad.lib"
 	}

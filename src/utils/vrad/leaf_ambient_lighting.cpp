@@ -14,6 +14,8 @@
 #include "vstdlib/random.h"
 #include "bsptreedata.h"
 #include "messbuf.h"
+#include "vmpi.h"
+#include "vmpi_distribute_work.h"
 
 static TableVector g_BoxDirections[6] = 
 {
@@ -587,7 +589,7 @@ void VMPI_ProcessLeafAmbient( int iThread, uint64 iLeaf, MessageBuffer *pBuf )
 	CUtlVector<ambientsample_t> list;
 	ComputeAmbientForLeaf(iThread, (int)iLeaf, list);
 
-	//VMPI_SetCurrentStage( "EncodeLeafAmbientResults" );
+	VMPI_SetCurrentStage( "EncodeLeafAmbientResults" );
 
 	// Encode the results.
 	int nSamples = list.Count();
@@ -640,13 +642,13 @@ void ComputePerLeafAmbientLighting()
 
 	g_LeafAmbientSamples.SetCount(numleafs);
 
-/*	if ( g_bUseMPI )
+	if ( g_bUseMPI )
 	{
 		// Distribute the work among the workers.
 		VMPI_SetCurrentStage( "ComputeLeafAmbientLighting" );
 		DistributeWork( numleafs, VMPI_ProcessLeafAmbient, VMPI_ReceiveLeafAmbientResults );
 	}
-	else*/
+	else
 	{
 		RunThreadsOn(numleafs, true, ThreadComputeLeafAmbient);
 	}

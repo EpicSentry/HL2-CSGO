@@ -25,13 +25,11 @@
 #include "tier0/icommandline.h"
 #include "keyvalues.h"
 #include "filesystem_tools.h"
-#include "filesystem.h"
-#include "filesystem_init.h"
-//#undef MPI
+
 #if defined( MPI )
 
-//	#include "vmpi.h"
-//	#include "vmpi_tools_shared.h"
+	#include "vmpi.h"
+	#include "vmpi_tools_shared.h"
 
 #endif
 
@@ -279,7 +277,7 @@ void CCmdLibStandardLoggingListener::Log( const LoggingContext_t *pContext, cons
 		// the exceptions and write the minidumps.
 		// Install the function after VMPI_Init with a call:
 		// SetupToolsMinidumpHandler( VMPI_ExceptionFilter );
-/*		if ( g_bUseMPI && !g_bMPIMaster && !Plat_IsInDebugSession() )
+		if ( g_bUseMPI && !g_bMPIMaster && !Plat_IsInDebugSession() )
 		{
 			// Generating an exception and letting the
 			// installed handler handle it
@@ -295,7 +293,7 @@ void CCmdLibStandardLoggingListener::Log( const LoggingContext_t *pContext, cons
 
 			VMPI_HandleCrash( pMessage, 0, NULL, true );
 			exit( 0 );
-		}*/
+		}
 	}
 #endif
 
@@ -419,7 +417,7 @@ void CmdLib_Cleanup()
 	// threads go into a seemingly undefined state where GetExitCodeThread gives STILL_ACTIVE
 	// and WaitForSingleObject will stall forever on the thread. Because of this, we must cleanup
 	// everything that uses threads before exiting.
-	//VMPI_Finalize();
+	VMPI_Finalize();
 #endif
 }
 

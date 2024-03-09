@@ -27,7 +27,6 @@ Steam Datagram Sockets<br>
 Unfortunately, in order to get certain features to work or to prevent crashes, the following have been removed completely:<br>
 - PNG and JPEG support in GameUI
 - SourceTV/GOTV
-- The map compile tools, they are infested with VMPI and just crash if you do manege to compile them, useless.
 
 
 **Using and building HL2GO:**

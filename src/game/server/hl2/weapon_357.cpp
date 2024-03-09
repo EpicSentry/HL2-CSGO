@@ -146,7 +146,7 @@ void CWeapon357::PrimaryAttack( void )
 	angles.y += random->RandomInt( -1, 1 );
 	angles.z = 0;
 
-//	pPlayer->SnapEyeAngles( angles );
+	pPlayer->SnapEyeAngles( angles );
 
 	pPlayer->ViewPunch( QAngle( -8, random->RandomFloat( -2, 2 ), 0 ) );
 
