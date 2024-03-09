@@ -950,12 +950,6 @@ int CBeam::DrawModel( int flags, const RenderableInstance_t &instance )
 	if ( CurrentViewID() == VIEW_SHADOW_DEPTH_TEXTURE )
 		return 0;
 
-	if (gpGlobals->curtime > m_flDeathTime)
-	{
-		SetBrightness(0);
-		AddEFlags(EFL_KILLME);
-	}
-
 	// Tracker 16432:  If rendering a savegame screenshot don't draw beams 
 	//   who have viewmodels as their attached entity
 	if ( g_bRenderingScreenshot || !r_drawviewmodel.GetBool() )

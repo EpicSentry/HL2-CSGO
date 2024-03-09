@@ -61,12 +61,10 @@ public:
 	void	Spawn( void );
 	void	Precache( void );
 #if !defined( CLIENT_DLL )
-	int        ObjectCaps(void);
-	void    SetTransmit(CCheckTransmitInfo *pInfo, bool bAlways);
-	int        UpdateTransmitState(void);
-	int        ShouldTransmit(const CCheckTransmitInfo *pInfo);
-#else
-	float m_flDeathTime = FLT_MAX;
+	int		ObjectCaps( void );
+	void	SetTransmit( CCheckTransmitInfo *pInfo, bool bAlways );
+	int		UpdateTransmitState( void );
+	int		ShouldTransmit( const CCheckTransmitInfo *pInfo );
 #endif
 
 	virtual int DrawDebugTextOverlays(void);
@@ -448,14 +446,10 @@ inline float CBeam::GetHDRColorScale( void ) const
 	return m_flHDRColorScale;
 }
 
-inline void CBeam::LiveForTime(float time)
-{
-#ifndef CLIENT_DLL
-	SetThink(&CBeam::SUB_Remove);
-	SetNextThink(gpGlobals->curtime + time);
-#else
-	m_flDeathTime = gpGlobals->curtime + time;
-#endif
+inline void CBeam::LiveForTime( float time ) 
+{ 
+	SetThink(&CBeam::SUB_Remove); 
+	SetNextThink( gpGlobals->curtime + time ); 
 }
 
 inline void	CBeam::BeamDamageInstant( trace_t *ptr, float damage ) 
