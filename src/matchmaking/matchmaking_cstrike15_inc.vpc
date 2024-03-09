@@ -5,7 +5,7 @@
 //-----------------------------------------------------------------------------
 
 $Macro SRCDIR	".."
-$Macro GAMENAME "hl2"
+$Macro GAMENAME "csgo"
 $Macro GAMESUBDIR "cstrike15"
 $Macro GENERATED_PROTO_DIR	"generated_proto"
 

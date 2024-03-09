@@ -7,7 +7,7 @@
 #define _MM_TITLE_CONTEXTVALUES_H
 #pragma once
 
-#include "../common/xlast_csgo/csgo.spa.h"
+#include "csgo.spa.h"
 
 static ContextValue_t g_MapGroupContexts[] = 
 {

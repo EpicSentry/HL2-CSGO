@@ -6,7 +6,7 @@
 
 #include "mm_title.h"
 #include "mm_title_richpresence.h"
-#include "../common/xlast_csgo/csgo.spa.h"
+#include "csgo.spa.h"
 
 #ifdef _PS3
 #include <netex/net.h>
