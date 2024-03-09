@@ -43,7 +43,6 @@ obj*/
 !utils/smdlexp/smdlexp.mak
 
 # Specific Source build products
-/game/
 _vpc_/
 src/vscript/languages/squirrel/vsquirrel/init_nut.h
 generated_proto/
@@ -167,8 +166,8 @@ src/lib/public/vstdlib.lib
 src/lib/public/vtf.lib
 
 # game and bin folders
-game/portal2.dat
-game/portal2.exe
+game/hl2.dat
+game/hl2.exe
 game/srcds.exe
 
 game/bin/*
@@ -182,6 +181,9 @@ game/bin/*
 !game/bin/steam.inf
 !game/bin/steam_appid.txt
 game/hl2/*
+!game/hl2/materials/dev/*
+!game/hl2/steam_appid.txt
+!game/hl2/steam.inf
 game/bin/tools/*
 //game/platform/*
 *.mdmp

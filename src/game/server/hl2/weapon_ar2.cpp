@@ -247,7 +247,7 @@ void CWeaponAR2::DelayedAttack( void )
 	angles.y += random->RandomInt( -4, 4 );
 	angles.z = 0;
 
-	pOwner->SnapEyeAngles( angles );
+	//pOwner->SnapEyeAngles( angles );
 	
 	pOwner->ViewPunch( QAngle( random->RandomInt( -8, -12 ), random->RandomInt( 1, 2 ), 0 ) );
 

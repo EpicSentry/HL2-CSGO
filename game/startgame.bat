@@ -1,0 +1,1 @@
+start hl2.exe -game hl2 -insecure -sw -noborder
