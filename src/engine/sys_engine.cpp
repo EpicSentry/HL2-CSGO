@@ -45,10 +45,12 @@
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
-
 #ifdef PLATFORM_64BITS
 #error READ ME, OPEN SYS_ENGINE.CPP
-#error Hello there, you're building in 64 bit mode. 64 bit mode in HL2GO is VERY broken, build x86 instead. Delete this ifdef if you want to mess around anyway.
+#error Hello there, you're building in 64 bit mode. STOP BUILDING X64!! IT IS **FUCKED**.
+#error Close this solution. delete it. Generate x86 and dont waste your time on this. Trust me, its not worth it.
+#error If you do want to fuck around with this, delete this ifdef and build engine again.
+#error I wont be touching 64 bit again unless someone has any fixes for the issues you'll experience if you do build it for yourself.
 #endif
 
 

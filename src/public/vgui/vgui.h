@@ -14,19 +14,14 @@
 
 #include "tier0/platform.h"
 
+
 #pragma warning( disable: 4786 )	// disables 'identifier truncated in browser information' warning
 #pragma warning( disable: 4355 )	// disables 'this' : used in base member initializer list
 #pragma warning( disable: 4097 )	// warning C4097: typedef-name 'BaseClass' used as synonym for class-name
 #pragma warning( disable: 4514 )	// warning C4514: 'Color::Color' : unreferenced inline function has been removed
 #pragma warning( disable: 4100 )	// warning C4100: 'code' : unreferenced formal parameter
 #pragma warning( disable: 4127 )	// warning C4127: conditional expression is constant
-#ifdef PLATFORM_64BITS
-typedef long long			intp;
-typedef unsigned long long	uintp;
-#else
-typedef int					intp;
-typedef unsigned int		uintp;
-#endif
+
 typedef unsigned char  uchar;
 typedef unsigned short ushort;
 typedef unsigned int   uint;
@@ -56,7 +51,7 @@ typedef unsigned long HTexture;
 typedef unsigned long HCursor;
 typedef unsigned long HPanel;
 const HPanel INVALID_PANEL = 0xffffffff;
-typedef ulong HFont;
+typedef unsigned long HFont;
 const HFont INVALID_FONT = 0; // the value of an invalid font handle
 
 const float STEREO_NOOP = 1.0f;

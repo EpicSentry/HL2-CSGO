@@ -133,8 +133,6 @@
 #include "swarm/gameui/swarm/basemodpanel.h"
 #elif defined( CSTRIKE15 )
 #include "cstrike15/gameui/basepanel.h"
-#elif defined (HL2)
-#include "gameui/basemodpanel.h"
 #else
 #error "GAMEUI_EMBEDDED"
 #endif

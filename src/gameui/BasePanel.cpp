@@ -588,7 +588,7 @@ public:
 		}
 	}
 
-	MESSAGE_FUNC_HANDLE(OnCursorEnteredMenuItem, "CursorEnteredMenuItem", menuItem);
+	MESSAGE_FUNC_INT( OnCursorEnteredMenuItem, "CursorEnteredMenuItem", VPanel);
 
 private:
 	CFooterPanel *m_pConsoleFooter;
@@ -599,17 +599,18 @@ private:
 //-----------------------------------------------------------------------------
 // Purpose: Respond to cursor entering a menuItem.
 //-----------------------------------------------------------------------------
-void CGameMenu::OnCursorEnteredMenuItem(VPANEL menuItem)
+void CGameMenu::OnCursorEnteredMenuItem(int VPanel)
 {
+	VPANEL menuItem = (VPANEL)VPanel;
 	MenuItem *item = static_cast<MenuItem *>(ipanel()->GetPanel(menuItem, GetModuleName()));
 	KeyValues *pCommand = item->GetCommand();
-	if (!pCommand->GetFirstSubKey())
+	if ( !pCommand->GetFirstSubKey() )
 		return;
 	const char *pszCmd = pCommand->GetFirstSubKey()->GetString();
-	if (!pszCmd || !pszCmd[0])
+	if ( !pszCmd || !pszCmd[0] )
 		return;
 
-	BaseClass::OnCursorEnteredMenuItem(menuItem);
+	BaseClass::OnCursorEnteredMenuItem( VPanel );
 }
 
 static CBackgroundMenuButton* CreateMenuButton( CBasePanel *parent, const char *panelName, const wchar_t *panelText )

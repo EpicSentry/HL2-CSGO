@@ -661,30 +661,30 @@ void CEngineVGui::PreparePanel( Panel *panel, int nZPos, bool bVisible /*= true*
 //-----------------------------------------------------------------------------
 void CEngineVGui::Init()
 {
-	COM_TimestampedLog("Loading gameui.dll");
+	COM_TimestampedLog( "Loading gameui.dll" );
 
 	// load the GameUI dll
 	const char *szDllName = "GameUI";
 	m_hStaticGameUIModule = g_pFileSystem->LoadModule(szDllName, "EXECUTABLE_PATH", true); // LoadModule() does a GetLocalCopy() call
 	m_GameUIFactory = Sys_GetFactory(m_hStaticGameUIModule);
-	if (!m_GameUIFactory)
+	if ( !m_GameUIFactory )
 	{
-		Error("Could not load: %s\n", szDllName);
+		Error( "Could not load: %s\n", szDllName );
 	}
-
+	
 	// get the initialization func
 	staticGameUIFuncs = (IGameUI *)m_GameUIFactory(GAMEUI_INTERFACE_VERSION, NULL);
-	if (!staticGameUIFuncs)
+	if (!staticGameUIFuncs )
 	{
-		Error("Could not get IGameUI interface %s from %s\n", GAMEUI_INTERFACE_VERSION, szDllName);
+		Error( "Could not get IGameUI interface %s from %s\n", GAMEUI_INTERFACE_VERSION, szDllName );
 	}
 
-	if (IsPC())
+	if ( IsPC() )
 	{
 		staticGameConsole = (IGameConsole *)m_GameUIFactory(GAMECONSOLE_INTERFACE_VERSION, NULL);
-		if (!staticGameConsole)
+		if ( !staticGameConsole )
 		{
-			Sys_Error("Could not get IGameConsole interface %s from %s\n", GAMECONSOLE_INTERFACE_VERSION, szDllName);
+			Sys_Error( "Could not get IGameConsole interface %s from %s\n", GAMECONSOLE_INTERFACE_VERSION, szDllName );
 		}
 	}
 
@@ -692,48 +692,48 @@ void CEngineVGui::Init()
 	// NOTE: The GameUI context may or may not be used by the client
 	// so we'll start it out disabled
 	m_hGameUIInputContext = g_pInputStackSystem->PushInputContext();
-	g_pInputStackSystem->EnableInputContext(m_hGameUIInputContext, false);
+	g_pInputStackSystem->EnableInputContext( m_hGameUIInputContext, false );
 	InputContextHandle_t hVGuiInputContext = g_pInputStackSystem->PushInputContext();
-	g_pMatSystemSurface->SetInputContext(hVGuiInputContext);
+	g_pMatSystemSurface->SetInputContext( hVGuiInputContext );
 
-	VGui_InitMatSysInterfacesList("BaseUI", &g_AppSystemFactory, 1);
-
+	VGui_InitMatSysInterfacesList( "BaseUI", &g_AppSystemFactory, 1 );
+	
 #ifdef OSX
-	if (Steam3Client().SteamApps())
+	if ( Steam3Client().SteamApps() )
 	{
 		// just follow the language steam wants you to be
 		const char *lang = Steam3Client().SteamApps()->GetCurrentGameLanguage();
-		if (lang && Q_strlen(lang))
-			vgui::system()->SetRegistryString("HKEY_CURRENT_USER\\Software\\Valve\\Steam\\Language", lang);
+		if ( lang && Q_strlen(lang) )
+			vgui::system()->SetRegistryString( "HKEY_CURRENT_USER\\Software\\Valve\\Steam\\Language", lang );
 	}
 #endif
-
-	COM_TimestampedLog("AttachToWindow");
+	
+	COM_TimestampedLog( "AttachToWindow" );
 
 	// Need to be able to play sounds through vgui
-	g_pMatSystemSurface->InstallPlaySoundFunc(VGui_PlaySound);
+	g_pMatSystemSurface->InstallPlaySoundFunc( VGui_PlaySound );
 
-	COM_TimestampedLog("Load Scheme File");
+	COM_TimestampedLog( "Load Scheme File" );
 
 	// load scheme
 	const char *pStr = "Resource/SourceScheme.res";
-	if (!scheme()->LoadSchemeFromFile(pStr, "Tracker"))
+	if ( !scheme()->LoadSchemeFromFile( pStr, "Tracker" ))
 	{
-		Sys_Error("Error loading file %s\n", pStr);
+		Sys_Error( "Error loading file %s\n", pStr );
 		return;
 	}
-
+	
 	pStr = "Resource/ClientScheme.res";
-	if (!scheme()->LoadSchemeFromFile(pStr, "ClientScheme"))
+	if ( !scheme()->LoadSchemeFromFile( pStr, "ClientScheme" ))
 	{
-		Sys_Error("Error loading file %s\n", pStr);
+		Sys_Error( "Error loading file %s\n", pStr );
 		return;
 	}
 
-	if (IsGameConsole())
+	if ( IsGameConsole() )
 	{
 		CCommand ccommand;
-		if (CL_ShouldLoadBackgroundLevel(ccommand))
+		if ( CL_ShouldLoadBackgroundLevel( ccommand ) )
 		{
 			// Must be before the game ui base panel starts up
 			// This is a hint to avoid the menu pop due to the impending background map
@@ -742,13 +742,13 @@ void CEngineVGui::Init()
 		}
 	}
 
-	COM_TimestampedLog("ivgui()->Start()");
+	COM_TimestampedLog( "ivgui()->Start()" );
 
 	// Start the App running
 	ivgui()->Start();
 	ivgui()->SetSleep(false);
 
-	bool bTools = CommandLine()->CheckParm("-tools") != NULL;
+	bool bTools = CommandLine()->CheckParm( "-tools" ) != NULL;
 
 	// setup base panel for the whole VGUI System
 	// The root panel for everything ( NULL parent makes it a child of the embedded panel )
@@ -769,143 +769,143 @@ void CEngineVGui::Init()
 	//		staticFocusOverlayPanel (zpos == 150)
 #endif
 
-	COM_TimestampedLog("Building Panels (staticPanel)");
-	staticPanel = new CStaticPanel(NULL, "staticPanel");
-	staticPanel->SetParent(surface()->GetEmbeddedPanel());
-	PreparePanel(staticPanel, 0);
+	COM_TimestampedLog( "Building Panels (staticPanel)" );
+	staticPanel = new CStaticPanel( NULL, "staticPanel" );	
+	staticPanel->SetParent( surface()->GetEmbeddedPanel() );
+	PreparePanel( staticPanel, 0 );
 
-	COM_TimestampedLog("Building Panels (staticGameUIBackgroundPanel)");
-	staticGameUIBackgroundPanel = new CEnginePanel(staticPanel, "GameUI Background Panel");
-	PreparePanel(staticGameUIBackgroundPanel, 0);
+	COM_TimestampedLog( "Building Panels (staticGameUIBackgroundPanel)" );
+	staticGameUIBackgroundPanel = new CEnginePanel( staticPanel, "GameUI Background Panel" );
+	PreparePanel( staticGameUIBackgroundPanel, 0 );
 
-	COM_TimestampedLog("Building Panels (staticClientDLLPanel)");
-	staticClientDLLPanel = new CEnginePanel(staticPanel, "staticClientDLLPanel");
-	PreparePanel(staticClientDLLPanel, 25, false);
-	staticClientDLLPanel->SetKeyBoardInputEnabled(false);	// popups in the client DLL can enable this.
+	COM_TimestampedLog( "Building Panels (staticClientDLLPanel)" );
+	staticClientDLLPanel = new CEnginePanel( staticPanel, "staticClientDLLPanel" );
+	PreparePanel( staticClientDLLPanel, 25, false );
+	staticClientDLLPanel->SetKeyBoardInputEnabled( false );	// popups in the client DLL can enable this.
 
-															// This panel has it's own animation controller, which makes it 1.1Mb to instance
-															//  which is too much on the console which doesn't support plugins anyway.
-	if (IsPC())
+	// This panel has it's own animation controller, which makes it 1.1Mb to instance
+	//  which is too much on the console which doesn't support plugins anyway.
+	if ( IsPC() )
 	{
-		COM_TimestampedLog("Building Panels (CreateAskConnectPanel)");
-		CreateAskConnectPanel(staticPanel->GetVPanel());
+		COM_TimestampedLog( "Building Panels (CreateAskConnectPanel)" );
+		CreateAskConnectPanel( staticPanel->GetVPanel() );
 	}
 
-	COM_TimestampedLog("Building Panels (staticClientDLLToolsPanel)");
-	staticClientDLLToolsPanel = new CEnginePanel(staticPanel, "staticClientDLLToolsPanel");
-	PreparePanel(staticClientDLLToolsPanel, 28);
+	COM_TimestampedLog( "Building Panels (staticClientDLLToolsPanel)" );
+	staticClientDLLToolsPanel = new CEnginePanel( staticPanel, "staticClientDLLToolsPanel" );
+	PreparePanel( staticClientDLLToolsPanel, 28 );
 	// popups in the client DLL can enable this.
-	staticClientDLLToolsPanel->SetKeyBoardInputEnabled(false);
+	staticClientDLLToolsPanel->SetKeyBoardInputEnabled( false );	
 
-	COM_TimestampedLog("Building Panels (staticGameUIPanel)");
-	staticGameUIPanel = new CEnginePanel(staticPanel, "GameUI Panel");
+	COM_TimestampedLog( "Building Panels (staticGameUIPanel)" );
+	staticGameUIPanel = new CEnginePanel( staticPanel, "GameUI Panel" );
 #if defined( TOOLFRAMEWORK_VGUI_REFACTOR )
-	PreparePanel(staticGameUIPanel, 40);
+	PreparePanel( staticGameUIPanel, 40 );
 #else
-	PreparePanel(staticGameUIPanel, 100);
+	PreparePanel( staticGameUIPanel, 100 );
 #endif
 
-	COM_TimestampedLog("Building Panels (staticGameDLLPanel)");
-	staticGameDLLPanel = new CEnginePanel(staticPanel, "staticGameDLLPanel");
+	COM_TimestampedLog( "Building Panels (staticGameDLLPanel)" );
+	staticGameDLLPanel = new CEnginePanel( staticPanel, "staticGameDLLPanel" );
 #if defined( TOOLFRAMEWORK_VGUI_REFACTOR )
-	PreparePanel(staticGameDLLPanel, 50);
+	PreparePanel( staticGameDLLPanel, 50 );
 #else
-	PreparePanel(staticGameDLLPanel, 135, CommandLine()->CheckParm("-tools") != NULL);
+	PreparePanel( staticGameDLLPanel, 135, CommandLine()->CheckParm( "-tools" ) != NULL );
 #endif
-	staticGameDLLPanel->SetKeyBoardInputEnabled(false);	// popups in the game DLL can enable this.
+	staticGameDLLPanel->SetKeyBoardInputEnabled( false );	// popups in the game DLL can enable this.
 
-	COM_TimestampedLog("Building Panels (Engine Tools)");
+	COM_TimestampedLog( "Building Panels (Engine Tools)" );
 
-	staticEngineToolsPanel = new CEnginePanel(bTools ? staticGameDLLPanel->GetVPanel() : staticPanel->GetVPanel(), "Engine Tools");
+	staticEngineToolsPanel = new CEnginePanel( bTools ? staticGameDLLPanel->GetVPanel() : staticPanel->GetVPanel(), "Engine Tools" );
 #if defined( TOOLFRAMEWORK_VGUI_REFACTOR )
-	PreparePanel(staticEngineToolsPanel, 75);
+	PreparePanel( staticEngineToolsPanel, 75 );
 #else
-	PreparePanel(staticEngineToolsPanel, 100);
+	PreparePanel( staticEngineToolsPanel, 100 );
 #endif
-	staticEngineToolsPanel->SetKeyBoardInputEnabled(false);	// popups in the game DLL can enable this.
-	staticEngineToolsPanel->SetMouseInputEnabled(false);	// popups in the game DLL can enable this.
+	staticEngineToolsPanel->SetKeyBoardInputEnabled( false );	// popups in the game DLL can enable this.
+	staticEngineToolsPanel->SetMouseInputEnabled( false );	// popups in the game DLL can enable this.
 
-	if (IsPC())
+	if ( IsPC() )
 	{
-		COM_TimestampedLog("Building Panels (staticDebugSystemPanel)");
+		COM_TimestampedLog( "Building Panels (staticDebugSystemPanel)" );
 
-		staticDebugSystemPanel = new CDebugSystemPanel(staticPanel, "Engine Debug System");
-		staticDebugSystemPanel->SetZPos(125);
+		staticDebugSystemPanel = new CDebugSystemPanel( staticPanel, "Engine Debug System" );
+		staticDebugSystemPanel->SetZPos( 125 );
 
 		// Install demo playback/editing UI
-		CDemoUIPanel::InstallDemoUI(staticEngineToolsPanel);
+		CDemoUIPanel::InstallDemoUI( staticEngineToolsPanel );
 		//CDemoUIPanel2::Install( staticClientDLLPanel, staticEngineToolsPanel, true );
 
 		// Install fog control panel UI
-		CFogUIPanel::InstallFogUI(staticEngineToolsPanel);
+		CFogUIPanel::InstallFogUI( staticEngineToolsPanel );
 
 		// Install texture view panel
-		TxViewPanel::Install(staticEngineToolsPanel);
+		TxViewPanel::Install( staticEngineToolsPanel );
 
-		/*
+/*
 		COM_TimestampedLog( "Install bug reporter" );
 
 		// Create and initialize bug reporting system
 		bugreporter->InstallBugReportingUI( staticGameUIPanel, IEngineBugReporter::BR_AUTOSELECT );
 		bugreporter->Init();
-		*/
+*/
 
-		COM_TimestampedLog("Install perf tools");
+		COM_TimestampedLog( "Install perf tools" );
 
 		// Create a performance toolkit system
-		perftools->InstallPerformanceToolsUI(staticEngineToolsPanel);
+		perftools->InstallPerformanceToolsUI( staticEngineToolsPanel );
 		perftools->Init();
 
 		// Create a color correction UI
-		colorcorrectiontools->InstallColorCorrectionUI(staticEngineToolsPanel);
+		colorcorrectiontools->InstallColorCorrectionUI( staticEngineToolsPanel );
 		colorcorrectiontools->Init();
 	}
 
-	if (IsPS3())
+	if ( IsPS3() )
 	{
-		COM_TimestampedLog("Building Panels (staticSteamOverlayPanel)");
+		COM_TimestampedLog( "Building Panels (staticSteamOverlayPanel)" );
 
-		staticSteamOverlayPanel = new CEnginePanel(staticPanel, "Steam Overlay");
-		staticSteamOverlayPanel->SetZPos(140);
-		staticSteamOverlayPanel->SetKeyBoardInputEnabled(false);
-		staticSteamOverlayPanel->SetMouseInputEnabled(false);
+		staticSteamOverlayPanel = new CEnginePanel( staticPanel, "Steam Overlay" );
+		staticSteamOverlayPanel->SetZPos( 140 );
+		staticSteamOverlayPanel->SetKeyBoardInputEnabled( false );
+		staticSteamOverlayPanel->SetMouseInputEnabled( false );
 	}
 
-	COM_TimestampedLog("Building Panels (FocusOverlayPanel)");
+	COM_TimestampedLog( "Building Panels (FocusOverlayPanel)" );
 
 	// Make sure this is on top of everything
-	staticFocusOverlayPanel = new CFocusOverlayPanel(staticPanel, "FocusOverlayPanel");
-	staticFocusOverlayPanel->SetBounds(0, 0, videomode->GetModeWidth(), videomode->GetModeHeight());
-	staticFocusOverlayPanel->SetZPos(150);
+	staticFocusOverlayPanel = new CFocusOverlayPanel( staticPanel, "FocusOverlayPanel" );
+	staticFocusOverlayPanel->SetBounds( 0, 0, videomode->GetModeWidth(), videomode->GetModeHeight() );
+	staticFocusOverlayPanel->SetZPos( 150 );
 	staticFocusOverlayPanel->MoveToFront();
 
-	COM_TimestampedLog("Building Panels (console, entity report, drawtree, texturelist, vprof)");
+	COM_TimestampedLog( "Building Panels (console, entity report, drawtree, texturelist, vprof)" );
 
 	// Create engine vgui panels
-	if (IsPC())
+	if ( IsPC() )
 	{
 #ifdef IHV_DEMO
-		// 		if ( GetSteamUniverse() == k_EUniversePublic ) // IHV_DEMO - we must remove this before we publicly release
-		// 		{
-		// 			CreateWatermarkPanel( staticEngineToolsPanel );
-		// 		}
+// 		if ( GetSteamUniverse() == k_EUniversePublic ) // IHV_DEMO - we must remove this before we publicly release
+// 		{
+// 			CreateWatermarkPanel( staticEngineToolsPanel );
+// 		}
 #endif
 
-		Con_CreateConsolePanel(staticEngineToolsPanel);
-		CL_CreateEntityReportPanel(staticEngineToolsPanel);
-		VGui_CreateDrawTreePanel(staticEngineToolsPanel);
-		CL_CreateTextureListPanel(staticEngineToolsPanel);
-		CreateVProfPanels(staticEngineToolsPanel);
+		Con_CreateConsolePanel( staticEngineToolsPanel );
+		CL_CreateEntityReportPanel( staticEngineToolsPanel );
+		VGui_CreateDrawTreePanel( staticEngineToolsPanel );
+		CL_CreateTextureListPanel( staticEngineToolsPanel );
+		CreateVProfPanels( staticEngineToolsPanel );
 	}
 #ifndef _CERT
-	else if (IsGameConsole())
+	else if ( IsGameConsole() )
 	{
-		Con_CreateConsolePanel(staticEngineToolsPanel);
-		CL_CreateEntityReportPanel(staticEngineToolsPanel);
+		Con_CreateConsolePanel( staticEngineToolsPanel );
+		CL_CreateEntityReportPanel( staticEngineToolsPanel );
 
-		if (IsX360())
+		if ( IsX360() )
 		{
-			CreateVProfPanels(staticGameDLLPanel);
+			CreateVProfPanels( staticGameDLLPanel );
 		}
 	}
 #endif // !_CERT
@@ -914,68 +914,68 @@ void CEngineVGui::Init()
 
 
 
+	
 
 
 
-
-	staticEngineToolsPanel->LoadControlSettings("scripts/EngineVGuiLayout.res");
+	staticEngineToolsPanel->LoadControlSettings( "scripts/EngineVGuiLayout.res" );
 	// Loading the .res will show some panels which really should stay hidden
 	HideVProfPanels();
 
-	COM_TimestampedLog("materials->CacheUsedMaterials()");
+	COM_TimestampedLog( "materials->CacheUsedMaterials()" );
 
 	// This material is used by CPotteryWheelPanel::Paint() to copy stencil to the render target's alpha. Not sure of the best place to put it, but this needs to be done sometime before the used materials are precached.
-	m_pConstantColorMaterial = materials->FindMaterial("dev/constant_color", TEXTURE_GROUP_OTHER, true);
-	if (m_pConstantColorMaterial)
+	m_pConstantColorMaterial = materials->FindMaterial( "dev/constant_color", TEXTURE_GROUP_OTHER, true );
+	if ( m_pConstantColorMaterial )
 	{
 		m_pConstantColorMaterial->IncrementReferenceCount();
 	}
-
+		
 	// Make sure that these materials are in the materials cache
 	materials->CacheUsedMaterials();
 
-	COM_TimestampedLog("g_pVGuiLocalize->AddFile");
+	COM_TimestampedLog( "g_pVGuiLocalize->AddFile" );
 
 
 	// load the base localization file
-	g_pVGuiLocalize->AddFile("Resource/valve_%language%.txt");
+	g_pVGuiLocalize->AddFile( "Resource/valve_%language%.txt" );
 
 	char szFileName[MAX_PATH];
 
 	// We also want to load the localization file for the base game.  Nomrally, all these values would already be in valve_language.txt, but
 	// with CSGO we decided to move them into csgo_language (which is NOT a mod).
-	Q_snprintf(szFileName, sizeof(szFileName) - 1, "resource/%s_%%language%%.txt", GetCurrentGame());
-	szFileName[sizeof(szFileName) - 1] = '\0';
-	g_pVGuiLocalize->AddFile(szFileName);
+	Q_snprintf( szFileName, sizeof( szFileName ) - 1, "resource/%s_%%language%%.txt", GetCurrentGame() );
+	szFileName[ sizeof( szFileName ) - 1 ] = '\0';
+	g_pVGuiLocalize->AddFile( szFileName );
 
 
 	// don't need to load the "valve" localization file twice
 	// Each mod can have its own language.txt in addition to the valve_%%langauge%%.txt file under defaultgamedir.
 	// load mod-specific localization file for kb_act.lst, user.scr, settings.scr, etc.
-	Q_snprintf(szFileName, sizeof(szFileName) - 1, "resource/%s_%%language%%.txt", GetCurrentMod());
-	szFileName[sizeof(szFileName) - 1] = '\0';
-	g_pVGuiLocalize->AddFile(szFileName);
+	Q_snprintf( szFileName, sizeof( szFileName ) - 1, "resource/%s_%%language%%.txt", GetCurrentMod() );
+	szFileName[ sizeof( szFileName ) - 1 ] = '\0';
+	g_pVGuiLocalize->AddFile( szFileName );
 
 	// Load a low-violence-specific string file to override strings in the mod string file
-	if (g_bLowViolence)
+	if ( g_bLowViolence )
 	{
-		Q_snprintf(szFileName, sizeof(szFileName) - 1, "resource/%s_%%language%%_lv.txt", GetCurrentMod());
-		szFileName[sizeof(szFileName) - 1] = '\0';
-		g_pVGuiLocalize->AddFile(szFileName);
+		Q_snprintf( szFileName, sizeof( szFileName ) - 1, "resource/%s_%%language%%_lv.txt", GetCurrentMod() );
+		szFileName[ sizeof( szFileName ) - 1 ] = '\0';
+		g_pVGuiLocalize->AddFile( szFileName );
 	}
 
 	// PiMoN: add cstrike language for backwards compatibility
-	g_pVGuiLocalize->AddFile("Resource/cstrike_%language%.txt");
+	g_pVGuiLocalize->AddFile( "Resource/cstrike_%language%.txt" );
 
-	COM_TimestampedLog("staticGameUIFuncs->Initialize");
+	COM_TimestampedLog( "staticGameUIFuncs->Initialize" );
 
-	staticGameUIFuncs->Initialize(g_GameSystemFactory);
+	staticGameUIFuncs->Initialize( g_GameSystemFactory );
 
-	COM_TimestampedLog("staticGameUIFuncs->Start");
+	COM_TimestampedLog( "staticGameUIFuncs->Start" );
 	staticGameUIFuncs->Start();
 
 	// setup console
-	if (staticGameConsole)
+	if ( staticGameConsole )
 	{
 		staticGameConsole->Initialize();
 #if defined( TOOLFRAMEWORK_VGUI_REFACTOR )
@@ -985,26 +985,26 @@ void CEngineVGui::Init()
 #endif
 	}
 
-	if (IsGameConsole())
+	if ( IsGameConsole() )
 	{
 		// provide an interface for loader to send progress notifications
-		g_pQueuedLoader->InstallProgress(&s_LoaderProgress);
-}
+		g_pQueuedLoader->InstallProgress( &s_LoaderProgress ); 
+	}
 
 	// show the game UI
-	COM_TimestampedLog("ActivateGameUI()");
+	COM_TimestampedLog( "ActivateGameUI()" );
 	ActivateGameUI();
 
-	if (staticGameConsole &&
-		!CommandLine()->CheckParm("-forcestartupmenu") &&
-		!CommandLine()->CheckParm("-hideconsole") &&
-		(CommandLine()->FindParm("-toconsole") || CommandLine()->FindParm("-console") || CommandLine()->FindParm("-rpt") || CommandLine()->FindParm("-allowdebug")))
+	if ( staticGameConsole && 
+		!CommandLine()->CheckParm( "-forcestartupmenu" ) && 
+		!CommandLine()->CheckParm( "-hideconsole" ) &&
+		( CommandLine()->FindParm( "-toconsole" ) || CommandLine()->FindParm( "-console" ) || CommandLine()->FindParm( "-rpt" ) || CommandLine()->FindParm( "-allowdebug" ) ) )
 	{
 		// activate the console
 		staticGameConsole->Activate();
 	}
 
-	m_bNoShaderAPI = CommandLine()->FindParm("-noshaderapi") ? true : false;
+	m_bNoShaderAPI = CommandLine()->FindParm( "-noshaderapi" ) ? true : false;
 }
 
 void CEngineVGui::PostInit()

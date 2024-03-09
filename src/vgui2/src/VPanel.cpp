@@ -445,7 +445,7 @@ void VPanel::GetInset(int &left, int &top, int &right, int &bottom)
 }
 
 //-----------------------------------------------------------------------------
-// Purpose: Stupid function that causes so many issues i hate it so much
+// Purpose: 
 //-----------------------------------------------------------------------------
 void VPanel::SetParent(VPanel *newParent)
 {
