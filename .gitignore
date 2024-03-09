@@ -165,3 +165,23 @@ src/lib/public/videocfg.lib
 src/lib/public/vpklib.lib
 src/lib/public/vstdlib.lib
 src/lib/public/vtf.lib
+
+# game and bin folders
+game/portal2.dat
+game/portal2.exe
+game/srcds.exe
+
+game/bin/*
+!game/bin/binkw32.dll
+!game/bin/mss32.dll
+!game/bin/mssds3d.flt
+!game/bin/mssmp3.asi
+!game/bin/phonon3d.dll
+!game/bin/Steam.dll
+!game/bin/steam_api.dll
+!game/bin/steam.inf
+!game/bin/steam_appid.txt
+game/hl2/*
+game/bin/tools/*
+//game/platform/*
+*.mdmp
