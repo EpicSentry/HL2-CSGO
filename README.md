@@ -17,6 +17,7 @@ Partially used code from https://github.com/tupoy-ya/Kisak-Strike and https://gi
 - In game console is really unreliable and can only be opened if the pause menu is opened first.
 - Random vphysics.dll crashes.
 - Physics save/restore is broken, play with ``save_disable 1`` for the time being.
+- For now you'll need to bind f (or your desired flashlight key) to ``toggleflashlight``.
 
 **Differences/stuff removed in HL2GO:**<br>
 Unfortunately, in order to get certain features to work or to prevent crashes, the following have been removed completely:<br>
