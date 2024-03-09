@@ -27,6 +27,3 @@
 /* define if you want to use zlib.  See readme.txt for additional
  * requirements. */
 // #define HAVE_ZLIB 1
-
-// Shut up deprecation warning
-#define _SILENCE_STDEXT_HASH_DEPRECATION_WARNINGS

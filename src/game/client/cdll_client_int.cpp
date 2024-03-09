@@ -114,7 +114,7 @@
 #include "c_cs_player.h"
 #endif
 
-//#include "mumble.h"
+#include "mumble.h"
 
 #include "vscript/ivscript.h"
 #include "activitylist.h"
@@ -1254,7 +1254,7 @@ bool InitGameSystems( CreateInterfaceFn appSystemFactory )
 	IGameSystem::Add( ClientThinkList() );
 	IGameSystem::Add( ClientSoundscapeSystem() );
 	IGameSystem::Add( PerfVisualBenchmark() );
-	//IGameSystem::Add( MumbleSystem() );
+	IGameSystem::Add( MumbleSystem() );
 
 #if defined( CLIENT_DLL ) && defined( COPY_CHECK_STRESSTEST )
 	IGameSystem::Add( GetPredictionCopyTester() );

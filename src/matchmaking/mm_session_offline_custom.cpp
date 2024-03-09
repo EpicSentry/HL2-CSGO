@@ -111,9 +111,6 @@ void CMatchSessionOfflineCustom::Command( KeyValues *pCommand )
 			// Determine reservation settings required
 			g_pMatchExtensions->GetINetSupport()->UpdateClientReservation( uiReservationId, 0ull );
 
-			// Issue the connect command
-//			g_pMatchExtensions->GetIVEngineClient()->StartLoadingScreenForCommand( CFmtStr( "connect %s", szConnectAddress ) );
-
 			return;
 		}
 	}

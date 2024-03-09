@@ -1,4 +1,4 @@
-//========= Copyright ï¿½ 1996-2009, Valve Corporation, All rights reserved. ============//
+//========= Copyright © 1996-2009, Valve Corporation, All rights reserved. ============//
 //
 // Purpose: 
 //
@@ -436,8 +436,7 @@ void PlayerManager::Update()
 
 void PlayerManager::UpdateLanSearch()
 {
-    return; //lwss - hack, this function crashes.
-    if ( !m_lanSearchData.m_bSearchInProgress )
+	if ( !m_lanSearchData.m_bSearchInProgress )
 		return;
 
 	if ( m_lanSearchData.m_flStartTime && m_lanSearchData.m_flLastBroadcastTime )

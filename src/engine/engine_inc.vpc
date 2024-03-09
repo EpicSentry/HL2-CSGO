@@ -1254,8 +1254,8 @@ $Project $EPROJ
 		$Lib    videocfg							[$WINDOWS||$OSXALL||($LINUXALL&&!$DEDICATED)]
 		$Lib	vtf
 		$Lib	vgui_controls						[!$DEDICATED]
-		$Lib	"$LIBPUBLIC/steamdatagramlib"		[!$VS2015 && $USE_STEAM_DATAGRAM]
-		$Lib	"$LIBPUBLIC/2015/steamdatagramlib"	[$VS2015 && $USE_STEAM_DATAGRAM]
+		$Lib	"$LIBPUBLIC/steamdatagramlib"		[!$VS2015]
+		$Lib	"$LIBPUBLIC/2015/steamdatagramlib"	[$VS2015]
 
 		$Lib	"$SRCDIR\lib\common\vc7\bzip2"		[!$POSIX && !$WIN64 && !$VS2015]
 		$Lib	"$SRCDIR\lib\common\x64\bzip2"		[!$POSIX &&  $WIN64 && !$VS2015]

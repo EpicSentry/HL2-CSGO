@@ -30,7 +30,7 @@
 #include "serializedentity.h"
 #include "checksum_engine.h"
 
-//#include "matchmaking/imatchframework.h"
+#include "matchmaking/imatchframework.h"
 #include "mathlib/IceKey.H"
 #include "hltvserver.h"
 #include "UtlStringMap.h"
@@ -367,10 +367,8 @@ void CServerMsg_CheckReservation::SendMsg( const ns_address &serverAdr, int sock
 #endif
 
 	#ifndef DEDICATED
-#ifdef USE_STEAM_DATAGRAM
 		if ( serverAdr.GetAddressType() == NSAT_PROXIED_GAMESERVER )
 			NET_InitSteamDatagramProxiedGameserverConnection( serverAdr );
-#endif
 	#endif
 
 	NET_SendPacket( NULL, socket, serverAdr, msg.GetData(), msg.GetNumBytesWritten() );
@@ -435,10 +433,8 @@ void CServerMsg_Ping::SendMsg( const ns_address &serverAdr, int socket, uint32 t
 	msg.WriteLong( token );
 
 	#ifndef DEDICATED
-#ifdef USE_STEAM_DATAGRAM
 		if ( serverAdr.GetAddressType() == NSAT_PROXIED_GAMESERVER )
 			NET_InitSteamDatagramProxiedGameserverConnection( serverAdr );
-#endif
 	#endif
 
 	DevMsg( "Pinging %s\n", ns_address_render( serverAdr ).String() );
@@ -1497,7 +1493,6 @@ void CBaseClientState::CheckForResend ( bool bForceResendNow /* = false */ )
 					break;
 
 				case NSAT_PROXIED_GAMESERVER:
-#ifdef USE_STEAM_DATAGRAM
 					#ifdef DEDICATED
 						Assert( false );
 					#else
@@ -1508,7 +1503,6 @@ void CBaseClientState::CheckForResend ( bool bForceResendNow /* = false */ )
 
 						pszProtocol = "SteamDatagram";
 					#endif
-#endif
 					break;
 			}
 			if ( developer.GetInt() != 0 )
@@ -1535,10 +1529,8 @@ void CBaseClientState::CheckForResend ( bool bForceResendNow /* = false */ )
 void CBaseClientState::ResendGameDetailsRequest( const ns_address &adr )
 {
 #ifndef DEDICATED
-#ifdef USELESS_MATCHMAKING
 	g_pMatchFramework->GetEventsSubscription()->BroadcastEvent( new KeyValues(
 		"Client::ResendGameDetailsRequest", "to", ns_address_render( adr ).String() ) );
-#endif
 #endif
 }
 
@@ -1723,10 +1715,8 @@ bool CBaseClientState::ProcessConnectionlessPacket( netpacket_t *packet )
 				m_nServerReservationCookie = 0;				
 				m_pServerReservationCallback = NULL;
 #if !defined(DEDICATED)
-#ifdef USELESS_MATCHMAKING
 				g_pMatchFramework->CloseSession();
 				g_pMatchFramework->GetEventsSubscription()->BroadcastEvent( new KeyValues( "OnClientInsecureBlocked", "reason", "connect" ) );
-#endif
 #endif
 				Disconnect();
 				return false;
@@ -2026,9 +2016,7 @@ bool CBaseClientState::ProcessConnectionlessPacket( netpacket_t *packet )
 			KeyValues *notify = new KeyValues( "OnNetLanConnectionlessPacket" );
 			notify->SetPtr( "rawpkt", packet );
 
-#ifdef USELESS_MATCHMAKING
 			g_pMatchFramework->GetEventsSubscription()->BroadcastEvent( notify );
-#endif
 		}
 		return true;
 #endif
@@ -2290,7 +2278,7 @@ void CBaseClientState::HandleDeferredConnection()
 		if ( !dc.m_unGSSteamID || !CSteamID( dc.m_unGSSteamID ).BGameServerAccount() )
 		{
 			Disconnect( true ); // cannot retry this attempt - the GS SteamID is not good
-			COM_ExplainDisconnection( true, "You cannot connect to this server because it is restricted to LAN connections only.\n" );
+			COM_ExplainDisconnection( true, "You cannot connect to this CS:GO server because it is restricted to LAN connections only.\n" );
 			return;
 		}
 		
@@ -2305,9 +2293,7 @@ void CBaseClientState::HandleDeferredConnection()
 			kvCreateSession->SetString( "adr", ns_address_render( dc.m_adrServerAddress ).String() );
 			kvCreateSession->SetUint64( "gsid", dc.m_unGSSteamID );
 			kvCreateSession->SetPtr( "ptr", &uiReservationCookie );
-#ifdef USELESS_MATCHMAKING
 			g_pMatchFramework->GetEventsSubscription()->BroadcastEvent( kvCreateSession );
-#endif
 		}
 
 		if ( !uiReservationCookie )
@@ -2319,9 +2305,7 @@ void CBaseClientState::HandleDeferredConnection()
 				kvCreateSession->SetString( "adr", ns_address_render( dc.m_adrServerAddress ).String() );
 				kvCreateSession->SetUint64( "gsid", dc.m_unGSSteamID );
 				// NO PTR HERE, FORCE COOKIE: kvCreateSession->SetPtr( "ptr", &uiReservationCookie );
-#ifdef USELESS_MATCHMAKING
 				g_pMatchFramework->GetEventsSubscription()->BroadcastEvent( kvCreateSession );
-#endif
 			}
 		}
 		else
@@ -2878,11 +2862,9 @@ bool CBaseClientState::SVCMsg_ServerInfo( const CSVCMsg_ServerInfo& msg )
 	}
 
 	// Client needs an opportunity to write all profile information
-	#ifdef USELESS_MATCHMAKING
 	g_pMatchFramework->GetEventsSubscription()->BroadcastEvent( new KeyValues(
 		"OnProfilesWriteOpportunity", "reason", "checkpoint"
 		) );
-#endif
 	}
 
 	COM_TimestampedLog( "CBaseClient::ProcessServerInfo(done)" );
@@ -3417,9 +3399,7 @@ bool CBaseClientState::SVCMsg_CmdKeyValues( const CSVCMsg_CmdKeyValues& msg )
 	KeyValues *pEvent = new KeyValues( "Client::CmdKeyValues" );
 	pEvent->AddSubKey( autodelete_pMsgKeyValues.Detach() );
 	pEvent->SetInt( "slot", m_nSplitScreenSlot );
-#ifdef USELESS_MATCHMAKING
 	g_pMatchFramework->GetEventsSubscription()->BroadcastEvent( pEvent );
-#endif
 
 #endif
 	return true;

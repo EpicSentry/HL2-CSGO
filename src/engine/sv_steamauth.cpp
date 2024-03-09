@@ -346,9 +346,7 @@ steam_no_good:
 
 #endif
 
-#ifdef USE_STEAM_DATAGRAM
 	NET_SteamDatagramServerListen();
-#endif
 
 	SendUpdatedServerDetails();
 }

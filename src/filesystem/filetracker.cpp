@@ -14,17 +14,10 @@
 
 #ifdef SUPPORT_PACKED_STORE
 
-#ifndef PLATFORM_64BITS
 unsigned ThreadStubProcessMD5Requests( void *pParam )
 {
 	return ((CFileTracker2 *)pParam)->ThreadedProcessMD5Requests();
 }
-#else
-uintp ThreadStubProcessMD5Requests(void *pParam)
-{
-	return ((CFileTracker2 *)pParam)->ThreadedProcessMD5Requests();
-}
-#endif
 
 //-----------------------------------------------------------------------------
 // ThreadedProcessMD5Requests

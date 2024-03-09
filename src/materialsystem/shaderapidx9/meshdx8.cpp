@@ -5440,10 +5440,10 @@ void CMeshMgr::FillPreTessPatchIB( CIndexBuffer* pIndexBuffer, int iSubdivLevel,
         if( v != iSubdivLevel - 1 )
         {
             // add a degenerate tri for stripping
-//            *pIndices = pIndices[iIndex - 1];
- //           pIndices ++;
-//            *pIndices = ( unsigned short )( ( iSubdivLevel + 1 ) * ( iSubdivLevel - ( v + 1 ) ) );
-//            pIndices ++; TODO FIXME ASAP
+            *pIndices = pIndices[iIndex - 1];
+            pIndices ++;
+            *pIndices = ( unsigned short )( ( iSubdivLevel + 1 ) * ( iSubdivLevel - ( v + 1 ) ) );
+            pIndices ++;
         }
     }
 

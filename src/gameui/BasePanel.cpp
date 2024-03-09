@@ -1934,7 +1934,7 @@ bool CBasePanel::IsPromptableCommand( const char *command )
 	return false;
 }
 
-#ifndef PLATFORM_64BITS
+#ifdef _WIN32
 //-------------------------
 // Purpose: Job wrapper
 //-------------------------
@@ -1954,27 +1954,6 @@ static unsigned PanelJobWrapperFn( void *pvContext )
 	}
 
 	ReleaseThreadHandle( ( ThreadHandle_t ) pAsync->m_hThreadHandle );
-	pAsync->m_hThreadHandle = NULL;
-
-	return 0;
-}
-#else
-static uintp PanelJobWrapperFn(void *pvContext)
-{
-	CBasePanel::CAsyncJobContext *pAsync = reinterpret_cast< CBasePanel::CAsyncJobContext * >(pvContext);
-
-	float const flTimeStart = Plat_FloatTime();
-
-	pAsync->ExecuteAsync();
-
-	float const flElapsedTime = Plat_FloatTime() - flTimeStart;
-
-	if (flElapsedTime < pAsync->m_flLeastExecuteTime)
-	{
-		ThreadSleep((pAsync->m_flLeastExecuteTime - flElapsedTime) * 1000);
-	}
-
-	ReleaseThreadHandle((ThreadHandle_t)pAsync->m_hThreadHandle);
 	pAsync->m_hThreadHandle = NULL;
 
 	return 0;

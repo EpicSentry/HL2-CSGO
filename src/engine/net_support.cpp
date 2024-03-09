@@ -20,9 +20,7 @@
 #include "host_cmd.h"
 #include "net.h"
 #include "proto_oob.h"
-#ifdef USE_STEAM_DATAGRAM
 #include "steamdatagram/isteamdatagramclient.h"
-#endif
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -293,10 +291,6 @@ ISteamNetworkingUtils *CNetSupportImpl::GetSteamNetworkingUtils()
 		Assert( false ); // why are we asking?
 		return nullptr;
 	#else
-#ifdef USE_STEAM_DATAGRAM
 		return ::SteamNetworkingUtils();
-#else
-	return NULL;
-#endif
 	#endif
 }

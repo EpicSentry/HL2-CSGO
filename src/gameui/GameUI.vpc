@@ -219,8 +219,7 @@ $Project "GameUI"
 		$Lib	vtf
 		$Lib	vpklib
 		$Lib  	"$LIBCOMMON/libjpeg"		[!$DEDICATED]
-		$Implib	steam_api			[!$X360 && !$NO_STEAM && !$WIN64]
-		$Implib	steam_api64			[$WIN64]
+		$ImpLib	steam_api
 		$Lib libpng [!$VS2015&&!$DEDICATED]
 		$Lib $LIBCOMMON/libpng [$VS2015&&!$DEDICATED]
 		$Lib libz [!$DEDICATED]

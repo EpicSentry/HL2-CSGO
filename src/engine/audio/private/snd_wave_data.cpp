@@ -3489,7 +3489,7 @@ IWaveData *CreateWaveDataMemory( CAudioSource &source )
 // set this to zero to revert to the previous scalar code
 #define PHONON_USE_SIMD 0
 
-#ifndef PLATFORM_64BITS
+
 namespace
 {
 	const int PHONON_FRAME_SIZE = 1024 * 2;
@@ -4146,4 +4146,3 @@ IWaveData *CreateWaveDataHRTF(IWaveData* pData, hrtf_info_t* dir)
 	CWaveDataHRTF* res = new CWaveDataHRTF(pData, dir);
 	return res;
 }
-#endif

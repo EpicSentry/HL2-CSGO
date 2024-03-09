@@ -18,11 +18,9 @@
 #include "ienginetoolinternal.h"
 #include "server.h"
 #include "mathlib/IceKey.H"
-#ifdef USE_STEAM_DATAGRAM
 #include "steamdatagram/isteamdatagramclient.h"
 #include "steamdatagram/isteamdatagramserver.h"
 #include "steamdatagram/isteamnetworkingutils.h"
-#endif
 #include "engine/inetsupport.h"
 
 #if !defined( _X360 ) && !defined( NO_STEAM )
@@ -94,9 +92,7 @@ static ConVar net_logserver( "net_logserver", "0", 0,  "Dump server stats to a f
 static ConVar net_loginterval( "net_loginterval", "1", 0, "Time in seconds between server logs" );
 #endif
 
-#ifdef USE_STEAM_DATAGRAM
 static ConVar sv_steamdatagramtransport_port( "sv_steamdatagramtransport_port", "", FCVAR_RELEASE, "If non zero, listen for proxied traffic on the specified port" );
-#endif
 
 //-----------------------------------------------------------------------------
 // Toggle Xbox 360 network security to allow cross-platform testing
@@ -240,7 +236,6 @@ static CUtlVectorMT< CUtlVector< pendingsocket_t > >	s_PendingSockets;
 CTSQueue<loopback_t *> s_LoopBacks[LOOPBACK_SOCKETS];
 static netpacket_t*	s_pLagData[MAX_SOCKETS];  // List of lag structures, if fakelag is set.
 
-#ifdef USE_STEAM_DATAGRAM
 ISteamDatagramTransportGameserver *g_pSteamDatagramGameserver = nullptr;
 ISteamDatagramTransportClient *g_pSteamDatagramClient = nullptr;
 ns_address g_addrSteamDatagramProxiedGameServer;
@@ -254,7 +249,6 @@ static void CloseSteamDatagramClientConnection()
 	}
 	g_addrSteamDatagramProxiedGameServer.Clear();
 }
-#endif
 
 unsigned short NET_HostToNetShort( unsigned short us_in )
 {
@@ -451,9 +445,7 @@ void NET_CloseSocket( int hSocket, int sock = -1)
 		// to talk to server
 		if ( sock == NS_CLIENT )
 		{
-#ifdef USE_STEAM_DATAGRAM
 			CloseSteamDatagramClientConnection();
-#endif
 		}
 	}
 
@@ -1392,7 +1384,6 @@ static int NET_ReceiveRawPacket( int sock, void *buf, int len, ns_address *from 
 		return ret;
 
 	// Still nothing?  Check proxied clients
-#ifdef USE_STEAM_DATAGRAM
 	if ( g_pSteamDatagramGameserver )
 	{
 		CSteamID remoteSteamID;
@@ -1428,8 +1419,6 @@ static int NET_ReceiveRawPacket( int sock, void *buf, int len, ns_address *from 
 			}
 		}
 	}
-#endif
-#ifdef USE_STEAM_DATAGRAM
 
 	// Still nothing?  Check proxied server
 	#ifndef DEDICATED
@@ -1446,7 +1435,6 @@ static int NET_ReceiveRawPacket( int sock, void *buf, int len, ns_address *from 
 			}
 		}
 	#endif
-#endif
 
 	// nothing
 	return 0;
@@ -2108,7 +2096,6 @@ static int NET_SendRawPacket( SOCKET s, const void *buf, int len, const ns_addre
 
 		case NSAT_PROXIED_GAMESERVER:
 		{
-#ifdef USE_STEAM_DATAGRAM
 			if ( !g_pSteamDatagramClient )
 			{
 				Assert( false );
@@ -2125,14 +2112,11 @@ static int NET_SendRawPacket( SOCKET s, const void *buf, int len, const ns_addre
 			EResult result = g_pSteamDatagramClient->SendDatagram( buf, len, to.m_steamID.GetSteamChannel() );
 			if ( result == k_EResultOK || result == k_EResultNoConnection )
 				return len;
-#endif
 		}
-
 		break;
 
 		case NSAT_PROXIED_CLIENT:
 		{
-#ifdef USE_STEAM_DATAGRAM
 			if ( !g_pSteamDatagramGameserver )
 			{
 				Assert( false );
@@ -2143,7 +2127,7 @@ static int NET_SendRawPacket( SOCKET s, const void *buf, int len, const ns_addre
 			EResult result = g_pSteamDatagramGameserver->SendDatagram( buf, len, to.m_steamID.GetSteamID(), to.m_steamID.GetSteamChannel() );
 			if ( result == k_EResultOK )
 				return len;
-#endif
+
 		}
 		break;
 	}
@@ -2861,7 +2845,6 @@ void NET_CloseAllSockets (void)
 	g_pSteamSocketMgr->Shutdown();
 	g_pSteamSocketMgr->Init();
 
-#ifdef USE_STEAM_DATAGRAM
 	// Shutdown steam datagram server, if we were listening
 	if ( g_pSteamDatagramGameserver )
 	{
@@ -2871,7 +2854,6 @@ void NET_CloseAllSockets (void)
 
 	// Shutdown steam datagram client, if we have one
 	CloseSteamDatagramClientConnection();
-#endif
 }
 
 /*
@@ -2963,7 +2945,7 @@ static CBindAddressHelper g_BindAddressHelper;
 #endif
 
 #ifndef DEDICATED
-#ifdef USE_STEAM_DATAGRAM
+
 // Initialize steam client datagram lib if we haven't already
 static bool CheckInitSteamDatagramClientLib()
 {
@@ -3059,7 +3041,7 @@ bool NET_InitSteamDatagramProxiedGameserverConnection( const ns_address &adr )
 }
 
 #endif
-#endif
+
 static void OpenSocketInternal( int nModule, int nSetPort, int nDefaultPort, const char *pName, int nProtocol, bool bTryAny )
 {
 	CUtlVector< CUtlString > vecBindableAddresses;
@@ -3143,10 +3125,8 @@ static void OpenSocketInternal( int nModule, int nSetPort, int nDefaultPort, con
 		g_pSteamSocketMgr->OpenSocket( *handle, nModule, nSetPort, nDefaultPort, pName, nProtocol, bTryAny );
 	}
 	#ifndef DEDICATED
-#ifdef USE_STEAM_DATAGRAM
 		if ( nModule == NS_CLIENT )
 			CheckInitSteamDatagramClientLib();
-#endif
 	#endif
 }
 
@@ -4183,14 +4163,12 @@ void NET_Init( bool bIsDedicated )
 
 	// Go ahead and create steam datagram client, and start measuring pings to data centers
 	#ifndef DEDICATED
-#ifdef USE_STEAM_DATAGRAM
 	if ( CheckInitSteamDatagramClientLib() )
 	{
 		if ( ::SteamNetworkingUtils() )
 			::SteamNetworkingUtils()->CheckPingDataUpToDate( 0.0f );
 	}
 	#endif
-#endif
 }
 
 /*
@@ -4216,9 +4194,7 @@ void NET_Shutdown (void)
 	NET_CloseAllSockets();
 	NET_ConfigLoopbackBuffers( false );
 #ifndef DEDICATED
-#ifdef USE_STEAM_DATAGRAM
 	SteamDatagramClient_Kill();
-#endif
 #endif
 
 #if defined(_WIN32)
@@ -4471,7 +4447,6 @@ bool NET_GetPublicAdr( netadr_t &adr )
 	return bRet;
 }
 
-#ifdef USE_STEAM_DATAGRAM
 void NET_SteamDatagramServerListen()
 {
 	// Receiving on steam datagram transport?
@@ -4497,7 +4472,7 @@ void NET_SteamDatagramServerListen()
 		sv_steamdatagramtransport_port.SetValue( 0 );
 	}
 }
-#endif
+
 void NET_TerminateConnection( int sock, const ns_address &peer )
 {
 #if defined( USE_STEAM_SOCKETS )
@@ -4508,20 +4483,17 @@ void NET_TerminateConnection( int sock, const ns_address &peer )
 	}
 #endif
 #ifndef DEDICATED
-#ifdef USE_STEAM_DATAGRAM
 	if ( peer == g_addrSteamDatagramProxiedGameServer )
 		CloseSteamDatagramClientConnection();
-#endif
 #endif		
 }
-
 
 //////////////////////////////////////////////////////////////////////////
 //
 // Cryptography support code
 //
 //////////////////////////////////////////////////////////////////////////
-//#ifdef USE_STEAM_DATAGRAM
+
 #ifdef Verify
 #undef Verify
 #endif
@@ -4604,7 +4576,6 @@ bool NET_CryptVerifyServerCertificateAndAllocateSessionKey( bool bOfficial, cons
 			break;
 		case NSAT_PROXIED_GAMESERVER:
 		{
-#ifdef USE_STEAM_DATAGRAM
 			unCertIP = SteamNetworkingUtils()->GetIPForServerSteamIDFromTicket( from.m_steamID.GetSteamID() );
 			if ( unCertIP == 0 )
 			{
@@ -4612,7 +4583,6 @@ bool NET_CryptVerifyServerCertificateAndAllocateSessionKey( bool bOfficial, cons
 				Assert(false);
 				return false;
 			}
-#endif
 			break;
 		}
 	}
@@ -5188,4 +5158,3 @@ CON_COMMAND( net_encrypt_key_make_clusters, "Generate certificates and their sig
 #endif
 
 
-//#endif //USE_STEAM_DATAGRAM
