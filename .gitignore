@@ -185,3 +185,7 @@ game/hl2/*
 game/bin/tools/*
 //game/platform/*
 *.mdmp
+src/lib/common/bzip2.lib
+src/lib/common/havana_constraints.lib
+src/lib/common/hk_base.lib
+src/lib/common/mxtoolkitwin32.lib

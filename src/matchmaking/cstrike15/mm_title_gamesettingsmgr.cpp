@@ -16,7 +16,7 @@
 #include "gametypes/igametypes.h"
 #include "mathlib/expressioncalculator.h"
 
-#include "csgo.spa.h"
+#include "../common/xlast_csgo/csgo.spa.h"
 
 #include "mm_title_contextvalues.h"
 
