@@ -3878,7 +3878,7 @@ void CBasePlayer::PlayerRunCommand(CUserCmd *ucmd, IMoveHelper *moveHelper)
 		ucmd->impulse = 0;
 		VectorCopy ( pl.v_angle, ucmd->viewangles );
 	}
-/*	else if( !m_bDuckEnabled )
+	else if( !m_bDuckEnabled )
 	{
 		ucmd->buttons &= ~IN_DUCK;
 		m_bDuckToggled = false;
@@ -3901,7 +3901,7 @@ void CBasePlayer::PlayerRunCommand(CUserCmd *ucmd, IMoveHelper *moveHelper)
 				ucmd->buttons |= IN_DUCK;
 			}
 		}
-	}*/
+	}
 	
 	PlayerMove()->RunCommand(this, ucmd, moveHelper);
 }
