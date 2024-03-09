@@ -212,18 +212,12 @@ $Project "Vrad_dll"
 
 	$Folder	"Link Libraries"
 	{
-		$File	"$SRCDIR\lib\public\bitmap.lib"	[!$WIN64]
-		$File	"$SRCDIR\lib\public\x64\bitmap.lib"	[$WIN64]
-		$File	"$SRCDIR\lib\public\raytrace.lib"	[!$WIN64]
-		$File	"$SRCDIR\lib\public\x64\raytrace.lib"	[$WIN64]
-		$File	"$SRCDIR\lib\public\vtf.lib"	[!$WIN64]
-		$File	"$SRCDIR\lib\public\x64\vtf.lib"	[$WIN64]
-		$File	"$SRCDIR\lib\public\mathlib.lib"	[!$WIN64]
-		$File	"$SRCDIR\lib\public\x64\mathlib.lib"	[$WIN64]
-		$File	"$SRCDIR\lib\public\tier2.lib"	[!$WIN64]
-		$File	"$SRCDIR\lib\public\x64\tier2.lib"	[$WIN64]
-		$File	"$SRCDIR\lib\public\vmpi.lib"	[!$WIN64]
-		$File	"$SRCDIR\lib\public\x64\vmpi.lib"	[$WIN64]
+		$File	"$SRCDIR\lib\public\bitmap.lib"
+		$File	"$SRCDIR\lib\public\mathlib.lib"
+		$File	"$SRCDIR\lib\public\raytrace.lib"
+		$File	"$SRCDIR\lib\public\tier2.lib"
+		$File	"$SRCDIR\lib\public\vmpi.lib"
+		$File	"$SRCDIR\lib\public\vtf.lib"
 	}
 
 	$File	"notes.txt"

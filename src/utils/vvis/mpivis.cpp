@@ -23,7 +23,6 @@
 #include <conio.h>
 #include "scratchpad_helpers.h"
 #include "tier0/fasttimer.h"
-#include "mpivis.h"
 
 
 #define VMPI_VVIS_PACKET_ID						1
@@ -220,12 +219,11 @@ void RunMPIBasePortalVis()
 
 	// Note: we're aiming for about 1500 portals in a map, so about 3000 work units.
 	g_CPUTime.Init();
-	double elapsed = DistributeWork(
+	double elapsed = DistributeWork( 
 		g_numportals * 2,		// # work units
-		VMPI_DISTRIBUTEWORK_PACKETID,	// packet ID
 		ProcessBasePortalVis,	// Worker function to process work units
 		ReceiveBasePortalVis	// Master function to receive work results
-	);
+		);
 
 	if ( g_bMPIMaster )
 	{
@@ -601,12 +599,11 @@ void RunMPIPortalFlow()
 	g_pDistributeWorkCallbacks = &g_VisDistributeWorkCallbacks;
 
 	g_CPUTime.Init();
-	double elapsed = DistributeWork(
+	double elapsed = DistributeWork( 
 		g_numportals * 2,		// # work units
-		VMPI_DISTRIBUTEWORK_PACKETID,	// packet ID
 		ProcessPortalFlow,		// Worker function to process work units
 		ReceivePortalFlow		// Master function to receive work results
-	);
+		);
 		
 	g_pDistributeWorkCallbacks = NULL;
 
