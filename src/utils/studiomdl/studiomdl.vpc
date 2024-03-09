@@ -9,7 +9,7 @@ $Macro OUTBINDIR	"$SRCDIR\..\game\bin"
 
 $Include "$SRCDIR\vpc_scripts\source_exe_con_win32_base.vpc"
 
-$Include "$SRCDIR\vpc_scripts\fbx.vpc"
+//$Include "$SRCDIR\vpc_scripts\fbx.vpc"
 
 $Configuration
 {
@@ -163,6 +163,6 @@ $Project "Studiomdl"
 		$Lib	tier1
 		$Lib	tier2
 		$Lib	tier3
-		$Lib	fbxutils
+		//$Lib	fbxutils
 	}
 }
