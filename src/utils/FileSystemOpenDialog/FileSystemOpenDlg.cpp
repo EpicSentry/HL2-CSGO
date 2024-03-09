@@ -302,7 +302,7 @@ void CFileSystemOpenDlg::GetEntries( const char *pMask, CUtlVector<CString> &ent
 }
 
 
-//64-bit support has made this pretty much useless unless you got working libs for jpegs which i cant figure out myself
+
 class CJpegSourceMgr : public jpeg_source_mgr
 {
 public:
@@ -356,7 +356,6 @@ public:
 
 bool ReadJpeg( IFileSystem *pFileSystem, const char *pFilename, CUtlVector<unsigned char> &buf, int &width, int &height, const char *pPathID )
 {
-#ifndef PLATFORM_64BITS
 	// Read the data.
 	FileHandle_t fp = pFileSystem->Open( pFilename, "rb", pPathID );
 	if ( fp == FILESYSTEM_INVALID_HANDLE )
@@ -425,9 +424,6 @@ bool ReadJpeg( IFileSystem *pFileSystem, const char *pFilename, CUtlVector<unsig
 
 	jpeg_finish_decompress(&jpegInfo);
 	return true;
-#else
-	return false;
-#endif
 }
 
 void DownsampleRGBToRGBAImage( 

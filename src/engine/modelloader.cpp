@@ -2199,12 +2199,6 @@ void Mod_LoadFaces( void )
 
 	// align these allocations
 	// If you trip one of these, you need to rethink the alignment of the struct
-#ifdef PLATFORM_64BITS
-	msurface1_t *out1 = Hunk_AllocNameAlignedClear< msurface1_t >(count, alignof(msurface1_t), va("%s [%s]", lh.GetLoadName(), "surface1"));
-	msurface2_t *out2 = Hunk_AllocNameAlignedClear< msurface2_t >(count, alignof(msurface2_t), va("%s [%s]", lh.GetLoadName(), "surface2"));
-
-	msurfacelighting_t *pLighting = Hunk_AllocNameAlignedClear< msurfacelighting_t >(count, alignof(msurfacelighting_t), va("%s [%s]", lh.GetLoadName(), "surfacelighting"));
-#else
 	Assert( sizeof(msurface1_t) == 16 );
 	Assert( sizeof(msurface2_t) == 32 );
 	Assert( sizeof(msurfacelighting_t) == 32 );
@@ -2213,7 +2207,6 @@ void Mod_LoadFaces( void )
 	msurface2_t *out2 = Hunk_AllocNameAlignedClear< msurface2_t >( count, 32, va( "%s [%s]", lh.GetLoadName(), "surface2" ) );
 
 	msurfacelighting_t *pLighting = Hunk_AllocNameAlignedClear< msurfacelighting_t >( count, 32, va( "%s [%s]", lh.GetLoadName(), "surfacelighting" ) );
-#endif
 
 	lh.GetMap()->surfaces1 = out1;
 	lh.GetMap()->surfaces2 = out2;
@@ -3258,8 +3251,7 @@ void Mod_TouchAllData( model_t *pModel, int nServerCount )
 		// skip self, start at children
 		for ( int i=1; i<pVirtualModel->m_group.Count(); ++i )
 		{
-			//MDLHandle_t childHandle = VoidPtrToMDLHandle( pVirtualModel->m_group[i].cache );
-			MDLHandle_t childHandle = (MDLHandle_t)(intp)pVirtualModel->m_group[i].cache & 0xffff;
+			MDLHandle_t childHandle = VoidPtrToMDLHandle( pVirtualModel->m_group[i].cache );
 			model_t *pChildModel = (model_t *)g_pMDLCache->GetUserData( childHandle );
 			if ( pChildModel )
 			{
