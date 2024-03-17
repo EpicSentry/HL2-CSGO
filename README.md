@@ -26,3 +26,19 @@ Unfortunately, in order to get certain features to work or to prevent crashes, t
 
 **Using and building HL2GO:**
 currently being reworked
+
+# Troubleshooting compiling
+Having problems building the project? Make sure you have the following:<br>
+**For VS 2022 users:**
+- Windows 8.1 SDK: https://developer.microsoft.com/en-us/windows/downloads/sdk-archive/<br>
+- MSVC 140 (2015 Build tools): Available under the "Individual Components" section of the Visual Studio Installer.<br>
+- If VPC complains about a regkey for .vcxproj files in solutions, please run .reg file included in this repository and run VPC again.<br>
+VS 2015 should work out of the box with no additional changes necessary.<br>
+
+# Debugging the engine
+- Set launcher_main as the startup project (if it isn't already) by right clicking it and pressing "Set as Startup Project".
+- Right click launcher_main, go to properties and click on the debugging section. Set "Command" to point to your compiled hl2.exe (in the game folder).
+- Set "Command Arguments" to "-game -insecure -sw" (feel free to add more such as +sv_cheats 1).
+- Press "Local Windows Debugger" at the top of Visual Studio to then launch the game and debug it.
+![image](https://github.com/EpicSentry/HL2-CSGO/assets/82910317/22c2e32f-d4d8-4c91-be39-6ca73ebfa551)<br>
+Above is an example of a correctly set up debugger.<br>
