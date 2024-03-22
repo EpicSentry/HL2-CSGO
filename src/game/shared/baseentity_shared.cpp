@@ -2332,7 +2332,7 @@ ITraceFilter* CBaseEntity::GetBeamTraceFilter( void )
 
 //TODO FIX ME
 
-void CBaseEntity::DispatchTraceAttack(const CTakeDamageInfo &info, const Vector &vecDir, trace_t *ptr/*, CDmgAccumulator *pAccumulator*/)
+void CBaseEntity::DispatchTraceAttack(const CTakeDamageInfo& info, const Vector& vecDir, trace_t* ptr, CDmgAccumulator* pAccumulator)
 {
 #ifdef GAME_DLL
 	// Make sure our damage filter allows the damage.
@@ -2341,26 +2341,26 @@ void CBaseEntity::DispatchTraceAttack(const CTakeDamageInfo &info, const Vector 
 		return;
 	}
 #endif
-	CDmgAccumulator *pAccumulator;
+
 	TraceAttack(info, vecDir, ptr, pAccumulator);
 }
 
-void CBaseEntity::TraceAttack(const CTakeDamageInfo &info, const Vector &vecDir, trace_t *ptr, CDmgAccumulator *pAccumulator)
+void CBaseEntity::TraceAttack(const CTakeDamageInfo& info, const Vector& vecDir, trace_t* ptr, CDmgAccumulator* pAccumulator)
 {
 	Vector vecOrigin = ptr->endpos - vecDir * 4;
 
 	if (m_takedamage)
 	{
 #ifdef GAME_DLL
-		/*if (pAccumulator)
+		if (pAccumulator)
 		{
 			pAccumulator->AccumulateMultiDamage(info, this);
-		}*/
-		//else
+		}
+		else
 #endif // GAME_DLL
-		//{
+		{
 			AddMultiDamage(info, this);
-		//}
+		}
 
 		int blood = BloodColor();
 
