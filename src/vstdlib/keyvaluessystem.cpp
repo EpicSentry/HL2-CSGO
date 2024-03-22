@@ -559,6 +559,11 @@ bool CKeyValuesSystem::GetKeyValuesExpressionSymbol( const char *name )
 #endif
 	}
 
+	if (!V_stricmp(name, "DECK"))
+	{
+		return false;
+	}
+
 	if ( !V_stricmp( name, "GAMECONSOLEGUEST" ) )
 	{
 #if defined( _GAMECONSOLE )

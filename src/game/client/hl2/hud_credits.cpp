@@ -66,8 +66,8 @@ public:
 
 	int GetStringPixelWidth ( wchar_t *pString, vgui::HFont hFont );
 
-	void MsgFunc_CreditsMsg(const CUsrMsg_CreditsMsg &msg );
-	void MsgFunc_LogoTimeMsg(const CUsrMsg_LogoTimeMsg &msg );
+	bool MsgFunc_CreditsMsg(const CUsrMsg_CreditsMsg &msg );
+	bool MsgFunc_LogoTimeMsg(const CUsrMsg_LogoTimeMsg &msg );
 
 	virtual bool	ShouldDraw( void ) 
 	{ 
@@ -165,8 +165,8 @@ void CHudCredits::PrepareCredits( const char *pKeyName )
 using namespace vgui;
 
 DECLARE_HUDELEMENT( CHudCredits );
-//DECLARE_HUD_MESSAGE( CHudCredits, CreditsMsg );
-//DECLARE_HUD_MESSAGE( CHudCredits, LogoTimeMsg );
+DECLARE_HUD_MESSAGE( CHudCredits, CreditsMsg );
+DECLARE_HUD_MESSAGE( CHudCredits, LogoTimeMsg );
 
 //-----------------------------------------------------------------------------
 // Purpose: Constructor
@@ -700,7 +700,7 @@ void CHudCredits::PrepareIntroCredits( void )
 	SetActive( true );
 }
 
-void CHudCredits::MsgFunc_CreditsMsg(const CUsrMsg_CreditsMsg &msg )
+bool CHudCredits::MsgFunc_CreditsMsg(const CUsrMsg_CreditsMsg &msg )
 {
 	m_iCreditsType = msg.creditstype();
 
@@ -722,12 +722,14 @@ void CHudCredits::MsgFunc_CreditsMsg(const CUsrMsg_CreditsMsg &msg )
 			break;
 		}
 	}
+	return true;
 }
 
-void CHudCredits::MsgFunc_LogoTimeMsg( const CUsrMsg_LogoTimeMsg &msg )
+bool CHudCredits::MsgFunc_LogoTimeMsg( const CUsrMsg_LogoTimeMsg &msg )
 {
 	m_iCreditsType = CREDITS_LOGO;
 	PrepareLogo( msg.logotime() );
+	return true;
 }
 
 

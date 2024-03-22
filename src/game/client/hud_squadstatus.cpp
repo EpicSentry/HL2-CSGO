@@ -35,7 +35,7 @@ public:
 	virtual void OnThink( void );
 	bool ShouldDraw();
 
-	void MsgFunc_SquadMemberDied(const CUsrMsg_SquadMemberDied &msg);
+	bool MsgFunc_SquadMemberDied(const CUsrMsg_SquadMemberDied &msg);
 
 protected:
 	virtual void Paint();
@@ -63,7 +63,7 @@ private:
 
 
 DECLARE_HUDELEMENT( CHudSquadStatus );
-//DECLARE_HUD_MESSAGE( CHudSquadStatus, SquadMemberDied );
+DECLARE_HUD_MESSAGE( CHudSquadStatus, SquadMemberDied );
 
 using namespace vgui;
 
@@ -83,7 +83,7 @@ CHudSquadStatus::CHudSquadStatus( const char *pElementName ) : CHudElement( pEle
 //-----------------------------------------------------------------------------
 void CHudSquadStatus::Init( void )
 {
-	//HOOK_HUD_MESSAGE( CHudSquadStatus, SquadMemberDied );
+	HOOK_HUD_MESSAGE( CHudSquadStatus, SquadMemberDied );
 	m_iSquadMembers = 0;
 	m_iSquadMedics = 0;
 	m_bSquadMemberAdded = false;
@@ -198,9 +198,10 @@ void CHudSquadStatus::OnThink( void )
 //-----------------------------------------------------------------------------
 // Purpose: Notification of squad member being killed
 //-----------------------------------------------------------------------------
-void CHudSquadStatus::MsgFunc_SquadMemberDied(const CUsrMsg_SquadMemberDied &msg)
+bool CHudSquadStatus::MsgFunc_SquadMemberDied(const CUsrMsg_SquadMemberDied &msg)
 {
 	m_bSquadMemberJustDied = true;
+	return true;
 }
 
 //-----------------------------------------------------------------------------

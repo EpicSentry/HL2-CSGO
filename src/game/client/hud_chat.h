@@ -22,9 +22,13 @@ public:
 
 	virtual void	Init( void );
 
-	void			MsgFunc_SayText(bf_read &msg);
+	bool			MsgFunc_SayText(const CUsrMsg_SayText &msg);
 	bool			MsgFunc_SayText2( const CUsrMsg_SayText2 &msg);
-	void			MsgFunc_TextMsg(bf_read &msg);
+	bool			MsgFunc_TextMsg(const CUsrMsg_TextMsg &msg);
+	// Binders
+	CUserMessageBinder m_UMCMsgSayText;
+	CUserMessageBinder m_UMCMsgSayText2;
+	CUserMessageBinder m_UMCMsgTextMsg;
 };
 
 #endif	//HUD_CHAT_H

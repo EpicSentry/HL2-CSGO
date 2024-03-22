@@ -42,7 +42,7 @@ public:
 	virtual bool ShouldDraw( void );
 
 	// Handler for our message
-	void MsgFunc_Damage( const CUsrMsg_Damage &msg );
+	bool MsgFunc_Damage( const CUsrMsg_Damage &msg );
 
 private:
 	virtual void Paint();
@@ -67,11 +67,13 @@ private:
 	void DrawFullscreenDamageIndicator();
 	void GetDamagePosition( const Vector &vecDelta, float *flRotation );
 
+	CUserMessageBinder m_UMCMsgDamage;
+
 	CMaterialReference m_WhiteAdditiveMaterial;
 };
 
 DECLARE_HUDELEMENT( CHudDamageIndicator );
-//DECLARE_HUD_MESSAGE( CHudDamageIndicator, Damage );
+DECLARE_HUD_MESSAGE( CHudDamageIndicator, Damage );
 
 enum
 {
@@ -144,7 +146,7 @@ void CHudDamageIndicator::Reset( void )
 
 void CHudDamageIndicator::Init( void )
 {
-//	HOOK_HUD_MESSAGE( CHudDamageIndicator, Damage );
+	HOOK_HUD_MESSAGE( CHudDamageIndicator, Damage );
 }
 
 //-----------------------------------------------------------------------------
@@ -325,7 +327,7 @@ void CHudDamageIndicator::Paint()
 //-----------------------------------------------------------------------------
 // Purpose: Message handler for Damage message
 //-----------------------------------------------------------------------------
-void CHudDamageIndicator::MsgFunc_Damage( const CUsrMsg_Damage &msg )
+bool CHudDamageIndicator::MsgFunc_Damage( const CUsrMsg_Damage &msg )
 {
 	int armor = msg.armor();	// armor
 	int damageTaken = msg.damagetaken();	// health
@@ -339,20 +341,20 @@ void CHudDamageIndicator::MsgFunc_Damage( const CUsrMsg_Damage &msg )
 
 	C_BasePlayer *pPlayer = C_BasePlayer::GetLocalPlayer();
 	if ( !pPlayer )
-		return;
+		return false;
 
 	// player has just died, just run the dead damage animation
 	if ( pPlayer->GetHealth() <= 0 )
 	{
 		GetClientMode()->GetViewportAnimationController()->StartAnimationSequence( "HudPlayerDeath" );
-		return;
+		return false;
 	}
 
 	// ignore damage without direction
 	// this should never happen, unless it's drowning damage, 
 	// or the player is forcibly killed, handled above
 	if ( vecFrom == vec3_origin && !(bitsDamage & DMG_DROWN))
-		return;
+		return false;
 
 	Vector vecDelta = (vecFrom - MainViewOrigin(0));
 	VectorNormalize( vecDelta );
@@ -398,6 +400,7 @@ void CHudDamageIndicator::MsgFunc_Damage( const CUsrMsg_Damage &msg )
 		if ( dmgAnim->name )
 		{
 			GetClientMode()->GetViewportAnimationController()->StartAnimationSequence( dmgAnim->name );
+			return true;
 		}
 	}
 }

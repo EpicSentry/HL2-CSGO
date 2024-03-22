@@ -20,9 +20,9 @@
 
 DECLARE_HUDELEMENT_FLAGS( CHudChat, HUDELEMENT_SS_FULLSCREEN_ONLY );
 
-//DECLARE_HUD_MESSAGE( CHudChat, SayText ); No longer needed
-//DECLARE_HUD_MESSAGE( CHudChat, SayText2 );
-//DECLARE_HUD_MESSAGE( CHudChat, TextMsg );
+DECLARE_HUD_MESSAGE( CHudChat, SayText ); // nvm it is needed lmfao
+DECLARE_HUD_MESSAGE( CHudChat, SayText2 );
+DECLARE_HUD_MESSAGE( CHudChat, TextMsg );
 
 //=====================
 //CHudChat
@@ -37,9 +37,9 @@ void CHudChat::Init( void )
 {
 	BaseClass::Init();
 
-	//HOOK_HUD_MESSAGE( CHudChat, SayText ); No longer needed
-	//HOOK_HUD_MESSAGE( CHudChat, SayText2 );
-	//HOOK_HUD_MESSAGE( CHudChat, TextMsg );
+	HOOK_HUD_MESSAGE( CHudChat, SayText ); // it is needed
+	HOOK_HUD_MESSAGE( CHudChat, SayText2 );
+	HOOK_HUD_MESSAGE( CHudChat, TextMsg );
 }
 
 //-----------------------------------------------------------------------------
@@ -151,13 +151,16 @@ bool CHudChat::MsgFunc_SayText2(const CUsrMsg_SayText2 &msg)
 //			iSize - 
 //			*pbuf - 
 //-----------------------------------------------------------------------------
-void CHudChat::MsgFunc_SayText(bf_read &msg)
+bool CHudChat::MsgFunc_SayText(const CUsrMsg_SayText& msg)
 {
 	char szString[256];
 
-	msg.ReadByte(); // client ID
-	msg.ReadString(szString, sizeof(szString));
+	//msg.ent_idx(); is this even needed? meh, hl2 is singleplayer anyway
+	const std::string& str = msg.text();
+	strcpy(szString, str.c_str()); // Copy the string to szString
+
 	Printf(CHAT_FILTER_NONE, "%s", szString);
+	return true;
 }
 
 
@@ -173,37 +176,63 @@ void CHudChat::MsgFunc_SayText(bf_read &msg)
 //   string: message parameter 4
 // any string that starts with the character '#' is a message name, and is used to look up the real message in titles.txt
 // the next (optional) one to four strings are parameters for that string (which can also be message names if they begin with '#')
-void CHudChat::MsgFunc_TextMsg( bf_read &msg )
+bool CHudChat::MsgFunc_TextMsg( const CUsrMsg_TextMsg &msg ) // Doubt this one is correct but like i said earlier, hl2 is singleplayer
 {
 	char szString[2048];
-	int msg_dest = msg.ReadByte();
+	int msg_dest = msg.msg_dst();
 	static char szBuf[6][256];
 
-	msg.ReadString( szString, sizeof(szString) );
+	memset(szString, 0, sizeof(szString));
+
+	for (int i = 0; i < msg.params().size(); ++i) {
+		strcat(szString, msg.params(i).c_str());
+		strcat(szString, " ");
+	}
+
 	char *msg_text = hudtextmessage->LookupString( szString, &msg_dest );
 	Q_strncpy( szBuf[0], msg_text, sizeof( szBuf[0] ) );
 	msg_text = szBuf[0];
 
 	// keep reading strings and using C format strings for subsituting the strings into the localised text string
-	msg.ReadString( szString, sizeof(szString) );
+	memset(szString, 0, sizeof(szString));
+
+	for (int i = 0; i < msg.params().size(); ++i) {
+		strcat(szString, msg.params(i).c_str());
+		strcat(szString, " ");
+	}
 	char *sstr1 = hudtextmessage->LookupString( szString );
 	Q_strncpy( szBuf[1], sstr1, sizeof( szBuf[1] ) );
 	sstr1 = szBuf[1];
 
 	StripEndNewlineFromString( sstr1 );  // these strings are meant for subsitution into the main strings, so cull the automatic end newlines
-	msg.ReadString( szString, sizeof(szString) );
+	memset(szString, 0, sizeof(szString));
+
+	for (int i = 0; i < msg.params().size(); ++i) {
+		strcat(szString, msg.params(i).c_str());
+		strcat(szString, " ");
+	}
 	char *sstr2 = hudtextmessage->LookupString( szString );
 	Q_strncpy( szBuf[2], sstr2, sizeof( szBuf[2] ) );
 	sstr2 = szBuf[2];
 	
 	StripEndNewlineFromString( sstr2 );
-	msg.ReadString( szString, sizeof(szString) );
+	memset(szString, 0, sizeof(szString));
+
+	for (int i = 0; i < msg.params().size(); ++i) {
+		strcat(szString, msg.params(i).c_str());
+		strcat(szString, " ");
+	}
 	char *sstr3 = hudtextmessage->LookupString( szString );
 	Q_strncpy( szBuf[3], sstr3, sizeof( szBuf[3] ) );
 	sstr3 = szBuf[3];
 
 	StripEndNewlineFromString( sstr3 );
-	msg.ReadString( szString, sizeof(szString) );
+	memset(szString, 0, sizeof(szString));
+
+	for (int i = 0; i < msg.params().size(); ++i) {
+		strcat(szString, msg.params(i).c_str());
+		strcat(szString, " ");
+	}
 	char *sstr4 = hudtextmessage->LookupString( szString );
 	Q_strncpy( szBuf[4], sstr4, sizeof( szBuf[4] ) );
 	sstr4 = szBuf[4];
@@ -211,31 +240,36 @@ void CHudChat::MsgFunc_TextMsg( bf_read &msg )
 	StripEndNewlineFromString( sstr4 );
 	char *psz = szBuf[5];
 
-	if ( !cl_showtextmsg.GetInt() )
-		return;
+	if (!cl_showtextmsg.GetInt())
+		return false;
 
 	switch ( msg_dest )
 	{
 	case HUD_PRINTCENTER:
 		Q_snprintf( psz, sizeof( szBuf[5] ), msg_text, sstr1, sstr2, sstr3, sstr4 );
 		GetCenterPrint()->Print( ConvertCRtoNL( psz ) );
+		return true;
 		break;
 
 	case HUD_PRINTNOTIFY:
 		psz[0] = 1;  // mark this message to go into the notify buffer
 		Q_snprintf( psz+1, sizeof( szBuf[5] ) - 1, msg_text, sstr1, sstr2, sstr3, sstr4 );
 		Msg( "%s", ConvertCRtoNL( psz ) );
+		return true;
 		break;
 
 	case HUD_PRINTTALK:
 		Q_snprintf( psz, sizeof( szBuf[5] ), msg_text, sstr1, sstr2, sstr3, sstr4 );
 		Printf( CHAT_FILTER_NONE, "%s", ConvertCRtoNL( psz ) );
+		return true;
 		break;
 
 	case HUD_PRINTCONSOLE:
 		Q_snprintf( psz, sizeof( szBuf[5] ), msg_text, sstr1, sstr2, sstr3, sstr4 );
 		Msg( "%s", ConvertCRtoNL( psz ) );
+		return true;
 		break;
 	}
+	return true;
 }
 

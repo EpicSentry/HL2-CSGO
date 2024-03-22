@@ -49,17 +49,20 @@ public:
 	virtual void VidInit( void );
 	virtual void Reset( void );
 	virtual void OnThink();
-			void MsgFunc_Damage(const CUsrMsg_Damage &msg);
+			bool MsgFunc_Damage(const CUsrMsg_Damage &msg);
 
 private:
 	// old variables
 	int		m_iHealth;
 	
 	int		m_bitsDamage;
+
+	CUserMessageBinder m_UMCMsgHealth;
+	CUserMessageBinder m_UMCMsgDamage;
 };	
 
 DECLARE_HUDELEMENT( CHudHealth );
-//DECLARE_HUD_MESSAGE( CHudHealth, Damage );
+DECLARE_HUD_MESSAGE( CHudHealth, Damage );
 
 //-----------------------------------------------------------------------------
 // Purpose: Constructor
@@ -74,7 +77,7 @@ CHudHealth::CHudHealth( const char *pElementName ) : CHudElement( pElementName )
 //-----------------------------------------------------------------------------
 void CHudHealth::Init()
 {
-	//HOOK_HUD_MESSAGE( CHudHealth, Damage );
+	HOOK_HUD_MESSAGE( CHudHealth, Damage );
 	Reset();
 }
 
@@ -144,7 +147,7 @@ void CHudHealth::OnThink()
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-void CHudHealth::MsgFunc_Damage(const CUsrMsg_Damage &msg)
+bool CHudHealth::MsgFunc_Damage(const CUsrMsg_Damage &msg)
 {
 
 	//int armor = msg.ReadByte();	// armor
@@ -166,6 +169,8 @@ void CHudHealth::MsgFunc_Damage(const CUsrMsg_Damage &msg)
 		{
 			// start the animation
 			GetClientMode()->GetViewportAnimationController()->StartAnimationSequence("HealthDamageTaken");
+			return true;
 		}
 	}
+	return false;
 }

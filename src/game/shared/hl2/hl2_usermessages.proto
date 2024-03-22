@@ -255,6 +255,11 @@ message CUsrMsg_KeyHintText
 	repeated string hints = 1;
 }
 
+message CUsrMsg_Battery
+{
+	optional int32 value = 1;
+}
+
 message CUsrMsg_DesiredTimescale
 {
 	optional float desired_timescale = 1;
