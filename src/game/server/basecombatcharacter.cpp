@@ -2025,101 +2025,84 @@ void CBaseCombatCharacter::SetLightingOriginRelative( CBaseEntity *pLightingOrig
 // Purpose:	Add new weapon to the character
 // Input  : New weapon
 //-----------------------------------------------------------------------------
-void CBaseCombatCharacter::Weapon_Equip( CBaseCombatWeapon *pWeapon )
+void CBaseCombatCharacter::Weapon_Equip(CBaseCombatWeapon* pWeapon)
 {
 	// Add the weapon to my weapon inventory
-	for (int i=0;i<MAX_WEAPONS;i++) 
+	for (int i = 0; i < MAX_WEAPONS; i++)
 	{
-		if (!m_hMyWeapons[i]) 
+		if (!m_hMyWeapons[i])
 		{
-			m_hMyWeapons.Set( i, pWeapon );
-			m_weaponIDToIndex[pWeapon->GetWeaponID()] = (i+1);
+			m_hMyWeapons.Set(i, pWeapon);
 			break;
 		}
 	}
 
 	// Weapon is now on my team
-	pWeapon->ChangeTeam( GetTeamNumber() );
+	pWeapon->ChangeTeam(GetTeamNumber());
 
 	// ----------------------
 	//  Give Primary Ammo
 	// ----------------------
 	// If gun doesn't use clips, just give ammo
-	if ( !pWeapon->UsesClipsForAmmo1() )
+	if (pWeapon->GetMaxClip1() == -1)
 	{
 #ifdef HL2_DLL
-		if( FStrEq(STRING(gpGlobals->mapname), "d3_c17_09") && FClassnameIs(pWeapon, "weapon_rpg") && pWeapon->NameMatches("player_spawn_items") )
+		if (FStrEq(STRING(gpGlobals->mapname), "d3_c17_09") && FClassnameIs(pWeapon, "weapon_rpg") && pWeapon->NameMatches("player_spawn_items"))
 		{
 			// !!!HACK - Don't give any ammo with the spawn equipment RPG in d3_c17_09. This is a chapter
 			// start and the map is way to easy if you start with 3 RPG rounds. It's fine if a player conserves
 			// them and uses them here, but it's not OK to start with enough ammo to bypass the snipers completely.
-			GiveAmmo( 0, pWeapon->m_iPrimaryAmmoType); 
+			GiveAmmo(0, pWeapon->m_iPrimaryAmmoType);
 		}
 		else
 #endif // HL2_DLL
-		{
-			// non-clip, exhaustible ammo ( such as grenades ) is still held on player.
-			CBaseCombatCharacter * pOwner = NULL;
-
-			if ( pWeapon->GetWpnData().iFlags & ITEM_FLAG_EXHAUSTIBLE )
-			{
-				pOwner = this;
-				pWeapon->SetReserveAmmoCount( AMMO_POSITION_PRIMARY, pWeapon->GetDefaultClip1(), ShouldPickupItemSilently( this ), pOwner );
-			}
-		}
+			GiveAmmo(pWeapon->GetDefaultClip1(), pWeapon->m_iPrimaryAmmoType);
 	}
 	// If default ammo given is greater than clip
 	// size, fill clips and give extra ammo
- 	else if (pWeapon->GetDefaultClip1() >  pWeapon->GetMaxClip1() )
- 	{
- 		pWeapon->m_iClip1 = pWeapon->GetMaxClip1();
- 		pWeapon->SetReserveAmmoCount( AMMO_POSITION_PRIMARY, (pWeapon->GetDefaultClip1() - pWeapon->GetMaxClip1())); 
- 	}
+	else if (pWeapon->GetDefaultClip1() > pWeapon->GetMaxClip1())
+	{
+		pWeapon->m_iClip1 = pWeapon->GetMaxClip1();
+		GiveAmmo((pWeapon->GetDefaultClip1() - pWeapon->GetMaxClip1()), pWeapon->m_iPrimaryAmmoType);
+	}
 
 	// ----------------------
 	//  Give Secondary Ammo
 	// ----------------------
 	// If gun doesn't use clips, just give ammo
-	if ( !pWeapon->UsesClipsForAmmo2() )
+	if (pWeapon->GetMaxClip2() == -1)
 	{
-		// non-clip, exhaustible ammo ( such as grenades ) is still held on player.
-		CBaseCombatCharacter * pOwner = NULL;
-
-		if ( pWeapon->GetWpnData().iFlags & ITEM_FLAG_EXHAUSTIBLE )
-		{
-			pOwner = this;
-			pWeapon->SetReserveAmmoCount( AMMO_POSITION_SECONDARY, pWeapon->GetDefaultClip2(), ShouldPickupItemSilently( this ), pOwner );
-		}
+		GiveAmmo(pWeapon->GetDefaultClip2(), pWeapon->m_iSecondaryAmmoType);
 	}
 	// If default ammo given is greater than clip
 	// size, fill clips and give extra ammo
- 	else if ( pWeapon->GetDefaultClip2() > pWeapon->GetMaxClip2() )
- 	{
- 		pWeapon->m_iClip2 = pWeapon->GetMaxClip2();
- 		pWeapon->SetReserveAmmoCount( AMMO_POSITION_SECONDARY, ( pWeapon->GetDefaultClip2() - pWeapon->GetMaxClip2() ) );
- 	}
+	else if (pWeapon->GetDefaultClip2() > pWeapon->GetMaxClip2())
+	{
+		pWeapon->m_iClip2 = pWeapon->GetMaxClip2();
+		GiveAmmo((pWeapon->GetDefaultClip2() - pWeapon->GetMaxClip2()), pWeapon->m_iSecondaryAmmoType);
+	}
 
-	pWeapon->Equip( this );
+	pWeapon->Equip(this);
 
 	// Players don't automatically holster their current weapon
-	if ( IsPlayer() == false )
+	if (IsPlayer() == false)
 	{
-		if ( m_hActiveWeapon )
+		if (m_hActiveWeapon)
 		{
 			m_hActiveWeapon->Holster();
 			// FIXME: isn't this handeled by the weapon?
-			m_hActiveWeapon->AddEffects( EF_NODRAW );
+			m_hActiveWeapon->AddEffects(EF_NODRAW);
 		}
-		SetActiveWeapon( pWeapon );
-		m_hActiveWeapon->RemoveEffects( EF_NODRAW );
+		SetActiveWeapon(pWeapon);
+		m_hActiveWeapon->RemoveEffects(EF_NODRAW);
 
 	}
-	
+
 	// Gotta do this *after* Equip because it may whack maxRange
-	if ( IsPlayer() == false )
+	if (IsPlayer() == false)
 	{
 		// If SF_NPC_LONG_RANGE spawn flags is set let weapon work from any distance
-		if ( HasSpawnFlags(SF_NPC_LONG_RANGE) )
+		if (HasSpawnFlags(SF_NPC_LONG_RANGE))
 		{
 			m_hActiveWeapon->m_fMaxRange1 = 999999999;
 			m_hActiveWeapon->m_fMaxRange2 = 999999999;
@@ -2127,85 +2110,59 @@ void CBaseCombatCharacter::Weapon_Equip( CBaseCombatWeapon *pWeapon )
 	}
 
 	WeaponProficiency_t proficiency;
-	proficiency = CalcWeaponProficiency( pWeapon );
-	
-	if( weapon_showproficiency.GetBool() != 0 )
+	proficiency = CalcWeaponProficiency(pWeapon);
+
+	if (weapon_showproficiency.GetBool() != 0)
 	{
-		Msg("%s equipped with %s, proficiency is %s\n", GetClassname(), pWeapon->GetClassname(), GetWeaponProficiencyName( proficiency ) );
+		Msg("%s equipped with %s, proficiency is %s\n", GetClassname(), pWeapon->GetClassname(), GetWeaponProficiencyName(proficiency));
 	}
 
-	SetCurrentWeaponProficiency( proficiency );
+	SetCurrentWeaponProficiency(proficiency);
 
 	// Pass the lighting origin over to the weapon if we have one
-	pWeapon->SetLightingOriginRelative( GetLightingOriginRelative() );
+	pWeapon->SetLightingOriginRelative(GetLightingOriginRelative());
 }
 
 //-----------------------------------------------------------------------------
 // Purpose:	Leaves weapon, giving only ammo to the character
 // Input  : Weapon
 //-----------------------------------------------------------------------------
-bool CBaseCombatCharacter::Weapon_EquipAmmoOnly( CBaseCombatWeapon *pWeapon )
+bool CBaseCombatCharacter::Weapon_EquipAmmoOnly(CBaseCombatWeapon* pWeapon)
 {
 	// Check for duplicates
-	for (int i=0;i<MAX_WEAPONS;i++) 
+	for (int i = 0; i < MAX_WEAPONS; i++)
 	{
-		if ( m_hMyWeapons[i].Get() && FClassnameIs(m_hMyWeapons[i], pWeapon->GetClassname()) )
+		if (m_hMyWeapons[i].Get() && FClassnameIs(m_hMyWeapons[i], pWeapon->GetClassname()))
 		{
 			// Just give the ammo from the clip
-			int	primaryGiven	= (pWeapon->UsesClipsForAmmo1()) ? pWeapon->m_iClip1 : pWeapon->GetPrimaryAmmoCount();
-			int secondaryGiven	= (pWeapon->UsesClipsForAmmo2()) ? pWeapon->m_iClip2 : pWeapon->GetSecondaryAmmoCount();
+			int	primaryGiven = (pWeapon->UsesClipsForAmmo1()) ? pWeapon->m_iClip1 : pWeapon->GetPrimaryAmmoCount();
+			int secondaryGiven = (pWeapon->UsesClipsForAmmo2()) ? pWeapon->m_iClip2 : pWeapon->GetSecondaryAmmoCount();
 
-			bool bSuppressSound = false;
-#if defined (CSTRIKE15)
-			bSuppressSound = ShouldPickupItemSilently( this );
-#endif
-			CBaseCombatCharacter * pOwner = NULL;
+			int takenPrimary = GiveAmmo(primaryGiven, pWeapon->m_iPrimaryAmmoType);
+			int takenSecondary = GiveAmmo(secondaryGiven, pWeapon->m_iSecondaryAmmoType);
 
-			if ( pWeapon->GetWpnData().iFlags & ITEM_FLAG_EXHAUSTIBLE )
-				pOwner = this;
-
-			int takenPrimary   = pWeapon->GiveReserveAmmo( AMMO_POSITION_PRIMARY, primaryGiven, bSuppressSound, pOwner ); 
-			int takenSecondary = pWeapon->GiveReserveAmmo( AMMO_POSITION_SECONDARY, secondaryGiven, bSuppressSound, pOwner ); 
-			
-			if( pWeapon->UsesClipsForAmmo1() )
+			if (pWeapon->UsesClipsForAmmo1())
 			{
 				pWeapon->m_iClip1 -= takenPrimary;
 			}
 			else
 			{
-				pWeapon->SetPrimaryAmmoCount( pWeapon->GetPrimaryAmmoCount() - takenPrimary );
+				pWeapon->SetPrimaryAmmoCount(pWeapon->GetPrimaryAmmoCount() - takenPrimary);
 			}
 
-			if( pWeapon->UsesClipsForAmmo2() )
+			if (pWeapon->UsesClipsForAmmo2())
 			{
 				pWeapon->m_iClip2 -= takenSecondary;
 			}
 			else
 			{
-				pWeapon->SetSecondaryAmmoCount( pWeapon->GetSecondaryAmmoCount() - takenSecondary );
+				pWeapon->SetSecondaryAmmoCount(pWeapon->GetSecondaryAmmoCount() - takenSecondary);
 			}
-			
+
 			//Only succeed if we've taken ammo from the weapon
-			if ( takenPrimary > 0 || takenSecondary > 0 )
-			{
-#if defined (CSTRIKE15)
-				IGameEvent * event = gameeventmanager->CreateEvent( "ammo_pickup" );
-				if( event )
-				{
-					const char *weaponName = pWeapon->GetClassname();
-					if ( IsWeaponClassname( weaponName ) )
-					{
-						weaponName += WEAPON_CLASSNAME_PREFIX_LENGTH;
-					}
-					event->SetInt( "userid", engine->GetPlayerUserId( edict() ) );
-					event->SetString( "item", weaponName );
-					event->SetInt( "index", m_hMyWeapons[i].Get()->entindex() );
-					gameeventmanager->FireEvent( event );
-				}
-#endif
+			if (takenPrimary > 0 || takenSecondary > 0)
 				return true;
-			}
-			
+
 			return false;
 		}
 	}

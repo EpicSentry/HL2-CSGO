@@ -1,5 +1,7 @@
 # Half-Life 2 in the CSGO engine (Atleast, an attempt of doing so)
 
+## HELP NEEDED! Please see the bottom of the readme!
+
 This project is aimed to port HL2 to the leaked CSGO engine while keeping the benefits of the CSGO branch (such as the better lighting).<br>
 
 Partially used code from https://github.com/tupoy-ya/Kisak-Strike and https://github.com/nillerusr/source-engine.
@@ -42,3 +44,7 @@ VS 2015 should work out of the box with no additional changes necessary.<br>
 - Press "Local Windows Debugger" at the top of Visual Studio to then launch the game and debug it.
 ![image](https://github.com/EpicSentry/HL2-CSGO/assets/82910317/22c2e32f-d4d8-4c91-be39-6ca73ebfa551)<br>
 Above is an example of a correctly set up debugger.<br>
+
+# Please help make this project better!
+Currently, almost 8 times out of 10 when loading into ANY Half-Life 2 map, the vphysics dll will crash at the same spot. In either: ivp_calc_next_psi_solver.cxx @ line 323 OR ivp_hull_manager_macros.hxx @ line 20.<br>
+I suspect this is to do with HL2 models as when a blank map with nothing in it is loaded, it does not crash. Please help! I've tried recompiling the models from the model sources that leaked and no luck there either.<br>
