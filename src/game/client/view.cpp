@@ -79,8 +79,8 @@ bool ToolFramework_SetupEngineMicrophone( Vector &origin, QAngle &angles );
 extern ConVar default_fov;
 extern bool g_bRenderingScreenshot;
 
-#define SAVEGAME_SCREENSHOT_WIDTH	256
-#define SAVEGAME_SCREENSHOT_HEIGHT	256
+#define SAVEGAME_SCREENSHOT_WIDTH	180
+#define SAVEGAME_SCREENSHOT_HEIGHT	100
 
 extern ConVar sensitivity;
 

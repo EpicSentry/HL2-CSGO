@@ -1977,7 +1977,7 @@ bool CHL2_Player::SuitPower_ShouldRecharge( void )
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
-ConVar	sk_battery( "sk_battery","0" );			
+ConVar	sk_battery( "sk_battery","15" );			
 
 bool CHL2_Player::ApplyBattery( float powerMultiplier )
 {
@@ -1998,6 +1998,10 @@ bool CHL2_Player::ApplyBattery( float powerMultiplier )
 		CUsrMsg_ItemPickup msg;
 		msg.set_item("item_battery");
 		SendUserMessage(user, UM_ItemPickup, msg);
+
+		CUsrMsg_Battery msg2;
+		msg2.set_value(sk_battery.GetFloat() * powerMultiplier);
+		SendUserMessage(user, UM_Battery, msg2);
 
 		
 		// Suit reports new power level

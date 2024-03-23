@@ -379,12 +379,7 @@ const char *CSaveRestore::GetSaveDir(void)
 	static char szDirectory[MAX_OSPATH] = {0};
 	if ( !szDirectory[0] )
 	{
-		#if defined( _GAMECONSOLE ) || defined( DEDICATED ) || defined( NO_STEAM )
 		Q_strncpy( szDirectory, "SAVE/", sizeof( szDirectory ) );
-		#else
-		Q_snprintf( szDirectory, sizeof( szDirectory ), "SAVE/%llu/", Steam3Client().SteamUser() ? Steam3Client().SteamUser()->GetSteamID().ConvertToUint64() : 0ull );
-		g_pFileSystem->CreateDirHierarchy( szDirectory, MOD_DIR );
-		#endif
 	}
 	return szDirectory;
 #endif
