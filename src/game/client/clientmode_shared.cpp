@@ -57,9 +57,6 @@
 #include "c_basehlplayer.h"
 #endif // PORTAL2
 
-#ifdef CSTRIKE15
-#include "c_cs_playerresource.h"
-#endif
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"

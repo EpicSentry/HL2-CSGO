@@ -18,21 +18,6 @@
 
 using namespace vgui;
 
-#if defined( CSTRIKE15 )
-
-#if defined( INCLUDE_SCALEFORM )
-extern bool IsTakingAFreezecamScreenshot( void );
-#else
-bool IsTakingAFreezecamScreenshot( void ) { return false; }
-#endif
-
-extern ConVar cl_drawhud;
-//extern ConVar sfcrosshair;
-extern ConVar crosshair;
-extern ConVar cl_crosshairstyle;
-
-#endif
-
 
 //-----------------------------------------------------------------------------
 // Purpose: 
@@ -67,21 +52,6 @@ CHudWeapon::CHudWeapon( const char *pElementName ) :
 
 bool CHudWeapon::ShouldDraw()
 {
-#if defined( CSTRIKE15 )
-
-	//0 = default
-	//1 = default static
-	//2 = classic standard
-	//3 = classic dynamic
-	//4 = classic static
-	if ( !crosshair.GetBool() || cl_crosshairstyle.GetInt() < 2 || IsTakingAFreezecamScreenshot() || !cl_drawhud.GetBool() )
-	//if ( !crosshair.GetBool() || sfcrosshair.GetBool() || IsTakingAFreezecamScreenshot() || !cl_drawhud.GetBool() )
-	{
-		return false;
-	}
-
-#endif
-
 	return CHudElement::ShouldDraw();
 }
 

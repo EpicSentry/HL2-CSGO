@@ -850,11 +850,7 @@ void CGameServer::InitMaxClients( void )
     m_nMaxClientsLimit = maxmaxplayers;
 
     // Check for command line override
-#if defined( CSTRIKE15 )
-    int newmaxplayers = -HLTV_SERVER_MAX_COUNT; // CStrike doesn't allow command line override for maxplayers
-#else
 	int newmaxplayers = CommandLine()->ParmValue( "-maxplayers", -1 );
-#endif
 
 	for ( int nHltvServerIndex = 0; nHltvServerIndex < HLTV_SERVER_MAX_COUNT; ++nHltvServerIndex )
 	{
@@ -898,11 +894,6 @@ void CGameServer::InitMaxClients( void )
 //-----------------------------------------------------------------------------
 CON_COMMAND( maxplayers, "Change the maximum number of players allowed on this server." )
 {
-#if defined( CSTRIKE15 )
-	ConMsg( "Maxplayers is deprecated, set it in gamemodes_server.txt.example or use -maxplayers_override instead.\n");
-	return;
-#endif
-
     if ( args.ArgC () != 2 )
     {
         ConMsg ("\"maxplayers\" is \"%u\"\n", sv.GetMaxClients() );

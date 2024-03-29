@@ -28,9 +28,7 @@
 
 ConVar crosshair( "crosshair", "1", FCVAR_ARCHIVE || FCVAR_SS );
 
-#if !defined( CSTRIKE15 )
 ConVar cl_observercrosshair( "cl_observercrosshair", "1", FCVAR_ARCHIVE );
-#endif
 
 
 using namespace vgui;
@@ -148,10 +146,6 @@ void CHudCrosshair::ApplySchemeSettings( IScheme *scheme )
 //-----------------------------------------------------------------------------
 bool CHudCrosshair::ShouldDraw( void )
 {
-#if defined ( CSTRIKE15 )
-	return false;
-#else
-
 	bool bNeedsDraw;
 
 	if ( m_bHideCrosshair )
@@ -197,7 +191,6 @@ bool CHudCrosshair::ShouldDraw( void )
 	}
 
 	return ( bNeedsDraw && CHudElement::ShouldDraw() );
-#endif
 }
 
 void CHudCrosshair::Paint( void )

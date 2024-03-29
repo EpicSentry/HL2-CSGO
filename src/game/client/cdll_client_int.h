@@ -102,11 +102,6 @@ extern CSteamAPIContext *steamapicontext;
 #endif
 extern ISoundEmitterSystemBase *soundemitterbase;
 
-#if defined( CSTRIKE15 )
-extern IGameTypes *g_pGameTypes;
-extern IP4 *p4;
-#endif
-
 #if defined( INCLUDE_SCALEFORM )
 extern IScaleformUI* g_pScaleformUI;
 #endif

@@ -24,9 +24,9 @@
 #endif
 
 // conn - include the game's usermessages protobuf file
-#if defined(CSTRIKE15)
-#include "cstrike15_usermessages.pb.h"
-#elif defined(HL2)
+//#if defined(CSTRIKE15)
+//#include "cstrike15_usermessages.pb.h"
+#if defined(HL2)
 #include "hl2_usermessages.pb.h"
 #endif
 

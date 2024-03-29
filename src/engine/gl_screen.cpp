@@ -189,12 +189,10 @@ void SCR_EndLoadingPlaque( void )
 	}
 	else if ( gfExtendedError )
 	{
-#if !defined( CSTRIKE15 )
 		if ( IsPC() )
 		{
 			EngineVGui()->ShowErrorMessage();
 		}
-#endif
 	}
 
 	if ( scr_engineevent_loadingstarted )

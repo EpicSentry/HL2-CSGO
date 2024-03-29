@@ -113,7 +113,7 @@ public:
 												// it is built left or right handed.
 
 
-#if defined ( CSTRIKE15 ) || defined ( TF_CLIENT_DLL ) || defined ( TF_DLL ) && !defined ( NO_STEAM )
+/*#if defined ( CSTRIKE15 ) || defined ( TF_CLIENT_DLL ) || defined ( TF_DLL ) && !defined ( NO_STEAM )
 	virtual int		GetPrimaryClipSize(const CEconItemView* pWepView = NULL, int nAlt = 0, float flScale = 1.0f) const { return 0; }
 	virtual int		GetSecondaryClipSize(const CEconItemView* pWepView = NULL, int nAlt = 0, float flScale = 1.0f) const { return 0; }
 	virtual int		GetDefaultPrimaryClipSize(const CEconItemView* pWepView = NULL, int nAlt = 0, float flScale = 1.0f) const { return 0; }
@@ -127,7 +127,7 @@ public:
 	const char* GetPrimaryAmmo(const CEconItemView* pWepView = NULL) const;
 
 	int GetPrimaryAmmoType(const CEconItemView* pWepView = NULL) const;
-#else
+#else*/
 	virtual int		GetPrimaryClipSize(int nAlt = 0, float flScale = 1.0f) const { return 0; }
 	virtual int		GetSecondaryClipSize(int nAlt = 0, float flScale = 1.0f) const { return 0; }
 	virtual int		GetDefaultPrimaryClipSize(int nAlt = 0, float flScale = 1.0f) const { return 0; }
@@ -141,7 +141,7 @@ public:
 	const char* GetPrimaryAmmo(void) const;
 
 	int GetPrimaryAmmoType(void) const;
-#endif
+//#endif
 
 	// CLIENT DLL
 	// Sprite data, read from the data file

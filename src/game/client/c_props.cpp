@@ -10,9 +10,6 @@
 #include "c_physicsprop.h"
 #include "c_physbox.h"
 #include "c_props.h"
-#if defined(CSTRIKE15)
-#include "c_cs_player.h"
-#endif
 #define CPhysBox C_PhysBox
 #define CPhysicsProp C_PhysicsProp
 

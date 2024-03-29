@@ -260,24 +260,6 @@ bool CMultiplayRules::Damage_ShouldNotBleed( int iDmgType )
 CMultiplayRules::CMultiplayRules()
 {
 #ifndef CLIENT_DLL
-#ifdef CSTRIKE15
-	// before we exec ANY cfg files or apply any convars, go through the bspconvar whitelist and set all convars in that list to their default value
-	KeyValues::AutoDelete pKV_wl( "convars" );
-	if ( pKV_wl->LoadFromFile( g_pFullFileSystem, "bspconvar_whitelist.txt", "GAME" ) )
-	{
-		for ( KeyValues *pKey = pKV_wl->GetFirstSubKey(); pKey != NULL; pKey = pKey->GetNextKey() )
-		{
-			//save the name of this outfit
-			const char *szConVarName = pKey->GetName();
-			ConVarRef convar( szConVarName );
-			if ( convar.IsValid() )
-			{
-				convar.SetValue( convar.GetDefault() );
-				Msg( "%s - %s\n", szConVarName, convar.GetDefault() );
-			}
-		}
-	}
-#endif
 
 	// 11/8/98
 	// Modified by YWB:  Server .cfg file is now a cvar, so that 
@@ -1145,7 +1127,6 @@ CMultiplayRules::CMultiplayRules()
 			gameeventmanager->FireEvent( event );
 		}
 
-#if !defined( CSTRIKE15 )
 		for ( int i = 1; i <= MAX_PLAYERS; i++ )
 		{
 			CBasePlayer *pPlayer = UTIL_PlayerByIndex( i );
@@ -1155,7 +1136,6 @@ CMultiplayRules::CMultiplayRules()
 
 			pPlayer->ShowViewPortPanel( PANEL_SCOREBOARD );
 		}
-#endif
 	}
 
 	void StripChar(char *szBuffer, const char cWhiteSpace )
@@ -1189,33 +1169,6 @@ CMultiplayRules::CMultiplayRules()
 			}
 			return;
 		}
-#ifdef CSTRIKE15
-		const char* nextMapName = NULL;
-		if ( m_szNextLevelName && m_szNextLevelName[0] )
-		{
-			nextMapName = m_szNextLevelName;
-			Assert( 0 ); // Suspect this is a dead code path... remove me if possible
-		}
-		else
-		{
-			const char* szPrevMap = STRING( gpGlobals->mapname );
-			nextMapName = g_pGameTypes->GetNextMap( mapGroupName, szPrevMap );
-			if ( mp_verbose_changelevel_spew.GetBool() )
-			{
-				if ( nextMapName && szPrevMap )
-					Msg( "CHANGELEVEL: Choosing map '%s' (previous was %s)\n", nextMapName, szPrevMap );
-				else
-					Msg( "CHANGELEVEL: GetNextMap failed for mapgroup '%s', map group invalid or empty\n", mapGroupName );
-			}
-		}
-
-		if ( nextMapName )
-		{
-			// we have a valid map name from the mapgroup info
-			V_strncpy( pszNextMap, nextMapName, bufsize );
-			return;
-		}
-#endif
 		// we were not given a mapgroup name or we were given a mapname that was not in the mapgroup, so we fall back to the old method of cycling maps
 
 		const char* mapcfile = mapcyclefile.GetString();

@@ -44,7 +44,7 @@ public:
 	virtual bool ShouldDraw()
 	{
 		// [jason] Moving into Scaleform: sfhudinfopanel
-#if defined( CSTRIKE15 )
+#if defined(CSTRIKE15) && defined(INCLUDE_SCALEFORM)
 		return false;
 #else
 		return ((GetAlpha() > 0) && CHudElement::ShouldDraw());
@@ -268,7 +268,7 @@ void CHudHintDisplay::OnThink()
 //-----------------------------------------------------------------------------
 bool CHudHintDisplay::MsgFunc_HintText( const CUsrMsg_HintText &msg )
 {
-#if defined( CSTRIKE15 )
+#if defined( CSTRIKE15 ) && defined( INCLUDE_SCALEFORM )
 	// csgo handles their hint text in sfhudinfopanel
 	return true;
 #endif
@@ -435,7 +435,7 @@ void CHudHintKeyDisplay::ApplySchemeSettings( vgui::IScheme *pScheme )
 bool CHudHintKeyDisplay::ShouldDraw( void )
 {
 	// [jason] Moving into Scaleform: sfhudinfopanel
-#if defined( CSTRIKE15 )
+#if defined( CSTRIKE15 ) && defined( INCLUDE_SCALEFORM )
 	return false;
 #endif
 

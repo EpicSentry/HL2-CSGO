@@ -67,7 +67,7 @@ void C_BaseCombatCharacter::DoMuzzleFlash()
 void C_BaseCombatCharacter::OnDataChanged( DataUpdateType_t updateType )
 {
 	BaseClass::OnDataChanged( updateType );
-#ifdef CSTRIKE15
+/*#ifdef CSTRIKE15
 	// view weapon model cache monitoring
 	// NOTE: expected to be updated ONLY once per frame for the primary player ONLY!
 	// the expectation is that there is ONLY one customer that requires view models
@@ -150,7 +150,7 @@ void C_BaseCombatCharacter::OnDataChanged( DataUpdateType_t updateType )
 			modelinfo->TouchWorldWeaponModelCache( worldWeapons, nNumWorldWeapons );
 		}
 	}
-#endif
+#endif*/
 }
 
 bool C_BaseCombatCharacter::HasEverBeenInjured( void ) const

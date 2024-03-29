@@ -44,10 +44,10 @@
 #include "gamestringpool.h"
 #include "tier1/callqueue.h"
 
-#if defined ( CSTRIKE15 )
+/*#if defined ( CSTRIKE15 )
 #include "cs_gamerules.h"
 #include "c_cs_player.h"
-#endif
+#endif*/
 
 #ifdef DOTA_DLL
 #include "dota_in_main.h"

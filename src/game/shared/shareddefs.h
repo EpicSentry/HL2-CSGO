@@ -105,7 +105,7 @@ public:
 
 #define MAX_CLIMB_SPEED		200
 
-#if defined(TF_DLL) || defined(TF_CLIENT_DLL) || defined( CSTRIKE15 )
+#if defined(TF_DLL) || defined(TF_CLIENT_DLL)
 
 	#define TIME_TO_DUCK_MSECS		200
 
@@ -127,17 +127,10 @@ inline float FractionUnDucked( int msecs )
 	return clamp( (float)msecs / (float)TIME_TO_UNDUCK_MSECS, 0.0f, 1.0f );
 }
 
-#if defined( CSTRIKE15 )
-#define MAX_WEAPON_SLOTS		6	// hud item selection slots
-#define MAX_WEAPON_POSITIONS	6	// max number of items within a slot
-#define MAX_ITEM_TYPES			6	// hud item selection slots
-#define MAX_WEAPONS				64	// Max number of weapons available
-#else
 #define MAX_WEAPON_SLOTS		11	// hud item selection slots
 #define MAX_WEAPON_POSITIONS	20	// max number of items within a slot
 #define MAX_ITEM_TYPES			6	// hud item selection slots
 #define MAX_WEAPONS				64	// Max number of weapons available
-#endif 
 
 #define MAX_ITEMS				5	// hard coded item types
 
@@ -343,7 +336,7 @@ enum AmmoPosition_t
 
 // Humans only have left and right hands, though we might have aliens with more
 //  than two, sigh
-#if defined( CSTRIKE15 )
+#if defined( CSTRIKE15 ) // whats the point in this
 
 #define MAX_VIEWMODELS			2
 

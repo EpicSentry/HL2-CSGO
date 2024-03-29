@@ -17,6 +17,6 @@ $Configuration
 
 	$Compiler
 	{
-		$PreprocessorDefinitions	"$BASE;HL2"
+		$PreprocessorDefinitions	"$BASE;HL2;CSTRIKE15"
 	}
 }

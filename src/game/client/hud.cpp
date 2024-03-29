@@ -26,10 +26,6 @@
 #include <vgui_controls/AnimationController.h>
 #include <vgui/ISurface.h>
 #include "hud_lcd.h"
-#if defined( CSTRIKE15 )
-	#include "c_cs_player.h"
-	#include "cs_gamerules.h"
-#endif
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -933,20 +929,6 @@ bool CHud::IsHidden( int iHudFlags )
 	// Need the HEV suit ( HL2 )
 	if ( ( iHudFlags & HIDEHUD_NEEDSUIT ) && ( !localPlayer->IsSuitEquipped() ) )
 		return true;
-
-#if defined( CSTRIKE15 )
-	if ( CSGameRules() && CSGameRules()->IsPlayingTraining() )
-	{
-		C_CSPlayer *pCSPlayer = static_cast<C_CSPlayer *>( pPlayer );
-		// hide the mini scoreboard?
-		if ( ( iHudFlags & HIDEHUD_MINISCOREBOARD ) && ( pCSPlayer && pCSPlayer->IsMiniScoreHidden() ) )
-			return true;
-
-		// hide the radar?
-		if ( ( iHudFlags & HIDEHUD_RADAR ) && ( pCSPlayer && pCSPlayer->IsRadarHidden() ) )
-			return true;
-	}
-#endif
 
 	return ( ( iHudFlags & iHideHud ) != 0 );
 }

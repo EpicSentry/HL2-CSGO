@@ -2334,9 +2334,6 @@ void CTempEnts::Update(void)
 void CTempEnts::LevelInit()
 {
 
-// We don't use any of these models in CSTRIKE15
-#if !defined (CSTRIKE15)
-
 #if !defined (TF_CLIENT_DLL) && !defined (DOTA_DLL) && !defined (PORTAL2)
 	m_pSpriteMuzzleFlash[0] = (model_t *)engine->LoadModel( "sprites/ar2_muzzle1.vmt" );
 	m_pSpriteMuzzleFlash[1] = (model_t *)engine->LoadModel( "sprites/muzzleflash4.vmt" );
@@ -2362,8 +2359,6 @@ void CTempEnts::LevelInit()
 	m_pCS_556Shell		= (model_t *)engine->LoadModel( "models/Shells/shell_556.mdl" );
 	m_pCS_762NATOShell	= (model_t *)engine->LoadModel( "models/Shells/shell_762nato.mdl" );
 	m_pCS_338MAGShell	= (model_t *)engine->LoadModel( "models/Shells/shell_338mag.mdl" );
-#endif
-
 #endif
 
 }

@@ -226,7 +226,7 @@ void CCenterStringLabel::OnTick( void )
 bool CCenterStringLabel::ShouldDraw( void )
 {
 	// [jason] This element only exists to forward center print messages to the Scaleform InfoPanel
-#if defined ( CSTRIKE15 )
+#if defined( CSTRIKE15 ) && defined( INCLUDE_SCALEFORM )
 	return false;
 #endif
 

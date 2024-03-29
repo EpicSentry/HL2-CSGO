@@ -133,7 +133,7 @@ void Precache( void )
 
 //	BaseClass::Precache();
 }
-#ifdef CSTRIKE15
+/*#ifdef CSTRIKE15
 void C_BaseViewModel::UpdateStatTrakGlow( void )
 {
 	//approach the ideal in 2 seconds
@@ -234,15 +234,15 @@ void C_BaseViewModel::UpdateParticles( int nSlot )
 		}
 	}
 }
-#endif
+#endif*/
 bool C_BaseViewModel::Simulate( void )
 {
 	int nSlot = GET_ACTIVE_SPLITSCREEN_SLOT();
 	ACTIVE_SPLITSCREEN_PLAYER_GUARD_ENT( GetOwner() );
-#ifdef CSTRIKE15
-	UpdateParticles( nSlot );
-	UpdateStatTrakGlow();
-#endif
+//#ifdef CSTRIKE15
+//	UpdateParticles( nSlot );
+//	UpdateStatTrakGlow();
+//#endif
 	BaseClass::Simulate();
 	return true;
 }
@@ -765,12 +765,12 @@ int C_BaseViewModel::DrawModel( int flags, const RenderableInstance_t &instance 
 		*/
 	}
 
-#ifdef CSTRIKE15
-	if ( flags && vm_draw_addon.GetBool() 
-#ifdef IRONSIGHT
-		&& (GetScopeStencilMaskMode() == false) 
-#endif
-		)
+//#ifdef CSTRIKE15
+//	if ( flags && vm_draw_addon.GetBool() 
+//#ifdef IRONSIGHT
+//		&& (GetScopeStencilMaskMode() == false) 
+//#endif
+//		)
 	{
 		FOR_EACH_VEC( m_vecViewmodelArmModels, i )
 		{
@@ -802,7 +802,7 @@ int C_BaseViewModel::DrawModel( int flags, const RenderableInstance_t &instance 
 			m_viewmodelUidAddon->DrawModel( flags | STUDIO_DONOTMODIFYSTENCILSTATE, instance );
 		}
 	}
-#endif
+//#endif
 #ifdef IRONSIGHT
 	//Scope stencil mask mode is automatically turned off after rendering. It needs to be explicitly enabled before each draw.
 	if ( flags )

@@ -527,12 +527,7 @@ void CModelRenderSystem::ComputeModelLODs( int nModelTypeCount, ModelListByType_
 		return;
 	}
 		
-#ifdef CSTRIKE15
-	// Always slam r_lod to 0 for CS:GO.
-	int nLOD = 0;
-#else
 	int nLOD = r_lod.GetInt();
-#endif
 
 	if ( nLOD >= 0 )
 	{

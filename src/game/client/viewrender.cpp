@@ -3510,17 +3510,12 @@ void CViewRender::RenderView( const CViewSetup &view, const CViewSetup &hudViewS
 
 	if( IsPS3() )
 	{
-#if !defined( CSTRIKE15 )
 		extern bool ShouldDrawHudViewfinder();
 		// HUD viewfinder has complex material that isn't handled correctly by deferred queuing in material system, so we shouldn't attempt to 
 		if( !ShouldDrawHudViewfinder() )
 		{
 			pRenderContext->AntiAliasingHint( AA_HINT_TEXT );	
 		}
-#else
-		// mdonofrio - Ensure we don't MLAA scaleform/hud rendering
-		pRenderContext->AntiAliasingHint( AA_HINT_TEXT );	
-#endif // CSTRIKE15
 	}
 
 	if ( true )

@@ -2787,11 +2787,7 @@ void MIX_PaintChannels( int64 endtime, bool bIsUnderwater )
 
 	int64 	end;
 	int		count;
-#ifdef CSTRIKE15
-	bool	b_spatial_delays = false;
-#else
 	bool	b_spatial_delays = dsp_enhance_stereo.GetBool();
-#endif
 
 	bool room_fsurround_sav;
 	bool room_fsurround_center_sav;

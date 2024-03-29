@@ -1240,7 +1240,7 @@ void InitStartupScreen()
 	CMatRenderContextPtr pRenderContext( g_pMaterialSystem );
 	pRenderContext->SetNonInteractiveTempFullscreenBuffer( pTexture, MATERIAL_NON_INTERACTIVE_MODE_STARTUP );
 
-#if defined( CSTRIKE15 )
+/*#if defined( CSTRIKE15 )
 	pTexture = materials->FindTexture( "console/spinner", TEXTURE_GROUP_OTHER );
 	pRenderContext->SetNonInteractivePacifierTexture( pTexture, 0.5f, 0.5f, 0.2f );
 
@@ -1258,7 +1258,7 @@ void InitStartupScreen()
 
 	pTexture = materials->FindTexture( "console/logo", TEXTURE_GROUP_OTHER );
 	pRenderContext->SetNonInteractiveLogoTexture( pTexture, x, y, w, h );
-#else
+#else*/
 	// this is what the loading progress calcs
 	float x, y, w, h, size;
 	size = vgui::scheme()->GetProportionalScaledValue( 85 );
@@ -1285,7 +1285,7 @@ void InitStartupScreen()
 
 	pTexture = materials->FindTexture( "vgui/portal2logo", TEXTURE_GROUP_OTHER );
 	pRenderContext->SetNonInteractiveLogoTexture( pTexture, x, y, w, h );
-#endif // CSTRIKE15
+//#endif // CSTRIKE15
 }
 
 //-----------------------------------------------------------------------------

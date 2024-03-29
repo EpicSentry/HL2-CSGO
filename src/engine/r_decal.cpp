@@ -1397,7 +1397,7 @@ void R_PlayerDecalShoot( IMaterial *material, void *userdata, int entity, const 
 	// it canno	t be zero
 	Assert( userdata != 0 );
 
-#ifndef CSTRIKE15 // <vitaliy>: decals are implemented differently in CS:GO and time out by game rules
+//#ifndef CSTRIKE15 // <vitaliy>: decals are implemented differently in CS:GO and time out by game rules
 	//
 	// Linear search through decal pool to retire any other decals this
 	// player has sprayed.  It appears that multiple decals can be
@@ -1426,7 +1426,7 @@ void R_PlayerDecalShoot( IMaterial *material, void *userdata, int entity, const 
 	{
 		R_DecalUnlink( decalVec[i], host_state.worldbrush );
 	}
-#endif
+//#endif
 
 	// set this to be a player spray so it is timed out appropriately.
 	flags |= FDECAL_PLAYERSPRAY;

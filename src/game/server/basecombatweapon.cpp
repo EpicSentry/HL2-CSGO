@@ -58,7 +58,7 @@ extern ConVar ai_debug_shoot_positions;
 //-----------------------------------------------------------------------------
 PRECACHE_REGISTER_BEGIN( GLOBAL, WeaponResources )
 
-#if !defined( TF_DLL ) && !defined ( DOTA_DLL ) && !defined ( PORTAL2 ) && !defined ( CSTRIKE15 )
+#if !defined( TF_DLL ) && !defined ( DOTA_DLL ) && !defined ( PORTAL2 )
 	PRECACHE_INDEX( MODEL, "sprites/zerogxplode.vmt", g_sModelIndexFireball )
 	PRECACHE_INDEX( MODEL, "sprites/steam1.vmt", g_sModelIndexSmoke )
 	PRECACHE_INDEX( MODEL, "sprites/bubble.vmt", g_sModelIndexBubbles )

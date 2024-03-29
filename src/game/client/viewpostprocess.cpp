@@ -27,10 +27,6 @@
 #include "c_portal_player.h"
 #endif
 
-#ifdef CSTRIKE15
-#include "weapon_csbase.h"
-#include "c_cs_player.h"
-#endif
 
 // NOTE: This has to be the last file included!
 #include "tier0/memdbgon.h"

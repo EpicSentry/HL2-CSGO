@@ -1383,10 +1383,6 @@ void Host_WriteConfiguration_Console( const int iController, bool bVideoConfig )
 	}
 
 	int numLoops = 1;
-#if defined (CSTRIKE15)
-	// Console CStrike15 we want to always save both usr and sys Convars
-	numLoops = 2;
-#endif
 
 	for ( int loopCount=0; loopCount<numLoops; ++loopCount )
 	{

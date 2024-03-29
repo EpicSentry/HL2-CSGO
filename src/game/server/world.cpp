@@ -39,10 +39,6 @@
 #include "music.h"
 #endif
 
-#if defined( CSTRIKE15 )
-#include "gametypes.h"
-#endif
-
 #ifdef PORTAL2
 #include "paint_stream_manager.h"
 #endif
@@ -730,11 +726,6 @@ void CWorld::Spawn( void )
 	// world model
 	SetModelName( AllocPooledString( modelinfo->GetModelName( GetModel() ) ) );
 	AddFlag( FL_WORLDBRUSH );
-
-#if defined( CSTRIKE15 )
-	// reinitialize all of the game type kv file data because we may have new things availible to us in the filesystem mounted from the bsp that we didn't have when the gamemodes.txt was first parsed
-	g_pGameTypes->Initialize( true );
-#endif
 
 	g_EventQueue.Init();
 	Precache( );

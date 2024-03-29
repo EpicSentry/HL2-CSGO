@@ -41,9 +41,6 @@
 #include "ScreenSpaceEffects.h"
 #include "vgui_int.h"
 #include "engine/SndInfo.h"
-#if defined( CSTRIKE15 )
-#include "c_cs_player.h"
-#endif
 #ifdef GAMEUI_UISYSTEM2_ENABLED
 #include "gameui.h"
 #endif
@@ -719,19 +716,6 @@ void CViewRender::SetUpView()
 		// for keeping the camera control during pause.
 		GetClientMode()->OverrideView( &GetView() );
 	}
-
-#if defined ( CSTRIKE15 )
-	CBasePlayer *pCameraMan = NULL;
-	if ( g_bEngineIsHLTV )
-		pCameraMan = HLTVCamera()->GetCameraMan();
-
-	C_CSPlayer *pCSPlayer = ( g_bEngineIsHLTV && pCameraMan ) ? static_cast< C_CSPlayer* >( pCameraMan ) : C_CSPlayer::GetLocalCSPlayer();
-	if ( pCSPlayer && pCSPlayer->ShouldInterpolateObserverChanges() )
-	{
-		pCSPlayer->InterpolateObserverView( view.origin, view.angles );
-		pCSPlayer->CalcViewModelView( view.origin, view.angles );
-	}
-#endif
 
 	// give the toolsystem a chance to override the view
 	ToolFramework_SetupEngineView( view.origin, view.angles, view.fov );

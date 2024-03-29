@@ -2736,12 +2736,7 @@ int CModelRender::DrawModel(
 
 static inline int GetLOD()
 {
-#ifdef CSTRIKE15
-	// Always slamp r_lod to 0 in CS:GO.
-	return 0;
-#else
 	return r_lod.GetInt();
-#endif
 }
 
 int	CModelRender::ComputeLOD( IMatRenderContext *pRenderContext, const ModelRenderInfo_t &info, studiohwdata_t *pStudioHWData )
@@ -3274,12 +3269,10 @@ int CModelRender::DrawStaticPropArrayFast( StaticPropRenderInfo_t *pProps, int c
 	bool bForceCubemap = r_showenvcubemap.GetBool();
 	int drawnCount = 0;
 	int forcedLodSetting = GetLOD();
-#ifndef CSTRIKE15
 	if ( r_staticprop_lod.GetInt() >= 0 )
 	{
 		forcedLodSetting = r_staticprop_lod.GetInt();
 	}
-#endif
 #ifdef VPROF_ENABLED
 	g_VProfCurrentProfile.EnterScope( "build unique model list", 2, VPROF_BUDGETGROUP_OTHER_UNACCOUNTED, false, 0 );
 #endif

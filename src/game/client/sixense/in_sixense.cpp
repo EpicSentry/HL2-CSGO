@@ -30,10 +30,6 @@
 extern ConVar _cl_classmenuopen;
 #endif
 
-#if defined( CSTRIKE15 ) || defined (CSTRIKE_DLL)
-#include "c_cs_player.h"
-#endif
-
 #include <isixense.h>
 #include <sixense_math.hpp>
 #include <sixense_utils/interfaces.hpp>

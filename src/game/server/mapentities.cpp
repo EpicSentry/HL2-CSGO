@@ -18,11 +18,6 @@
 #include "datacache/imdlcache.h"
 #include "world.h"
 #include "toolframework/iserverenginetools.h"
-#if defined( CSTRIKE15 )
-#include "cs_gamerules.h"
-#include "weapon_csbase.h"
-#include "econ_entity_creation.h"
-#endif
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"

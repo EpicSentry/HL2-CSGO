@@ -28,9 +28,6 @@
 #include "c_asw_marine.h"
 #include "asw_input.h"
 #endif
-#ifdef CSTRIKE15
-#include "c_cs_player.h"
-#endif
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -1007,11 +1004,7 @@ void CClient_Precipitation::CreateParticlePrecip( void )
 	{
 		ACTIVE_SPLITSCREEN_PLAYER_GUARD( hh );
 
-#ifdef CSTRIKE15
-		C_CSPlayer *pPlayer = GetLocalOrInEyeCSPlayer();
-#else
 		C_BasePlayer *pPlayer = C_BasePlayer::GetLocalPlayer();
-#endif
 
 		if ( pPlayer == NULL )
 			continue;
@@ -1390,11 +1383,8 @@ void CClient_Precipitation::EmitParticles( float fTimeDelta )
 	{
 		ACTIVE_SPLITSCREEN_PLAYER_GUARD( hh );
 	
-#ifdef CSTRIKE15
-		C_CSPlayer *pPlayer = GetLocalOrInEyeCSPlayer();
-#else
 		C_BasePlayer *pPlayer = C_BasePlayer::GetLocalPlayer();
-#endif
+
 		if ( !pPlayer )
 			continue;
 	

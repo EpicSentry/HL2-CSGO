@@ -17,10 +17,6 @@
 #include "shared_classnames.h"
 #include "ihasowner.h"
 
-#ifdef CSTRIKE15
-#include "cs_shareddefs.h"
-#endif
-
 class CBaseCombatWeapon;
 class CBaseCombatCharacter;
 class CVGuiScreen;
@@ -204,14 +200,6 @@ public:
 
 private:
 	CBaseViewModel( const CBaseViewModel & ); // not defined, not accessible
-#ifdef CSTRIKE15
-	void					UpdateParticles( int nSlot );
-
-	virtual void 			OnNewParticleEffect( const char *pszParticleName, CNewParticleEffect *pNewParticleEffect );
-	virtual void 			OnParticleEffectDeleted( CNewParticleEffect *pParticleEffect );
-
-	CUtlReference<CNewParticleEffect> m_viewmodelParticleEffect;
-#endif
 #endif
 
 #ifdef PORTAL2
@@ -244,11 +232,6 @@ private:
 
 public:
 	float					m_fCycleOffset;
-#ifdef CSTRIKE15
-	void					UpdateStatTrakGlow( void );
-	void					SetStatTrakGlowMultiplier( float flNewIdealGlow ) { m_flStatTrakGlowMultiplierIdeal = flNewIdealGlow; }
-	const float				GetStatTrakGlowMultiplier( void ){ return m_flStatTrakGlowMultiplier; }
-#endif
 #ifdef IRONSIGHT
 	void					SetScopeStencilMaskMode( bool bEnabled ) { m_bScopeStencilMaskModeEnabled = bEnabled; }
 	bool					GetScopeStencilMaskMode( void ) { return m_bScopeStencilMaskModeEnabled; }

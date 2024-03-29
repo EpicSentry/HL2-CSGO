@@ -30,11 +30,6 @@
 #include "fmtstr.h"
 #include "videocfg/videocfg.h"
 
-#if defined( CSTRIKE15 )
-#include "cs_gamerules.h"
-#include "cs_team.h"
-#endif
-
 #ifdef TF_DLL
 #include "tf_player.h"
 #endif
@@ -670,30 +665,6 @@ void CPointServerCommand::InputCommand( inputdata_t& inputdata )
 	if ( !inputdata.value.String()[0] )
 		return;
 
-#if defined( CSTRIKE15 )
-	CBasePlayer *player = UTIL_GetListenServerHost();
-	// if we're on a dedicated server or a non-listen server, only accept whitelisted commands
-	if ( engine->IsDedicatedServer() || player == NULL )
-	{
-		// Parse the text into distinct commands
-		const char *pCurrentCommand = inputdata.value.String();
-		int nOffsetToNextCommand;
-		int	nLen = Q_strlen( inputdata.value.String() );
-		for( ; nLen > 0; nLen -= nOffsetToNextCommand+1, pCurrentCommand += nOffsetToNextCommand+1 )
-		{
-			// find a \n or ; line break
-			int nCommandLength;
-			UTIL_GetNextCommandLength( pCurrentCommand, nLen, &nCommandLength, &nOffsetToNextCommand );
-			if ( nCommandLength <= 0 )
-				continue;
-
-			engine->ServerCommand( UTIL_VarArgs( "whitelistcmd %.*s\n", nCommandLength, pCurrentCommand ) );
-		}
-		return;
-	}
-
-#endif
-
 	engine->ServerCommand( UTIL_VarArgs( "%s\n", inputdata.value.String() ) );
 }
 
@@ -824,25 +795,6 @@ void kill_helper( const CCommand &args, bool bVector, bool bExplode )
 	{
 		pPlayer = UTIL_GetCommandClient();
 	}
-#if defined ( CSTRIKE15 )
-	if ( !pPlayer || g_pGameRules->IgnorePlayerKillCommand() )
-	{
-		return;
-	}
-
-
-	// If we're doing global assassination targets, we have a known assassinate quest and the player who is the target is on the correct team
-	// then don't let them suicide. 
-	if ( CSGameRules() && CSGameRules()->GetActiveAssassinationQuest() )
-	{
-		CEconQuestDefinition *pQuest = CSGameRules()->GetActiveAssassinationQuest();
-		CCSPlayer *pCSPlayer = ToCSPlayer( pPlayer );
-		if ( pQuest && pCSPlayer 
-			&& ( int( pQuest->GetTargetTeam() ) == pPlayer->GetTeamNumber() )
-			&& ( pCSPlayer->IsAssassinationTarget() ) )
-			return;
-	}
-#endif
 
 	if ( bVector && sv_cheats->GetBool() )
 	{

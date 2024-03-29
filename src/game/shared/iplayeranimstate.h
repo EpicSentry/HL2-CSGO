@@ -19,7 +19,7 @@ typedef enum
 } LegAnimType_t;
 
 
-#ifdef CSTRIKE15
+/*#ifdef CSTRIKE15
 enum PlayerAnimEvent_t
 {
 	PLAYERANIMEVENT_FIRE_GUN_PRIMARY=0,
@@ -45,7 +45,7 @@ enum PlayerAnimEvent_t
 	PLAYERANIMEVENT_CATCH_WEAPON,
 	PLAYERANIMEVENT_COUNT
 };
-#endif
+#endif*/
 
 
 abstract_class IPlayerAnimState
@@ -73,7 +73,7 @@ public:
 
 	virtual void SetForceAimYaw( bool bForce ) = 0;
 
-#ifdef CSTRIKE15
+/*#ifdef CSTRIKE15
 	// This is called by both the client and the server in the same way to trigger events for
 	// players firing, jumping, throwing grenades, etc.
 	virtual void DoAnimationEvent( PlayerAnimEvent_t event, int nData = 0 ) = 0;
@@ -81,7 +81,7 @@ public:
 	// Returns true if we're playing the grenade prime or throw animation.
 	virtual bool IsThrowingGrenade() = 0;
 	virtual bool ShouldHideGrenadeDuringThrow() = 0;
-#endif
+#endif*/
 };
 
 

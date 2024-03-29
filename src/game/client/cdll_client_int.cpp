@@ -104,15 +104,7 @@
 #include "tier2/tier2_logging.h"
 #include "Sprite.h"
 #include "vgui_video.h"
-#if defined( CSTRIKE15 )
-#include "gametypes/igametypes.h"
-#include "c_keyvalue_saver.h"
-#include "cs_workshop_manager.h"
-#include "c_team.h"
-#include "cstrike15/fatdemo.h"
-#include "cs_gamerules.h"
-#include "c_cs_player.h"
-#endif
+
 
 //#include "mumble.h"
 
@@ -1488,27 +1480,6 @@ int CHLClient::Init( CreateInterfaceFn appSystemFactory, CGlobalVarsBase *pGloba
 	if ( !g_pRenderToRTHelper->Init() )
 		return false;
 
-#if defined( CSTRIKE15 )
-	if ( ( g_pGameTypes = (IGameTypes *)appSystemFactory( VENGINE_GAMETYPES_VERSION, NULL )) == NULL )
-		return false;
-
-	// load the p4 lib - not doing it in CS:GO to prevent extra .dlls from being loaded
-	CSysModule *m_pP4Module = Sys_LoadModule( "p4lib" );
-	if ( m_pP4Module )
-	{
-		CreateInterfaceFn factory = Sys_GetFactory( m_pP4Module );
-		if ( factory )
-		{
-			p4 = ( IP4 * )factory( P4_INTERFACE_VERSION, NULL );
-
-			if ( p4 )
-			{
-				p4->Connect( appSystemFactory );
-				p4->Init();
-			}
-		}
-	}
-#endif
 
 #if defined( REPLAY_ENABLED )
 	if ( IsPC() && (g_pReplayHistoryManager = (IReplayHistoryManager *)appSystemFactory( REPLAYHISTORYMANAGER_INTERFACE_VERSION, NULL )) == NULL )
@@ -1547,11 +1518,6 @@ int CHLClient::Init( CreateInterfaceFn appSystemFactory, CGlobalVarsBase *pGloba
 	// 		INTERFACEVERSION_SERVERGAMEDLL, static_cast< IServerGameDLL * >( this ) );
 #endif // PORTAL2
 
-#ifdef CSTRIKE15
-	if ( !g_pMatchFramework )
-		return false;
-	GameInstructor_Init();
-#endif
 
 	if ( !g_pMatchFramework )
 		return false;
@@ -1656,11 +1622,6 @@ int CHLClient::Init( CreateInterfaceFn appSystemFactory, CGlobalVarsBase *pGloba
 	// This must be called after all other VGui initialization (i.e after InitGameSystems)
 	g_PuzzleMaker.Init();
 #endif // PORTAL2_PUZZLEMAKER
-
-#if defined( CSTRIKE15 )
-	// Load the game types.
-	g_pGameTypes->Initialize();
-#endif
 
 	//
 	// Censoring banlist loads here
@@ -2401,8 +2362,6 @@ void ConfigureCurrentSystemLevel()
 	char szModName[32] = "sdk";
 #elif defined ( SOB_CLIENT_DLL )
 	char szModName[32] = "ep2";
-#elif defined ( CSTRIKE15 )
-	char szModName[32] = "csgo";
 #elif defined ( HL2_CLIENT_DLL )
 	char szModName[32] = "hl2";
 #endif
@@ -4247,34 +4206,21 @@ const CUtlVector< Frustum_t, CUtlMemoryAligned< Frustum_t,16 > >* CHLClient::Get
 
 bool CHLClient::IsSubscribedMap( const char *pchMapName, bool bOnlyOnDisk )
 {
-#if !defined ( NO_STEAM ) && defined( CSTRIKE15 )
-	return g_CSGOWorkshopMaps.IsSubscribedMap( pchMapName, bOnlyOnDisk );
-#endif
 	return false;
 }
 
 bool CHLClient::IsFeaturedMap( const char *pchMapName, bool bOnlyOnDisk )
 {
-#if !defined ( NO_STEAM ) && defined( CSTRIKE15 )
-	return g_CSGOWorkshopMaps.IsFeaturedMap( pchMapName, bOnlyOnDisk );
-#endif
 	return false;
 }
 
 void CHLClient::DownloadCommunityMapFile( PublishedFileId_t id )
 {
-#if !defined ( NO_STEAM ) && defined( CSTRIKE15 )
-	g_CSGOWorkshopMaps.DownloadMapFile( id );
-#endif
 }
 
 float CHLClient::GetUGCFileDownloadProgress( PublishedFileId_t id )
 {
-#if !defined ( NO_STEAM ) && defined( CSTRIKE15 )
-	return g_CSGOWorkshopMaps.GetFileDownloadProgress( id );
-#else
 	return 0.0f;
-#endif
 }
 
 void CHLClient::RecordUIEvent( const char* szEvent )

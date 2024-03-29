@@ -34,10 +34,6 @@
 #include "precipitation_shared.h"
 #include "shot_manipulator.h"
 #include "modelentities.h"
-#if defined( CSTRIKE15 )
-#include "fx_cs_shared.h"
-#include "cs_player.h"
-#endif
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -2331,67 +2327,6 @@ void CEnvGunfire::ShootThink()
 
 	Vector vecEnd;
 
-#if defined( CSTRIKE15 )
-
-	CEconItemDefinition *pItemDef = GetItemSchema()->GetItemDefinitionByName( STRING(m_iszWeaponName) );
-	if ( pItemDef && pItemDef->GetDefinitionIndex() != 0 )
-	{
-		CSWeaponID wid = WeaponIdFromString( STRING(m_iszWeaponName) );
-		const CCSWeaponInfo* pWeaponInfo = GetWeaponInfo( wid );
-		
-		uint16 nItemDefIndex = pItemDef->GetDefinitionIndex();
-	
-		QAngle angDir;
-		VectorAngles( vecDir, angDir );
-
-		FX_FireBullets(
-			entindex(),
-			nItemDefIndex,
-			GetAbsOrigin(),
-			angDir,
-			wid,
-			0,
-			CBaseEntity::GetPredictionRandomSeed( SERVER_PLATTIME_RNG ) & 255,
-			0,
-			0,
-			0,
-			0,
-			SINGLE,
-			0 );
-
-		int nPenetrationCount = 4;
-
-		int		iDamage = pWeaponInfo->GetDamage( NULL );
-		float	flRange = pWeaponInfo->GetRange( NULL );
-		float	flPenetration = pWeaponInfo->GetPenetration( NULL );
-		float	flRangeModifier = pWeaponInfo->GetRangeModifier( NULL );
-		int		iAmmoType = pWeaponInfo->GetPrimaryAmmoType( NULL );
-
-		FireBullet(
-			GetAbsOrigin(),
-			angDir,
-			flRange,
-			flPenetration,
-			nPenetrationCount,
-			iAmmoType,
-			iDamage,
-			flRangeModifier,
-			this,
-			true,
-			0, 0,
-			pWeaponInfo->GetTracerEffectName() );
-
-		m_iShotsRemaining--;
-		float flNextShot = gpGlobals->curtime + pWeaponInfo->GetCycleTime();
-		SetNextThink( flNextShot );
-
-		if( m_iShotsRemaining == 0 )
-		{
-			StartShooting();
-			SetNextThink( gpGlobals->curtime + random->RandomFloat( m_flMinBurstDelay, m_flMaxBurstDelay ) );	
-		}
-	}
-#else
 	SetNextThink( gpGlobals->curtime + m_flRateOfFire );
 
 	if( m_bCollide )
@@ -2430,7 +2365,6 @@ void CEnvGunfire::ShootThink()
 		StartShooting();
 		SetNextThink( gpGlobals->curtime + random->RandomFloat( m_flMinBurstDelay, m_flMaxBurstDelay ) );
 	}
-#endif
 
 }
 
@@ -2726,16 +2660,6 @@ void CEnvGunfire::FireBullet(
 		//bool bWasAlive = pEntity->IsAlive();
 
 		// === Damage applied later ===
-#endif
-#if defined ( CSTRIKE15 )
-		// [dkorus] note: values are changed inside of HandleBulletPenetration
-		bool bulletStopped = pPlayer->HandleBulletPenetration( flPenetration, iEnterMaterial, hitGrate, tr, vecDir, pSurfaceData, flPenetrationModifier,
-													  flDamageModifier, bDoEffects, iDamageType, flPenetrationPower, nPenetrationCount, vecSrc, flDistance,
-													  flCurrentDistance, fCurrentDamage );
-
-		// [dkorus] bulletStopped is true if the bullet can no longer continue penetrating materials
-		if ( bulletStopped )
-			break;
 #endif
 	}
 

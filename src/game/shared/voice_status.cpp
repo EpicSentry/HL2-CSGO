@@ -35,14 +35,6 @@
 #include "c_portal_gamestats.h"
 #endif
 
-#if defined ( CSTRIKE15 )
-#include "c_cs_player.h"
-#include "matchmaking/imatchtitle.h"
-#include "matchmaking/iplayer.h"
-#include "matchmaking/mm_helpers.h"
-#include "matchmaking/imatchframework.h"
-#endif
-
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
@@ -62,11 +54,6 @@ ConVar voice_head_icon_height( "voice_head_icon_height", "20", FCVAR_NONE, "Voic
 ConVar voice_local_icon( "voice_local_icon", "0", FCVAR_NONE, "Draw local player's voice icon" );
 ConVar voice_all_icons( "voice_all_icons", "0", FCVAR_NONE, "Draw all players' voice icons" );
 ConVar voice_icons_method( "voice_icons_method", "2", FCVAR_NONE, "0 = classic style, 1 = particles, 2 = integrated into target ID" );
-
-#if defined ( CSTRIKE15 )
-ConVar cl_mute_enemy_team( "cl_mute_enemy_team", "0", FCVAR_ARCHIVE, "Block all communication from players on the enemy team." );
-ConVar cl_mute_all_but_friends_and_party( "cl_mute_all_but_friends_and_party", "0", FCVAR_ARCHIVE, "Only allow communication from friends and matchmaking party members. Doesn't apply to competitive matchmaking games." );
-#endif
 
 // ---------------------------------------------------------------------- //
 // The voice manager for the client.
@@ -475,7 +462,6 @@ void CVoiceStatus::UpdateSpeakerStatus(int entindex, int iSsSlot, bool bTalking)
 	if( entindex == -1 && iSsSlot >= 0 )
 	{
 		m_bTalking[ iSsSlot ] = !!bTalking;
-#if !defined( CSTRIKE15 )
 		if( bTalking )
 		{
 			// Enable voice for them automatically if they try to talk.
@@ -484,7 +470,6 @@ void CVoiceStatus::UpdateSpeakerStatus(int entindex, int iSsSlot, bool bTalking)
 				"cmd%d voice_modenable 1", iSsSlot + 1 );
 			engine->ClientCmd( chClientCmd );
 		}
-#endif
 	}
 	
 	if( entindex == -2 && iSsSlot >= 0 )
@@ -720,36 +705,6 @@ bool CVoiceStatus::IsPlayerBlocked(int iPlayer)
 
 bool CVoiceStatus::ShouldHideCommunicationFromPlayer( int iPlayerIndex )
 {
-#if defined ( CSTRIKE15 )
-	C_CSPlayer* pLocalPlayer = C_CSPlayer::GetLocalCSPlayer();
-	if ( pLocalPlayer && pLocalPlayer->entindex() == iPlayerIndex )
-		return false;
-
-	if ( cl_mute_enemy_team.GetBool() )
-	{
-		if ( pLocalPlayer && pLocalPlayer->IsOtherEnemy( iPlayerIndex ) && 
-			( pLocalPlayer->GetTeamNumber() == TEAM_CT || pLocalPlayer->GetTeamNumber() == TEAM_TERRORIST ) )
-			return true;
-	}
-	if ( cl_mute_all_but_friends_and_party.GetBool() && CSGameRules() && !CSGameRules()->IsQueuedMatchmaking() )
-	{
-		// This type of muting doesn't make sense when playing back a demo
-		if ( engine->IsPlayingDemo() )
-			return false;
-		C_CSPlayer * pOther = ToCSPlayer( UTIL_PlayerByIndex( iPlayerIndex ) );
-		CSteamID otherID;
-		bool bIsInParty = false;
-		if ( pOther && pOther->GetSteamID( &otherID ) )
-		{
-			if ( IsPartyMember( otherID.ConvertToUint64() ) )
-				bIsInParty = true;
-		}
-
-		if ( pLocalPlayer && !pLocalPlayer->HasPlayerAsFriend( pOther ) && !bIsInParty )
-			return true;
-	}
-
-#endif 
 	return false;
 }
 

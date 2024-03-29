@@ -45,11 +45,7 @@ void NET_Shutdown( void );
 const char *UTIL_GetBaseDir( void );
 bool g_bVGui = false;
 
-#if defined( CSTRIKE15 )
-const char *g_gameName = "csgo";
-#else
 const char *g_gameName = "hl2";
-#endif
 
 #if defined ( _WIN32 )
 #include "console/TextConsoleWin32.h"
