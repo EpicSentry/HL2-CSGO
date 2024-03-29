@@ -16,7 +16,6 @@ Partially used code from https://github.com/tupoy-ya/Kisak-Strike and https://gi
 
 **Currently known bugs:**
 - sv_pure is most likely broken due to differences between CS:GO and TF2 implementations.
-- In game console is really unreliable and can only be opened if the pause menu is opened first.
 - Random vphysics.dll crashes.
 - Physics save/restore is broken, play with ``save_disable 1`` for the time being.
 - For now you'll need to bind f (or your desired flashlight key) to ``toggleflashlight``.
